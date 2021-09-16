@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # dvw
 
 ## DVW dev
@@ -481,3 +482,6 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# WebClient
+>>>>>>> 16c61bc1f108a0bb6680faf8abeaf5117c069795
