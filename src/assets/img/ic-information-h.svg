@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="ic-information-h" width="14" height="14" viewBox="0 0 14 14">
+    <defs>
+        <style>
+            .cls-2{fill:#fff}
+        </style>
+    </defs>
+    <circle id="타원_14" cx="7" cy="7" r="7" fill="#6c38ef"/>
+    <path id="_0" d="M146 70a1 1 0 1 0 1 1 1 1 0 0 0-1-1z" class="cls-2" transform="translate(-139.002 -66.999)"/>
+    <path id="_" d="M151 140c-.552 0-1 .28-1 .625v3.75c0 .345.448.625 1 .625s1-.28 1-.625v-3.75c0-.345-.448-.625-1-.625z" class="cls-2" transform="translate(-144 -134)"/>
+</svg>

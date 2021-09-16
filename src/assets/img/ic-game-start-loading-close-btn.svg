@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".146" x2=".854" y1=".146" y2=".854" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#18a7f8"/>
+            <stop offset="1" stop-color="#6c38ef"/>
+        </linearGradient>
+        <style>
+            .cls-2{fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px}
+        </style>
+    </defs>
+    <g id="ic-closed-startpopup" transform="translate(-462.526 -257.156)">
+        <circle id="타원_1" cx="20" cy="20" r="20" fill="url(#linear-gradient)" transform="translate(462.526 257.156)"/>
+        <g id="그룹_15" transform="translate(-887.765 -14.989)">
+            <path id="선_1" d="M0 0L10 10" class="cls-2" transform="translate(1365.291 287.145)"/>
+            <path id="선_2" d="M0 10L10 0" class="cls-2" transform="translate(1365.291 287.145)"/>
+        </g>
+    </g>
+</svg>

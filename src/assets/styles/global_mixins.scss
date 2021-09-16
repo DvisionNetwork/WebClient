@@ -1,0 +1,373 @@
+
+$browser-fontSie : 16; // 16px (browser default font size) -> 10px
+
+$baseW : 1920;
+$baseH : 1080;
+$baseR : 1080 / 1920;
+
+$baseW_L : 1200;
+$baseW_M : 1024;
+$baseW_S : 768;
+$baseW_SD : 750;
+
+$media_big : 1600px; // for GNB
+$media_large : $baseW_L * 1px;
+$media_medium : $baseW_M * 1px;
+$media_small : $baseW_S * 1px;
+
+$AppFont: Montserrat, sans-serif;
+
+$gTransitionNormal: 0.5s ease-in-out;
+$gOverTranY: -10px;
+$gTransitionOverTranY : transform 0.5s ease-in-out;
+$gOverTranX1: -10px;
+$gOverTranX2: 10px;
+$gTransitionOverTranX : transform 0.5s ease-in-out;
+
+////////////////////////////////////////////////
+$Z-INDEX-GNB: 10;
+$Z-INDEX-ARROW: 50;
+$Z-INDEX-MOBILE-GNB-MENU: 10;
+$Z-INDEX-ICON-POPUP: 20;
+$Z-INDEX-MENU-POPUP: 20;
+$Z-INDEX-LOGIN-POPUP: 50;
+$Z-INDEX-ADD-WALLET-POPUP: 50;
+$Z-INDEX-MODAL-POPUP: 50;
+$Z-INDEX-GO-TOP-BTN: 50;
+$Z-INDEX-CHECK-PASSWORD-POPUP: 60;
+$Z-INDEX-ALERT: 100;
+$Z-INDEX-LOADING: 300;
+$Z-INDEX-GAME-START-LOADING: 310;
+$Z-INDEX-TOAST: 500;
+
+///////////////////////////// Functions ////////////////////
+
+@function gREm($px, $fs: $browser-fontSie) {
+	@if (unitless($px)) {
+		$px: $px * 1px;
+	}
+	@if (unitless($fs)) {
+		$fs: $fs * 1px;
+	}
+	$result: ($px / $fs) * 1rem; 
+	// $result: $px; 
+	@return $result;
+}
+
+@function gEm($px, $fs: $browser-fontSie) {
+	@if (unitless($px)) {
+		$px: $px * 1px;
+	}
+	@if (unitless($fs)) {
+		$fs: $fs * 1px;
+	}
+	$result: ($px / $fs) * 1em; 
+	@return $result;
+}
+
+///////////////////////////////////////////////
+// O: original 1920, L : Large 1200, M : medium 1024, S : small : 768
+@function gW($w) { 
+	$result : $w / $baseW * 100vw; 
+	@return $result;
+}
+@function gH($h) {
+	$result: $h / $baseH * 100vh; 
+	@return $result;
+}
+// 가로 기준 높이 구하기 ==> 
+@function gRH($h) {
+	// $result: $h / $baseW * 100vw; 
+	// @return $result;
+	@return gW($h);
+}
+
+@function gW_L($w) { 
+	$result : $w / $baseW_L * 100vw; 
+	@return $result;
+}
+@function gW_M($w) { 
+	$result : $w / $baseW_M * 100vw; 
+	@return $result;
+}
+@function gW_S($w) { 
+	$result : $w / $baseW_SD * 100vw; 
+	@return $result;
+}
+@function gRH_L($h) {
+	@return gW_L($h);
+}
+@function gRH_M($h) {
+	@return gW_M($h);
+}
+@function gRH_S($h) {
+	@return gW_S($h);
+}
+
+//////////////////////////////////////////////
+
+// https://heropy.blog/2018/11/24/css-flexible-box/
+@mixin FLEX($justify:center, $valign:center) {
+	display: flex;
+	justify-content: $justify;
+	// flex-start	Items를 시작점(flex-start)으로 정렬	flex-start
+	// flex-end	Items를 끝점(flex-end)으로 정렬	
+	// center	Items를 가운데 정렬	
+	// space-between	시작 Item은 시작점에, 마지막 Item은 끝점에 정렬되고 나머지 Items는 사이에 고르게 정렬됨	
+	// space-around	Items를 균등한 여백을 포함하여 정렬
+
+	align-items: $valign; 
+	// stretch	Container의 교차 축을 채우기 위해 Items를 늘림	stretch
+	// flex-start	Items를 각 줄의 시작점(flex-start)으로 정렬	
+	// flex-end	Items를 각 줄의 끝점(flex-end)으로 정렬	
+	// center	Items를 가운데 정렬	
+	// baseline	Items를 문자 기준선에 정렬// vertical align : 
+}
+
+// vertical FLEX
+@mixin FLEXV($justify:center, $valign:center) {
+	display: flex;
+	justify-content: $justify;
+	flex-direction: column;
+	// flex-start	Items를 시작점(flex-start)으로 정렬	flex-start
+	// flex-end	Items를 끝점(flex-end)으로 정렬	
+	// center	Items를 가운데 정렬	
+	// space-between	시작 Item은 시작점에, 마지막 Item은 끝점에 정렬되고 나머지 Items는 사이에 고르게 정렬됨	
+	// space-around	Items를 균등한 여백을 포함하여 정렬
+
+	align-items: $valign; 
+	// stretch	Container의 교차 축을 채우기 위해 Items를 늘림	stretch
+	// flex-start	Items를 각 줄의 시작점(flex-start)으로 정렬	
+	// flex-end	Items를 각 줄의 끝점(flex-end)으로 정렬	
+	// center	Items를 가운데 정렬	
+	// baseline	Items를 문자 기준선에 정렬// vertical align : 
+}
+
+////////////////////////////////////////////////
+// @include media(768px) { color: red; };
+@mixin media-min($width) {
+	@media only screen and (min-width: $width) { 
+		@content; 
+	} 
+}
+@mixin media-max($width) {
+	@media only screen and (max-width: $width) { 
+		@content; 
+	} 
+}
+
+////////////////////////////////////////////////
+
+@mixin Full-Size {
+	top:0px; left:0px; width: 100%; height: 100%;
+}
+
+@mixin Set-Font($family, $fSize, $lineH, $color, $weight:300) {
+	font-family: $family;
+	font-size: $fSize;
+	font-weight: ($weight + 200);
+	line-height: $lineH;
+	font-stretch: normal;
+	font-style: normal;
+	letter-spacing: normal;
+	white-space: nowrap;
+	color: $color;
+	text-decoration: none;
+}
+
+@mixin SetBgImage($url,$repeat:no-repeat, $size:cover, $position:center) {
+	background-size: $size;
+	background-repeat : $repeat;
+	background-image: $url;
+	background-position: $position;
+}
+
+@mixin Dotted-Text {
+	overflow: hidden;
+	// white-space: nowrap; :: Set-Font에서 pre-wrap 지정됨
+	text-overflow: ellipsis;
+}
+
+// use @include Multiline-Dotted-Text(3);
+@mixin Multiline-Dotted-Text($lines, $align: left) {
+	overflow: hidden;
+	text-overflow: ellipsis; 
+	text-align: $align; 
+	word-wrap: break-word; 
+	white-space: pre-wrap;
+	display: -webkit-box; 
+	-webkit-line-clamp: $lines; 
+	-webkit-box-orient: vertical;
+
+}
+
+////////////////////////////////////////////
+@mixin Radius($value) {
+	-webkit-border-radius: $value;
+	-moz-border-radius: $value;
+	border-radius: $value;
+}
+
+@mixin Transition($attr) {
+	-webkit-transition: $attr;
+	-o-transition: $attr;
+	-moz-transition: $attr;
+	-ms-transition: $attr;
+	transition: $attr;
+}
+@mixin Transform($trans_func, $origin:(50% 50%)) {
+	-webkit-transform: $trans_func;
+	-moz-transform: $trans_func;
+	-ms-transform: $trans_func;
+	-o-transform: $trans_func;
+	transform: $trans_func;
+	-webkit-transform-origin: $origin;
+	-moz-transform-origin: $origin;
+	-ms-transform-origin: $origin;
+	-o-transform-origin: $origin;
+	transform-origin: $origin;
+	
+}
+
+// @include OnOverTransition();
+@mixin OnOverTransition() {
+	@include Transition($gTransitionOverTranY);
+	&:hover {
+		@include Transform(translateY($gOverTranY));
+	}
+}
+
+@mixin OnOverTransitionX-L() {
+	@include Transition($gTransitionOverTranX);
+	&:hover {
+		@include Transform(translateX($gOverTranX1));
+	}
+}
+
+@mixin OnOverTransitionX-R() {
+	@include Transition($gTransitionOverTranX);
+	&:hover {
+		@include Transform(translateX($gOverTranX2));
+	}
+}
+
+
+// @font-face {
+// 	font-family:App-Regular;
+// 	src: url("../../font/ProximaNova-Regular.otf");
+// }
+
+
+// @font-face {
+// 	font-family:App-Bold;
+// 	src: url("../../font/ProximaNova-Bold.otf");
+// }
+// @font-face {
+// 	font-family:App-Extrabold;
+// 	src: url("../../font/ProximaNova-Extrabold.otf");
+// }
+// @font-face {
+// 	font-family:App-Thin;
+// 	src: url("../../font/ProximaNova-Thin.otf");
+// }
+
+///////////////////////////////////////////////
+
+$_s_screen: 768px; 
+$_m_screen: 1024px; 
+$_l_screen: 1200px; 
+$_s_font_r: 3/4;
+$_m_font_r: 5/6;
+$_l_font_r: 1;
+
+@function gFS($px, $fs: $browser-fontSie) {
+	@if (unitless($px)) {
+		$px: $px * 1px;
+	}
+	@if (unitless($fs)) {
+		$fs: $fs * 1px;
+	}
+	$result: ($px / $fs) * 1rem; 
+	@return $result;
+}
+
+@function remove-unit($value) {
+	@return ($value / ($value * 0 + 1));
+}
+
+
+@mixin H-Center {
+	justify-content: center;
+	display: flex;
+}
+
+@mixin VH-Center {
+	justify-content: center;
+	display: flex;
+	align-items: center;
+}
+
+@mixin H-Center {
+	left:50%; transform: translateX(-50%);
+}
+@mixin V-Center {
+	 top:50%; transform: translateY(-50%);
+}
+@mixin VH-Center {
+	top:50%; left:50%; transform: translateX(-50%) translateY(-50%);
+}
+
+@mixin Media-MAX-Middle() {
+	@media only screen and (max-width: $_m_screen) { 
+		@content; 
+	} 
+}
+@mixin Media-MAX-Small() {
+	@media only screen and (max-width: $_s_screen) { 
+		@content; 
+	} 
+}
+
+@mixin Media-MAX-Large() {
+	@media only screen and (max-width: $_l_screen) { 
+		@content; 
+	} 
+}
+
+@mixin Media-MIN-Large() {
+	@media only screen and (min-width: $_l_screen) { 
+		@content; 
+	} 
+}
+@mixin Media-MIN-Middle() {
+	@media only screen and (min-width: $_m_screen) { 
+		@content; 
+	} 
+}
+@mixin Media-MIN-Small() {
+	@media only screen and (min-width: $_s_screen) { 
+		@content; 
+	} 
+}
+
+
+@mixin App-Icons($posX, $posY) {
+	background-repeat : no-repeat; 
+	background-image: url('../../image/app_icons.svg');
+	background-position: -$posX -$posY;
+	background-size: 900px 1087px;
+}
+
+@mixin M-FontSize($fSize) {
+	@include media-min($_s_screen) { font-size: $fSize * $_s_font_r; };
+	@include media-min($_m_screen) { font-size: $fSize * $_m_font_r; };
+	@include media-min($_l_screen) { font-size: $fSize * $_l_font_r; };
+}
+
+@mixin M-Field($field,$value) {
+	@include media-min($_s_screen) { #{$field}: $value * $_s_font_r; };
+	@include media-min($_m_screen) { #{$field}: $value * $_m_font_r; };
+	@include media-min($_l_screen) { #{$field}: $value * $_l_font_r; };
+}
+
+

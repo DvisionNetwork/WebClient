@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="38" height="38" viewBox="0 0 38 38">
+    <defs>
+        <linearGradient id="s0f1hyk1eb" x1=".5" x2=".5" y1="-.031" y2="1.19" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#9ceeff"/>
+            <stop offset=".212" stop-color="#86bdfa"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+        <linearGradient id="l67ypvweba" x1=".5" x2=".5" y1="-9.692" y2="4.613" gradientUnits="objectBoundingBox">
+            <stop offset=".005" stop-color="#86bdfa"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+        <linearGradient id="1rza6zr82c" x1=".5" x2=".5" y1="-5.975" y2="3.113" xlink:href="#l67ypvweba"/>
+        <linearGradient id="39rvbqyund" x1=".5" x2=".5" y1="-5.158" y2=".829" xlink:href="#l67ypvweba"/>
+        <linearGradient id="ctdt9nn9ge" x1=".5" x2=".5" y1="-.059" y2="2.294" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#94e3fd"/>
+            <stop offset=".291" stop-color="#86bdfa"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+    </defs>
+    <g>
+        <path fill="url(#s0f1hyk1eb)" d="M765.445 291.44H738.25a5.4 5.4 0 0 0-5.4 5.382v17.866a5.4 5.4 0 0 0 5.4 5.383h27.194a5.4 5.4 0 0 0 5.4-5.383v-17.866a5.4 5.4 0 0 0-5.399-5.382zm-31.19 5.382a3.993 3.993 0 0 1 4-3.981h27.194a3.993 3.993 0 0 1 4 3.981v14.7h-35.194zm31.19 21.846H738.25a3.993 3.993 0 0 1-4-3.981v-1.765h35.19v1.765a3.993 3.993 0 0 1-3.995 3.981z" transform="translate(-906.592 -575) translate(173.744 285.56)"/>
+        <g transform="translate(-906.592 -575) translate(923.685 599.074)">
+            <circle cx="1.211" cy="1.211" r="1.211" fill="url(#l67ypvweba)" transform="translate(0.696 0.695)"/>
+            <path fill="url(#1rza6zr82c)" d="M751.621 317.161a1.907 1.907 0 1 1 1.907-1.907 1.91 1.91 0 0 1-1.907 1.907zm0-2.422a.515.515 0 1 0 .516.515.516.516 0 0 0-.516-.515z" transform="translate(-749.714 -313.348)"/>
+        </g>
+        <path fill="url(#39rvbqyund)" d="M753.833 326.2h-4.424a2.542 2.542 0 0 1-2.432-3.287l.615-2.007a.695.695 0 1 1 1.329.406l-.614 2.008a1.153 1.153 0 0 0 1.1 1.49h4.424a1.153 1.153 0 0 0 1.1-1.49l-.614-2.008a.695.695 0 1 1 1.329-.406l.615 2.007a2.542 2.542 0 0 1-2.432 3.287z" transform="translate(-906.592 -575) translate(173.971 285.795)"/>
+        <path fill="url(#ctdt9nn9ge)" d="M756.4 303.172a.7.7 0 0 0-.984 0l-3.1 3.1v-9.739a.695.695 0 1 0-1.39 0v9.739l-3.1-3.1a.7.7 0 0 0-.983.983l4.283 4.285a.7.7 0 0 0 .984 0l4.284-4.285a.7.7 0 0 0 .006-.983z" transform="translate(-906.592 -575) translate(173.971 285.56)"/>
+    </g>
+</svg>

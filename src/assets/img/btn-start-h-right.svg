@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="208" height="80" viewBox="0 0 208 80">
+    <defs>
+        <linearGradient id="8avf9w8l3b" x2="1" y1=".5" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#18a7f8"/>
+            <stop offset="1" stop-color="#6c38ef"/>
+        </linearGradient>
+        <clipPath id="mvbxu6zkxa">
+            <path fill="none" d="M608.469 252.595a.839.839 0 0 1 .843-.837v-2.5a.84.84 0 0 1-.843-.838v-4.174a.84.84 0 0 1 .843-.837v-2.5a.84.84 0 0 1-.843-.837V235.9a.84.84 0 0 1 .843-.838v-2.5a.84.84 0 0 1-.843-.838v-4.174a.84.84 0 0 1 .843-.838v-2.5a.84.84 0 0 1-.843-.838V219.2a.84.84 0 0 1 .843-.838v-2.5a.84.84 0 0 1-.843-.838v-4.174a.839.839 0 0 1 .843-.837v-2.5a.84.84 0 0 1-.843-.838v-4.165a.84.84 0 0 1 .843-.838v-2.5a.84.84 0 0 1-.843-.837v-4.174a.84.84 0 0 1 .843-.838v-2.5a.84.84 0 0 1-.843-.838v-4.174a.84.84 0 0 1 .843-.838v-.242a5.2 5.2 0 0 1-5.217-5.189H401.311v80h202.783a5.2 5.2 0 0 1 4.374-5.116z" transform="translate(-401.311 -179.545)"/>
+        </clipPath>
+    </defs>
+    <g clip-path="url(#mvbxu6zkxa)">
+        <rect width="263.787" height="79.999" fill="url(#8avf9w8l3b)" rx="7.404" transform="translate(0 0)"/>
+    </g>
+    <text fill="#fff" font-family="Montserrat-Medium, Montserrat" font-size="35px" font-weight="500" letter-spacing="0.03em" transform="translate(45.821 62.606)">
+        <tspan x="0" y="0">START</tspan>
+    </text>
+    <text fill="#fff" font-family="Montserrat-Light, Montserrat" font-size="13px" font-weight="300" letter-spacing="0.09em" transform="translate(104 26.231)">
+        <tspan x="-61.633" y="0">DVISION WORLD</tspan>
+    </text>
+</svg>
