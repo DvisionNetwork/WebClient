@@ -281,6 +281,9 @@ export default {
 							var o = _U.Q(this.fieldsetParentCss+' .field-set .field[name="password1"]');
 							if(this.popupStyle=='signup-register') {
 								o = _U.Q('.Signup .Register .field-set .field[name="password1"]');
+							// This page is for B2B
+							}else if(this.popupStyle=='signup-register2') {
+								o = _U.Q('.Signup .Register2 .field-set .field[name="password1"]');
 							}else if(this.popupStyle=='popup-edit-profile') {
 								o = _U.Q('.modal-mask .edit-profile-info .field-set .field[name="password1"]');
 							}else if(this.popupStyle=='popup-changepwd') {

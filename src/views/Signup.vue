@@ -4,6 +4,8 @@
 			<div class="content-box">
 				<SignupAgree v-if="page=='agree'" />
 				<SignupRegister v-if="page=='register'" />
+				<!-- This page is for B2B -->
+				<SignupRegister2 v-if="page=='register2'" />
 				<SignupConfirm v-if="page=='confirm'" />
 				<SignupIdPhone v-if="page=='idphone'" />
 				<SignupIdResult v-if="page=='idresult'" />
@@ -19,6 +21,7 @@
 <script>
 import SignupAgree from '@/views/Signup.Agree.vue'
 import SignupRegister from '@/views/Signup.Register.vue'
+import SignupRegister2 from '@/views/Signup.Register2.vue'
 import SignupConfirm from '@/views/Signup.Confirm.vue'
 import SignupIdPhone from '@/views/Signup.IdPhone.vue'
 import SignupIdResult from '@/views/Signup.IdResult.vue'
@@ -33,6 +36,7 @@ export default {
 	components: {
 		SignupAgree,
 		SignupRegister,
+		SignupRegister2,
 		SignupConfirm,
 		SignupIdPhone,
 		SignupIdResult,

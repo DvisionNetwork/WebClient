@@ -10,6 +10,8 @@
 ### v.0.7.06
 	- Product View modified (price, remaining, owned)
 	- Move "For Sale" to toggle button.
+	- Open Dvision World for BSC Anniversary
+	- Add register page for B2B world (temp) --> Social Login, Guest Login Should be added
 
 ### v.0.7.05
 	- metamask account check logic added (change event should be fixed to add)
