@@ -7,11 +7,15 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.7.07
+	- Add register page for B2B world (temp) --> Social Login, Guest Login Should be added
+	- Change image for game start screen.
+	- Add 'metamask sign' process : to be updated more
+
 ### v.0.7.06
 	- Product View modified (price, remaining, owned)
 	- Move "For Sale" to toggle button.
 	- Open Dvision World for BSC Anniversary
-	- Add register page for B2B world (temp) --> Social Login, Guest Login Should be added
 
 ### v.0.7.05
 	- metamask account check logic added (change event should be fixed to add)

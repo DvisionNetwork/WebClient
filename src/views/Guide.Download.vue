@@ -7,7 +7,8 @@
 		
 		<div class="btn-box">
 			<div class="Window" @click="onClickDownload('window')">Window Download</div>
-			<div class="Mac" @click="onClickDownload('mac')">Mac OS Download</div>
+			<!-- <div class="Mac" @click="onClickDownload('mac')">Mac OS Download</div> -->
+			<div class="Mac" @click="onClickDownload('mac')">Mac Coming Soon</div>
 		</div>
 	</div>
 </template>
@@ -56,7 +57,8 @@ export default {
 			if(type == 'window') {
 				console.log("window download ");
 				window.open(window['gDVWorldWindowsAppDownloadUrl']);
-			}else if(type == 'mac') {
+			// }else if(type == 'mac') {
+			}else if(type == 'mac not support') {
 				console.log("mac download ");
 				window.open(window['gDVWorldMacAppDownloadUrl']);
 				this.mxShowAlert({msg:this.$t('guide.download.mac-app-warn')});
@@ -116,11 +118,11 @@ export default {
  			background-color: #8b8b8b;
 			@include Set-Font($AppFont, gREm(15), gREm(28), #ffffff);
 			text-align: center;
-			cursor:pointer;
-			@include OnOverTransition();
-			&:hover {
-				background-color: #18a7f8;
-			}
+			// cursor:pointer;
+			// @include OnOverTransition();
+			// &:hover {
+			// 	background-color: #18a7f8;
+			// }
 		}
 	}
 }

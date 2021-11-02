@@ -104,7 +104,7 @@ export default {
 			this.ct2Name = cts.ct2Name;
 		}
 		// nft 721은 1개만 구매
-		if(item.nft=='721' && item.sell_amount > 1) {
+		if(item.category=='721' && item.sell_amount > 1) {
 			item.sell_amount = 1;
 		}
 
@@ -164,7 +164,7 @@ export default {
 			this.itemOwned = item.owner_name;
 			// J = {nft, account, tokenId, fToast }
 			// wAPI.getOwnAmount({
-			// 	nft: item.nft,
+			// 	category: item.category,
 			// 	account: this.mxGetWalletAccount(),
 			// 	tokenId: item.token_id,
 			// 	fToast: this.mxShowToast,
@@ -251,7 +251,7 @@ export default {
 
 								this.approve_data = {
 									type: 'Approval',
-									nft: this.marketItem.nft,
+									category: this.marketItem.category,
 									price: this.marketItem.price * this.buyCount,
 									fToast: this.mxShowToast,
 									network: this.networkName,
@@ -288,7 +288,7 @@ export default {
 
 			this.trade_data = {
 				type: 'Trade',
-				nft: this.marketItem.nft,
+				category: this.marketItem.category,
 				price: this.marketItem.price,
 				tokenId: this.marketItem.token_id,
 				amount: this.buyCount,

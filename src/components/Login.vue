@@ -221,12 +221,10 @@ export default {
 						console.log('[Login] connect() -> Request_Account : resp', resp);
 						if(resp.res_code == 200) {
 							var account = _U.getIfDefined(resp,['data','account']);
+							
 							if(account) {
-								var data = {
-									wallet_addr: account
-								}
+								wAPI.Sign_Account(account, this.reqLogin);
 
-								this.reqLogin(data);
 								return;
 							}
 						}

@@ -88,7 +88,7 @@ export default {
 	data () {
 		return {
 			submitData: null,
-			walletAddr: "0x000", // temp wallet id for B2B members
+			walletAddr: "0xb2baddress", // temp wallet id for B2B members
 			fieldset: {
 				idInfo: {
 					id: {

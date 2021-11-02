@@ -38,7 +38,8 @@
 							>
 						</div>
 						
-						<div class="switch-box">
+						<!-- TODO Fix page number UI, and for sale bug -->
+						<!-- <div class="switch-box">
 							<label class="switch">
 								<input id="forsale" type="checkbox" checked
 									@click="onClickToggle()"
@@ -46,7 +47,7 @@
 								<span class="slider round"></span>
 							</label>
 							<div class="switch-label">For Sale</div>
-						</div>
+						</div> -->
 
 						<div class="order-by-box"
 							@mouseover="showOrderPopup=true"
@@ -276,10 +277,11 @@ export default {
 			},1000)
 		},
 
-		onClickToggle() {
-			console.log("[onClickToggle] forsale changed to : " + document.getElementById('forsale').checked);
-			this.setSearchQuery(1);
-		},
+		// TODO Fix page number UI, and for sale bug
+		// onClickToggle() {
+		// 	console.log("[onClickToggle] forsale changed to : " + document.getElementById('forsale').checked);
+		// 	this.setSearchQuery(1);
+		// },
 
 		onClickOrderSelect(item) {
 			this.currentOrder=item;
@@ -429,7 +431,9 @@ export default {
 				category_2: this.category_2,
 				filter: this.filters,
 				search: this.search,
-				for_sale: document.getElementById('forsale').checked,
+				// TODO Fix page number UI, and for sale bug
+				// for_sale: document.getElementById('forsale').checked,
+				for_sale: true,
 			};
 
 			this.mxSetMarketQuery(data);

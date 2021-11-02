@@ -45,6 +45,31 @@ async checkMetamask() {
 	return network;
 },
 
+async Sign_Account(account, callback) {
+
+	console.log("[WalletAPI] Sign_Account ()");
+
+	const msgToShow = 'Welcome to Dvision World, please sign this message for the user verification. Then you can use market and connect to dvision world after verification.';
+
+	try {
+		const from = account;
+		const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`;
+
+		const sign = await ethereum.request({
+			method: 'personal_sign',
+			params: [msg, from, 'Example password'],
+		});
+
+		var data = {
+			wallet_addr: account
+		}
+
+		callback(data);
+	} catch (err) {
+		console.error(err);
+	}
+},
+
 Request_Account(callback) { //특정 컴퓨터에서 처음 접속한다면 사이트에 대한 접속을 승인해주어야함.
 
 	console.log("[WalletAPI] Request_Account ()");
@@ -197,11 +222,11 @@ async ContractDvi(J) {
 
 	console.log("[WalletAPI] =========== ContractDvi() J:", J);
 
-	var contAddr = this.getContAddr(J.nft);
+	var contAddr = this.getContAddr(J.category);
 	if(!contAddr) {
 		J.callback({
 			res_code:401,
-			msg: 'Unsupported NFT type ['+J.nft+']',
+			msg: 'Unsupported NFT type ['+J.category+']',
 			data: {
 				trHash: null
 			}
@@ -237,19 +262,19 @@ async ContractDvi(J) {
 				if(J.type == 'Approval') {
 					J.fToast(J.type+" of DVI transaction is being processed.");
 				}else{
-					J.fToast(J.type+"-"+J.nft+" of DVI transaction is being processed.");
+					J.fToast(J.type+"-"+J.category+" of DVI transaction is being processed.");
 				}
 				var sendTransactionPromise = null;
 				if(J.type == 'Approval') {
 					sendTransactionPromise = await contract.approve(contAddr, value);
 				}
 				else if(J.type == 'Trade') {
-					if(J.nft=='721'){
+					if(J.category=='721'){
 						console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
 						sendTransactionPromise =
 							await contract.Trade_721dvi(J.tokenId.toString(), value);
 					}
-					else if(J.nft=='1155') {
+					else if(J.category=='1155') {
 						console.log('[WalletAPI] ContractDvi call  contract.Trade_1155dvi("'+J.ownerId+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
 						sendTransactionPromise =
 							await contract.Trade_1155dvi(J.ownerId.toString(), J.tokenId.toString(), value, J.amount);
@@ -258,7 +283,7 @@ async ContractDvi(J) {
 				if(!sendTransactionPromise) {
 					J.callback({
 						res_code:401,
-						msg: "["+J.type+"-"+J.nft+"] Unsupported type of sendTransactionPromise ",
+						msg: "["+J.type+"-"+J.category+"] Unsupported type of sendTransactionPromise ",
 						data: {
 							trHash: null
 						}
@@ -269,28 +294,28 @@ async ContractDvi(J) {
 				var txReceipt = await sendTransactionPromise.wait();
 				if (typeof txReceipt !== 'undefined') {
 					if (txReceipt.status == 1) {
-						console.log('[WalletAPI] ('+J.type+'-'+J.nft+') txReceipt.transactionHash:',txReceipt.transactionHash);
+						console.log('[WalletAPI] ('+J.type+'-'+J.category+') txReceipt.transactionHash:',txReceipt.transactionHash);
 						// if(J.type == 'Approval') {
 						// 	J.fToast(J.type+" of DVI transaction is succeeded.");
 						// }else{
-						// 	J.fToast(J.type+"-"+J.nft+" of DVI transaction is succeeded.");
+						// 	J.fToast(J.type+"-"+J.category+" of DVI transaction is succeeded.");
 						// }
 						ret = txReceipt.transactionHash;
 						msg='success';
 					} else {
 						if(J.type == 'Approval') {
-							msg = "["+J.type+"-"+J.nft+"] is failed";
+							msg = "["+J.type+"-"+J.category+"] is failed";
 						}else{
-							msg = "["+J.type+"-"+J.nft+"] is Reverted";
+							msg = "["+J.type+"-"+J.category+"] is Reverted";
 						}
 						J.fToast(msg)
 					}
 				} else {
-					msg="["+J.type+"-"+J.nft+"] Error on sendTransactionPromise() <br> with no receipt";
+					msg="["+J.type+"-"+J.category+"] Error on sendTransactionPromise() <br> with no receipt";
 					console.error(msg);
 				}
 			} catch (err) {
-				msg="["+J.type+"-"+J.nft+"] Error catched on <br> sendTransactionPromise() <br>"+ err.code;
+				msg="["+J.type+"-"+J.category+"] Error catched on <br> sendTransactionPromise() <br>"+ err.code;
 				// console.error(err,msg);
 				// console.log("===========================================");
 				// console.log(err);
@@ -303,7 +328,7 @@ async ContractDvi(J) {
 				console.log(mm);
 			}
 		}else{
-			msg="["+J.type+"-"+J.nft+"] Error on checking MetaMask ";
+			msg="["+J.type+"-"+J.category+"] Error on checking MetaMask ";
 			console.error(msg);
 		}
 
@@ -345,11 +370,11 @@ async getOwnAmount(J) {
 
 	console.log("[WalletAPI] getOwnAmount()",J);
 
-	if(J.nft=='1155') {
+	if(J.category=='1155') {
 
 		if(!lv_provider) { lv_provider = new ethers.providers.Web3Provider(window.ethereum); }
 
-		var contAddr = this.getContAddr(J.nft);
+		var contAddr = this.getContAddr(J.category);
 		var contract = new ethers.Contract(contAddr, erc1155_ABI, lv_provider);
 
 		console.log("[WalletAPI] call caheckMetamask" );

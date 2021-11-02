@@ -654,7 +654,7 @@ body {
 				width : gREm(40);
 				height: gREm(40);
 				top:gREm(-41);
-				margin-right:gREm(43);
+				margin-right:gREm(20);
 				cursor: pointer;
 				@include OnOverTransition();
 			}
@@ -662,6 +662,7 @@ body {
 				position: absolute;
 				width: gREm(732);
 				height: gREm(467); // gREm(475);
+				margin-left:gREm(50);
 				bottom: 0px;
 				@include SetBgImage(url('./assets/img/game-start-loading-popup-bg.png'));
 			}
@@ -670,7 +671,8 @@ body {
 				margin-top: gREm(151);
 				width: 100%;
 				height: gREm(75);
-				@include Set-Font($AppFont, gREm(30), gREm(38), #ffffff,600);
+				@include Set-Font($AppFont, gREm(30), gREm(38), #3F4A8C,600);
+				text-shadow: 2px 2px 1px rgba(0,0,0,0.4);
 				text-align: center;
 			}
 			.message-foot {
@@ -678,10 +680,11 @@ body {
 				margin-top: gREm(53);
 				width: 100%;
 				height: gREm(33);
-				@include Set-Font($AppFont, gREm(13), gREm(17), #acc3ff);
+				@include Set-Font($AppFont, gREm(13), gREm(17), #ffffff);
 				text-align: center;
+				text-shadow: 2px 2px 1px rgba(0,0,0,0.4);
 				span {
-					color: #ffd80b;
+					color: #14E5FF;
 					cursor: pointer;
 					&:hover {
 						text-decoration-line: underline;
