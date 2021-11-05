@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+    <defs>
+        <style>
+            .cls-2{fill:#fff}
+        </style>
+    </defs>
+    <g id="btn-menu" transform="translate(-680 -33)">
+        <circle id="bg" cx="25" cy="25" r="25" fill="#fff" opacity="0.34" transform="translate(680 33)"/>
+        <g id="menu" transform="translate(693 52)">
+            <g id="Menu_1_" transform="translate(0)">
+                <path id="패스_91" d="M23.25 97.733H.75a.745.745 0 1 1 0-1.49h22.5a.745.745 0 1 1 0 1.49z" class="cls-2" transform="translate(0 -96.243)"/>
+                <path id="패스_92" d="M.75 180.455h22.5a.745.745 0 1 1 0 1.49H.75a.745.745 0 1 1 0-1.49z" class="cls-2" transform="translate(0 -175.2)"/>
+                <path id="패스_93" d="M121.048 264.667h14.9a.745.745 0 1 1 0 1.49h-14.9a.745.745 0 1 1 0-1.49z" class="cls-2" transform="translate(-120.303 -254.157)"/>
+            </g>
+        </g>
+    </g>
+</svg>

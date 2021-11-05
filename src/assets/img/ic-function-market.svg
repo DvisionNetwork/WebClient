@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="30" viewBox="0 0 26 30">
+    <defs>
+        <style>
+            .cls-4{stroke:none}.cls-5{fill:none}
+        </style>
+    </defs>
+    <g id="ic-function-market" transform="translate(-553 -656)">
+        <g id="bg" stroke="#f1f1f1" transform="translate(553 656)">
+            <g id="b" fill="rgba(241,241,241,0.26)">
+                <rect width="26" height="30" class="cls-4" rx="6"/>
+                <rect width="25" height="29" x=".5" y=".5" class="cls-5" rx="5.5"/>
+            </g>
+            <g id="t" fill="#1d1b27">
+                <rect width="26" height="24" class="cls-4" rx="6"/>
+                <rect width="25" height="23" x=".5" y=".5" class="cls-5" rx="5.5"/>
+            </g>
+        </g>
+        <text id="R" fill="#fff" font-family="Montserrat-Regular, Montserrat" font-size="14px" transform="translate(561 673)">
+            <tspan x="0" y="0">R</tspan>
+        </text>
+    </g>
+</svg>

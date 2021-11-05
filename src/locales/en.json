@@ -1,0 +1,332 @@
+{
+	"btn": {
+		"ok": "OK"
+	},
+	"gnb" : {
+		"market_place": "MARKET PLACE",
+        "studio": "STUDIO",
+        "guide": "GUIDE",
+        "news": "NEWS",
+        "help": "HELP",
+		"language": "Language",
+		"language-en": "English",
+		"login": "Login",
+		"signup": "Sign up",
+		"start_now": "START NOW",
+		"mypage": "My Page",
+		"logout": "Logout"
+	},
+	"login" : {
+		"popup": {
+			"welcome-msg": "Welcome Back",
+			"title": "Login To Your Account!",
+			"label-id": "ID",
+			"label-pwd": "Password",
+			"remember-me": "Remember me",
+			"forgot": "Forgot",
+			"btn-login": "LOGIN",
+			"btn-connect": "Connect Metamask",
+			"not-a-member": "Not a member?",
+			"sign-up": "Sign up"
+		}
+	},
+	"popup": {
+		"metamask-chain-not-matched": "Dvision supports Ethereum/BSC now.\nCheck metamask is on Ethereum/BSC mainnet",
+		"metamask-request-error": "Error on request metamask account. Error Code : ",
+		"login-required" : "You need to login to use this service.",
+		"wallet-list-not-found": "The registered wallet list wasn’t found",
+		"wallet-not-registered": "Current wallet address is not registered",
+		"copy-clipboard-complete": "Copied to clipboard",
+		"app-construction-alert" : "Dvision World is on the construction now.",
+		"app-event-not-ready" : "Next Event will be opened soon. Please wait until start of event.",
+		"add-wallet" : {
+			"title":"Add Your Wallet",
+			"btn-name": "Submit",
+			"no-new-wallet-url": "The new wallet address, you're trying to add, does not exist",
+			"error-on-get-wallet-url": "Failed to import the wallet address"
+		},
+		"change-password": {
+			"title": "Change your password",
+			"label-curr-pwd": "Current Password",
+			"label-new-pwd": "New Password",
+			"label-new-pwd-confirm": "Confirm new Password",
+			"place-holder-curr-pwd": "Please enter your current password.",
+			"place-holder-new-pwd": "Please enter new password one more time",
+			"place-holder-new-pwd-confirm": "Please enter new password one more time",
+			"btn-name": "Done",
+			"success-change-password": "Success on changing password",
+			"error-api-change-password": "Failed to change password"
+		},
+		"edit-profile": {
+			"title": "Edit Profile",
+			"btn-name": "OK",
+			"place-holder-pwd": "Please enter your current password.",
+			"place-holder-pwd-confirm": "Please enter the password one more time.",
+			"result-ok":"Your account has been successfully updated.",
+			"error-api-update": "Edit profile is failed"
+		}
+	},
+	"signup" : {
+		"agree": {
+			"title": "Terms and Conditions",
+			"title-desc" : "Join and play in the leading blockchain-based Dvision World without any barries!"
+		},
+		"register": {
+			"title": "Create Account",
+			"id-info-title": "Make an ID / Password",
+			"label-id": "ID",
+			"place-holder-id": "ID can allow 5-20 characters.",
+			"label-pwd": "Password",
+			"place-holder-pwd": "Please enter your password.",
+			"change-pwd-button-name":"Change Password",
+			"label-pwd-confirm": "Confirm Password",
+			"place-holder-pwd-confirm": "Please enter the password one more time.",
+			"id-button-name": "Check if ID is available",
+			"id-duplicated": "Requested ID is already exist",
+			"id-usable": "Requested ID is available",
+			"user-info-title": "Personal Verification",
+			"label-name": "Nickname",
+			"place-holder-name": "Please enter your nickname.",
+			"label-email": "Email",
+			"place-holder-email": "Please enter your email address.",
+			"label-mobile": "Phone Number",
+			"place-holder-mobile": "Phone number should include only digits",
+			"label-country-code": "Country",
+			"place-holder-country-code": "Please select your country code",
+			"label-referral": "Refferral ID (optional)",
+			"place-holder-referral": "Referral ID of who invited you",
+			"wallet-info-title": "Wallet Settings",
+			"wallet-info-desc": "- Please enter the preferred cryptocurrency wallet address when purchasing an item.<br>- Address will be set automatically after metamask connection.<br>- It's more convenient to use the service after logging in to your wallet.",
+			"label-wallet-url": "Wallet Address",
+			"place-holder-wallet-url": "Connect metamask account.",
+			"wallet-url-button-name": "Connect",
+			"email-message-sent": "Certification code is sent to email",
+			"error-msg-id" : "Does not meet ID requirements.",
+			"error-msg-id-check" : "Check if ID is available",
+			"error-msg-pwd" : "Does not meet password requirements.",
+			"error-msg-pwd2" : "Passwords do not match.",
+			"error-msg-email" : "Does not meet email requirements.",
+			"error-msg-mobile" : "Does not meet phone number requirements.",
+			"error-msg-mobile-check" : "Please verify your phone number",
+			"error-msg-mobile-cert-check" : "Please verify your SMS verification code",
+			"error-msg-email-cert-check": "Please verify your email verification code",
+			"error-api-join": "Sign-up is failed",
+			"error-form-join": "Please fill all informations of sign-up form",
+			"error-mobile-number": "Does not meet phone number requirements or need to phone number verification.",
+			"error-on-wallet-url": "Failed to import the wallet address",
+			"icon-id-popup":"only lowercase letters, numbers, <br>or special symbols allowed",
+			"icon-pwd-popup":"Passwords must be 6 to 26 characters and <br>include lowercase letters, numbers, and <br>special characters&#40;&#36;&#64;&#33;&#37;&#42;&#35;&#63;&#38;&#41;."
+		},
+		"confirm": {
+			"title": "Account has successfully been created!",
+			"message": "Congratulations! <br>Now you can have a safe and utmost <br>Metaverse experience in Dvision World."
+		},
+		"btn" : {
+			"home": "HOME",
+			"cancel" : "Cancel",
+			"next" : "Next",
+			"submit": "Done",
+			"all":"Click to see your whole ID",
+			"login":"LOGIN"
+		},
+		"idphone": {
+			"title":"Find your ID",
+			"user-info-title": "Personal Verification",
+			"label-name": "Name",
+			"place-holder-name": "Please enter your name.",
+			"label-mobile": "Phone Number",
+			"place-holder-mobile": "Phone number should include only digits",
+			"mobile-button-name": "Verify",
+			"label-certificate": "Verification Code",
+			"place-holder-certificate": "Please enter the verification code.",
+			"certificate-time":"3:00",
+			"result-id":"Your ID gksk*** has been successfully registered.."
+		},
+		"find-account": {
+			"error-on-find-account": "Failed to find your ID"
+		},
+		"reset-password": {
+			"resetpwd-title":"Reset Password",
+			"error-on-reset-password": "Failed to reset your password",
+			"sent-your-new-password": "Your new password is sent to your email address"
+		},
+		"idresult":{
+			"result-id":"Your ID is"
+		},
+		"idemail": {
+			"title":"Find your ID",
+			"label-name": "Name",
+			"place-holder-name": "Please enter your name.",
+			"label-email": "Email",
+			"place-holder-email": "Please enter your email address."
+		},
+		"resetpwd": {
+			"title":"Chagne your password",
+			"label-now": "Current Password",
+			"place-holder-now": "Please enter your password.",
+			"label-pwd": "New Password",
+			"place-holder-pwd": "Please enter a new password. (Passwords must be 6 to 26 characters and include lowercase letters, numbers, and special characters.)",
+			"label-confirm": "Confirm Password",
+			"place-holder-confirm": "Please enter your new password one more time."
+		}
+	},
+	"game-start": {
+		"title": "The game will start <br>automatically shortly.",
+		"foot-first-line": "If you wait and the game doesn’t start,",
+		"foot-second-line": "Please install the",
+		"foot-second-line-link-text":"Dvision Game Manager",
+		"launching-app-failed": "Launching exe app is failed!!"
+	},
+	"home": {
+		"view-more" : "VIEW MORE",
+		"news-title" : "Press release",
+		"main-visual" : {
+			"title":"<span> Welcome to <br> Dvision Network<span>",
+			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>"
+		},
+		"meta-space" : {
+			"title":"Meta-Space",
+			"desc": "Acquire your own virtual space inside of the Dvision World. <br>All of your wildest dreams and boldest imaginations can <br>be realized in your tailored virtual space."
+		},
+		"meta-city" : {
+			"title":"Meta-City",
+			"desc": "Meta-City is the wider collection of multiple Meta-Spaces. <br>Various pieces of content are provided inside of the Meta- <br>City. In the Dvision World, Meta-City can be owned by <br>anyone who purchases the NFT Land."
+		},
+		"nft-market" : {
+			"title":"NFT Market",
+			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World."
+		}
+	},
+	"market": {
+		"title": "Dvision Market Place",
+		"title-desc": "Search and purchase NFT ITEMS from Dvision World creators <br> with your DVIs and incorporate them into your SPACE.",
+		"search": {
+			"content":"Not found for this search.",
+			"sale": {
+				"forsale":"For Sale",
+				"notforsale":"Not For Sale"
+			},
+			"order": {
+				"newest":"Newest",
+				"oldest":"Oldest",
+				"lower-price":"Lower price",
+				"highest-price":"Highest price",
+				"least-amount":"Least amount",
+				"highest-amount":"Highest amount"
+			}
+		},
+		"level" : {
+			"common":"Common",
+			"advance":"Advance",
+			"rare":"Rare",
+			"unique":"Unique",
+			"unique+alpha":"Unique+α",
+			"legend":"Legend"
+		},
+		"assets" : {
+			"all-assets"    : "All Assets",
+			"avatar"        : "Avatar",
+			"type"          : "Type",
+			"skin"          : "Skin",
+			"eyebrows"      : "Eyebrows",
+			"eye"           : "Eye",
+			"nose"          : "Nose",
+			"mouth"         : "Mouth",
+			"clothes"       : "Clothes",
+			"hair"          : "Hair",
+			"top"           : "Top",
+			"bottom"        : "Bottom",
+			"feet"          : "Feet",
+			"costume"       : "Costume",
+			"accessories"   : "Accessories",
+			"head"          : "Head",
+			"face"          : "Face",
+			"neck"          : "Neck",
+			"hand"          : "Hand",
+			"back"          : "Back",
+			"jewelry"       : "Jewelry",
+			"space"         : "Space",
+			"architecture"  : "Architecture",
+			"material"      : "Material",
+			"interial"      : "Interial",
+			"outdoor"       : "Outdoor",
+			"ride"          : "Ride",
+			"background"    : "Background",
+			"art"			: "Art",
+			"filter"        : "Filter",
+			"functional"    : "Functional",
+			"forsale"		: "For Sale",
+			"level"         : "Level",
+			"common"        : "Common",
+			"advance"       : "Advance",
+			"rare"          : "Rare",
+			"unique"        : "Unique",
+			"unique+α"       : "Unique+α",
+			"legend"        : "Legend"
+		},
+		"land" : {
+			"owner": "Owner",
+			"price": "Price",
+			"size" : "Size",
+			"land_ct_all" : "All",
+			"land_ct_0" : "Public Building",
+			"land_ct_1" : "Building for sale",
+			"land_ct_2" : "Road",
+			"land_ct_3" : "Station",
+			"land_ct_-1" : "Center"
+		},
+		"detail" : {
+			"owned": "OWNED",
+			"description": "Description",
+			"price": "Price",
+			"total": "Total",
+			"left": "Left",
+			"owner": "Owner",
+			"buy-now": "Buy now",
+			"alert-no-left-item": "There are not enough items to buy.",
+			"alert-no-selected-count": "Please specify the purchase quantity.",
+			"alert-no-prepending-id": "Can't make a purchase. (no prepending ID).",
+			"alert-no-unsupported-nft": "Not supported NFT.",
+			"alert-success-on-buy": "Purchase was successful.",
+			"alert-failed-on-buy": "Failed to purchase.",
+			"alert-approve-msg": "Approve the DVI expenditure in your Metamask Wallet to complete the purchase.",
+			"alert-approve-button": "APPROVE",
+			"alert-trade-msg": "DVI expenditure approval has been completed. Press the Trade button to complete the transaction.",
+			"alert-trade-button": "TRADE",
+			"alert-no-wallet-account": "Invalid metamask wallet account",
+			"alert-same-account": "Buyer and seller have same account",
+			"alert-network-not-matched": "Your metamask in not on network item registered.\nChange your network.",
+			"alert-address-not-matched": "Current active metamask account is not your wallet address."
+
+		}
+	},
+	"guide": {
+		"title": "Welcome to Dvision!<br>A place where imagination becomes reality.",
+		"tab": {
+			"guide"	: "Guide",
+			"creator": "Creator",
+			"wallet": "Wallet",
+			"download": "Download",
+			"dvi": "DVI"
+		},
+		"download" :{
+			"mac-app-warn": "After download and install the appication on Mac,\nYou can access BSC Festival with launch that app.\n(Not supported starting from web page.)"
+		}
+	},
+	"news": {
+		"title": "Dvision World",
+		"sub-title":"See the news for yourself!",
+		"categoryname-1" : "News",
+		"categoryname-2" : "Update",
+		"categoryname-3" : "Notice"
+	},
+	"studio": {
+		"title": "Dvision World<br> ------ Studio ----- "
+	},
+	"foot" : {
+		"whitepaper-kr" : "Whitepaper KR",
+		"whitepaper-en" : "Whitepaper EN",
+		"docs": "Docs",
+		"contact": "Contact"
+	}
+}

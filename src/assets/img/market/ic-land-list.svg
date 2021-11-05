@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="19" height="18.998">
+    <defs>
+        <style>
+            .cls-1{fill:#fff}
+        </style>
+    </defs>
+    <g id="ic-land-list" transform="translate(-6.001 -80.002)">
+        <path id="사각형_24" data-name="사각형 24" class="cls-1" transform="translate(6.001 80.002)" d="M0 0h8v8H0z"/>
+        <path id="사각형_25" data-name="사각형 25" class="cls-1" transform="translate(17.001 80.002)" d="M0 0h8v8H0z"/>
+        <path id="사각형_26" data-name="사각형 26" class="cls-1" transform="translate(17.001 91)" d="M0 0h8v8H0z"/>
+        <path id="사각형_27" data-name="사각형 27" class="cls-1" transform="translate(6.001 91)" d="M0 0h8v8H0z"/>
+    </g>
+</svg>

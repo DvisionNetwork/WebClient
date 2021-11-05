@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="38" height="38" viewBox="0 0 38 38">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".921" x2="0" y1=".086" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#90ddfc"/>
+            <stop offset=".628" stop-color="#83b6f7"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-2" x1=".5" x2=".5" y1="-.141" y2=".676" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#86bdfa"/>
+            <stop offset=".005" stop-color="#98eafe"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-3" x1=".5" x2=".5" y1="-5.387" y2="-1.359" gradientUnits="objectBoundingBox">
+            <stop offset=".005" stop-color="#86bdfa"/>
+            <stop offset="1" stop-color="#738be5"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-4" x1=".5" x2=".5" y1="-10.632" y2="5.975" xlink:href="#linear-gradient-3"/>
+        <linearGradient id="linear-gradient-6" x1=".279" x2=".793" y1=".212" y2=".797" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#8ed6fb"/>
+            <stop offset="1" stop-color="#8bcffa"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-7" x1=".5" x2=".5" y1="-6.421" y2="-.373" xlink:href="#linear-gradient-3"/>
+        <linearGradient id="linear-gradient-9" x2="1" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#8ed6fc"/>
+            <stop offset="1" stop-color="#8cd3fb"/>
+        </linearGradient>
+        <style>
+            .cls-5{fill:url(#linear-gradient-4)}.cls-7{fill:url(#linear-gradient-7)}
+        </style>
+    </defs>
+    <g id="ic-creator" transform="translate(-604.472 -575)">
+        <path id="패스_107" fill="url(#linear-gradient)" d="M441.051 305.37a.7.7 0 0 1-.7-.7 8.493 8.493 0 0 1 8.483-8.484.7.7 0 0 1 0 1.391 7.1 7.1 0 0 0-7.093 7.093.7.7 0 0 1-.69.7z" transform="translate(174.463 287.884)"/>
+        <path id="패스_108" fill="url(#linear-gradient-2)" d="M456.112 296.363a10.822 10.822 0 0 0-8.193-3.161 11.459 11.459 0 0 0-10.564 11.265 11.582 11.582 0 0 0 3.294 8.359 4.85 4.85 0 0 1 1.344 3.376v4.556a.684.684 0 0 0 .672.7h11.573a.684.684 0 0 0 .673-.7V316.2a4.767 4.767 0 0 1 1.305-3.34 11.748 11.748 0 0 0-.1-16.5zm-2.546 19.837v.681h-10.23v-1.79h10.23zm0 3.859h-10.23v-1.79h10.23zm1.709-8.192a5.81 5.81 0 0 0-1.206 1.835h-11.245a6.046 6.046 0 0 0-1.23-1.868 10.18 10.18 0 0 1-2.9-7.347 10.072 10.072 0 0 1 9.285-9.9 9.5 9.5 0 0 1 7.2 2.777 10.327 10.327 0 0 1 .091 14.5z" transform="translate(174.744 287.208)"/>
+        <path id="패스_109" fill="url(#linear-gradient-3)" d="M448.839 325.812a5.041 5.041 0 0 1-5.036-5.035.7.7 0 0 1 .695-.7h8.681a.7.7 0 0 1 .7.7 5.04 5.04 0 0 1-5.04 5.035zm-3.579-4.339a3.646 3.646 0 0 0 7.157 0z" transform="translate(174.35 287.188)"/>
+        <path id="패스_110" d="M465.807 305.38h-3.432a.7.7 0 0 1 0-1.39h3.432a.7.7 0 1 1 0 1.39z" class="cls-5" transform="translate(173.969 287.739)"/>
+        <path id="패스_111" d="M434.855 305.38h-3.432a.7.7 0 1 1 0-1.39h3.432a.7.7 0 0 1 0 1.39z" class="cls-5" transform="translate(174.744 287.739)"/>
+        <path id="패스_112" fill="url(#linear-gradient-6)" d="M458.346 295.65a.7.7 0 0 1-.492-1.187l2.426-2.427a.7.7 0 1 1 .983.984l-2.426 2.426a.693.693 0 0 1-.491.204z" transform="translate(173.969 288.203)"/>
+        <path id="패스_113" d="M436.459 317.537a.7.7 0 0 1-.492-1.187l2.426-2.426a.7.7 0 0 1 .983.983l-2.426 2.426a.69.69 0 0 1-.491.204z" class="cls-7" transform="translate(174.744 287.427)"/>
+        <path id="패스_114" d="M460.772 317.537a.694.694 0 0 1-.492-.2l-2.426-2.426a.7.7 0 1 1 .983-.983l2.426 2.426a.7.7 0 0 1-.491 1.187z" class="cls-7" transform="translate(173.969 287.427)"/>
+        <path id="패스_115" fill="url(#linear-gradient-9)" d="M438.885 295.65a.694.694 0 0 1-.492-.2l-2.426-2.426a.7.7 0 0 1 .983-.984l2.426 2.427a.7.7 0 0 1-.491 1.187z" transform="translate(174.744 288.203)"/>
+        <path id="패스_116" fill="#9cefff" d="M448.615 291.62a.7.7 0 0 1-.695-.7v-3.432a.695.695 0 1 1 1.39 0v3.432a.694.694 0 0 1-.695.7z" transform="translate(174.356 288.203)"/>
+    </g>
+</svg>
