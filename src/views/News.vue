@@ -145,7 +145,7 @@ export default {
 			if(!page || page == 0) page =1;
 
 			var data = {
-				type : 1, // footer : main 화면 아래
+				type : 3, // 0: All, 1: footer, 2: popuup, 3: others
 				page: page,
 				count: _U.getIfDefined(this.newsInfo,'cpp') > 0 ? this.newsInfo.cpp : gConfig.news_count_per_page
 			};

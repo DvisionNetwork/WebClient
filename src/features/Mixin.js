@@ -400,27 +400,13 @@ var Mixin = {
 			var userInfo = this.$cookies.get('userInfo');
 			// console.log('----- mxGameStart() ', userInfo);
 
-			if(!_U.isDefined(userInfo,'id') ) {
+			if(!_U.isDefined(userInfo,'id') || userInfo.id == '') {
 				this.$store.dispatch('showLoginPopup',true);
 				// this.mxShowAlert({msg:this.$t('popup.login-required')});
 				return;
 			}
 
-			// this.mxShowToast(this.$t('popup.app-event-not-ready'));
-			// return;
-
-			// TODO: temp link to luniverse partner's day
 			this.mxShowGameStartLoading();
-			// var os = this.osCheck();
-
-			// if(os == 'MacOS') {
-			// 	// Mac App
-			// } else if(os == 'Windows') {
-			// 	window.open('dvisionnetwork://');
-			// } else {
-			// 	// Mobile App
-			// }
-			// return;
 
 			var data = {
 				wallet_addr: userInfo.wallet_addr,

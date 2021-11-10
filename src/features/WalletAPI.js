@@ -30,8 +30,6 @@ async checkMetamask() {
 			}else if(chainId === bscAddr.Network) {
 				// console.log("BSC Network matched");
 				network = 'BSC';
-			}else {
-				network = 'OTHER';
 			}
 		}
 		catch(err) {

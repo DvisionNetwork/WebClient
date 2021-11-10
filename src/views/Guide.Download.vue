@@ -8,6 +8,7 @@
 		<div class="btn-box">
 			<div class="Window" @click="onClickDownload('window')">Window Download</div>
 			<!-- <div class="Mac" @click="onClickDownload('mac')">Mac OS Download</div> -->
+			<div class="Android" @click="onClickDownload('android')">Android Download</div>
 			<div class="Mac" @click="onClickDownload('mac')">Mac Coming Soon</div>
 		</div>
 	</div>
@@ -57,6 +58,9 @@ export default {
 			if(type == 'window') {
 				console.log("window download ");
 				window.open(window['gDVWorldWindowsAppDownloadUrl']);
+			}else if(type == 'android') {
+				console.log("android");
+				window.open('https://play.google.com/store/apps/details?id=com.DvisionNetwork.DvisionWorld&hl=ko&gl=US');
 			// }else if(type == 'mac') {
 			}else if(type == 'mac not support') {
 				console.log("mac download ");
@@ -97,6 +101,21 @@ export default {
 		@include FLEX(space-between, center);
 		.Window{
 			@include FLEX(center, center);
+			width:gREm(184);
+			height: gREm(40);
+			border-radius: 100px;
+ 			background-color: #8b8b8b;
+			@include Set-Font($AppFont, gREm(15), gREm(28), #ffffff);
+			text-align: center;
+			cursor:pointer;
+			@include OnOverTransition();
+			&:hover {
+				background-color: #18a7f8;
+			}
+		}
+		.Android{
+			@include FLEX(center, center);
+			margin-left:gREm(24);
 			width:gREm(184);
 			height: gREm(40);
 			border-radius: 100px;
@@ -157,6 +176,22 @@ export default {
 				background-color: #18a7f8;
 			}
 		}
+		.Android{
+			@include FLEX(center, center);
+			margin-left:gREm(24);
+			width:gREm(184);
+			height: gREm(40);
+			border-radius: 100px;
+ 			background-color: #8b8b8b;
+			@include Set-Font($AppFont, gREm(15), gREm(28), #ffffff);
+			text-align: center;
+
+			cursor:pointer;
+			@include OnOverTransition();
+			&:hover {
+				background-color: #18a7f8;
+			}
+		}
 		.Mac{
 			@include FLEX(center, center);
 			margin-left:gREm(24);
@@ -177,6 +212,10 @@ export default {
 		@include FLEXV(space-between, center);
 		.Window {
 			margin-top: gREm(20);
+		}
+		.Android {
+			margin-top: gREm(20);
+			margin-left:gREm(0);
 		}
 		.Mac {
 			margin-top: gREm(20);

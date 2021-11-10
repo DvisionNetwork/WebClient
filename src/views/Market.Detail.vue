@@ -446,76 +446,76 @@ export default {
 			}
 
 			wAPI.checkMetamask().then((rv)=>{
-				if(rv!='NONE') {
-					wAPI.Request_Account((resp) => {
-						// console.log('[Login] connect() -> Request_Account : resp', resp);
+				wAPI.Request_Account((resp) => {
+					// console.log('[Login] connect() -> Request_Account : resp', resp);
 
-						if(resp.res_code == 200) {
-							var curActiveAccount = _U.getIfDefined(resp,['data','account']);
+					if(resp.res_code == 200) {
+						var curActiveAccount = _U.getIfDefined(resp,['data','account']);
 
-							if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
-								this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
-							}else{
-								// console.log("Matched address");
+						if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
+							this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
+						}else{
+							// console.log("Matched address");
 
-								if(this.networkName != gConfig.getNetwork())
-								{
-									this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
-									this.mxCloseLoading();
-									return;
-								}
-
-								// TODO: Bug Fix needed
-								var buyer = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
-
-								if(buyer == undefined || buyer == null || buyer == '')
-								{
-									this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
-									this.mxCloseLoading();
-									return;
-								}
-
-								var seller = this.marketItem.owner_id;
-
-								if(buyer == seller)
-								{
-									this.mxShowToast(this.$t('market.detail.alert-same-account'))
-									this.mxCloseLoading();
-									return;
-								}
-
-								this.mxShowLoading('inf');
-
-								if(this.buyCount <= 0) {
-									this.mxShowToast(this.$t('market.detail.alert-no-selected-count'))
-									this.mxCloseLoading();
-									return;
-								}
-
-								this.approve_data = {
-									type: 'Approval',
-									category: this.marketItem.category,
-									price: this.marketItem.price * this.buyCount,
-									fToast: this.mxShowToast,
-									network: this.networkName,
-									callback: this.onApproveDvi
-								};
-
+							console.log(this.networkName);
+							console.log(gConfig.getNetwork());
+							if(this.networkName != gConfig.getNetwork())
+							{
+								this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
 								this.mxCloseLoading();
-								this.mxShowAlert({
-									msg:this.$t('market.detail.alert-approve-msg'),
-									btn:this.$t('market.detail.alert-approve-button'),
-									callback: this.onCallbackApprovePopup
-								});
+								return;
 							}
 
-							return;
+							// TODO: Bug Fix needed
+							var buyer = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+							if(buyer == undefined || buyer == null || buyer == '')
+							{
+								this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							var seller = this.marketItem.owner_id;
+
+							if(buyer == seller)
+							{
+								this.mxShowToast(this.$t('market.detail.alert-same-account'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							this.mxShowLoading('inf');
+
+							if(this.buyCount <= 0) {
+								this.mxShowToast(this.$t('market.detail.alert-no-selected-count'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							this.approve_data = {
+								type: 'Approval',
+								category: this.marketItem.category,
+								price: this.marketItem.price * this.buyCount,
+								fToast: this.mxShowToast,
+								network: this.networkName,
+								callback: this.onApproveDvi
+							};
+
+							this.mxCloseLoading();
+							this.mxShowAlert({
+								msg:this.$t('market.detail.alert-approve-msg'),
+								btn:this.$t('market.detail.alert-approve-button'),
+								callback: this.onCallbackApprovePopup
+							});
 						}
 
-						// console.log("Error on get wallet url", resp);
-						this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
-					});
-				}
+						return;
+					}
+
+					// console.log("Error on get wallet url", resp);
+					this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
+				});
 			});
 		},
 

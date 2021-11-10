@@ -6,6 +6,11 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.02
+	- Login network check bug fixed
+	- Check empty id of userInfo for world start
+	- News type(=3) added
+
 ### v.0.8.01
 	- Add register page for B2B world (temp) --> Social Login, Guest Login Should be added
 	- Change image for game start screen.
@@ -13,6 +18,7 @@
 	- DWorld Open
 	- Separate "BSC" market tab
 	- (Temp) Set max 10 pages (to be updated)
+	- Add "forgot ID, PWD"
 
 ### v.0.7.06
 	- Product View modified (price, remaining, owned)
