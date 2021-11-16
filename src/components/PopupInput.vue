@@ -750,5 +750,32 @@ export default {
 			}
 		}
 	}
+	@include media-max($media_small) { // 768
+	.field-set[popup-style="signup-register"] {
+		width:100%;
+		height: auto;
+		.label {
+			// width: gREm(109+50);
+			width: auto;
+			height: gREm(30);
+			@include Set-Font($AppFont, gREm(15), gREm(30), #1d1f2a,300);
+		}
+		.field-box-wrap {
+			width: gREm(300);
+			height: gREm(30 + 11 + 2);
+			.field-box {
+				@include FLEX(space-between, center);
+				width: gREm(300);
+				height: gREm(30);
+				padding-left: gREm(20);
+				.field {
+					width: gREm(550);
+				}
+				.field::placeholder {
+					color: transparent;
+				}
+			}
+		}
+	}}
 
 </style>

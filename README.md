@@ -10,6 +10,7 @@
 	- Login network check bug fixed
 	- Check empty id of userInfo for world start
 	- News type(=3) added
+	- CSS Style (Register Mobile Page)
 
 ### v.0.8.01
 	- Add register page for B2B world (temp) --> Social Login, Guest Login Should be added

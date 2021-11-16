@@ -14,7 +14,7 @@
 				<div class="id-info field-set-box">
 					<div class="title">{{$t("signup.register.id-info-title")}}</div>
 					<PopupInput
-						:popupStyle="'signup-register2'"
+						:popupStyle="'signup-register'"
 						v-for="field in fieldset.idInfo"
 						:key="field.name"
 						:field="field"
@@ -372,4 +372,18 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) { // 768
+.Register2 {
+	@include FLEXV(center, center);
+	width: 100vw;
+	min-width: 100vw;
+	flex-wrap: wrap;
+	height: auto;
+	& * {
+		color: black;
+	}
+	padding-bottom: gREm(132);
+}}
+
 </style>
