@@ -194,8 +194,14 @@ prependData(J) {
 	});
 },
 
-getContAddr(nft) {
-	var addr = gConfig.wlt.getAddr();
+getContAddr(nft, network) {
+	var addr;
+	if (network == "ETH") {
+		addr = gConfig.wlt.getAddr();
+	} else if (network == "BSC") {
+		addr = gConfig.wlt.getBscAddr();
+	}
+
 	var contAddr = null;
 	if(nft=='721') {
 		contAddr = addr.Contract721Address;
@@ -205,8 +211,14 @@ getContAddr(nft) {
 	}
 	return contAddr;
 },
-getContract(type) {
-	var addr = gConfig.wlt.getAddr();
+getContract(type, network) {
+	var addr;
+	if (network == "ETH") {
+		addr = gConfig.wlt.getAddr();
+	} else if (network == "BSC") {
+		addr = gConfig.wlt.getBscAddr();
+	}
+
 	var contract = null;
 	if(type == 'Approval') {
 		contract = new ethers.Contract(addr.TokenAddress, erc20_ABI, lv_signer);
@@ -220,9 +232,9 @@ getContract(type) {
 // J = { type:Approval/Trade, nft, price, [tokenId,] [ownerId, amount,] callback } // tokenId for trade, ownerId & amount trade-1155
 async ContractDvi(J) {
 
-	// console.log("[WalletAPI] =========== ContractDvi() J:", J);
+	console.log("[WalletAPI] =========== ContractDvi() J:", J);
 
-	var contAddr = this.getContAddr(J.category);
+	var contAddr = this.getContAddr(J.category, J.network);
 	if(!contAddr) {
 		J.callback({
 			res_code:401,
@@ -237,7 +249,7 @@ async ContractDvi(J) {
 	if(!lv_provider) { lv_provider = new ethers.providers.Web3Provider(window.ethereum); }
 	if(!lv_signer) { lv_signer = lv_provider.getSigner(); }
 
-	var contract = this.getContract(J.type);
+	var contract = this.getContract(J.type, J.network);
 	if(!contract) {
 		J.callback({
 			res_code:401,
@@ -270,12 +282,12 @@ async ContractDvi(J) {
 				}
 				else if(J.type == 'Trade') {
 					if(J.category=='721'){
-						// console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
+						console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
 						sendTransactionPromise =
 							await contract.Trade_721dvi(J.tokenId.toString(), value);
 					}
 					else if(J.category=='1155') {
-						// console.log('[WalletAPI] ContractDvi call  contract.Trade_1155dvi("'+J.ownerId+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
+						console.log('[WalletAPI] ContractDvi call  contract.Trade_1155dvi("'+J.ownerId+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
 						sendTransactionPromise =
 							await contract.Trade_1155dvi(J.ownerId.toString(), J.tokenId.toString(), value, J.amount);
 					}
@@ -374,7 +386,7 @@ async getOwnAmount(J) {
 
 		if(!lv_provider) { lv_provider = new ethers.providers.Web3Provider(window.ethereum); }
 
-		var contAddr = this.getContAddr(J.category);
+		var contAddr = this.getContAddr(J.category, J.network);
 		var contract = new ethers.Contract(contAddr, erc1155_ABI, lv_provider);
 
 		// console.log("[WalletAPI] call caheckMetamask" );

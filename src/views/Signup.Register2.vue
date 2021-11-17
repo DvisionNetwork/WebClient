@@ -14,7 +14,7 @@
 				<div class="id-info field-set-box">
 					<div class="title">{{$t("signup.register.id-info-title")}}</div>
 					<PopupInput
-						:popupStyle="'signup-register'"
+						:popupStyle="'signup-register2'"
 						v-for="field in fieldset.idInfo"
 						:key="field.name"
 						:field="field"
@@ -93,7 +93,7 @@ export default {
 				idInfo: {
 					id: {
 						name: 'id',
-						buttonName: this.$t('signup.register.id-button-name'),
+						buttonName: this.$t('signup.register.id-button-name-mobile'),
 						buttonDimmed: true,
 						checked:false,
 						label: this.$t('signup.register.label-id'),

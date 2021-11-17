@@ -82,6 +82,7 @@
 			"label-pwd-confirm": "Confirm Password",
 			"place-holder-pwd-confirm": "Please enter the password one more time.",
 			"id-button-name": "Check if ID is available",
+			"id-button-name-mobile": "Check",
 			"id-duplicated": "Requested ID is already exist",
 			"id-usable": "Requested ID is available",
 			"user-info-title": "Personal Verification",

@@ -76,8 +76,8 @@ export default {
 					imgType: 'meta-city'
 				},
 				{
-					title: this.$t('home.category-market.title'),
-					description: this.$t('home.category-market.desc'),
+					title: this.$t('home.nft-market.title'),
+					description: this.$t('home.nft-market.desc'),
 					imgType: 'nft-market'
 				},
 			],

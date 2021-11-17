@@ -776,6 +776,51 @@ export default {
 				}
 			}
 		}
+	}
+	.field-set[popup-style="signup-register2"] {
+		width:100%;
+		height: auto;
+		.label {
+			// width: gREm(109+50);
+			width: auto;
+			height: gREm(30);
+			@include Set-Font($AppFont, gREm(15), gREm(30), #1d1f2a,300);
+		}
+		.field-box-wrap {
+			width: gREm(300);
+			height: gREm(30 + 11 + 2);
+			.field-box {
+				@include FLEX(space-between, center);
+				width: gREm(300);
+				height: gREm(30);
+				padding-left: gREm(20);
+				.field {
+					width: gREm(550);
+				}
+				.field::placeholder {
+					color: transparent;
+				}
+			}
+		}
+
+		.field-right {
+
+			.field-error {
+				width: auto;
+				height: gREm(14);
+				@include Set-Font($AppFont, gREm(11), gREm(14), #f63e3e);
+				&[name="id"] {
+					width: gREm(80);
+					height: gREm(28);
+					white-space: normal;
+				}
+				&[name="mobile"], &[name="password1"] {
+					width: gREm(150);
+					height: gREm(28);
+					white-space: normal;
+				}
+			}
+		}
 	}}
 
 </style>
