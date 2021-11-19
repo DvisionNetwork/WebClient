@@ -511,7 +511,7 @@ export default {
 			if(page < 1) page = 1;
 			if(page > totalPages) page = totalPages;
 
-			console.log("[Market.Land.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
+			// console.log("[Market.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
 
 			this.setSearchQuery(page);
 		},

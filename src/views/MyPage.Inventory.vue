@@ -19,7 +19,12 @@
 					</div>
 					<div class="page-box">
 						<div class="page-wrap" v-if="pages && pages.length > 1">
-							<div v-if="!firstPageGroup" class="arrow-left"></div>
+							<div class="arrow-left"
+								:active="(firstPageGroup ? 'off' : 'on')"
+								@click="onClickPageArrow('left')"
+							>
+								<div class="icon"></div>
+							</div>
 							<div class="page"
 								v-for="(page,idx) in pages"
 								:key="page"
@@ -28,7 +33,10 @@
 							>
 								{{page}}
 							</div>
-							<div v-if="!lastPageGroup" class="arrow-right">
+							<div class="arrow-right"
+								:active="(lastPageGroup ? 'off' : 'on')"
+								@click="onClickPageArrow('right')"
+							>
 								<div class="icon"></div>
 							</div>
 						</div>
@@ -240,20 +248,41 @@ export default {
 
 		setPages() {
 
-			var pno_p_grp = gConfig.myItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = 1;
+			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
+			var pgrStartPageNo = Math.floor((this.myItems.page -1) / pno_p_grp)*pno_p_grp +1;
 
 			var totalPages = Math.ceil(this.myItems.total/this.myItems.cpp);
-			for(var i=0; i< totalPages; i++) {
+			this.pages = []; // 초기화 해 줄 것.
+			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
 				this.pages[i] = i + pgrStartPageNo;
 			}
 
 			this.currentPage = this.myItems.page;
-			this.firstPageGroup= true;
-			this.lastPageGroup = true;
-
+			this.firstPageGroup= pgrStartPageNo < pno_p_grp ? true: false;
+			this.lastPageGroup = this.currentPage + pno_p_grp > totalPages ? true : false;
 		},
+
 		onClickPage(page) {
+			this.setMyItemQuery(page);
+		},		
+
+		onClickPageArrow(leftRight) {
+
+			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
+			var pgrStartPageNo = Math.floor((this.myItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var page = 1;
+			if(leftRight == 'right') {
+				page = pgrStartPageNo + pno_p_grp;
+			}else if(leftRight == 'left'){
+				page = pgrStartPageNo - pno_p_grp;
+			}
+
+			var totalPages = Math.ceil(this.myItems.total/this.myItems.cpp);
+			if(page < 1) page = 1;
+			if(page > totalPages) page = totalPages;
+
+			// console.log("[MyPage.Inventory.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
+
 			this.setMyItemQuery(page);
 		},
 
@@ -419,6 +448,7 @@ export default {
 							}
 						}
 						.page {
+							@include OnOverTransition();
 							width: gREm(44);
 							cursor: pointer;
 							background-color: transparent;
@@ -427,6 +457,22 @@ export default {
 							&[active="on"] {
 								background-color: #f7f7f7;
 								color: #201360;
+								@include OnOverTransition-Off();
+							}
+						}
+
+						.arrow-left {
+						@include OnOverTransitionX-L();
+						&[active="off"] {
+							visibility: hidden;
+							z-index: -1;
+							}
+						}
+						.arrow-right {
+							@include OnOverTransitionX-R();
+							&[active="off"] {
+								visibility: hidden;
+								z-index: -1;
 							}
 						}
 
