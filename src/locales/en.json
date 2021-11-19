@@ -3,7 +3,7 @@
 		"ok": "OK"
 	},
 	"gnb" : {
-		"market_place": "MARKET PLACE",
+		"market_place": "MARKETPLACE",
         "studio": "STUDIO",
         "guide": "GUIDE",
         "news": "NEWS",
@@ -199,7 +199,7 @@
 		}
 	},
 	"market": {
-		"title": "Dvision Market Place",
+		"title": "Dvision Marketplace",
 		"title-desc": "Search and purchase NFT ITEMS from Dvision World creators <br> with your DVIs and incorporate them into your SPACE.",
 		"search": {
 			"content":"Not found for this search.",
