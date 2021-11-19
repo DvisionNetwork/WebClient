@@ -6,6 +6,10 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.03
+	- Add paging for market
+	- Add "selling" function for owned item
+
 ### v.0.8.02
 	- Login network check bug fixed
 	- Check empty id of userInfo for world start

@@ -94,7 +94,12 @@
 						</div>
 						<div class="page-box">
 							<div class="page-wrap" v-if="pages && pages.length > 1">
-								<div v-if="!firstPageGroup" class="arrow-left"></div>
+								<div class="arrow-left"
+									:active="(firstPageGroup ? 'off' : 'on')"
+									@click="onClickPageArrow('left')"
+								>
+									<div class="icon"></div>
+								</div>
 								<div class="page"
 									v-for="(page,idx) in pages"
 									:key="page"
@@ -103,7 +108,10 @@
 								>
 									{{page}}
 								</div>
-								<div v-if="!lastPageGroup" class="arrow-right">
+								<div class="arrow-right"
+									:active="(lastPageGroup ? 'off' : 'on')"
+									@click="onClickPageArrow('right')"
+								>
 									<div class="icon"></div>
 								</div>
 							</div>
@@ -471,20 +479,40 @@ export default {
 		setPages() {
 
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = 1;
+			var pgrStartPageNo = Math.floor((this.marketItems.page -1) / pno_p_grp)*pno_p_grp +1;
 
 			var totalPages = Math.ceil(this.marketItems.total/this.marketItems.cpp);
 			this.pages = []; // 초기화 해 줄 것.
-			for(var i=0; i< totalPages; i++) {
+			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
 				this.pages[i] = i + pgrStartPageNo;
 			}
 
 			this.currentPage = this.marketItems.page;
-			this.firstPageGroup= true;
-			this.lastPageGroup = true;
-
+			this.firstPageGroup= pgrStartPageNo < pno_p_grp ? true: false;
+			this.lastPageGroup = this.currentPage + pno_p_grp > totalPages ? true : false;
 		},
+
 		onClickPage(page) {
+			this.setSearchQuery(page);
+		},		
+
+		onClickPageArrow(leftRight) {
+
+			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
+			var pgrStartPageNo = Math.floor((this.marketItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var page = 1;
+			if(leftRight == 'right') {
+				page = pgrStartPageNo + pno_p_grp;
+			}else if(leftRight == 'left'){
+				page = pgrStartPageNo - pno_p_grp;
+			}
+
+			var totalPages = Math.ceil(this.marketItems.total/this.marketItems.cpp);
+			if(page < 1) page = 1;
+			if(page > totalPages) page = totalPages;
+
+			console.log("[Market.Land.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
+
 			this.setSearchQuery(page);
 		},
 
@@ -520,14 +548,14 @@ export default {
 
 		callMarketItems(query) {
 
-			// console.log("[Market] callMarketItems() query:", query);
+			//console.log("[Market] callMarketItems() query:", query);
 
 			this.mxShowLoading();
 			_U.callPost({
 				url:gConfig.market_item_list,
 				data: query,
 				callback: (resp) =>{
-					// console.log("[Market] callMarketItems()-> resp ", resp);
+					//console.log("[Market] callMarketItems()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var total = _U.getIfDefined(resp,['data','total']);
 					if(!(rows && rows.length > 0)) {
@@ -536,7 +564,6 @@ export default {
 						this.mxSetMarketItems({total:0, page:0, cpp: 0, list:[]});	 // 빈 뉴스
 						return;
 					}
-					if(total > 120) total = 120;
 					this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
 					this.mxCloseLoading();
 				}
@@ -852,6 +879,7 @@ export default {
 							}
 						}
 						.page {
+							@include OnOverTransition();
 							width: gREm(44);
 							cursor: pointer;
 							background-color: transparent;
@@ -860,6 +888,21 @@ export default {
 							&[active="on"] {
 								background-color: #f7f7f7;
 								color: #201360;
+								@include OnOverTransition-Off();
+							}
+						}
+						.arrow-left {
+						@include OnOverTransitionX-L();
+						&[active="off"] {
+							visibility: hidden;
+							z-index: -1;
+							}
+						}
+						.arrow-right {
+							@include OnOverTransitionX-R();
+							&[active="off"] {
+								visibility: hidden;
+								z-index: -1;
 							}
 						}
 

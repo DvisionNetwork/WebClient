@@ -288,7 +288,7 @@ export default {
 			this.setLandItems(newVal);
 		},
 		landItems(newVal, oldVal) {
-			// console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
+			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
 			this.setPages();
 		},
 	},
@@ -460,13 +460,12 @@ export default {
 		},
 
 		setPages() {
-
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
 			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
 
 			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
 			this.pages = []; // 초기화 해 줄 것.
-			for(var i=0; i< pno_p_grp && i< totalPages; i++) {
+			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
 				this.pages[i] = i + pgrStartPageNo;
 			}
 
