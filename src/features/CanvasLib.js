@@ -183,7 +183,7 @@ export default function CanvasLib() {
 
 				var cRect = _O.Utils.getCenterRect(rect, 0.7); // margin rate : 0.7
 				var imgName ='m_'+(i%2).toString();
-				_O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: "monster", name:imgName});
+				// _O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: "monster", name:imgName});
 			}
 		},
 		drawBlockType(cvInfo, blockType) {
