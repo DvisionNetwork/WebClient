@@ -9,6 +9,7 @@
 					<router-link class="menu" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
 					<router-link class="menu" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
 					<router-link class="menu" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
+					<a class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
 					<!-- <router-link class="menu" :active="(currentPage=='Help' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Help'}"> {{$t("gnb.help")}} </router-link> -->
 				</div>
 			</div>
@@ -471,6 +472,9 @@ export default {
 			}
 			.menu-btns {
 				.menus {
+					.menu {
+						margin-left: gRH(26);
+					}
 					.menu {
 						margin-left: gRH(26);
 					}

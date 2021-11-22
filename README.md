@@ -9,6 +9,7 @@
 ### v.0.8.03
 	- Add paging for market
 	- Add "selling" function for owned item
+	- Add link to Curvegrid bridge
 
 ### v.0.8.02
 	- Login network check bug fixed

@@ -391,7 +391,8 @@ var Mixin = {
 			return {
 				'background-image': `url(${url})`,
 				'background-repeat': 'no-repeat',
-				'background-size': 'cover', // contain, 100% 100%
+				'object-fit': 'cover',
+				'background-size': 'contain', // contain, 100% 100%
 				'background-position': 'center'
 			}
 		},
