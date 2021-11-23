@@ -266,10 +266,12 @@ export default {
 					name: this.blockInfo.n,
 					detail : _U.getIfDefined(this.blockDetail,'description'),
 					price : this.addComma(_U.getIfDefined(this.blockDetail,'dviprice')),
+					owner_id : _U.getIfDefined(this.blockDetail,'owner_address'),
+					token_id : _U.getIfDefined(this.blockDetail,'token_id'),
 					total_supply : 1,
 					sell_amount: 1,
 					own_amount: 1,
-					network: gConfig.wlt.getAddr().Network // testing
+					network: gConfig.wlt.getBscAddr().Network // testing
 				}
 			}else{
 				return this.mxGetMarketItem();
@@ -328,7 +330,8 @@ export default {
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
-				index: this.blockId
+				index: this.blockId,
+				network: '("' + this.marketItem.network + '")',
 			};
 			console.log("[Market.Detail.vue] callLandItem(), query, dvLand : ", query, dvLand);
 
@@ -350,13 +353,13 @@ export default {
 			});
 		},
 		getBuyBtnLabel() {
-			var txt = 'No Sale';
+			var txt = 'Not For Sale'; // btn_state : 0
 			switch(this.buyType) {
 				case '1':
-					txt = "BID";
+					txt = "Buy";
 					break;
 				case '2':
-					txt = "Buy";
+					txt = "Link";
 			}
 			return txt;
 		},
@@ -520,13 +523,84 @@ export default {
 		},
 
 		onClickBuyLand() {
-			var bType = this.blockInfo.c;
-			if(bType.toString() != "1") {
-				return;
+			var landItem = this.mxGetLandItemDetail();
+
+			if(this.buyType == '2') {
+				var url = landItem.extern_url;
+				window.open(url,'_blank');
 			}
-			// console.log("[Market.Detail] onClickBuyLand() =============== blockInfo:", blockInfo);
 
+			if(this.buyType == '1') {
+				if(!this.wasLogin()) {
+					this.mxShowAlert({msg:this.$t('popup.login-required')});
+					return;
+				}
 
+				wAPI.checkMetamask().then((rv)=>{
+					wAPI.Request_Account((resp) => {
+						// console.log('[Login] connect() -> Request_Account : resp', resp);
+
+						if(resp.res_code == 200) {
+							var curActiveAccount = _U.getIfDefined(resp,['data','account']);
+
+							if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
+								this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
+							}else{
+								// console.log("Matched address");
+
+								if(gConfig.getNetwork() != 'BSC')
+								{
+									this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
+									this.mxCloseLoading();
+									return;
+								}
+
+								// TODO: Bug Fix needed
+								var buyer = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+								if(buyer == undefined || buyer == null || buyer == '')
+								{
+									this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
+									this.mxCloseLoading();
+									return;
+								}
+
+								var seller = this.marketItem.owner_id;
+
+								if(buyer == seller)
+								{
+									this.mxShowToast(this.$t('market.detail.alert-same-account'))
+									this.mxCloseLoading();
+									return;
+								}
+
+								this.mxShowLoading('inf');
+
+								this.approve_data = {
+									type: 'Approval',
+									category: '721',
+									price: this.marketItem.price,
+									fToast: this.mxShowToast,
+									network: this.networkName,
+									callback: this.onApproveDvi
+								};
+
+								this.mxCloseLoading();
+								this.mxShowAlert({
+									msg:this.$t('market.detail.alert-approve-msg'),
+									btn:this.$t('market.detail.alert-approve-button'),
+									callback: this.onCallbackApprovePopup
+								});
+							}
+
+							return;
+						}
+
+						// console.log("Error on get wallet url", resp);
+						this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
+					});
+				});
+			}
 		},
 		onPrependData(resp) {
 			// console.log('[Market-Detail] onPrependData(), resp:', resp);
@@ -552,6 +626,36 @@ export default {
 			};
 
 			this.mxCloseLoading();
+			this.mxShowAlert({
+				msg:this.$t('market.detail.alert-trade-msg'),
+				btn:this.$t('market.detail.alert-trade-button'),
+				callback: this.onCallbackTradePopup
+			});
+		},
+		onBuyLandItem(resp) {
+			console.log('[Market-Detail] onBuyLandItem(), resp:', resp);
+			var prependingId = _U.getIfDefined(resp,['data','result']);
+			if(!prependingId) {
+				this.mxShowToast(this.$t('market.detail.alert-no-prepending-id'));
+				this.prependingId = null;
+				this.mxCloseLoading();
+				return;
+			}
+
+			this.trade_data = {
+				type: 'Trade',
+				category: '721',
+				price: this.marketItem.price,
+				tokenId: this.marketItem.token_id,
+				amount: 1,
+				ownerId: this.marketItem.owner_id,
+				fToast: this.mxShowToast,
+				network: this.networkName,
+				callback: this.onTradeDvi
+			};
+
+			this.mxCloseLoading();
+
 			this.mxShowAlert({
 				msg:this.$t('market.detail.alert-trade-msg'),
 				btn:this.$t('market.detail.alert-trade-button'),
@@ -592,16 +696,32 @@ export default {
 				return;
 			}
 
-			var data = {
-				account: buyer,
-				itemId: this.marketItem.id,
-				ownerId: this.marketItem.owner_id,
-				amount: this.buyCount,
-				price: this.marketItem.price,
-				callback: this.onPrependData
-			};
-			// console.log('[Market-Detail] onApproveDvi(), call data:', data);
-			wAPI.prependData(data);
+			var dvLand = this.getDvLand();
+
+			if(this.tab_page == 'land-detail') {
+				var data = {
+					account: buyer,
+					itemId: this.blockInfo.id,
+					ownerId: this.marketItem.owner_id,
+					land_code: dvLand.n,
+					price: this.marketItem.price,
+					network: '("' + this.marketItem.network + '")',
+					callback: this.onBuyLandItem
+				};
+				console.log('[Market-Detail] onApproveDvi(), call data:', data);
+				wAPI.buyLandItem(data);
+			} else {
+				var data = {
+					account: buyer,
+					itemId: this.marketItem.id,
+					ownerId: this.marketItem.owner_id,
+					amount: this.buyCount,
+					price: this.marketItem.price,
+					callback: this.onPrependData
+				};
+				// console.log('[Market-Detail] onApproveDvi(), call data:', data);
+				wAPI.prependData(data);
+			}
 		},
 		onCallbackTradePopup(resp) {
 			var data = this.trade_data;
@@ -932,8 +1052,13 @@ export default {
 							// background-image:
 							@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
 							text-align: center;
-
+							
 							&[buytype="1"] {
+								cursor: pointer;
+								@include OnOverTransition();
+								background-image: linear-gradient(to right, rgb(155, 119, 245), #6c38ef 100%);
+							}
+							&[buytype="2"] {
 								cursor: pointer;
 								@include OnOverTransition();
 								background-image: linear-gradient(to right, #a4d522 0%, #21b449 100%);
@@ -1208,8 +1333,13 @@ export default {
 					// background-image:
 					@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
 					text-align: center;
-
+					
 					&[buytype="1"] {
+						cursor: pointer;
+						@include OnOverTransition();
+						background-image: linear-gradient(to right, rgb(155, 119, 245), #6c38ef 100%);
+					}
+					&[buytype="2"] {
 						cursor: pointer;
 						@include OnOverTransition();
 						background-image: linear-gradient(to right, #a4d522 0%, #21b449 100%);

@@ -194,6 +194,26 @@ prependData(J) {
 	});
 },
 
+buyLandItem(J) {
+	var data = {
+		account: J.account,
+		itemId: J.itemId,
+		ownerId: J.ownerId,
+		price: J.price,
+		land_code: J.land_code,
+		network: J.network
+	}
+	console.log("[WalletAPI] buyLandItem() data:", data);
+
+	_U.callPost({
+		url:gConfig.market_land_buy_item,
+		data: data,
+		callback: (resp) =>{
+			J.callback(resp);
+		}
+	});
+},
+
 getContAddr(nft, network) {
 	var addr;
 	if (network == "ETH") {
