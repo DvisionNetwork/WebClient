@@ -194,6 +194,7 @@ export default function CanvasLib() {
 					_O.Func.drawBlock(cvInfo, block);
 					break;
 				}
+
 				if(block.c != blockType) continue;
 				_O.Func.drawBlock(cvInfo, block);
 			}
@@ -224,6 +225,13 @@ export default function CanvasLib() {
 			// console.log("========== rect",  _O.Data.selectedId, block, info.center, info.blockSize, block.id, rect);
 			_O.Rect.draw(cvInfo.ctx, cvInfo.coord, rect, lineColor, lineWidth, fillColor);
 
+			if(block.logo_url) {
+				var rect = this.getRect(block);
+				var cRect = _O.Utils.getCenterRect(rect, 0.7); // margin rate : 0.7
+				var imgName = block.logo_url;
+				_O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: info.mapId, name:imgName});
+			}
+
 			// line draw again
 			if(block.id == '-1' || block.id == _U.getIfDefined(_O.Data,'selectedId')) { // cnter
 				block.lineWidth = 1;
@@ -236,10 +244,9 @@ export default function CanvasLib() {
 				block.lineWidth = 1;
 				var rect = this.getRect(block);
 				var cRect = _O.Utils.getCenterRect(rect, 0.7); // margin rate : 0.7
-				var imgName ='centerLogoImg';
-				_O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: info.mapId, name:imgName});
+				// var imgName ='centerLogoImg';
+				// _O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: info.mapId, name:imgName});
 			}
-
 		},
 
 		centerOnBlock(blockId) {
@@ -488,7 +495,9 @@ export default function CanvasLib() {
 				_O.Utils.closeCtx(ctx);
 			}else{
 				var imgSrc = _U.getIfDefined(gConfig.canvas.imgList,[imgInfo.mapId, imgInfo.name]);
-				if(!imgSrc) return;
+				if(!imgSrc) {
+					imgSrc = imgInfo.name;
+				}
 				oImg = new Image();
 				if(!_U.isDefined(_O.Image.imgObjs,imgInfo.mapId)) {
 					_O.Image.imgObjs[imgInfo.mapId]= {};

@@ -293,7 +293,7 @@ var Mixin = {
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
-				network: '("'+ gConfig.wlt.getAddr().Network + '","' +  gConfig.wlt.getBidAddr().Network + '")'
+				network: '("'+ gConfig.wlt.getBscAddr().Network + '")'
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
 
@@ -318,13 +318,16 @@ var Mixin = {
 								if(block.id == Number(row.index)) {
 									var price = _U.getIfDefined(row,'dviprice');
 									var ownAddress = _U.getIfDefined(row,'owner_address');
+									var logoUrl = _U.getIfDefined(row,'logo_url');
 									block['dviprice']= price ? price : "0";
 									block['owner_address'] = ownAddress ? ownAddress : "";
+									block['logo_url'] = logoUrl ? logoUrl : "";
 									midx ++;
 									break;
 								}else{
 									block['dviprice']= "0";
 									block['owner_address'] = "";
+									block['logo_url'] = "";
 								}
 							}
 						}
