@@ -240,6 +240,7 @@ export default {
 				cvStyle: {
 					bg: gConfig.canvas.bg,
 					landBlock: gConfig.canvas.landBlock,
+					landBlockOnSale: gConfig.canvas.landBlockOnSale,
 					selectedBlock: gConfig.canvas.selectedBlock,
 					centerBlock: gConfig.canvas.centerBlock,
 					myBlock: gConfig.canvas.myBlock
@@ -430,6 +431,7 @@ export default {
 			this.toolTip.initInfo();
 			var pos = { x: e.offsetX, y: e.offsetY };
 			var blockPos = gCvLib.Func.getBlockPos(pos);
+			console.log("zmfhdn77 blockPos", blockPos);
 			if(!blockPos) {
 				return;
 			}

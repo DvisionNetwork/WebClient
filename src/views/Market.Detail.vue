@@ -634,12 +634,9 @@ export default {
 		},
 		onBuyLandItem(resp) {
 			console.log('[Market-Detail] onBuyLandItem(), resp:', resp);
-			var prependingId = _U.getIfDefined(resp,['data','result']);
-			if(!prependingId) {
-				this.mxShowToast(this.$t('market.detail.alert-no-prepending-id'));
-				this.prependingId = null;
-				this.mxCloseLoading();
-				return;
+			var result = _U.getIfDefined(resp,['data','result']);
+			if(result != 'success') {
+				console.log("error");
 			}
 
 			this.trade_data = {
@@ -705,7 +702,7 @@ export default {
 					ownerId: this.marketItem.owner_id,
 					land_code: dvLand.n,
 					price: this.marketItem.price,
-					network: '("' + this.marketItem.network + '")',
+					network: this.marketItem.network,
 					callback: this.onBuyLandItem
 				};
 				console.log('[Market-Detail] onApproveDvi(), call data:', data);

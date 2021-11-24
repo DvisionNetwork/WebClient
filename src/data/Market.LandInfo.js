@@ -2,7 +2,7 @@
 export default {
 	"gangnam": {
         n: "SeoulA", 
-        w: 155,
+        w: 175,
         h: 58,
         cx: 14,
         cy: 33,

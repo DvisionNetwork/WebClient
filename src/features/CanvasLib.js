@@ -181,8 +181,8 @@ export default function CanvasLib() {
 
 				_O.Rect.draw(cvInfo.ctx, cvInfo.coord, rect, style.lineColor, style.lineWidth, style.fillColor);
 
-				var cRect = _O.Utils.getCenterRect(rect, 0.7); // margin rate : 0.7
-				var imgName ='m_'+(i%2).toString();
+				// var cRect = _O.Utils.getCenterRect(rect, 0.7); // margin rate : 0.7
+				// var imgName ='m_'+(i%2).toString();
 				// _O.Image.drawImage(cvInfo.ctx, cvInfo.coord, cRect, {mapId: "monster", name:imgName});
 			}
 		},
@@ -204,7 +204,14 @@ export default function CanvasLib() {
 			var info = _O.Data.landInfo;
 			// console.log("==================== info:",info, gConfig.canvas.landBlock, block);
 
-			var style = info.cvStyle.landBlock[block.c.toString()];
+			var style;
+
+			if(block.btn_state == '1' && block.salestate == '1') {
+				style = info.cvStyle.landBlockOnSale[block.c.toString()];
+			} else {
+				style = info.cvStyle.landBlock[block.c.toString()];
+			}
+
 			var fillColor = _U.getIfDefined(style,'fillColor');
 			if(!fillColor) fillColor = "rgba(255,255,255,0)";
 			var lineColor = _U.getIfDefined(style,'lineColor');

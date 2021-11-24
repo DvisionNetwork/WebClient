@@ -183,27 +183,66 @@ export default function AppConfig() {
 			// drawSequence: ["1"],
 			landBlock: {
 				"-1": { // centerBlock
-					fillColor: '#6323b5',
+					fillColor: "rgba(99,35,181,1.0)",
 					lineColor: '#9a4fff',
 					lineWidth: 3
 				},
 				"0": { // public 판매불가
-					fillColor: "#3cd588",
+					fillColor: "rgba(60,213,136,0.3)",
 					lineColor: "#0d0b0e",
 					lineWidth: 1,
 				},
 				"1": { // for sale 경매
-					fillColor: "#ffd971",
+					fillColor: "rgba(255,217,113,0.3)",
 					lineColor: "#0d0b0e",
 					lineWidth: 1,
 				},
 				"2": { // road 도로
-					fillColor: "#72767f",
+					fillColor: "rgba(114,118,127,0.3)",
 					lineColor: "#72767f",
 					lineWidth: 0,
 				},
 				"3": { // station
-					fillColor: "#92b7cb",
+					fillColor: "rgba(146,183,203,0.3)",
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
+				},
+				//// 요기까지
+				"4": {
+					fillColor: "rgba(0,0,0,0)", // Forbidden
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
+				},
+				"5": {
+					fillColor: "#6323b5", // government 정부소유
+				},
+				"6": {
+					fillColor: "#92b7cb", // sidewalk 절반보도
+				}
+			},
+			landBlockOnSale: {
+				"-1": { // centerBlock
+					fillColor: "rgba(99,35,181,1.0)",
+					lineColor: '#9a4fff',
+					lineWidth: 3
+				},
+				"0": { // public 판매불가
+					fillColor: "rgba(60,213,136,1.0)",
+					lineColor: "#0d0b0e",
+					lineWidth: 1,
+				},
+				"1": { // for sale 경매
+					fillColor: "rgba(255,217,113,1.0)",
+					lineColor: "#0d0b0e",
+					lineWidth: 1,
+				},
+				"2": { // road 도로
+					fillColor: "rgba(114,118,127,1.0)",
+					lineColor: "#72767f",
+					lineWidth: 0,
+				},
+				"3": { // station
+					fillColor: "rgba(146,183,203,1.0)",
 					lineColor: "rgba(0,0,0,0)",
 					lineWidth: 0,
 				},

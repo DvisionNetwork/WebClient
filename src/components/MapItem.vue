@@ -138,6 +138,7 @@ export default {
 				cvStyle: {
 					bg: gConfig.canvas.bg,
 					landBlock: gConfig.canvas.landBlock,
+					landBlockOnSale: gConfig.canvas.landBlockOnSale,
 					selectedBlock: gConfig.canvas.selectedBlock,
 					centerBlock: gConfig.canvas.centerBlock,
 					myBlock: gConfig.canvas.myBlock

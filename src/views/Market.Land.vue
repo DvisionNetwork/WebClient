@@ -418,7 +418,7 @@ export default {
 					var block = dvLand.map[i];
 					if( ct=='all' || ct == block.c.toString()) {
 						if(forSale){
-							if(block.c.toString() == '1') {
+							if(block.c.toString() == '1' && block.btn_state == '1' && block.salestate == '1') {
 								if(search && search.length > 1) {
 									var name = block.n;
 									if(name && name.length > 0 && name.toLowerCase().indexOf(search.toLowerCase())>=0) {
