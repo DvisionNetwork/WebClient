@@ -182,6 +182,21 @@ var Mixin = {
 			this.$store.state.wallet.signer;
 		},
 
+		// My Land //
+		mxSetMyLands(myLands) {
+			this.$store.dispatch('setMyLands', myLands);
+		},
+		mxGetMyLands() {
+			return this.$store.state.myLands;
+		},
+		mxSetMyLandQuery(query) {
+			query['updateTime'] = _U.getTime();
+			this.$store.dispatch('setMyLandQuery', query);
+		},
+		mxGetMyLandQuery() {
+			return this.$store.state.myLandQuery;
+		},
+
 		// MyPage //
 		mxSetMyItems(myItems) {
 			this.$store.dispatch('setMyItems', myItems);
@@ -303,6 +318,82 @@ var Mixin = {
 				data: query,
 				callback: (resp) =>{
 					console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
+					var rows = _U.getIfDefined(resp,['data','rows']);
+					var midx = 0;
+
+					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
+					if(rows && rows.length > 0) {
+						for(var ridx=0; ridx <rows.length; ridx++) {
+							var row = rows[ridx];
+							for(;midx < dvLand.map.length; midx ++) {
+								if(!_U.isDefined(dvLand.map[midx],'id')) {
+									continue;
+								}
+								var block = dvLand.map[midx];
+								if(block.id == Number(row.index)) {
+									var price = _U.getIfDefined(row,'dviprice');
+									var ownAddress = _U.getIfDefined(row,'owner_address');
+									var logoUrl = _U.getIfDefined(row,'logo_url');
+									var btnState = _U.getIfDefined(row,'btn_state');
+									var saleState = _U.getIfDefined(row,'salestate');
+
+									block['dviprice']= price ? price : "0";
+									block['owner_address'] = ownAddress ? ownAddress : "";
+									block['logo_url'] = logoUrl ? logoUrl : "";
+									block['btn_state'] = btnState ? btnState : "";
+									block['salestate'] = saleState ? saleState : "";
+									midx ++;
+									break;
+								}else{
+									block['dviprice']= "0";
+									block['owner_address'] = "";
+									block['logo_url'] = "";
+								}
+							}
+						}
+						console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
+
+						this.mxSetLandMenu(landMenu);
+					}
+
+					// add func
+					if(typeof func == 'function') {
+						func();
+					}
+
+					// this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
+					this.mxCloseLoading();
+				}
+			});
+
+		},
+
+		mxCallAndSetMyLandItemList(mapId,func) {
+
+			var landMenu = this.mxGetLandMenu();
+			var dvLand = null;
+			for(var i=0; i<landMenu.length; i++) {
+				if(landMenu[i].mapId == mapId) {
+					dvLand = landMenu[i].land;
+					break;
+				}
+			}
+			if(!dvLand) return;
+
+			var landCode = dvLand.n;
+			var query = {
+				land_code: landCode,
+				network: '("'+ gConfig.wlt.getBscAddr().Network + '")',
+				owner_addr: _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
+			};
+			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
+
+			this.mxShowLoading();
+			_U.callPost({
+				url:gConfig.market_land_with_owner,
+				data: query,
+				callback: (resp) =>{
+					console.log("[Mixin] callMyLandItemList()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var midx = 0;
 

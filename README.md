@@ -8,6 +8,7 @@
 
 ### v.0.8.04
 	- Apply Land API
+	- Apply Land Inventory
 
 ### v.0.8.03
 	- Add paging for market

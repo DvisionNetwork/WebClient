@@ -20,6 +20,7 @@
 			<div class="content-box">
 				<Profile v-if="page=='profile'" />
 				<Inventory v-if="page=='inventory'" />
+				<Land v-if="page=='land'" />
 			</div>
 		</div>
 	</div>
@@ -31,6 +32,7 @@
 
 import Profile from '@/views/MyPage.Profile.vue'
 import Inventory from '@/views/MyPage.Inventory.vue'
+import Land from '@/views/MyPage.Land.vue'
 import FOOT from '@/components/FOOT.vue'
 
 export default {
@@ -38,6 +40,7 @@ export default {
 	components: {
 		Profile,
 		Inventory,
+		Land,
 		FOOT
 	},
 	props: {
@@ -66,7 +69,8 @@ export default {
 		return {
 			mypageList: [
 				{name:'Profile', id:'profile'},
-				{name:'Inventory', id:'inventory'}
+				{name:'Inventory', id:'inventory'},
+				{name:'Land', id:'land'}
 			],
 			currTabIdx: 'profile',
 		}

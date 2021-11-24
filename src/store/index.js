@@ -44,6 +44,8 @@ export default createStore({
 		marketItems: {}, // { total, page, cpp, list[]} // cpp = number of items (count) per page
 		marketItem: {},
 		marketQuery: {},
+		myLands: {},
+		myLandQuery: {},
 		myItems: {}, // { total, page, cpp, list[]} // cpp = number of items (count) per page
 		myItemQuery: {},
 	},
@@ -127,6 +129,14 @@ export default createStore({
 			state.landItemDetail = value;
 		},
 
+
+		////// My Lands ////
+		SET_MY_LANDS(state, value) {
+			state.myLands = value;
+		},
+		SET_MY_LAND_QUERY(state, value) {
+			state.myLandQuery = value;
+		},
 
 		////// My Items ////
 		SET_MY_ITEMS(state, value) {
@@ -251,6 +261,17 @@ export default createStore({
 		setLandItemDetail(context, value) {
 			// console.log("[STORE.actions] setLandItem(), ", value);
 			context.commit('SET_LAND_ITEM_DETAIL',value);
+		},
+
+		/// My Land ////
+		setMyLands(context, value) {
+			// console.log("[STORE.actions] setMyItems(), ", value);
+			context.commit('SET_MY_LANDS',value);
+		},
+
+		setMyLandQuery(context, value) {
+			// console.log("[STORE.actions] setMyItemQuery(), ", value);
+			context.commit('SET_MY_LAND_QUERY',value);
 		},
 
 		/// My Item ////

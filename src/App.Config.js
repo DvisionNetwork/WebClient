@@ -487,6 +487,7 @@ export default function AppConfig() {
 		market_land_item_list : getApiUrl("lgl0000_ex"),
 		market_land_item : getApiUrl("lgl0001_ex"),
 		market_land_buy_item : getApiUrl("lgl0002_ex"),
+		market_land_with_owner : getApiUrl("lgl0003_ex"),
 
 		test_url: "https://www.multiverse.so/m/api/terms_list_ex",
 

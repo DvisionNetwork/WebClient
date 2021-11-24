@@ -431,7 +431,6 @@ export default {
 			this.toolTip.initInfo();
 			var pos = { x: e.offsetX, y: e.offsetY };
 			var blockPos = gCvLib.Func.getBlockPos(pos);
-			console.log("zmfhdn77 blockPos", blockPos);
 			if(!blockPos) {
 				return;
 			}
