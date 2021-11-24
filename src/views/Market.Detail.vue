@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<div class="buy-info">
-				<div class="buy-certificate-photo" :type="getBlockPosInfo('size')" :map_id="mapId">
+				<div class="buy-certificate-photo" :premium="marketItem.premium" :type="getBlockPosInfo('size')" :map_id="mapId">
 
 					<div class="description">
 						<p v-html="marketItem.detail"></p>
@@ -268,6 +268,7 @@ export default {
 					price : this.addComma(_U.getIfDefined(this.blockDetail,'dviprice')),
 					owner_id : _U.getIfDefined(this.blockDetail,'owner_address'),
 					token_id : _U.getIfDefined(this.blockDetail,'token_id'),
+					premium : _U.getIfDefined(this.blockDetail,'premium'),
 					total_supply : 1,
 					sell_amount: 1,
 					own_amount: 1,
@@ -1288,35 +1289,70 @@ export default {
 				}
 
 				// testing
-				@include SetBgImage(url('../assets/img/market/certi_land_seoul_01.png'));
+				// @include SetBgImage(url('../assets/img/market/certi_land_seoul_01.png'));
 
-				&[map_id="gangnam"] {
-					&[type="1x1"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_seoul_01.png'));
+				&[map_id="gangnam"]{
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_04.png'));
+						}
 					}
-					&[type="2x1"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_seoul_02.png'));
+					&[premium="TRUE"] {
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_seoul_04_premium.png'));
+						}
 					}
-					&[type="2x2"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_seoul_03.png'));
-					}
-					&[type="3x3"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_seoul_04.png'));
-					}
+					@include SetBgImage(url('../assets/img/market/certi_land_seoul_04_premium.png'));
 				}
+
 				&[map_id="newyork"] {
-					&[type="1x1"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_newyork_01.png'));
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_04.png'));
+						}
 					}
-					&[type="2x1"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_newyork_02.png'));
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_newyork_04_premium.png'));
+						}
 					}
-					&[type="2x2"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_newyork_03.png'));
-					}
-					&[type="3x3"] {
-						@include SetBgImage(url('../assets/img/market/certi_land_newyork_04.png'));
-					}
+					@include SetBgImage(url('../assets/img/market/certi_land_newyork_04_premium.png'));
 				}
 			}
 			.buy-box{

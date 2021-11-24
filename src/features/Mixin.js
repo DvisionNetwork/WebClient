@@ -321,6 +321,7 @@ var Mixin = {
 									var logoUrl = _U.getIfDefined(row,'logo_url');
 									var btnState = _U.getIfDefined(row,'btn_state');
 									var saleState = _U.getIfDefined(row,'salestate');
+
 									block['dviprice']= price ? price : "0";
 									block['owner_address'] = ownAddress ? ownAddress : "";
 									block['logo_url'] = logoUrl ? logoUrl : "";
