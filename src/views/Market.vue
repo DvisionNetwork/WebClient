@@ -247,7 +247,7 @@ export default {
 			lastPageGroup: true,
 
 			markets: [
-				// {name: 'Land', id:'land-map'},
+				{name: 'Land', id:'land-map'},
 				{name: 'BSC', id:'bsc'},
 				{name: 'ETH', id:'eth'},
 				{name: 'Enjin (soon)', id:'partner_1'},

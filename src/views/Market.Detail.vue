@@ -256,7 +256,12 @@ export default {
 			return this.mxGetLandItemDetail();
 		},
 		buyType() {
-			return _U.getIfDefined(this.blockDetail,'btn_state') ? this.blockDetail.btn_state.toString() : '0';
+			var btn_state = _U.getIfDefined(this.blockDetail,'btn_state') ? this.blockDetail.btn_state.toString() : '0';
+			var salestate = _U.getIfDefined(this.blockDetail,'salestate') ? this.blockDetail.salestate.toString() : '0';
+			if(salestate == '0') {
+				btn_state = '0';
+			}
+			return btn_state;
 		},
 
 		marketItem() {
