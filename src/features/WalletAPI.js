@@ -330,7 +330,12 @@ async ContractDvi(J) {
 					}
 				}else if(J.type == 'Sell') {
 					if(J.category=='721') {
-						// Cohesion control with Refinable
+						// TODO: Cohesion control with Refinable
+						var marketContract = this.getMarketAddr(J.network);
+						console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+value+' );');
+
+						sendTransactionPromise =
+							await contract.Sell_Item(marketContract, J.tokenId.toString(), value, 1);
 					} else if(J.category == '1155') {
 						var marketContract = this.getMarketAddr(J.network);
 						console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
