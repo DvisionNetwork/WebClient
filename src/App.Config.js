@@ -476,6 +476,7 @@ export default function AppConfig() {
 		market_item_list: getApiUrl("market_item_list"),
 		market_prepending_create: getApiUrl("market_prepending_create"),
 		market_item_trade: getApiUrl("market_item_trade"),
+		market_item_sell: getApiUrl("market_item_sell"),
 		market_item_list_with_owner: getApiUrl("market_item_list_with_owner"),
 		market_item_list_search_name: getApiUrl("market_item_list_search_name"),
 

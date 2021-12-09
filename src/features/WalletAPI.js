@@ -231,7 +231,19 @@ getContAddr(nft, network) {
 	}
 	return contAddr;
 },
-getContract(type, network) {
+getMarketAddr(network) {
+	var addr;
+	if (network == "ETH") {
+		addr = gConfig.wlt.getAddr();
+	} else if (network == "BSC") {
+		addr = gConfig.wlt.getBscAddr();
+	}
+
+	var contAddr = addr.ContractMarketAddress;
+
+	return contAddr;
+},
+getContract(type, network, nft) {
 	var addr;
 	if (network == "ETH") {
 		addr = gConfig.wlt.getAddr();
@@ -245,6 +257,12 @@ getContract(type, network) {
 	}
 	else if(type == 'Trade') {
 		contract = new ethers.Contract(addr.ContractMarketAddress, market_ABI, lv_signer);
+	}
+	else if(type == 'Sell' && nft == '721') {
+		contract = new ethers.Contract(addr.Contract721Address, erc721_ABI, lv_signer);
+	}
+	else if(type == 'Sell' && nft == '1155') {
+		contract = new ethers.Contract(addr.Contract1155Address, erc1155_ABI, lv_signer);
 	}
 	return contract;
 },
@@ -269,7 +287,7 @@ async ContractDvi(J) {
 	if(!lv_provider) { lv_provider = new ethers.providers.Web3Provider(window.ethereum); }
 	if(!lv_signer) { lv_signer = lv_provider.getSigner(); }
 
-	var contract = this.getContract(J.type, J.network);
+	var contract = this.getContract(J.type, J.network, J.category);
 	if(!contract) {
 		J.callback({
 			res_code:401,
@@ -299,8 +317,7 @@ async ContractDvi(J) {
 				var sendTransactionPromise = null;
 				if(J.type == 'Approval') {
 					sendTransactionPromise = await contract.approve(contAddr, value);
-				}
-				else if(J.type == 'Trade') {
+				}else if(J.type == 'Trade') {
 					if(J.category=='721'){
 						console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
 						sendTransactionPromise =
@@ -310,6 +327,16 @@ async ContractDvi(J) {
 						console.log('[WalletAPI] ContractDvi call  contract.Trade_1155dvi("'+J.ownerId+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
 						sendTransactionPromise =
 							await contract.Trade_1155dvi(J.ownerId.toString(), J.tokenId.toString(), value, J.amount);
+					}
+				}else if(J.type == 'Sell') {
+					if(J.category=='721') {
+						// Cohesion control with Refinable
+					} else if(J.category == '1155') {
+						var marketContract = this.getMarketAddr(J.network);
+						console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
+
+						sendTransactionPromise =
+							await contract.Sell_Item(marketContract, J.tokenId.toString(), value, 1, J.amount);
 					}
 				}
 				if(!sendTransactionPromise) {

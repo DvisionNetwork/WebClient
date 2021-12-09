@@ -88,7 +88,14 @@
 				</div>
 				<div class="item-detail-box">
 					<div class="detail-info">
-						<div class="price info">
+						<div v-if="marketItem.owner_id == userInfo.wallet_addr" class="price info">
+							<div class="header">{{$t('market.detail.input-price')}}</div>
+							<div class="price-box">
+								<div class="icon"></div>
+								<input class="value" id="input-price" type="number" v-model="sellPrice"/>
+							</div>
+						</div>
+						<div v-else class="price info">
 							<div class="header">{{$t('market.detail.price')}}</div>
 							<div class="price-box">
 								<div class="icon"></div>
@@ -120,7 +127,13 @@
 							></div>
 						</div>
 						<div class="buy-box">
-							<div class="buy-button"
+							<div v-if="marketItem.owner_id == userInfo.wallet_addr" class="buy-button"
+								@click="onClickSell()"
+							>
+								{{$t('market.detail.list-sell')}}
+							</div>
+
+							<div v-else class="buy-button"
 								@click="onClickBuy()"
 							>
 								{{$t('market.detail.buy-now')}}
@@ -238,6 +251,7 @@ export default {
 			trHash: null,
 			approve_data: null,
 			trade_data: null,
+			sellPrice: 0,
 		}
 	},
 	watch: {
@@ -425,7 +439,9 @@ export default {
 			// });
 		},
 		checkCanBuy() {
-			if(this.marketItem.sell_amount - this.buyCount > 0){
+			var maxCount = (this.marketItem.owner_id == this.userInfo.wallet_addr) ? this.marketItem.own_amount : this.marketItem.sell_amount;
+
+			if(maxCount - this.buyCount > 0){
 				return true;
 			}else{
 				return false;
@@ -447,6 +463,97 @@ export default {
 				if(this.buyCount < 0) this.buyCount = 0;
 			}
 		},
+
+		onClickSell() {
+			if(!this.wasLogin()) {
+				this.mxShowAlert({msg:this.$t('popup.login-required')});
+				return;
+			}
+
+			wAPI.checkMetamask().then((rv)=>{
+				wAPI.Request_Account((resp) => {
+					// console.log('[Login] connect() -> Request_Account : resp', resp);
+
+					if(resp.res_code == 200) {
+						var curActiveAccount = _U.getIfDefined(resp,['data','account']);
+
+						if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
+							this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
+						}else{
+							// console.log("Matched address");
+
+							console.log(this.networkName);
+							console.log(gConfig.getNetwork());
+							if(this.networkName != gConfig.getNetwork())
+							{
+								this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
+								this.mxCloseLoading();
+								return;
+							}
+
+							if(this.sellPrice <= 0)
+							{
+								this.mxShowToast(this.$t('market.detail.alert-sell-amount-invalid'));
+								this.mxCloseLoading();
+								return;
+							}
+
+							// TODO: Bug Fix needed
+							var currentAccount = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+							if(currentAccount == undefined || currentAccount == null || currentAccount == '')
+							{
+								this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							var seller = this.marketItem.owner_id;
+
+							if(currentAccount != seller)
+							{
+								this.mxShowToast(this.$t('market.detail.alert-same-account'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							this.mxShowLoading('inf');
+
+							if(this.buyCount <= 0) {
+								this.mxShowToast(this.$t('market.detail.alert-no-selected-count'))
+								this.mxCloseLoading();
+								return;
+							}
+
+							this.trade_data = {
+								type: 'Sell',
+								category: this.marketItem.category,
+								price: this.sellPrice,
+								tokenId: this.marketItem.token_id,
+								amount: this.buyCount,
+								ownerId: this.marketItem.owner_id,
+								fToast: this.mxShowToast,
+								network: this.networkName,
+								callback: this.onSellItem
+							};
+
+							this.mxCloseLoading();
+							this.mxShowAlert({
+								msg:this.$t('market.detail.alert-sell-msg'),
+								btn:this.$t('market.detail.alert-sell-button'),
+								callback: this.onCallbackSellPopup
+							});
+						}
+
+						return;
+					}
+
+					// console.log("Error on get wallet url", resp);
+					this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
+				});
+			});
+		},
+
 		onClickBuy() {
 
 			if(!this.wasLogin()) {
@@ -771,6 +878,58 @@ export default {
 			this.mxCloseLoading();
 			var msg = this.$t('market.detail.alert-success-on-buy');
 			this.mxShowAlert({msg: msg});
+		},
+		onCallbackSellPopup(resp) {
+			var data = this.trade_data;
+			if(!data) {
+				return;
+			}
+			if(_U.getIfDefined(resp,'result')==true) {
+				this.mxShowLoading('inf');
+				wAPI.ContractDvi(data);
+			}else{
+				// console.log("[Market-Detail] onCallbackTradePopup() trade canceled on popup.");
+			}
+		},
+		onSellItem(resp) {
+			this.trHash = _U.getIfDefined(resp,['data','trHash']);
+			
+			if(	_U.getIfDefined(resp,'res_code')!==200 	|| !this.trHash || this.trHash === '' ) {
+				var msg = _U.getIfDefined(resp,'msg');
+				if(!msg) msg = '[Error] undefined.';
+				this.trHash = null;
+				this.mxCloseLoading();
+				this.mxShowAlert({msg:msg});
+				return;
+			}
+
+			var query = {
+				item_id: this.marketItem.item_id,
+				wallet_addr: this.marketItem.owner_id,
+				price: this.sellPrice,
+				for_sale: 'true',
+				sell_amount: this.buyCount,
+			}
+
+			_U.callPost({
+				url:gConfig.market_item_sell,
+				data: query,
+				callback: (resp) =>{
+					console.log("[Market.Detail.vue] onSellItem()-> resp ", resp);
+			
+					var result = _U.getIfDefined(resp,['data','result']);
+					if(result !== 'success') {
+						var msg = this.$t('market.detail.alert-failed-on-sell');
+						this.mxShowAlert({msg: msg});
+						this.mxCloseLoading();
+						return;
+					}
+
+					this.mxCloseLoading();
+					var msg = this.$t('market.detail.alert-success-on-sell');
+					this.mxShowAlert({msg: msg});
+				}
+			});
 		}
 
 	}
