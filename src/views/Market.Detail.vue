@@ -88,7 +88,7 @@
 				</div>
 				<div class="item-detail-box">
 					<div class="detail-info">
-						<div v-if="marketItem.owner_id == userInfo.wallet_addr" class="price info">
+						<div v-if="marketItem.owner_id.toLowerCase() == userInfo.wallet_addr.toLowerCase()" class="price info">
 							<div class="header">{{$t('market.detail.input-price')}}</div>
 							<div class="price-box">
 								<div class="icon"></div>
@@ -127,7 +127,7 @@
 							></div>
 						</div>
 						<div class="buy-box">
-							<div v-if="marketItem.owner_id == userInfo.wallet_addr" class="buy-button"
+							<div v-if="marketItem.owner_id.toLowerCase() == userInfo.wallet_addr.toLowerCase()" class="buy-button"
 								@click="onClickSell()"
 							>
 								{{$t('market.detail.list-sell')}}
@@ -439,7 +439,7 @@ export default {
 			// });
 		},
 		checkCanBuy() {
-			var maxCount = (this.marketItem.owner_id == this.userInfo.wallet_addr) ? this.marketItem.own_amount : this.marketItem.sell_amount;
+			var maxCount = (this.marketItem.owner_id.toLowerCase() == this.userInfo.wallet_addr.toLowerCase()) ? this.marketItem.own_amount : this.marketItem.sell_amount;
 
 			if(maxCount - this.buyCount > 0){
 				return true;
@@ -504,15 +504,6 @@ export default {
 							if(currentAccount == undefined || currentAccount == null || currentAccount == '')
 							{
 								this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
-								this.mxCloseLoading();
-								return;
-							}
-
-							var seller = this.marketItem.owner_id;
-
-							if(currentAccount != seller)
-							{
-								this.mxShowToast(this.$t('market.detail.alert-same-account'))
 								this.mxCloseLoading();
 								return;
 							}

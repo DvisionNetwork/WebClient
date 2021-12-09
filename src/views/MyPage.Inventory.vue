@@ -130,7 +130,14 @@ export default {
 
 		onClickItem(item) {
 			console.log("======= onClickItem :: itemInfo", item.id);
-			// this.$router.push({name:"Market-Detail", params:{'itemId': item.id}});
+
+			this.mxSetMarketItem(item);
+			this.$router.push({name:"Market-Detail", 
+				params:{
+					'tab_page': 'mypage',
+					'itemId': item.id
+				}
+			});
 		},
 
 		getCtIdxes() {
