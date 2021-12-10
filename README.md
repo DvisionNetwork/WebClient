@@ -6,6 +6,10 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.1
+	- Add selling functions
+	- Move item page via inventory
+
 ### v.0.8.04
 	- Apply Land API
 	- Apply Land Inventory
