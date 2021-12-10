@@ -9,6 +9,7 @@
 ### v.0.8.1
 	- Add selling functions
 	- Move item page via inventory
+	- Ending dots for logn text in name
 
 ### v.0.8.04
 	- Apply Land API

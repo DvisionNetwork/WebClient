@@ -158,8 +158,10 @@ export default {
 		margin-top: gREm(54);
 		@include FLEX(space-between,center);
 		.desc-name{
-			width: auto;
+			width: gREm(185);
 			height: gREm(19);
+			text-overflow: ellipsis;
+			overflow: hidden;
 			@include Set-Font($AppFont, gREm(16), gREm(19), #ffffff);
 		}
 		.price-box{
