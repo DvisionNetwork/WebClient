@@ -774,10 +774,12 @@ export default {
 
 								this.mxShowLoading('inf');
 
+								var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
+
 								this.approve_data = {
 									type: 'Approval',
 									category: '721',
-									price: this.marketItem.price,
+									price: priceWithoutComma,
 									fToast: this.mxShowToast,
 									network: this.networkName,
 									callback: this.onApproveDvi
@@ -837,10 +839,12 @@ export default {
 				console.log("error");
 			}
 
+			var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
+
 			this.trade_data = {
 				type: 'Trade',
 				category: '721',
-				price: this.marketItem.price,
+				price: priceWithoutComma,
 				tokenId: this.marketItem.token_id,
 				amount: 1,
 				ownerId: this.marketItem.owner_id,
