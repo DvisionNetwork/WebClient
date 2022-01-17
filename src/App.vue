@@ -336,9 +336,9 @@ export default {
 			) {
 				// console.log("[App.vue] watch wallet() , wallet ", newVal);
 				this.getDviBalance();
+				this.getPolygonBalance();
 			}
 		}
-
 	},
 	data() {
 		return {
@@ -496,6 +496,30 @@ export default {
 				// console.log("Error on get balance url", resp)
 			});
 
+		},
+
+		getPolygonBalance() {
+			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+			if(!account) {
+				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
+				return;
+			}
+			wAPI.getPolygonBalance(account, (resp) => {
+				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
+
+				if(resp.res_code == 200) {
+					var balance = _U.getIfDefined(resp,['data','balance']);
+					
+					if(balance != null) {
+						this.mxSetWalletPolygonBalance(balance);
+						return;
+					}
+				}
+				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+				this.mxSetWalletPolygonBalance(0);
+				// console.log("Error on get balance url", resp)
+			});
 		},
 
 		setDownloadUrl(os) {

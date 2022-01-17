@@ -36,8 +36,10 @@ export default createStore({
 			accounts:[],
 			provider: null,
 			signer: null,
-			balance: 0
+			balance: 0,
+			polygonBalance: 0,
 		},
+		network: '',
 		homeNews: {}, // { total, page, cpp, list[]} // cpp = number of items (count) per page
 		news: {},
 		newsItem:{},
@@ -91,9 +93,17 @@ export default createStore({
 			state.wallet.updated= true;
 		},
 		SET_WALLET_BALANCE(state,value) {
-			state.wallet.updated= false;
+			state.wallet.updated = false;
 			state.wallet.balance = value;
 		},
+		SET_WALLET_POLYGON_BALANCE(state,value) {
+			state.wallet.updated = false;
+			state.wallet.polygonBalance = value;
+		},
+		SET_NETWORK(state,value) {
+			state.network = value;
+		},
+
 		/////// Home ////
 		SET_HOME_NEWS(state, value) {
 			state.homeNews = value;
@@ -214,6 +224,13 @@ export default createStore({
 		setWalletBalance(context, value) {
 			// console.log("[STORE.actions] setWalletBalance(), ", value);
 			context.commit('SET_WALLET_BALANCE',value);
+		},
+		setWalletPolygonBalance(context, value) {
+			// console.log("[STORE.actions] setWalletBalance(), ", value);
+			context.commit('SET_WALLET_POLYGON_BALANCE',value);
+		},
+		setNetwork(context, value) {
+			context.commit('SET_NETWORK', value)
 		},
 		/// Home ////
 		setHomeNews(context, value) {

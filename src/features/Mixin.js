@@ -172,6 +172,9 @@ var Mixin = {
 		mxGetWalletBalance() { // mxGetWallet() 을 이용해서 .balance를 사용해도 됨
 			this.$store.state.wallet.balance;
 		},
+		mxSetWalletPolygonBalance(balance) {
+			this.$store.dispatch('setWalletPolygonBalance',balance);
+		},
 		mxGetWalletAccount() {
 			this.$store.state.wallet.currentAccount;
 		},
@@ -180,6 +183,9 @@ var Mixin = {
 		},
 		mxGetWalletSigner() {
 			this.$store.state.wallet.signer;
+		},
+		mxSetNetwork(network) {
+			this.$store.dispatch('setNetwork', network);
 		},
 
 		// My Land //

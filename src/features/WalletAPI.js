@@ -16,6 +16,7 @@ async checkMetamask() {
 	var network = 'NONE';
 	var addr = gConfig.wlt.getAddr();
 	var bscAddr = gConfig.wlt.getBscAddr();
+	var polygonAddr = gConfig.wlt.getPolygonAddr();
 
 	if (typeof window.ethereum !== 'undefined') {
 		// console.log('[WalletAPI] checkMetamask() Wallet is installed!');
@@ -30,6 +31,9 @@ async checkMetamask() {
 			}else if(chainId === bscAddr.Network) {
 				// console.log("BSC Network matched");
 				network = 'BSC';
+			}else if(chainId === polygonAddr.Network) {
+				// console.log("BSC Network matched");
+				network = 'POL';
 			}
 		}
 		catch(err) {
@@ -166,6 +170,28 @@ async getDviBalance(account, callback) {
 			else {
 				// console.log("[WalletAPI] getDviBalance() ret == null, ==> balance of dvi : 0");
 				callback({res_code:401, message:'Error on getting DVI Balance', balance: 0})
+			}
+		}else{
+			callback({res_code:402, message:'Error on checking MetaMask', balance: 0})
+		}
+	});
+
+},
+
+async getPolygonBalance(account, callback) {
+
+	var decimals = ethers.BigNumber.from(18);
+
+	this.checkMetamask().then(async (rv)=>{
+		if(rv!='NONE') {
+			try {
+				var ret = await ethereum.request({method :'eth_getBalance', params : [account, 'latest']});
+				var balance = (ret / (10 ** decimals)).toString();
+
+				callback({res_code:200, message:'Success on get Polygon Balance', data:{balance: balance}})
+			}
+			catch(err) {
+				callback({res_code:401, message:'Error on getting Polygon Balance', balance: 0})
 			}
 		}else{
 			callback({res_code:402, message:'Error on checking MetaMask', balance: 0})

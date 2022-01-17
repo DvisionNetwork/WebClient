@@ -29,6 +29,10 @@
 					</div>
 
 					<template v-if="signed=='on'">
+						<span v-if="network=='POL'" class="menu pol-box">
+							<span class="pol-icon"></span>
+							<span class="pol-value">{{addComma(wallet.polygonBalance)}}</span>
+						</span>
 						<span class="menu dvi-box">
 							<span class="dvi-icon"></span>
 							<span class="dvi-value">{{addComma(wallet.balance)}}</span>
@@ -96,6 +100,10 @@ export default {
 	computed: {
 		signed() {
 			return this.userInfo.id ? 'on' : 'off';
+		},
+		network() {
+			console.log("zmfhdn77 network, ", this.network);
+			return this.$store.state.network;
 		},
 		currentPage() {
 			return this.$route.name;
@@ -347,6 +355,20 @@ export default {
 					.dvi-value {
 						width: auto;
 						@include Set-Font($AppFont, gREm(15), gREm(19), #febf37);
+					}
+				}
+				.pol-box {
+					width: auto;
+					@include FLEX(space-between, center);
+					.pol-icon {
+						width: gREm(22);
+						height: gREm(19);
+						margin-right:gREm(8);
+						@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+					}
+					.pol-value {
+						width: auto;
+						@include Set-Font($AppFont, gREm(15), gREm(19), #7A4ADD);
 					}
 				}
 				.uinfo-icon {

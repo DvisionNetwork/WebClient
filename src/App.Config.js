@@ -79,6 +79,7 @@ export default function AppConfig() {
 
 		// gConfig.wlt.getAddr();
 		wlt : {
+			/* -----------------  Ethereum Network ----------------- */
 			addrDev: {
 				TokenAddress :             "0x000f62331d4bBA5622E854dEB882cd635fF7E031",
 				Contract721Address :       "0x250fd9192CCbBCF458b6402ec8512c1b8F3fB0bd",
@@ -96,6 +97,8 @@ export default function AppConfig() {
 				// Mainnet: "0x1", Testnet: "0x3"
 				Network : "0x1"
 			},
+
+			/* -----------------  Binance Smart Chain Network ----------------- */
 			addrBscDev: {
 				// token contract for dev
 				TokenAddress :             "0x0C9eA0E7cD659e3d45c4d70E8825011Eb31fCc45",
@@ -114,6 +117,26 @@ export default function AppConfig() {
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network : "0x38"
 			},
+
+			/* -----------------  Polygon Network ----------------- */
+			addrPolygonDev: {
+				// token contract for dev
+				TokenAddress :             "",
+				Contract721Address :       "",
+				Contract1155Address :      "",
+				ContractMarketAddress :    "",
+				// Mainnet: "0x89", Testnet: "0x13881"
+				Network : "0x13881"
+			},
+			addrPolygonProd: {
+				// token contract for rel
+				TokenAddress :             "",
+				Contract721Address :       "",
+				Contract1155Address :      "",
+				ContractMarketAddress :    "",
+				// Mainnet: "0x89", Testnet: "0x13881"
+				Network : "0x89"
+			},
 			addrBid: {
 				Network : "opensea"
 			},
@@ -128,6 +151,12 @@ export default function AppConfig() {
 					return gConfig.wlt.addrBscProd;
 				}
 				return gConfig.wlt.addrBscDev;
+			},
+			getPolygonAddr () {
+				if(gConfig.isProd) {
+					return gConfig.wlt.addrPolygonProd;
+				}
+				return gConfig.wlt.addrPolygonDev;
 			},
 			getBidAddr () {
 				return gConfig.wlt.addrBid;

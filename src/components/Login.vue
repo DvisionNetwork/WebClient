@@ -224,6 +224,7 @@ export default {
 
 							if(account) {
 								wAPI.Sign_Account(account, this.reqLogin);
+								this.mxSetNetwork(rv);
 
 								return;
 							}

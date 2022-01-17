@@ -32,7 +32,7 @@
 		}
 	},
 	"popup": {
-		"metamask-chain-not-matched": "Dvision supports Ethereum/BSC now.\nCheck metamask is on Ethereum/BSC mainnet",
+		"metamask-chain-not-matched": "Dvision supports ETH/BSC/POL now.\nCheck metamask is on ETH/BSC/POL mainnet",
 		"metamask-request-error": "Error on request metamask account. Error Code : ",
 		"login-required" : "You need to login to use this service.",
 		"wallet-list-not-found": "The registered wallet list wasn’t found",
