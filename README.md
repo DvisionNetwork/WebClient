@@ -6,6 +6,9 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.2
+	- Add polygon token (MATIC)
+
 ### v.0.8.1
 	- Add selling functions
 	- Move item page via inventory
