@@ -943,6 +943,12 @@ export default {
 		width: 100%;
 		height: auto;
 	}
+	.staking-box{
+	@include FLEX(flex-start, flex-start);
+		margin-top: gREm(77);
+		width: 100%;
+		height: auto;
+	}
 
 }
 
