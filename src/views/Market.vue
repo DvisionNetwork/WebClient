@@ -14,9 +14,10 @@
 		<div class="content-body-wrap">
 
 			<div class="tabs">
-				<div class="item"
+				<div
+					class="item"
 					v-for="(item, idx) in markets"
-					:selected="currTabIdx==idx ? true : false"
+					:selected="currTabIdx == idx ? true : false"
 					@click="onTabClick(idx)"
 				>
 					{{ item.name }}
@@ -25,15 +26,19 @@
 
 			<div class="tab-line"></div>
 
-			<div v-if="tab_page.indexOf('land')==0" class="land-box">
-				<MarketLand :tab_page="tab_page"/>
+			<div v-if="tab_page.indexOf('land') == 0" class="land-box">
+				<MarketLand :tab_page="tab_page" />
 			</div>
+
+			<div v-else-if="tab_page == 'staking'" class="staking-box">
+				<MarketStaking :tab_page="tab_page" />
+			</div>
+
 			<div v-else class="content-box">
 
 				<div class="side-menu">
 					<SideMenu :sideMenu="assetMenu" @selection-changed="onChangeSideMenu"/>
 				</div>
-
 				<div class="contents">
 					<div class="content-menu-box">
 						<div class="search-box">
@@ -152,6 +157,7 @@ import Product from '@/components/Product.vue'
 import FOOT from '@/components/FOOT.vue'
 import MarketDetail from '@/views/Market.Detail.vue'
 import MarketLand from '@/views/Market.Land.vue'
+import MarketStaking from '@/views/MyPage.Staking.vue'
 
 export default {
 	name: "Market",
@@ -161,6 +167,7 @@ export default {
 		Product,
 		MarketDetail,
 		MarketLand,
+		MarketStaking,
 		FOOT,
 	},
 	props: {
@@ -251,6 +258,7 @@ export default {
 				{name: 'BSC', id:'bsc'},
 				{name: 'ETH', id:'eth'},
 				{name: 'Enjin (soon)', id:'partner_1'},
+				{name: 'Staking (LAND) ', id:'staking'},
 			],
 
 			category_1: 0,
@@ -313,12 +321,21 @@ export default {
 
 			var network = "0x0";
 
+			console.log('newTab', newTab)
+
 			if(newTab == 'eth') {
 				network = gConfig.wlt.getAddr().Network;
 				this.setSearchQuery(1, network);
 			} else if (newTab = 'bsc') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
+			} else if (newTab = 'staking') {
+				network = gConfig.wlt.getBscAddr().Network;
+				this.setSearchQuery(1, network);
+			}
+
+			if (idx == 4) {
+				this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
 			}
 
 			if(idx<=1) {
