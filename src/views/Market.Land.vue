@@ -309,10 +309,18 @@ export default {
 		// },
 
 		/// API
+		getDvLand() {
+			return this.mxGetLandMap(this.mapId);
+		},
+
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
-			this.mxCallAndSetLandItemList(this.mapId, ()=>{
+
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+			console.log("zmfhdn77 network : ", network)
+
+			this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
 				console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 				this.setLandItems(this.searchQuery);
 			});

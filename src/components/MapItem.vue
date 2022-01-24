@@ -7,7 +7,11 @@
 		<canvas :id="'cv-item-'+item.id" type="main" class="cv-land"></canvas>
 		<div class="desc-box">
 			<span class="desc-name">{{ item.n }} </span>
-			<div class="price-box">
+			<div v-if="item.tokentype=='0'" class="pol-box">
+				<div class="pol-icon"></div>
+				<div class="pol-value">{{ item.dviprice ? addComma(item.dviprice) : "0.00" }}</div>
+			</div>
+			<div v-else class="price-box">
 				<div class="marketimage"></div>
 				<span class="desc-price">{{ item.dviprice ? addComma(item.dviprice) : "0.00" }}</span>
 			</div>
@@ -220,6 +224,21 @@ export default {
 			height: gREm(19);
 			padding-right: gREm(28);
 			@include Set-Font($AppFont, gREm(16), gREm(19), #ffffff);
+		}
+		.pol-box {
+			@include FLEX(flex-end, center);
+			.pol-icon {
+				width: gREm(22);
+				height: gREm(19);
+				margin-right: gREm(8);
+				@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+			}
+			.pol-value {
+				width: auto;
+				height: gREm(19);
+				margin-left:gREm(8);
+				@include Set-Font($AppFont, gREm(15), gREm(19), #7A4ADD);
+			}
 		}
 		.price-box{
 			@include FLEX(flex-end,center);

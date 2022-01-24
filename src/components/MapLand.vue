@@ -27,7 +27,11 @@
 		</div>
 		<div v-if="toolTip.isForSale()==true" class="price info">
 			<div class="header">{{$t('market.land.price')}}</div>
-			<div class="price-box">
+			<div v-if="toolTip.getTokenType()=='0'" class="pol-box">
+				<div class="pol-icon"></div>
+				<div class="pol-value">{{toolTip.getPrice()}}</div>
+			</div>
+			<div v-else class="price-box">
 				<div class="icon"></div>
 				<div class="value">{{toolTip.getPrice()}}</div>
 			</div>
@@ -136,7 +140,15 @@ export default {
 				getPrice() {
 					// return "1,000,000";
 					if(_U.isDefined(this.block,'dviprice')) {
-						return _U.addComma(this.block.dviprice); // wallet address
+						return _U.addComma(this.block.dviprice);
+					}else{
+						return '0';
+					}
+				},
+				getTokenType() {
+					if(_U.isDefined(this.block,'tokentype')) {
+						console.log("zmfhdn77 tokentype : ", _U.getIfDefined(this.block, 'tokentype'));
+						return  _U.getIfDefined(this.block, 'tokentype');
 					}else{
 						return '0';
 					}
@@ -554,6 +566,21 @@ export default {
 				width: auto;
 				height: gREm(18);
 				@include Set-Font($AppFont, gREm(14), gREm(18), #959699,300);
+			}
+			.pol-box {
+				@include FLEX(flex-start, center);
+				margin-top:gREm(13);
+				.pol-icon {
+					width: gREm(22);
+					height: gREm(19);
+					@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+				}
+				.pol-value {
+					width: auto;
+					height: gREm(18);
+					margin-left:gREm(8);
+					@include Set-Font($AppFont, gREm(15), gREm(19), #7A4ADD);
+				}
 			}
 			.price-box {
 				@include FLEX(flex-start, center);

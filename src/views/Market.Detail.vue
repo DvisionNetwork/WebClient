@@ -200,10 +200,14 @@ export default {
 
 		if(this.tab_page == 'land-detail') {
 			var landItems = this.mxGetLandItems();
+			console.log("@@ marketItem : ", this.marketItem);
 			console.log("@@ landItems === ", landItems);
+
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
 			if(typeof landItems == 'undefined' || landItems == null) {
 
-				this.mxCallAndSetLandItemList(this.mapId, ()=>{
+				this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
 					console.log("@@ landItems === undefined ==> after mxCallAndSetLandItemList() ");
 					this.callLandItem();
 					var land = this.getDvLand();
@@ -297,6 +301,7 @@ export default {
 					name: this.blockInfo.n,
 					detail : _U.getIfDefined(this.blockDetail,'description'),
 					price : this.addComma(_U.getIfDefined(this.blockDetail,'dviprice')),
+					tokentype : _U.getIfDefined(this.blockDetail,'tokentype'),
 					owner_id : _U.getIfDefined(this.blockDetail,'owner_address'),
 					token_id : _U.getIfDefined(this.blockDetail,'token_id'),
 					premium : _U.getIfDefined(this.blockDetail,'premium'),
@@ -362,7 +367,9 @@ export default {
 		callLandItemList() {
 
 			console.log("[Market.Detail.vue] callLandItemList()");
-			this.mxCallAndSetLandItemList(this.mapId);
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
+			this.mxCallAndSetLandItemList(this.mapId, network);
 
 		},
 
@@ -370,10 +377,11 @@ export default {
 
 			var dvLand = this.getDvLand();
 			var landCode = dvLand.n;
+			var network = gConfig.wlt.getNetworkAddr(dvLand.network).Network;
 			var query = {
 				land_code: landCode,
 				index: this.blockId,
-				network: '("' + this.marketItem.network + '")',
+				network: '("' + network + '")',
 			};
 			console.log("[Market.Detail.vue] callLandItem(), query, dvLand : ", query, dvLand);
 
@@ -1645,6 +1653,38 @@ export default {
 						}
 					}
 					@include SetBgImage(url('../assets/img/market/certi_land_newyork_04_premium.png'));
+				}
+
+				&[map_id="london"] {
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
+						}
+					}
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
+						}
+					}
+					@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
 				}
 			}
 			.buy-box{

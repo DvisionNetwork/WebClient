@@ -160,6 +160,17 @@ export default function AppConfig() {
 			},
 			getBidAddr () {
 				return gConfig.wlt.addrBid;
+			},
+			getNetworkAddr (network) {
+				if(network == 'ETH') {
+					return gConfig.wlt.getAddr();
+				}else if(network == 'BSC') {
+					return gConfig.wlt.getBscAddr();
+				}else if(network == 'POL') {
+					return gConfig.wlt.getPolygonAddr();
+				}else {
+					return '';
+				}
 			}
 		},
 
