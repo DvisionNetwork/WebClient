@@ -11,6 +11,7 @@ export default createStore({
 		showAddWallet: false,
 		showChangePasswordPopup: false,
 		showEditProfile: false,
+		showStakingModal:false,
 		countryCodeNo: '82',
 		userInfo: {
 			"id": "",
@@ -79,7 +80,9 @@ export default createStore({
 		SHOW_EDIT_PROFILE(state, value) {
 			state.showEditProfile = value;
 		},
-
+		SHOW_STAKING_MODAL(state, value) {
+			state.showStakingModal = value;
+		},
 		SET_USER_INFO(state, value) {
 			state.userInfo = value;
 		},
@@ -208,7 +211,10 @@ export default createStore({
 			// console.log("[STORE.actions] showEditProfile(), ", value);
 			context.commit('SHOW_EDIT_PROFILE',value);
 		},
-
+		showStakingModal(context, value) {
+			// console.log("[STORE.actions] showStakingModal(), ", value);
+			context.commit('SHOW_STAKING_MODAL',value);
+		},
 		setUserInfo(context, value) {
 			// console.log("[STORE.actions] setUserInfo(), ", value);
 			context.commit('SET_USER_INFO',value);

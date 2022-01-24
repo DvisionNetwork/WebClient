@@ -116,7 +116,12 @@ var Mixin = {
 		mxCloseEditProfile() {
 			this.$store.dispatch('showEditProfile', false);
 		},
-
+		mxShowStakingModal() {
+			this.$store.dispatch('showStakingModal', true);
+		},
+		mxCloseStakingModal() {
+			this.$store.dispatch('showStakingModal', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},

@@ -24,6 +24,10 @@
 		appear
 		v-if="isShowEditProfile"
 	/>
+		<PopupShowStakingModal
+		appear
+		v-if="isShowStakingModal"
+	/>
 
 
 	<transition	appear name="fade">
@@ -115,6 +119,7 @@ import Event from './components/Event.vue'
 import PopupAddWallet from './components/Popup.AddWallet.vue'
 import PopupChangePassword from './components/Popup.ChangePassword.vue'
 import PopupEditProfile from './components/Popup.EditProfile.vue'
+import PopupShowStakingModal from './components/Popup.StakingModal.vue'
 
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
@@ -145,7 +150,8 @@ export default {
 		Event,
 		PopupAddWallet,
 		PopupChangePassword,
-		PopupEditProfile
+		PopupEditProfile,
+		PopupShowStakingModal
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
@@ -288,6 +294,9 @@ export default {
 		},
 		isShowEditProfile() {
 			return this.$store.state.showEditProfile;
+		},
+		isShowStakingModal() {
+			return this.$store.state.showStakingModal;
 		},
 
 		theme() {

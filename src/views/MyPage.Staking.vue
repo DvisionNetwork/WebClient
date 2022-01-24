@@ -1,9 +1,26 @@
 <template>
-	<div class="side-menu">
-		<SimpleSideMenu
-			:sideMenu="stakingMenu"
-			@selection-changed="onChangeSideMenu"
-		/>
+	<div class="tab-menu">
+		<div
+			class="tab"
+			:class="{ active: tab_left === 1 }"
+			@click="tab_left = 1"
+		>
+			30 days
+		</div>
+		<div
+			class="tab"
+			:class="{ active: tab_left === 2 }"
+			@click="tab_left = 2"
+		>
+			60 days
+		</div>
+		<div
+			class="tab"
+			:class="{ active: tab_left === 3 }"
+			@click="tab_left = 3"
+		>
+			90 days
+		</div>
 	</div>
 
 	<div class="contents">
@@ -13,7 +30,12 @@
 			<h2 class="">Staked LANDs</h2>
 			<div class="unlock-lands">Unlock all LANDs</div>
 		</div>
+		<div class="list-card">
+			<AddLand :onClick="showModal" />
+			<LandCard />
+		</div>
 	</div>
+	<PopupInput />
 </template>
 
 <script>
@@ -22,6 +44,8 @@ import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
+import LandCard from '@/components/LandCard.vue'
+import AddLand from '@/components/AddLand.vue'
 
 var gConfig = AppConfig()
 export default {
@@ -31,6 +55,8 @@ export default {
 		MapLand,
 		MapItem,
 		RewardBox,
+		LandCard,
+		AddLand,
 	},
 	props: {
 		tab_page: {
@@ -53,6 +79,7 @@ export default {
 		return {
 			pages: [1],
 			currentPage: 1,
+			tab_left: 1,
 		}
 	},
 	computed: {
@@ -65,18 +92,44 @@ export default {
 		},
 	},
 	watch: {},
-	methods: {},
+	methods: {
+		showModal() {
+      // this.visible = true;
+		this.mxShowStakingModal();
+    },
+    handleOk(e) {
+      this.ModalText = 'The modal will be closed after two seconds';
+      this.confirmLoading = true;
+      setTimeout(() => {
+        this.visible = false;
+        this.confirmLoading = false;
+      }, 2000);
+    },
+    handleCancel(e) {
+      console.log('Clicked cancel button');
+      this.visible = false;
+    },
+	},
 }
 </script>
 
 <style lang="scss" scoped>
-.side-menu {
-	width: gREm(216);
-	height: auto;
-	min-width: gREm(216);
+.tab-menu {
+	width: 100%;
+	max-width: gREm(216);
+	& .tab {
+		border-radius: gREm(10);
+		margin-bottom: gREm(9);
+		padding: gREm(11) gREm(20);
+		cursor: pointer;
+		&.active,
+		&:hover {
+			background: #2a2932;
+		}
+	}
 }
 .contents {
-	padding-left: gREm(82);
+	padding-left: gREm(35);
 	width: 100%;
 	@include FLEXV(space-between, flex-start);
 	.title {
@@ -114,6 +167,14 @@ export default {
 			font-family: 'Montserrat';
 			background: #5f5f5f;
 		}
+	}
+	.list-card {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: gREm(10);
+		margin-bottom: gREm(20);
 	}
 }
 
