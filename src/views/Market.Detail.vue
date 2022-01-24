@@ -31,14 +31,22 @@
 						</div>
 						<div v-if="isItemOwned()" class="price info">
 							<div class="header">{{$t('market.detail.input-price')}}</div>
-							<div class="price-box">
+							<div v-if="marketItem.tokentype=='0'" class="price-box">
+								<div class="pol-icon"></div>
+								<input class="pol-value" id="input-price" type="number" v-model="sellPrice"/>
+							</div>
+							<div v-else class="price-box">
 								<div class="icon"></div>
 								<input class="value" id="input-price" type="number" v-model="sellPrice"/>
 							</div>
 						</div>
 						<div v-else class="price info">
 							<div class="header">{{$t('market.detail.price')}}</div>
-							<div class="price-box">
+							<div v-if="marketItem.tokentype=='0'" class="price-box">
+								<div class="pol-icon"></div>
+								<div class="pol-value">{{marketItem.price}}</div>
+							</div>
+							<div v-else class="price-box">
 								<div class="icon"></div>
 								<div class="value">{{marketItem.price}}</div>
 							</div>
@@ -307,7 +315,7 @@ export default {
 					total_supply : 1,
 					sell_amount: 1,
 					own_amount: 1,
-					network: gConfig.wlt.getBscAddr().Network // testing
+					network: gConfig.wlt.getNetworkAddr(this.blockInfo.network).Network // testing
 				}
 			}else{
 				return this.mxGetMarketItem();
@@ -1504,6 +1512,17 @@ export default {
 						.price-box{
 							@include FLEX(flex-start, center);
 							margin-top:gREm(10);
+							.pol-icon{
+								width: gREm(22);
+								height: gREm(19);
+								@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+							}
+							.pol-value{
+								width: auto;
+								height: gREm(22);
+								margin-left:gREm(5);
+								@include Set-Font($AppFont, gREm(18), gREm(22), #7A4ADD);
+							}
 							.icon{
 								width:gREm(14);
 								height: gREm(16);
