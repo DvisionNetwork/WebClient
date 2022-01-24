@@ -121,10 +121,10 @@ export default function AppConfig() {
 			/* -----------------  Polygon Network ----------------- */
 			addrPolygonDev: {
 				// token contract for dev
-				TokenAddress :             "",
-				Contract721Address :       "",
-				Contract1155Address :      "",
-				ContractMarketAddress :    "",
+				TokenAddress :             "0xE966b6F7a7A4f2A02dd3455d4F391C68f2EAbF2B",
+				Contract721Address :       "0xA8a9fF7e1597f00988ab643A95c07cc9D80fD979",
+				Contract1155Address :      "0x0B162A4907127711342418b6a0e0bffD3Ef6532A",
+				ContractMarketAddress :    "0xbd68B0A248028A4aAE60390DEB1AcD16684EB941",
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network : "0x13881"
 			},
@@ -201,6 +201,12 @@ export default function AppConfig() {
 				'newyork': {
 					'centerLogoImg' : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='23' height='20' viewBox='0 0 23 20'%3E%3Cpath fill='%238483a7' d='M9.025 15.181l-.38 5.584a1.312 1.312 0 0 0 1.063-.537l2.552-2.545 5.288 4.041c.97.564 1.653.267 1.915-.931l3.47-16.972c.308-1.5-.518-2.081-1.463-1.714l-20.4 8.151C-.325 10.821-.3 11.631.831 12l5.216 1.693L18.164 5.78c.57-.394 1.089-.176.662.218z' transform='translate(0 -2)'/%3E%3C/svg%3E"
 				},
+				'tokyo': {
+					'centerLogoImg' : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='23' height='20' viewBox='0 0 23 20'%3E%3Cpath fill='%238483a7' d='M9.025 15.181l-.38 5.584a1.312 1.312 0 0 0 1.063-.537l2.552-2.545 5.288 4.041c.97.564 1.653.267 1.915-.931l3.47-16.972c.308-1.5-.518-2.081-1.463-1.714l-20.4 8.151C-.325 10.821-.3 11.631.831 12l5.216 1.693L18.164 5.78c.57-.394 1.089-.176.662.218z' transform='translate(0 -2)'/%3E%3C/svg%3E"
+				},
+				'london': {
+					'centerLogoImg' : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='23' height='20' viewBox='0 0 23 20'%3E%3Cpath fill='%238483a7' d='M9.025 15.181l-.38 5.584a1.312 1.312 0 0 0 1.063-.537l2.552-2.545 5.288 4.041c.97.564 1.653.267 1.915-.931l3.47-16.972c.308-1.5-.518-2.081-1.463-1.714l-20.4 8.151C-.325 10.821-.3 11.631.831 12l5.216 1.693L18.164 5.78c.57-.394 1.089-.176.662.218z' transform='translate(0 -2)'/%3E%3C/svg%3E"
+				},
 				'monster' : {
 					"m_0" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='20' viewBox='0 0 25 20'%3E%3Cg%3E%3Cpath fill='%238483a7' d='M25 50.368a10.817 10.817 0 0 1-2.953.8 5.033 5.033 0 0 0 2.253-2.793 10.34 10.34 0 0 1-3.25 1.222A5.174 5.174 0 0 0 17.308 48a5.1 5.1 0 0 0-5 6.2 14.583 14.583 0 0 1-10.567-5.28 5 5 0 0 0 1.575 6.745A5.122 5.122 0 0 1 1 55.043v.057a5.09 5.09 0 0 0 4.106 4.958 5.191 5.191 0 0 1-1.344.166 4.6 4.6 0 0 1-.97-.086 5.164 5.164 0 0 0 4.789 3.515A10.4 10.4 0 0 1 1.227 65.8 9.751 9.751 0 0 1 0 65.735 14.593 14.593 0 0 0 7.862 68 14.369 14.369 0 0 0 22.45 53.64c0-.223-.008-.438-.019-.652A10.139 10.139 0 0 0 25 50.368z' transform='translate(0 -48) translate(0 0)'/%3E%3C/g%3E%3C/svg%3E",
 					"m_1" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='28' height='26' viewBox='0 0 28 26'%3E%3Cdefs%3E%3Cpattern id='pattern' preserveAspectRatio='none' width='100%25' height='100%25' viewBox='0 0 102 96'%3E%3Cimage width='102' height='96' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABgCAYAAADvhgd/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LmRhYmFjYmIsIDIwMjEvMDQvMTQtMDA6Mzk6NDQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjRGNjMwRjA0QzFCNzExRUI5NzkyQjZFNjUzOERDMzA3IiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjRGNjMwRjAzQzFCNzExRUI5NzkyQjZFNjUzOERDMzA3IiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQ5REVCMDhBOUJCMTFFQkI1RDU4RDc5QjU2M0VGMEYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQ5REVCMDlBOUJCMTFFQkI1RDU4RDc5QjU2M0VGMEYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz77NnRKAAAIUUlEQVR42uxdaWwV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'/%3E%3C/pattern%3E%3C/defs%3E%3Crect id='ic-medium' width='28' height='26' fill='url(%23pattern)'/%3E%3C/svg%3E"
@@ -208,7 +214,7 @@ export default function AppConfig() {
 			},
 
 			// // 0: Public Building 1: Building for sale, 2: Road, 3: Station, 4: forbidden
-			drawSequence: ["2","3","0","1","4","-1","selected"],
+			drawSequence: ["2","3","0","1","5","6","4","-1","selected"],
 			// drawSequence: ["1"],
 			landBlock: {
 				"-1": { // centerBlock
@@ -242,10 +248,17 @@ export default function AppConfig() {
 					lineColor: "rgba(0,0,0,0)",
 					lineWidth: 0,
 				},
-				"5": {
-					fillColor: "#6323b5", // government 정부소유
+				"5": { // Water
+					fillColor: "rgba(175,245,247,0.3)",
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
 				},
-				"6": {
+				"6": { // Landmark
+					fillColor: "rgba(255,187,250,0.3)",
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
+				},
+				"7": {
 					fillColor: "#92b7cb", // sidewalk 절반보도
 				}
 			},
@@ -282,9 +295,16 @@ export default function AppConfig() {
 					lineWidth: 0,
 				},
 				"5": {
-					fillColor: "#6323b5", // government 정부소유
+					fillColor: "rgba(175,245,247,1.0)",
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
 				},
-				"6": {
+				"6": { // Landmark
+					fillColor: "rgba(255,187,250,1.0)",
+					lineColor: "rgba(0,0,0,0)",
+					lineWidth: 0,
+				},
+				"7": {
 					fillColor: "#92b7cb", // sidewalk 절반보도
 				}
 			},
