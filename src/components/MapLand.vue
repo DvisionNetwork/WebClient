@@ -147,7 +147,6 @@ export default {
 				},
 				getTokenType() {
 					if(_U.isDefined(this.block,'tokentype')) {
-						console.log("zmfhdn77 tokentype : ", _U.getIfDefined(this.block, 'tokentype'));
 						return  _U.getIfDefined(this.block, 'tokentype');
 					}else{
 						return '0';

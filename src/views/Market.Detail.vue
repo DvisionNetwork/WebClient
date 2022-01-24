@@ -200,7 +200,6 @@ export default {
 
 		if(this.tab_page == 'land-detail') {
 			var landItems = this.mxGetLandItems();
-			console.log("@@ marketItem : ", this.marketItem);
 			console.log("@@ landItems === ", landItems);
 
 			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;

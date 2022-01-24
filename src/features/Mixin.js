@@ -311,8 +311,6 @@ var Mixin = {
 			}
 			if(!dvLand) return;
 
-			console.log("zmfhdn77 network : ", network);
-
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
