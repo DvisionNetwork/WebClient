@@ -122,6 +122,18 @@ var Mixin = {
 		mxCloseStakingModal() {
 			this.$store.dispatch('showStakingModal', false);
 		},
+		mxShowSuccessModal(obj) {
+			this.$store.dispatch('showSuccessModal', obj);
+		},
+		mxCloseSuccessModal() {
+			this.$store.dispatch('showSuccessModal', false);
+		},
+		mxShowConfirmModal(obj) {
+			this.$store.dispatch('showConfirmModal', obj);
+		},
+		mxCloseConfirmModal() {
+			this.$store.dispatch('showConfirmModal', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},

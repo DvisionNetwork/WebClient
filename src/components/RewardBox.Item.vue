@@ -4,7 +4,12 @@
 			<div class="name">{{ name }}</div>
 			<div class="point" v-if="value">{{ value }}</div>
 		</div>
-		<div class="harvest" v-if="hadHarvest" :class="{ active: isActive }">
+		<div
+			class="harvest"
+			v-if="hadHarvest"
+			:class="{ active: isActive }"
+			@click="handleClickHarvest"
+		>
 			Harvest
 		</div>
 	</div>
@@ -23,7 +28,27 @@ export default {
 			isActive: false,
 		}
 	},
-	methods: {},
+	methods: {
+		renderContent() {
+			return `<p>You got 234432 DVG from the staking campaign!</p>
+				<br />
+					<p>
+						The earned DVG has been transferred to your Dvision
+						WORLD DVG balance.
+					</p>`
+		},
+		handleClickHarvest() {
+			const obj = {
+				width: '712px',
+				height: '244px',
+				title: 'Reward harvested',
+				content: this.renderContent(),
+				buttonTxt: 'OK',
+				isShow: true,
+			}
+			this.mxShowSuccessModal(obj)
+		},
+	},
 }
 </script>
 
@@ -39,14 +64,14 @@ export default {
 	justify-content: space-between;
 	padding: gREm(16) gREm(11) gREm(16) gREm(18);
 	.name {
-		font-family: 'Montserrat';
+		font-family: 'Montserrat, sans-serif';
 		font-size: gREm(16);
 		font-weight: 400;
 		line-height: gREm(22.4);
 		color: #ffffff66;
 	}
 	.point {
-		font-family: 'Montserrat';
+		font-family: 'Montserrat, sans-serif';
 		font-size: gREm(17);
 		font-weight: 400;
 		line-height: gREm(25);
@@ -62,7 +87,8 @@ export default {
 		padding: 0 gREm(17.5);
 		font-size: gREm(16);
 		line-height: gREm(22);
-		font-family: 'Montserrat';
+		font-family: 'Montserrat, sans-serif';
+		cursor: pointer;
 		&.active {
 			background: #f6583e;
 		}

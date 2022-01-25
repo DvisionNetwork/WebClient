@@ -1,38 +1,21 @@
 <template>
-	<div class="tab-menu">
-		<div
-			class="tab"
-			:class="{ active: tab_left === 1 }"
-			@click="tab_left = 1"
-		>
-			30 days
-		</div>
-		<div
-			class="tab"
-			:class="{ active: tab_left === 2 }"
-			@click="tab_left = 2"
-		>
-			60 days
-		</div>
-		<div
-			class="tab"
-			:class="{ active: tab_left === 3 }"
-			@click="tab_left = 3"
-		>
-			90 days
-		</div>
-	</div>
-
+	<StakingTab />
 	<div class="contents">
 		<h2 class="title">Reward Pool</h2>
 		<RewardBox />
 		<div class="staked-land">
 			<h2 class="">Staked LANDs</h2>
-			<div class="unlock-lands">Unlock all LANDs</div>
+			<div class="unlock-lands active" @click="handleUnlockAll">
+				Unlock all LANDs
+			</div>
 		</div>
 		<div class="list-card">
 			<AddLand :onClick="showModal" />
-			<LandCard />
+			<LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
+			<LandCard :isDisable="false" :isUnlock="false" />
+			<LandCard :isDisable="false" :isUnlock="true" />
+			<LandCard :isDisable="true" :isUnlock="true" />
+			<LandCard :isDisable="true" :isUnlock="false" />
 		</div>
 	</div>
 	<PopupInput />
@@ -40,18 +23,17 @@
 
 <script>
 import AppConfig from '@/App.Config.js'
-import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
+import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 
-var gConfig = AppConfig()
 export default {
 	name: 'staking',
 	components: {
-		SimpleSideMenu,
+		StakingTab,
 		MapLand,
 		MapItem,
 		RewardBox,
@@ -82,59 +64,67 @@ export default {
 			tab_left: 1,
 		}
 	},
-	computed: {
-		stakingMenu() {
-			return [
-				{ name: '30 days', mapId: '30d' },
-				{ name: '60 days', mapId: '60d' },
-				{ name: '90 days', mapId: '90d' },
-			]
-		},
-	},
 	watch: {},
 	methods: {
+		renderUnlockContent() {
+			return `
+			<p>All staked LANDs will be unlocked and returned to your account. Are you sure you want to unlock all staked LANDs?</p><br />
+			<p>(You can:</p>
+			<p>- leave the staked LANDs in the pool until the next campaign starts to continue staking them</p>
+			<p>- or, unlock them now if you want to use them)</p>
+			`
+		},
+		handleClick() {
+			this.mxCloseConfirmModal()
+			const obj = {
+				width: '478px',
+				title: 'Success',
+				content:
+					'All of your staked LANDs have been unlocked and returned to your account.',
+				buttonTxt: 'OK',
+				isShow: true,
+			}
+			this.mxShowSuccessModal(obj)
+		},
+		handleUnlockAll() {
+			const obj = {
+				width: '712px',
+				title: 'Unlock all LANDs?',
+				content: this.renderUnlockContent(),
+				buttonTxt: 'Unlock',
+				isShow: true,
+				onClick: this.handleClick,
+			}
+			this.mxShowConfirmModal(obj)
+		},
 		showModal() {
-      // this.visible = true;
-		this.mxShowStakingModal();
-    },
-    handleOk(e) {
-      this.ModalText = 'The modal will be closed after two seconds';
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
-    },
-    handleCancel(e) {
-      console.log('Clicked cancel button');
-      this.visible = false;
-    },
+			// this.visible = true;
+			this.mxShowStakingModal()
+		},
+		handleOk(e) {
+			this.ModalText = 'The modal will be closed after two seconds'
+			this.confirmLoading = true
+			setTimeout(() => {
+				this.visible = false
+				this.confirmLoading = false
+			}, 2000)
+		},
+		handleCancel(e) {
+			console.log('Clicked cancel button')
+			this.visible = false
+		},
 	},
 }
 </script>
 
 <style lang="scss" scoped>
-.tab-menu {
-	width: 100%;
-	max-width: gREm(216);
-	& .tab {
-		border-radius: gREm(10);
-		margin-bottom: gREm(9);
-		padding: gREm(11) gREm(20);
-		cursor: pointer;
-		&.active,
-		&:hover {
-			background: #2a2932;
-		}
-	}
-}
 .contents {
 	padding-left: gREm(35);
 	width: 100%;
 	@include FLEXV(space-between, flex-start);
 	.title {
 		font-weight: 600;
-		font-family: 'Montserrat';
+		font-family: 'Montserrat, sans-serif';
 		font-size: gREm(24);
 		line-height: gREm(29);
 		margin-bottom: gREm(25);
@@ -147,7 +137,7 @@ export default {
 		width: 100%;
 		margin-bottom: gREm(17);
 		.staked-title {
-			font-family: 'Montserrat';
+			font-family: 'Montserrat, sans-serif';
 			font-size: gREm(24);
 			font-style: normal;
 			font-weight: 600;
@@ -164,8 +154,12 @@ export default {
 			padding: 0 gREm(11);
 			font-size: gREm(16);
 			line-height: gREm(22);
-			font-family: 'Montserrat';
+			font-family: 'Montserrat, sans-serif';
 			background: #5f5f5f;
+			cursor: pointer;
+			&.active {
+				background: #f6583e;
+			}
 		}
 	}
 	.list-card {

@@ -15,16 +15,23 @@
 						Staking a LAND(s) will yield DVG in Dvision WORLD.
 						Select one or multiple LANDs to stake.
 					</div>
-					<div class="list-staking"></div>
+					<div class="list-staking">
+						<LandCard />
+						<LandCard />
+						<LandCard />
+						<LandCard />
+						<LandCard />
+						<LandCard />
+						<LandCard />
+						<LandCard />
+					</div>
 					<div class="line"></div>
 					<div class="bottom">
-						<div class="bottom-left">
-							<input
-								class="chk"
-								type="checkbox"
-								v-model="hadUnderstand"
-								@click="hadUnderstand = !hadUnderstand"
-							/>
+						<div class="bottom-left" @click="hadUnderstand = !hadUnderstand">
+							<div class="box-chk">
+								<img v-if="hadUnderstand" src="../assets/img/img-checkbox-active.svg" />
+								<img v-else src="../assets/img/img-checkbox.svg" />	
+							</div>
 							<span
 								>I understand that will not be able to use or
 								unstake my LANDs during the Staking period
@@ -32,10 +39,12 @@
 						</div>
 						<div class="bottom-right">
 							<span
-								class="btn-stake"
-								:class="{ active: hadUnderstand }"
+								v-if="hadUnderstand"
+								class="btn-stake active"
+								@click="showSuccess"
 								>Stake</span
 							>
+							<span v-else class="btn-stake">Stake</span>
 							<span class="btn-cancel" @click="closePopup"
 								>Cancel</span
 							>
@@ -51,11 +60,11 @@
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
 
-import PopupInput from '@/components/PopupInput.vue'
+import LandCard from '@/components/LandCard.vue'
 
 export default {
 	components: {
-		PopupInput,
+		LandCard,
 	},
 	mounted() {
 		// this.popType = authInfo.type;
@@ -75,6 +84,24 @@ export default {
 	methods: {
 		closePopup() {
 			this.mxCloseStakingModal()
+		},
+		renderSuccessContent() {
+			return `
+			<p>You have staked your LAND(s) successfully. The staked LANDs will be shown under “Staked LANDs” section.</p><br />
+			<p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can harvest the accumulated DVG reward at any time during the Staking period (up until the Harvest time).</p>
+			`
+		},
+		showSuccess() {
+			this.mxCloseStakingModal()
+			const obj = {
+				width: '712px',
+				height: '328px',
+				title: 'Success',
+				content: this.renderSuccessContent(),
+				buttonTxt: 'I understand',
+				isShow: true,
+			}
+			this.mxShowSuccessModal(obj)
 		},
 	},
 }
@@ -103,9 +130,8 @@ export default {
 			height: gREm(918);
 			margin: 0px auto;
 			padding: 50px 30px;
-
 			transition: all 0.3s ease;
-			font-family: 'Montserrat';
+			font-family: 'Montserrat, sans-serif';
 			& .title {
 				font-size: gREm(28);
 				line-height: gREm(20);
@@ -133,7 +159,7 @@ export default {
 				}
 			}
 			& .desc {
-				font-family: 'Montserrat';
+				font-family: 'Montserrat, sans-serif';
 				font-size: gREm(16);
 				font-style: normal;
 				font-weight: 400;
@@ -144,7 +170,23 @@ export default {
 				margin-bottom: gREm(19);
 			}
 			& .list-staking {
+				width: 120%;
+				max-width: 1120px;
+				overflow: auto;
 				height: 630px;
+				display: flex;
+				justify-content: flex-start;
+				align-items: flex-start;
+				flex-wrap: wrap;
+				gap: gREm(10);
+				margin-bottom: gREm(20);
+				&::-webkit-scrollbar {
+					width: gREm(7);
+				}
+				&::-webkit-scrollbar-thumb {
+					background: #d6d8dc;
+					border-radius: gREm(7);
+				}
 			}
 			& .line {
 				background: #ffffff;
@@ -154,16 +196,14 @@ export default {
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				margin-top: gREm(24);
+				margin-top: gREm(15.5);
 				& .bottom-left {
 					display: flex;
 					align-items: center;
-					& .chk {
-						margin-right: gREm(14);
-						width: gREm(24);
-						height: gREm(24);
-						border: 1px solid #ffffff;
-						background: #181721;
+					cursor: pointer;
+					& .box-chk {
+						width: gREm(32);
+						height: gREm(32);
 					}
 					& span {
 						font-family: Montserrat;
@@ -187,9 +227,9 @@ export default {
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						cursor: pointer;
 						&.active {
 							background: #f6583e;
+							cursor: pointer;
 						}
 					}
 					& .btn-cancel {

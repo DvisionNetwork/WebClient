@@ -19,7 +19,6 @@
 				<span v-if="!isUnlock" class="lock-desc"
 					>Staking in progress</span
 				>
-				<div v-if="isUnlock" class="btn-unlock">Unlock</div>
 			</div>
 		</div>
 		<div class="card-title">Dvision LAND: Gangnam-Daero Intersection</div>
@@ -32,6 +31,9 @@
 			<span class="left">ID</span>
 			<span>173656</span>
 		</div>
+		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
+			<span>Unlock</span>
+		</div>
 	</div>
 </template>
 
@@ -42,15 +44,37 @@ export default {
 		name: String,
 		hadHarvest: Boolean,
 		value: String,
+		isUnlock: Boolean,
+		isActive: Boolean,
+		isDisable: Boolean,
 	},
-	data() {
-		return {
-			isUnlock: false,
-			isActive: false,
-			isDisable: true,
-		}
+	data() {},
+	methods: {
+		handleClick() {
+			this.mxCloseConfirmModal()
+			const obj = {
+				width: '478px',
+				title: 'Success',
+				content:
+					'The selected LANDs has been unlocked and returned to your account.',
+				buttonTxt: 'OK',
+				isShow: true,
+			}
+			this.mxShowSuccessModal(obj)
+		},
+		handleUnlockClick() {
+			const obj = {
+				width: '712px',
+				title: 'Unlock the selected LAND?',
+				content:
+					'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?',
+				buttonTxt: 'Unlock',
+				isShow: true,
+				onClick: this.handleClick,
+			}
+			this.mxShowConfirmModal(obj)
+		},
 	},
-	methods: {},
 }
 </script>
 
@@ -59,7 +83,6 @@ export default {
 	border-radius: gREm(10);
 	border: 2px solid #d6d8dc;
 	width: 100%;
-	height: gREm(416);
 	max-width: gREm(266);
 	padding: gREm(15) gREm(20);
 	&.active {
@@ -73,7 +96,7 @@ export default {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
-      border-radius: 3px;
+			border-radius: 3px;
 		}
 		& .lock {
 			position: absolute;
@@ -106,36 +129,17 @@ export default {
 				font-size: gREm(16);
 				line-height: gREm(25);
 				font-weight: 600;
-				font-family: 'Montserrat';
+				font-family: 'Montserrat, sans-serif';
 				text-align: center;
 				position: absolute;
 				top: gREm(148);
 				left: 50%;
 				transform: translate(-50%, -50%);
 			}
-			& .btn-unlock {
-				width: gREm(212);
-				height: gREm(32);
-				background: #f6583e;
-				border-radius: gREm(10);
-				padding: gREm(5);
-				font-family: 'Montserrat';
-				font-weight: 400;
-				font-size: gREm(16);
-				color: #ffffff;
-				text-align: center;
-				position: absolute;
-				bottom: gREm(10);
-				margin-left: gREm(7);
-				cursor: pointer;
-				&:hover {
-					background: #ce351d;
-				}
-			}
 		}
 	}
 	.card-title {
-		font-family: 'Montserrat';
+		font-family: 'Montserrat, sans-serif';
 		font-weight: 400;
 		font-size: gREm(16);
 		line-height: gREm(25);
@@ -162,11 +166,30 @@ export default {
 		span {
 			font-size: gREm(12);
 			line-height: gREm(16);
-			font-family: 'Montserrat';
+			font-family: 'Montserrat, sans-serif';
 			&.left {
 				color: #ffffff66;
 				line-height: gREm(17);
 			}
+		}
+	}
+	.btn-unlock {
+		width: 100%;
+		height: gREm(32);
+		background: #5F5F5F;
+		border-radius: gREm(10);
+		font-family: 'Montserrat, sans-serif';
+		font-weight: 400;
+		font-size: gREm(16);
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-top: gREm(17);
+		&:hover {
+			background: #F6583E;
 		}
 	}
 }
