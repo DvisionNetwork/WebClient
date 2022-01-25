@@ -761,7 +761,9 @@ export default {
 							}else{
 								// console.log("Matched address");
 
-								if(gConfig.getNetwork() != 'BSC')
+								var networkName = this.getDvLand().network;
+
+								if(gConfig.getNetwork() != networkName)
 								{
 									this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
 									this.mxCloseLoading();
@@ -791,21 +793,41 @@ export default {
 
 								var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
 
-								this.approve_data = {
-									type: 'Approval',
-									category: '721',
-									price: priceWithoutComma,
-									fToast: this.mxShowToast,
-									network: this.networkName,
-									callback: this.onApproveDvi
-								};
+								var tokenType = this.marketItem.tokentype;
+								
+								if(tokenType == 0) {
+									var data = {
+										account: buyer,
+										itemId: this.blockInfo.id,
+										ownerId: this.marketItem.owner_id,
+										land_code: this.getDvLand().n,
+										price: this.marketItem.price,
+										network: this.marketItem.network,
+										callback: this.onBuyLandItem
+									};
 
-								this.mxCloseLoading();
-								this.mxShowAlert({
-									msg:this.$t('market.detail.alert-approve-msg'),
-									btn:this.$t('market.detail.alert-approve-button'),
-									callback: this.onCallbackApprovePopup
-								});
+									console.log('[Market-Detail] onApproveDvi(), call data:', data);
+									wAPI.buyLandItem(data);
+								} else if (tokenType == 1) {
+									this.approve_data = {
+										type: 'Approval',
+										category: '721',
+										price: priceWithoutComma,
+										fToast: this.mxShowToast,
+										network: this.networkName,
+										callback: this.onApproveDvi
+									};
+
+									this.mxCloseLoading();
+									this.mxShowAlert({
+										msg:this.$t('market.detail.alert-approve-msg'),
+										btn:this.$t('market.detail.alert-approve-button'),
+										callback: this.onCallbackApprovePopup
+									});
+								} else {
+									// TODO Error popup
+									console.log("error message");
+								}
 							}
 
 							return;
@@ -856,15 +878,18 @@ export default {
 
 			var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
 
+			var networkName = this.getDvLand().network;
+
 			this.trade_data = {
 				type: 'Trade',
 				category: '721',
 				price: priceWithoutComma,
+				tokenType: this.marketItem.tokentype,
 				tokenId: this.marketItem.token_id,
 				amount: 1,
 				ownerId: this.marketItem.owner_id,
 				fToast: this.mxShowToast,
-				network: this.networkName,
+				network: networkName,
 				callback: this.onTradeDvi
 			};
 

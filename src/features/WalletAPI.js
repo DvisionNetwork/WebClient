@@ -241,12 +241,7 @@ buyLandItem(J) {
 },
 
 getContAddr(nft, network) {
-	var addr;
-	if (network == "ETH") {
-		addr = gConfig.wlt.getAddr();
-	} else if (network == "BSC") {
-		addr = gConfig.wlt.getBscAddr();
-	}
+	var addr = gConfig.wlt.getNetworkAddr(network);
 
 	var contAddr = null;
 	if(nft=='721') {
@@ -258,24 +253,14 @@ getContAddr(nft, network) {
 	return contAddr;
 },
 getMarketAddr(network) {
-	var addr;
-	if (network == "ETH") {
-		addr = gConfig.wlt.getAddr();
-	} else if (network == "BSC") {
-		addr = gConfig.wlt.getBscAddr();
-	}
+	var addr = gConfig.wlt.getNetworkAddr(network);
 
 	var contAddr = addr.ContractMarketAddress;
 
 	return contAddr;
 },
 getContract(type, network, nft) {
-	var addr;
-	if (network == "ETH") {
-		addr = gConfig.wlt.getAddr();
-	} else if (network == "BSC") {
-		addr = gConfig.wlt.getBscAddr();
-	}
+	var addr = gConfig.wlt.getNetworkAddr(network);
 
 	var contract = null;
 	if(type == 'Approval') {
@@ -345,9 +330,16 @@ async ContractDvi(J) {
 					sendTransactionPromise = await contract.approve(contAddr, value);
 				}else if(J.type == 'Trade') {
 					if(J.category=='721'){
-						console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
-						sendTransactionPromise =
-							await contract.Trade_721dvi(J.tokenId.toString(), value);
+						
+						if(J.tokenType == 0) {
+							console.log('[WalletAPI] ContractDvi call  contract.Trade_721eth("'+J.tokenId+'", '+value+' );');
+							sendTransactionPromise =
+								await contract.trade721ETH(J.tokenId.toString()); // function check
+						} else {
+							console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
+							sendTransactionPromise =
+								await contract.Trade_721dvi(J.tokenId.toString(), value);
+						}
 					}
 					else if(J.category=='1155') {
 						console.log('[WalletAPI] ContractDvi call  contract.Trade_1155dvi("'+J.ownerId+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');
