@@ -101,7 +101,7 @@
 			</div>
 		</div>
 		<div v-else-if="tab_page=='land-map'" class="canvas-box">
-			<MapLand :mapId="mapId" />
+			<MapLand ref="refMapLand" :mapId="mapId" />
 		</div>
 	</div>
 
@@ -464,6 +464,10 @@ export default {
 
 			var total = blockListAll.length;
 			this.mxSetLandItems({total:total,  page:query.page, cpp: query.count,  list:blockList});
+
+			if(this.$refs.refMapLand) {
+				this.$refs.refMapLand.mapInit();
+			}
 		},
 
 		setPages() {
