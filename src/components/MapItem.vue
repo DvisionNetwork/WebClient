@@ -81,8 +81,6 @@ export default {
 		setTimeout(()=>{
 			this.mapInit();
 		},10);
-
-
 	},
 	updated() {
 		// this.mxCloseLoading();

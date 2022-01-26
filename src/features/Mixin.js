@@ -377,7 +377,7 @@ var Mixin = {
 
 		},
 
-		mxCallAndSetMyLandItemList(mapId,func) {
+		mxCallAndSetMyLandItemList(mapId, network, func) {
 
 			var landMenu = this.mxGetLandMenu();
 			var dvLand = null;
@@ -392,7 +392,7 @@ var Mixin = {
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
-				network: '("'+ gConfig.wlt.getBscAddr().Network + '")',
+				network: '("'+ network + '")',
 				owner_addr: _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);

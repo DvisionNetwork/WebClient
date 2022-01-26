@@ -1602,11 +1602,11 @@ export default {
 				.description{
 					position: absolute;
 					@include FLEX(center, center);
-					bottom: gREm(60);
+					bottom: gREm(50);
 					height: gREm(30);
 					width: 100%;
 					@include Set-Font($AppFont, gREm(16), gREm(19), #ffffff,800);
-					-webkit-text-stroke: 1px #555555;
+					// -webkit-text-stroke: 1px #555555;
 					text-shadow: 0px 3px 3px #000000;
 					//  text-shadow:
 					// 	3px 3px 0 #000,
