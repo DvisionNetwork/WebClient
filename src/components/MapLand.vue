@@ -446,7 +446,7 @@ export default {
 				return;
 			}
 			var block = this.getBlockInfo(blockPos);
-			if(block && block.id) {
+			if(block && block.id && block.c < 4) {
 				var rInfo = {
 					name:"Market-Detail-Index",
 					params:{
