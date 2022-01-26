@@ -1071,7 +1071,10 @@ export default {
 
 					this.mxCloseLoading();
 					var msg = this.$t('market.detail.alert-success-on-sell');
-					this.mxShowAlert({msg: msg});
+					this.mxShowAlert({
+						msg: msg,
+						callback: this.refreshPage
+					});
 				}
 			});
 		},
