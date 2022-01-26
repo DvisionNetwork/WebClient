@@ -58,7 +58,7 @@
 				<div class="buy-certificate-photo" :premium="marketItem.premium" :type="getBlockPosInfo('size')" :map_id="mapId">
 
 					<div class="description">
-						<p v-html="marketItem.detail"></p>
+						<p>{{reducedOwnerAddress}}</p>
 					</div>
 
 					<div class="text pos-size">{{getBlockPosInfo('size')}}</div>
@@ -321,6 +321,15 @@ export default {
 				return this.mxGetMarketItem();
 			}
 		},
+		reducedOwnerAddress() {
+			var address = this.marketItem.owner_id;
+			var reducedAddress = '';
+			if(address != undefined && address.length == 42) {
+				reducedAddress = address.slice(0, 10) + '...' + address.slice(32,42);
+			}
+
+			return reducedAddress;
+		},
 		networkName() {
 			var marketItem ='';
 			if(this.tab_page == 'land-detail') {
@@ -367,6 +376,10 @@ export default {
 				return ownerId == curWallet;
 			}
 			return false;
+		},
+
+		refreshPage() {
+			this.$router.go();
 		},
 
 		/// API
@@ -1005,7 +1018,10 @@ export default {
 			}
 			this.mxCloseLoading();
 			var msg = this.$t('market.detail.alert-success-on-buy');
-			this.mxShowAlert({msg: msg});
+			this.mxShowAlert({
+				msg: msg,
+				callback: this.refreshPage
+			});
 		},
 		onCallbackSellPopup(resp) {
 			var data = this.trade_data;
@@ -1096,7 +1112,10 @@ export default {
 
 					this.mxCloseLoading();
 					var msg = this.$t('market.detail.alert-success-on-sell');
-					this.mxShowAlert({msg: msg});
+					this.mxShowAlert({
+						msg: msg,
+						callback: this.refreshPage
+					});
 				}
 			});
 		}
@@ -1583,8 +1602,6 @@ export default {
 					bottom: gREm(60);
 					height: gREm(30);
 					width: 100%;
-					padding-left: gREm(20);
-					padding-right: gREm(20);
 					@include Set-Font($AppFont, gREm(16), gREm(19), #ffffff,800);
 					-webkit-text-stroke: 1px #555555;
 					text-shadow: 0px 3px 3px #000000;
@@ -1594,7 +1611,7 @@ export default {
 					// 	1px -1px 0 #000,
 					// 	-1px 1px 0 #000,
 					// 	1px 1px 0 #000;
-					text-transform: uppercase;
+					text-transform: uppercase;	
 				}
 
 				.text {

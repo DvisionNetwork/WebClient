@@ -884,7 +884,7 @@ export default {
 
 	.canvas-box {
 		width: gREm(933);
-		height: gREm(350);
+		height: gREm(700);
 
 		// @include FLEXV(space-between, flex-start);
 		margin-top: gREm(30);

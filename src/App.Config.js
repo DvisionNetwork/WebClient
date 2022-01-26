@@ -244,7 +244,7 @@ export default function AppConfig() {
 					lineWidth: 1,
 				},
 				"2": { // road 도로
-					fillColor: "rgba(114,118,127,0.3)",
+					fillColor: "rgba(114,118,127,1.0)",
 					lineColor: "#72767f",
 					lineWidth: 0,
 				},
