@@ -2,7 +2,7 @@
 <template>
 	<div class="Market-Detail" >
 		<div v-if="tab_page=='land-detail'" class="top-land">
-			<MapLand :mapId="mapId" :blockId="blockId"/>
+			<MapLand ref="refMapLand" :mapId="mapId" :blockId="blockId"/>
 		</div>
 		<div v-else class="top-info" :level="mxGetLevelCssType(marketItem.rarity)" >
 			<div class="item-img" :style="mxGetBgImageStyle(marketItem.thumbnail_url)"  />
@@ -419,6 +419,10 @@ export default {
 					console.log('[Market.Detail.vue] callLandItem(), blockDetail:', blockDetail);
 
 					this.mxCloseLoading();
+
+					if(this.$refs.refMapLand) {
+						this.$refs.refMapLand.mapInit();
+					}
 				}
 			});
 		},
