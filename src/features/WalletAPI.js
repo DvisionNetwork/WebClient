@@ -274,7 +274,6 @@ getContract(type, network, nft) {
 	}
 	else if(type == 'Sell' && nft == '721') {
 		if(network == 'POL') {
-			console.log("zmfhdn77 sell pol");
 			contract = new ethers.Contract(addr.Contract721Address, pol721_ABI, lv_signer);
 		} else {
 			contract = new ethers.Contract(addr.Contract721Address, erc721_ABI, lv_signer);
@@ -307,7 +306,6 @@ async ContractDvi(J) {
 	if(!lv_signer) { lv_signer = lv_provider.getSigner(); }
 
 	var contract = this.getContract(J.type, J.network, J.category);
-	console.log("zmfhdn77 sell pol");
 	if(!contract) {
 		J.callback({
 			res_code:401,

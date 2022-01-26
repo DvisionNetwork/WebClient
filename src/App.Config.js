@@ -249,7 +249,8 @@ export default function AppConfig() {
 					lineWidth: 0,
 				},
 				"3": { // station
-					fillColor: "rgba(146,183,203,0.3)",
+					// fillColor: "rgba(146,183,203,0.3)",
+					fillColor: "rgba(159,29,247,1.0)",
 					lineColor: "rgba(0,0,0,0)",
 					lineWidth: 0,
 				},
@@ -260,7 +261,7 @@ export default function AppConfig() {
 					lineWidth: 0,
 				},
 				"5": { // Water
-					fillColor: "rgba(175,245,247,0.3)",
+					fillColor: "rgba(175,245,247,1.0)",
 					lineColor: "rgba(0,0,0,0)",
 					lineWidth: 0,
 				},
@@ -295,7 +296,8 @@ export default function AppConfig() {
 					lineWidth: 0,
 				},
 				"3": { // station
-					fillColor: "rgba(146,183,203,1.0)",
+					// fillColor: "rgba(146,183,203,0.3)",
+					fillColor: "rgba(159,29,247,1.0)",
 					lineColor: "rgba(0,0,0,0)",
 					lineWidth: 0,
 				},

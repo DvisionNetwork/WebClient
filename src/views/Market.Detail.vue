@@ -1071,9 +1071,11 @@ export default {
 				return;
 			}
 
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
 			var query = {
 				token_id: this.marketItem.token_id,
-				network: this.marketItem.network,
+				network: network,
 				dvi_price: this.sellPrice,
 				sale_state: 'true',
 			}
