@@ -102,7 +102,6 @@ export default {
 			return this.userInfo.id ? 'on' : 'off';
 		},
 		network() {
-			console.log("zmfhdn77 network, ", this.network);
 			return this.$store.state.network;
 		},
 		currentPage() {

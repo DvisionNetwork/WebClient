@@ -267,15 +267,18 @@ getContract(type, network, nft) {
 		contract = new ethers.Contract(addr.TokenAddress, erc20_ABI, lv_signer);
 	}
 	else if(type == 'Trade' && network == 'POL') {
-		console.log("zmfhdn77 11");
 		contract = new ethers.Contract(addr.ContractMarketAddress, polmarket_ABI, lv_signer);
 	}
 	else if(type == 'Trade' && network != 'POL') {
-		console.log("zmfhdn77 22");
 		contract = new ethers.Contract(addr.ContractMarketAddress, market_ABI, lv_signer);
 	}
 	else if(type == 'Sell' && nft == '721') {
-		contract = new ethers.Contract(addr.Contract721Address, erc721_ABI, lv_signer);
+		if(network == 'POL') {
+			console.log("zmfhdn77 sell pol");
+			contract = new ethers.Contract(addr.Contract721Address, pol721_ABI, lv_signer);
+		} else {
+			contract = new ethers.Contract(addr.Contract721Address, erc721_ABI, lv_signer);
+		}
 	}
 	else if(type == 'Sell' && nft == '1155') {
 		contract = new ethers.Contract(addr.Contract1155Address, erc1155_ABI, lv_signer);
@@ -304,6 +307,7 @@ async ContractDvi(J) {
 	if(!lv_signer) { lv_signer = lv_provider.getSigner(); }
 
 	var contract = this.getContract(J.type, J.network, J.category);
+	console.log("zmfhdn77 sell pol");
 	if(!contract) {
 		J.callback({
 			res_code:401,
@@ -356,12 +360,17 @@ async ContractDvi(J) {
 					}
 				}else if(J.type == 'Sell') {
 					if(J.category=='721') {
-						// TODO: Cohesion control with Refinable
 						var marketContract = this.getMarketAddr(J.network);
-						console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+value+' );');
 
-						sendTransactionPromise =
-							await contract.Sell_Item(marketContract, J.tokenId.toString(), value, 1);
+						if(J.tokenType == 0) {
+							console.log('[WalletAPI] ContractDvi call  contract.sellItem("'+marketContract+'", "'+J.tokenId+'", '+J.tokenType+", "+value+' );');
+							sendTransactionPromise =
+								await contract.sellItem(marketContract, J.tokenId.toString(), value, J.tokenType);
+						} else {
+							console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+J.tokenType+", "+value+' );');
+							sendTransactionPromise =
+								await contract.Sell_Item(marketContract, J.tokenId.toString(), value, J.tokenType);
+						}
 					} else if(J.category == '1155') {
 						var marketContract = this.getMarketAddr(J.network);
 						console.log('[WalletAPI] ContractDvi call  contract.Sell_Item("'+marketContract+'", "'+J.tokenId+'", '+value+', '+J.amount+' );');

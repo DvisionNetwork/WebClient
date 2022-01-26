@@ -305,7 +305,8 @@
 			"alert-same-account": "Buyer and seller have same account",
 			"alert-network-not-matched": "Your metamask in not on network item registered.\nChange your network.",
 			"alert-address-not-matched": "Current active metamask account is not your wallet address.",
-			"alert-sell-amount-invalid": "Please input sell price!! It must not be zero"
+			"alert-sell-amount-invalid": "Please input sell price!! It must not be zero",
+			"alert-invalid-token-type": "Invalid type of payment"
 		}
 	},
 	"guide": {

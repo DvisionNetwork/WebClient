@@ -597,11 +597,9 @@ export default {
 						if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
 							this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
 						}else{
-							// console.log("Matched address");
+							var networkName = this.getDvLand().network;
 
-							console.log(this.networkName);
-							console.log(gConfig.getNetwork());
-							if(this.networkName != gConfig.getNetwork())
+							if(gConfig.getNetwork() != networkName)
 							{
 								this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
 								this.mxCloseLoading();
@@ -626,14 +624,16 @@ export default {
 							}
 
 							this.mxShowLoading('inf');
+							var tokenType = this.marketItem.tokentype;
 
 							this.trade_data = {
 								type: 'Sell',
 								category: '721',
 								price: this.sellPrice,
 								tokenId: this.marketItem.token_id,
+								tokenType: tokenType,
 								fToast: this.mxShowToast,
-								network: this.networkName,
+								network: networkName,
 								callback: this.onSellLand
 							};
 
@@ -805,8 +805,7 @@ export default {
 										network: this.marketItem.network,
 										callback: this.onBuyLandItem
 									};
-
-									console.log('[Market-Detail] onApproveDvi(), call data:', data);
+									this.mxCloseLoading();
 									wAPI.buyLandItem(data);
 								} else if (tokenType == 1) {
 									this.approve_data = {
@@ -825,8 +824,8 @@ export default {
 										callback: this.onCallbackApprovePopup
 									});
 								} else {
-									// TODO Error popup
-									console.log("error message");
+									this.mxCloseLoading();
+									this.mxShowAlert({msg:this.$t('market.detail.alert-invalid-token-type')});
 								}
 							}
 
