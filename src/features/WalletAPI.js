@@ -266,7 +266,12 @@ getContract(type, network, nft) {
 	if(type == 'Approval') {
 		contract = new ethers.Contract(addr.TokenAddress, erc20_ABI, lv_signer);
 	}
-	else if(type == 'Trade') {
+	else if(type == 'Trade' && network == 'POL') {
+		console.log("zmfhdn77 11");
+		contract = new ethers.Contract(addr.ContractMarketAddress, polmarket_ABI, lv_signer);
+	}
+	else if(type == 'Trade' && network != 'POL') {
+		console.log("zmfhdn77 22");
 		contract = new ethers.Contract(addr.ContractMarketAddress, market_ABI, lv_signer);
 	}
 	else if(type == 'Sell' && nft == '721') {
@@ -333,8 +338,11 @@ async ContractDvi(J) {
 						
 						if(J.tokenType == 0) {
 							console.log('[WalletAPI] ContractDvi call  contract.Trade_721eth("'+J.tokenId+'", '+value+' );');
+							const overrides = { 
+								value: value
+							};
 							sendTransactionPromise =
-								await contract.trade721ETH(J.tokenId.toString()); // function check
+								await contract.trade721ETH(J.tokenId.toString(), overrides); // function check
 						} else {
 							console.log('[WalletAPI] ContractDvi call  contract.Trade_721dvi("'+J.tokenId+'", '+value+' );');
 							sendTransactionPromise =
@@ -398,7 +406,7 @@ async ContractDvi(J) {
 				}
 			} catch (err) {
 				msg="["+J.type+"-"+J.category+"] Error catched on <br> sendTransactionPromise() <br>"+ err.code;
-				// console.error(err,msg);
+				console.error(err,msg);
 				// console.log("===========================================");
 				// console.log(err);
 				// console.log("===========================================");

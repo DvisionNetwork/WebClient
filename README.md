@@ -8,6 +8,7 @@
 
 ### v.0.8.2
 	- Add polygon token (MATIC)
+	- 2nd Land sale on polygon
 
 ### v.0.8.1
 	- Add selling functions
