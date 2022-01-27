@@ -22,13 +22,28 @@
 </template>
 
 <script>
+import axios from 'axios'
+import Web3 from "web3"
 import AppConfig from '@/App.Config.js'
+var gConfig = AppConfig()
+
 import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
+
+
+import ABI_721 from '@/abi/ABI712.json'
+import ABI_1155 from '@/abi/ABI1155.json'
+import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
+
+const Contract721Address= "0xF36721581B3dB68408A7189840C79Ad47C719c71"
+const Contract1155Address= "0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1"
+const STATUS_721 = "0xD41eddEdB1891B626FADD17B328e14077c8248Cb"
+const STATUS_1155 = "0x3a0792d301a40eBcd9199431b00AD26603b7cdc4"
+
 
 export default {
 	name: 'staking',
@@ -54,7 +69,10 @@ export default {
 			this.tab_page
 		)
 	},
-	mounted() {},
+	mounted() {
+		// this.onGetNftowner();
+		// this.onAddListing()
+	},
 	beforeUpdate() {},
 	updated() {},
 	data() {
@@ -113,6 +131,50 @@ export default {
 			console.log('Clicked cancel button')
 			this.visible = false
 		},
+
+		async onGetNftowner() {
+			let params = {
+				owner: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80', 
+				collectionAddress: "0xd41eddedb1891b626fadd17b328e14077c8248cb",
+				chainId: 97,
+			}
+			console.log('[MyPage.Inventory] callMyItems() query:', params)
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-owner`,
+				{ params }
+			)
+			console.log('response', response)
+			// this.mxShowLoading()
+			// _U.callPost({
+			// 	url: `${gConfig.public_api_sotatek}/nft-owner`,
+			// 	data: params,
+			// 	callback: (resp) =>{
+			// 		console.log("[MyPage.Inventory] callMyItems()-> resp ", resp);
+			// 	}
+			// });
+			// console.log('Clicked cancel button111111111111111')
+		},
+
+		async onAddListing() {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(Web3.givenProvider || "https://data-seed-prebsc-1-s1.binance.org:8545/")
+				const contractConn = await new web3.eth.Contract(
+					ABI_721,
+					Contract721Address
+				)
+				await contractConn.methods
+					.approve(Contract721Address, 123131)
+					.send({
+						from: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80',
+					})
+					.then((tx) => {
+						console.log(tx)
+					})
+					.catch((e) => {
+						console.log(e)
+					})
+			}
+		}
 	},
 }
 </script>
