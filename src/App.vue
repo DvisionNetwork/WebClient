@@ -33,7 +33,16 @@
 					@click="mxCloseAlert(false)"
 				></div>
 				<div class="message" v-html="$store.state.showAlert.msg"></div>
-				<div class="btn g-btn"
+				<vue-recaptcha v-show="showRecaptcha" siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
+					size="normal" 
+					theme="light"
+					lang="en"
+					@verify="recaptchaVerified"
+					@expire="recaptchaExpired"
+					@fail="recaptchaFailed"
+					ref="vueRecaptcha">
+				</vue-recaptcha>
+				<div v-if="isShowBtn" class="btn g-btn"
 					@click="mxCloseAlert(true)" >
 					{{$store.state.showAlert.btn ? $store.state.showAlert.btn : $t('btn.ok') }}
 				</div>
@@ -124,6 +133,8 @@ var CCodes = new CountryCodes();
 
 import DVILand from '@/data/Market.LandInfo.js'
 
+import vueRecaptcha from 'vue3-recaptcha2';
+
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/plugin.md
 class myPlugin extends ScrollbarPlugin {
 	static pluginName = 'myPlugin';
@@ -145,7 +156,8 @@ export default {
 		Event,
 		PopupAddWallet,
 		PopupChangePassword,
-		PopupEditProfile
+		PopupEditProfile,
+		vueRecaptcha
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
@@ -344,6 +356,8 @@ export default {
 		return {
 			showToastTimer: null,
 			scrollbar: null,
+			showRecaptcha: true,
+			isShowBtn: false,
 		}
 	},
 
@@ -361,6 +375,20 @@ export default {
 
 		scrollTop() {
 			this.scrollbar.scrollTo(0,0);
+		},
+
+		recaptchaVerified(response) {
+			console.log(response);
+			setTimeout(() => {
+				this.showRecaptcha = false;
+				this.isShowBtn = true;
+			},500);
+		},
+		recaptchaExpired() {
+			this.$refs.vueRecaptcha.reset();
+		},
+		recaptchaFailed() {
+			console.log("failed");
 		},
 
 		setEthereumEvent() {
