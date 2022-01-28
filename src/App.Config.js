@@ -131,9 +131,9 @@ export default function AppConfig() {
 			addrPolygonProd: {
 				// token contract for rel
 				TokenAddress :             "0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204",
-				Contract721Address :       "0xA90010D8d5D09788F57Cd6E10a3b1db5564a803E",
-				Contract1155Address :      "0x10df5214C75552273387E811087F8681C12407Dd",
-				ContractMarketAddress :    "0xE922149436a2d1E98812e9C5f1C5530B3277E657",
+				Contract721Address :       "0xBEDF7769720481f03a5B4927A1D51c738cf20FDf",
+				Contract1155Address :      "0xdd2308914a006f32d4294A609eC1418080f1A26d",
+				ContractMarketAddress :    "0x5737366c02f1E60B089a56215384F733Fb02CE61",
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network : "0x89"
 			},
