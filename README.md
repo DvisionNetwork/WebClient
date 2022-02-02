@@ -6,6 +6,9 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.3
+	- Fix the bug : function for buying lands in BSC
+
 ### v.0.8.2
 	- Add polygon token (MATIC)
 	- 2nd Land sale on polygon

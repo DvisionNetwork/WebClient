@@ -830,7 +830,7 @@ export default {
 										category: '721',
 										price: priceWithoutComma,
 										fToast: this.mxShowToast,
-										network: this.networkName,
+										network: networkName,
 										callback: this.onApproveDvi
 									};
 
