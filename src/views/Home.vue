@@ -221,9 +221,8 @@ export default {
 		checkMobile() {
 			if (navigator.appVersion.indexOf("Win")!=-1)
 				return false;
-			if (navigator.appVersion.indexOf("Mac")!=-1)
+			if (navigator.appVersion.indexOf("Mac")!=-1 && navigator.appVersion.indexOf("iPhone")==-1)
 				return false;
-
 			return true;
 		},
 		getUUID() {
@@ -352,6 +351,7 @@ export default {
 		
 		.notice {
 			@include Set-Font($AppFont, gREm(27), 1.22, #ee4705, 600);
+			margin-bottom: gREm(10);
 		}
 		.title {
 			@include Set-Font($AppFont, gREm(60), 1.22, #ffffff, 600);
