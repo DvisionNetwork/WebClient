@@ -183,6 +183,7 @@
 		"view-more" : "VIEW MORE",
 		"news-title" : "Press release",
 		"main-visual" : {
+			"notice":"<span> This site is optimized for the pc version. <br> Please access the PC version to use all functions.<span>",
 			"title":"<span> Welcome to <br> Dvision Network<span>",
 			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>"
 		},

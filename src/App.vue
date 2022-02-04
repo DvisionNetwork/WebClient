@@ -85,7 +85,7 @@
 	</transition>
 
 		<div id="content">
-			<GNB
+			<GNB v-if="!checkMobile()"
 				appear
 				@change-locale="changeLocale"
 				@click="showLogin"
@@ -371,6 +371,14 @@ export default {
 			// // 	// }
 			// // 	this.$router.go(-1);
 			// }
+		},
+
+		checkMobile() {
+			if (navigator.appVersion.indexOf("Win")!=-1)
+				return false;
+			if (navigator.appVersion.indexOf("Mac")!=-1)
+				return false;
+			return true;
 		},
 
 		scrollTop() {

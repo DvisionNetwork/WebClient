@@ -3,9 +3,10 @@
 		<div class="main-visual">
 			<Player/>
 			<div class="msg-box">
+				<div v-if="checkMobile()" class="msg notice" v-html="mainVisual.noticeHtml"></div>
 				<div class="msg title" v-html="mainVisual.titleHtml"></div>
 				<div class="msg message" v-html="mainVisual.msgHtml"></div>
-				<div class="button" :started="mainVisual.dvw_started">
+				<div v-if="!checkMobile()" class="button" :started="mainVisual.dvw_started">
 					<div class="button-wrap" @click="startDVW">
 						<div class="button-left"></div>
 						<div class="button-right"></div>
@@ -61,6 +62,7 @@ export default {
 			},
 			mainVisual: {
 				titleHtml: this.$t('home.main-visual.title'),
+				noticeHtml: this.$t('home.main-visual.notice'),
 				msgHtml: this.$t('home.main-visual.desc'),
 				dvw_started: false,
 			},
@@ -216,6 +218,14 @@ export default {
 			this.mainVisual.dvw_started  = !this.mainVisual.dvw_started
 			this.mxGameStart();
 		},
+		checkMobile() {
+			if (navigator.appVersion.indexOf("Win")!=-1)
+				return false;
+			if (navigator.appVersion.indexOf("Mac")!=-1)
+				return false;
+
+			return true;
+		},
 		getUUID() {
 			return _U.getUUID();
 		},
@@ -280,6 +290,10 @@ export default {
 			.msg {
 				@include FLEX(center, center);
 			}
+			.notice {
+				text-align: center;
+				@include Set-Font($AppFont, gREm(30), 1.22, #ee4705, 600);
+			}
 			.title {
 				text-align: center;
 				@include Set-Font($AppFont, gREm(70), 1.23, #ffffff, 600);
@@ -335,6 +349,10 @@ export default {
 	height: gREm(800);
 
 	.msg-box {
+		
+		.notice {
+			@include Set-Font($AppFont, gREm(27), 1.22, #ee4705, 600);
+		}
 		.title {
 			@include Set-Font($AppFont, gREm(60), 1.22, #ffffff, 600);
 		}
@@ -373,6 +391,9 @@ export default {
 	height: gREm(768);
 
 	.msg-box {
+		.notice {
+			@include Set-Font($AppFont, gREm(24), 1.22, #ee4705, 600);
+		}
 		.title {
 			@include Set-Font($AppFont, gREm(50), 1.22, #ffffff, 600);
 		}
@@ -411,6 +432,9 @@ export default {
 	height: gREm(720);
 
 	.msg-box {
+		.notice {
+			@include Set-Font($AppFont, gREm(16), 1.22, #ee4705, 600);
+		}
 		.title {
 			width: 100%;
 			@include Set-Font($AppFont, gREm(32), 1.31, #ffffff, 600);
