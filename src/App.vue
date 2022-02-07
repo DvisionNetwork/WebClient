@@ -24,7 +24,20 @@
 		appear
 		v-if="isShowEditProfile"
 	/>
-
+		<PopupShowStakingModal
+		appear
+		v-if="isShowStakingModal"
+	/>
+	<PopupSuccessModal
+		appear
+		v-if="isShowSuccessModal.isShow"
+		:data = isShowSuccessModal
+	/>
+		<PopupConfirmModal
+		appear
+		v-if="isShowConfirmModal.isShow"
+		:data = isShowConfirmModal
+	/>
 
 	<transition	appear name="fade">
 		<div v-if="isShowAlert" class="alert-box">
@@ -115,6 +128,9 @@ import Event from './components/Event.vue'
 import PopupAddWallet from './components/Popup.AddWallet.vue'
 import PopupChangePassword from './components/Popup.ChangePassword.vue'
 import PopupEditProfile from './components/Popup.EditProfile.vue'
+import PopupShowStakingModal from './components/Popup.StakingModal.vue'
+import PopupSuccessModal from './components/Popup.SuccessModal.vue'
+import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
 
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
@@ -145,7 +161,10 @@ export default {
 		Event,
 		PopupAddWallet,
 		PopupChangePassword,
-		PopupEditProfile
+		PopupEditProfile,
+		PopupShowStakingModal,
+		PopupSuccessModal,
+		PopupConfirmModal
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
@@ -289,7 +308,15 @@ export default {
 		isShowEditProfile() {
 			return this.$store.state.showEditProfile;
 		},
-
+		isShowStakingModal() {
+			return this.$store.state.showStakingModal;
+		},
+		isShowSuccessModal() {
+			return this.$store.state.showSuccessModal;
+		},
+			isShowConfirmModal() {
+			return this.$store.state.showConfirmModal;
+		},
 		theme() {
 			return (
 				this.$route.name == 'Home' ||
