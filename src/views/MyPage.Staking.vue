@@ -1,8 +1,8 @@
 <template>
-	<StakingTab />
+	<StakingTab :poolDuration="poolDuration" />
 	<div class="contents">
 		<h2 class="title">Reward Pool</h2>
-		<RewardBox />
+		<RewardBox :poolDuration="poolDuration" />
 		<div class="staked-land">
 			<h2 class="">Staked LANDs</h2>
 			<div class="unlock-lands active" @click="handleUnlockAll">
@@ -23,7 +23,7 @@
 
 <script>
 import axios from 'axios'
-import Web3 from "web3"
+import Web3 from 'web3'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
 
@@ -34,16 +34,15 @@ import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 
-
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
 
-const Contract721Address= "0xF36721581B3dB68408A7189840C79Ad47C719c71"
-const Contract1155Address= "0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1"
-const STATUS_721 = "0xD41eddEdB1891B626FADD17B328e14077c8248Cb"
-const STATUS_1155 = "0x3a0792d301a40eBcd9199431b00AD26603b7cdc4"
-
+const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
+const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
+const STATUS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+const STATUS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
+const STAKING_ABI = '@/abi/StakingABI.json'
 
 export default {
 	name: 'staking',
@@ -69,20 +68,18 @@ export default {
 			this.tab_page
 		)
 	},
-	mounted() {
-		// this.onGetNftowner();
-		// this.onAddListing()
-	},
+	mounted() {},
 	beforeUpdate() {},
 	updated() {},
 	data() {
 		return {
 			pages: [1],
 			currentPage: 1,
-			tab_left: 1,
+			poolDuration: {
+				data: 30,
+			},
 		}
 	},
-	watch: {},
 	methods: {
 		renderUnlockContent() {
 			return `
@@ -134,8 +131,8 @@ export default {
 
 		async onGetNftowner() {
 			let params = {
-				owner: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80', 
-				collectionAddress: "0xd41eddedb1891b626fadd17b328e14077c8248cb",
+				owner: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80',
+				collectionAddress: '0xd41eddedb1891b626fadd17b328e14077c8248cb',
 				chainId: 97,
 			}
 			console.log('[MyPage.Inventory] callMyItems() query:', params)
@@ -157,24 +154,27 @@ export default {
 
 		async onAddListing() {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || "https://data-seed-prebsc-1-s1.binance.org:8545/")
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_721,
 					Contract721Address
 				)
 				await contractConn.methods
-					.approve(Contract721Address, 123131)
+					.approve(Contract721Address, 0)
 					.send({
-						from: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80',
+						from: '0xC5FEdBD978E30862957637f32C53E92184E40835',
 					})
 					.then((tx) => {
-						console.log(tx)
+						console.log('tx', tx)
 					})
 					.catch((e) => {
 						console.log(e)
 					})
 			}
-		}
+		},
 	},
 }
 </script>

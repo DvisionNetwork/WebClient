@@ -2,7 +2,7 @@
 	<div class="box-item">
 		<div>
 			<div class="name">{{ name }}</div>
-			<div class="point" v-if="value">{{ value }}</div>
+			<div class="point" v-if="data">{{ data }}</div>
 		</div>
 		<div
 			class="harvest"
@@ -21,7 +21,7 @@ export default {
 	props: {
 		name: String,
 		hadHarvest: Boolean,
-		value: String,
+		data: String,
 	},
 	data() {
 		return {

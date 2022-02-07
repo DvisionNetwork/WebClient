@@ -2,22 +2,22 @@
 	<div class="tab-menu">
 		<div
 			class="tab"
-			:class="{ active: tab_left === 1 }"
-			@click="tab_left = 1"
+			:class="{ active: poolDuration.data === 30 }"
+			@click="setPoolDuration(30)"
 		>
 			30 days
 		</div>
 		<div
 			class="tab"
-			:class="{ active: tab_left === 2 }"
-			@click="tab_left = 2"
+			:class="{ active: poolDuration.data === 60 }"
+			@click="setPoolDuration(60)"
 		>
 			60 days
 		</div>
 		<div
 			class="tab"
-			:class="{ active: tab_left === 3 }"
-			@click="tab_left = 3"
+			:class="{ active: poolDuration.data === 90 }"
+			@click="setPoolDuration(90)"
 		>
 			90 days
 		</div>
@@ -27,13 +27,22 @@
 <script>
 export default {
 	name: 'StakingTab',
+	
 	props: {
-
+		poolDuration:{
+			type: Object
+		}
 	},
 	data() {
-		return {
-			tab_left: 1,
+		return{
+			// duration: this.poolDuration
 		}
+	},
+	
+	methods: {
+		setPoolDuration: function (value) {
+			this.poolDuration.data = value
+		},
 	},
 }
 </script>
