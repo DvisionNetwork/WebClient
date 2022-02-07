@@ -2,7 +2,7 @@
 	<StakingTab :poolDuration="poolDuration" />
 	<div class="contents">
 		<h2 class="title">Reward Pool</h2>
-		<RewardBox :poolDuration="poolDuration" />
+		<RewardBox :poolDuration="poolDuration" :rewardPool="rewardPool" />
 		<div class="staked-land">
 			<h2 class="">Staked LANDs</h2>
 			<div class="unlock-lands active" @click="handleUnlockAll">
@@ -68,7 +68,9 @@ export default {
 			this.tab_page
 		)
 	},
-	mounted() {},
+	mounted() {
+		this.getCampaignInfo()
+	},
 	beforeUpdate() {},
 	updated() {},
 	data() {
@@ -78,6 +80,7 @@ export default {
 			poolDuration: {
 				data: 30,
 			},
+			rewardPool: 0,
 		}
 	},
 	methods: {
@@ -172,6 +175,24 @@ export default {
 					})
 					.catch((e) => {
 						console.log(e)
+					})
+			}
+		},
+		async getCampaignInfo() {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
+				const contractConn = await new web3.eth.Contract(
+					ABI_APPROVE_ADD_LISTING.abi,
+					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+				)
+				await contractConn.methods
+					.campaignInfo(1)
+					.call()
+					.then((data) => {
+						this.rewardPool = Number(data.rewardRate) * Number(data.duration)
 					})
 			}
 		},

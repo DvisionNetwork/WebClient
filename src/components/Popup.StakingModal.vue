@@ -10,6 +10,16 @@
 							src="../assets/img/ic-search.svg"
 						/>
 						<input type="text" />
+						<div class="fill" @click="setFilter">
+							<span v-if="filterBy === 'asc'"
+								>Sort by Hash Rate (ascending)</span
+							>
+							<span v-else>Sort by Hash Rate (descending)</span>
+							<img
+								class="ic-filter"
+								src="../assets/img/ic-filter.svg"
+							/>
+						</div>
 					</div>
 					<div class="desc">
 						Staking a LAND(s) will yield DVG in Dvision WORLD.
@@ -27,10 +37,19 @@
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
-						<div class="bottom-left" @click="hadUnderstand = !hadUnderstand">
+						<div
+							class="bottom-left"
+							@click="hadUnderstand = !hadUnderstand"
+						>
 							<div class="box-chk">
-								<img v-if="hadUnderstand" src="../assets/img/img-checkbox-active.svg" />
-								<img v-else src="../assets/img/img-checkbox.svg" />	
+								<img
+									v-if="hadUnderstand"
+									src="../assets/img/img-checkbox-active.svg"
+								/>
+								<img
+									v-else
+									src="../assets/img/img-checkbox.svg"
+								/>
 							</div>
 							<span
 								>I understand that will not be able to use or
@@ -78,10 +97,18 @@ export default {
 		return {
 			submitData: null,
 			hadUnderstand: false,
+			filterBy: 'asc',
 		}
 	},
 	props: {},
 	methods: {
+		setFilter() {
+			if (this.filterBy === 'asc') {
+				this.filterBy = 'desc'
+			} else {
+				this.filterBy = 'asc'
+			}
+		},
 		closePopup() {
 			this.mxCloseStakingModal()
 		},
@@ -142,13 +169,16 @@ export default {
 				height: gREm(44);
 				position: relative;
 				margin: gREm(19) 0;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
 				& .ic-search {
 					position: absolute;
 					top: 12px;
 					left: 12px;
 				}
 				& input {
-					width: 100%;
+					width: 821px;
 					height: 100%;
 					border: 1px solid #d6d8dc;
 					border-radius: 10px;
@@ -156,6 +186,18 @@ export default {
 					font-weight: 400;
 					font-size: gREm(13);
 					line-height: gREm(19);
+				}
+				& .fill {
+					width: calc(100% - 831px);
+					height: 100%;
+					background: #1c1a2e;
+					border: 1px solid #d6d8dc;
+					border-radius: 10px;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					padding: 0 10px;
+					cursor: pointer;
 				}
 			}
 			& .desc {

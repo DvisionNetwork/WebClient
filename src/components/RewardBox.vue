@@ -55,7 +55,6 @@ export default {
 			totalMiningHashRate: '0',
 			miningHashRate: '0',
 			mininghashRatePerHour: '0 DVG',
-			rewardPool: 1200000,
 			harvest: true,
 		}
 	},
@@ -68,6 +67,7 @@ export default {
 		poolDuration: {
 			type: Object,
 		},
+		rewardPool : Number
 	},
 	watch: {
 		'poolDuration.data': {
