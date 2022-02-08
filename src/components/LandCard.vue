@@ -95,14 +95,14 @@ export default {
 	border-radius: gREm(10);
 	border: 2px solid #d6d8dc;
 	width: 100%;
-	max-width: gREm(266);
+	max-width: gREm(282);
 	padding: gREm(15) gREm(20);
 	&.active {
 		background: #372e83;
 	}
 	.image {
-		height: gREm(270);
-		width: gREm(226);
+		width: gREm(240);
+		height: gREm(285);
 		position: relative;
 		& img {
 			width: 100%;
@@ -119,7 +119,7 @@ export default {
 			background: #282727e5;
 			z-index: 9;
 			border-radius: gREm(3);
-			width: 226px;
+			width: 240px;
 			& .unlock-img {
 				width: 45px;
 				height: 42px;
@@ -188,7 +188,7 @@ export default {
 	.btn-unlock {
 		width: 100%;
 		height: gREm(32);
-		background: #5F5F5F;
+		background: #5f5f5f;
 		border-radius: gREm(10);
 		font-family: 'Montserrat, sans-serif';
 		font-weight: 400;
@@ -201,7 +201,7 @@ export default {
 		justify-content: center;
 		margin-top: gREm(17);
 		&:hover {
-			background: #F6583E;
+			background: #f6583e;
 		}
 	}
 }

@@ -150,6 +150,7 @@ export default {
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
+						console.log('datadata',data)
 						this.rewardPool = Number(data.rewardRate) * Number(data.duration)
 					})
 			}
@@ -160,8 +161,9 @@ export default {
 
 <style lang="scss" scoped>
 .contents {
-	padding-left: gREm(35);
+	margin-left: gREm(91);
 	width: 100%;
+	max-width: gREm(921);
 	@include FLEXV(space-between, flex-start);
 	.title {
 		font-weight: 600;
@@ -205,10 +207,10 @@ export default {
 	}
 	.list-card {
 		display: flex;
-		justify-content: flex-start;
+		justify-content: space-between;
 		align-items: flex-start;
 		flex-wrap: wrap;
-		gap: gREm(10);
+		gap: gREm(34);
 		margin-bottom: gREm(20);
 	}
 }

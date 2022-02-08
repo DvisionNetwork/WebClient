@@ -58,7 +58,7 @@ export default {
 	border: 1px solid #ffffff66;
 	width: 100%;
 	height: gREm(81);
-	max-width: gREm(284);
+	max-width: gREm(276.33);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;

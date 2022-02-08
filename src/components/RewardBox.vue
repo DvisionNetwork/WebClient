@@ -3,15 +3,7 @@
 		<div class="box-title">
 			<div>
 				<span class="title">
-					<span v-if="!isStarted">Campaign not started yet.</span>
-					<span v-if="isStarted"
-						>Staking campaign starts in:
-						<span
-							class="status"
-							:class="{ green: !isExpried, red: isExpried }"
-							>01d:12h:43m:22s</span
-						>
-					</span>
+					<CountDownTimer />
 				</span>
 			</div>
 			<div class="point">{{ rewardPool }} DVG</div>
@@ -20,7 +12,7 @@
 			<RewardBoxItem
 				name="DVG Earned"
 				:hadHarvest="harvest"
-				value="0 DVG"
+				:data="dvgEarned"
 			/>
 			<RewardBoxItem name="Total Staked LANDs" :data="totalStakedLand" />
 			<RewardBoxItem name="My Staked LANDs" :data="myStakedLand" />
@@ -41,42 +33,72 @@
 import RewardBoxItem from '@/components/RewardBox.Item.vue'
 import Web3 from 'web3'
 import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
+import CountDownTimer from '@/components/CountDownTimer.vue'
+import axios from 'axios'
+import AppConfig from '@/App.Config.js'
+var gConfig = AppConfig()
+
 export default {
 	name: 'RewardBox',
 	components: {
 		RewardBoxItem,
+		CountDownTimer,
 	},
 	data() {
 		return {
-			isStarted: false,
-			isExpried: false,
 			totalStakedLand: '0',
 			myStakedLand: '0',
 			totalMiningHashRate: '0',
 			miningHashRate: '0',
 			mininghashRatePerHour: '0 DVG',
+			dvgEarned: '0 DVG',
 			harvest: true,
 		}
 	},
 	mounted() {
-		this.getTotalMiningHasRate(),
-			this.getMiningHashRate(),
-			this.getMiningHashRatePerHour(this.poolDuration.data)
+		this.getTotalStaked()
+		this.getMyStaked()
+		this.getTotalMiningHasRate()
+		this.getMiningHashRate()
+		this.getMiningHashRatePerHour(this.poolDuration.data)
+		setInterval(() => {
+			this.getCampaignEarned()
+		}, 3000)
 	},
+
 	props: {
 		poolDuration: {
 			type: Object,
 		},
-		rewardPool : Number
+		rewardPool: Number,
 	},
 	watch: {
 		'poolDuration.data': {
 			handler(val) {
 				this.getMiningHashRatePerHour(val)
+				this.getCampaignEarned()
 			},
 		},
 	},
 	methods: {
+		async getTotalStaked() {
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-total-staked`
+			)
+			console.log('response', response)
+			if (response.status === 200) {
+				this.totalStakedLand = response.data.totalStaked.toString()
+			}
+		},
+		async getMyStaked() {
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-my-staked`
+			)
+			console.log('response', response)
+			if (response.status === 200) {
+				this.myStakedLand = response.data.myStaked.toString()
+			}
+		},
 		async getTotalMiningHasRate() {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(
@@ -114,9 +136,32 @@ export default {
 					})
 			}
 		},
+		async getCampaignEarned() {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
+				const contractConn = await new web3.eth.Contract(
+					ABI_APPROVE_ADD_LISTING.abi,
+					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+				)
+				await contractConn.methods
+					.getCampaignEarned(
+						1,
+						'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+					)
+					.call()
+					.then((data) => {
+						this.dvgEarned = `${data} DVG`
+					})
+			}
+		},
 		getMiningHashRatePerHour(duration) {
 			const x =
-				((1000 * this.rewardPool) / (Number(this.totalMiningHashRate) * duration)) | 0
+				((1000 * this.rewardPool) /
+					(Number(this.totalMiningHashRate) * duration)) |
+				0
 			this.mininghashRatePerHour = `${x} DVG`
 		},
 	},
@@ -128,8 +173,8 @@ export default {
 	background: #1c1a2e;
 	border-radius: gREm(10);
 	width: 100%;
-	min-height: gREm(352);
-	padding: gREm(43) gREm(26.5) gREm(44);
+	min-height: gREm(308);
+	padding: gREm(35) gREm(26) gREm(26);
 	margin-bottom: gREm(52);
 	.box-title {
 		display: flex;
@@ -146,12 +191,6 @@ export default {
 				font-weight: 700;
 				margin-left: gREm(18);
 			}
-			.green {
-				color: #47e269;
-			}
-			.red {
-				color: #f6583e;
-			}
 		}
 
 		.point {
@@ -165,7 +204,7 @@ export default {
 		justify-content: space-between;
 		align-items: flex-start;
 		flex-wrap: wrap;
-		gap: 29px;
+		gap: gREm(20);
 	}
 }
 </style>

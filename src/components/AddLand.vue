@@ -40,13 +40,13 @@ export default {
 <style lang="scss" scoped>
 .add-land {
 	border-radius: gREm(10);
-	width: gREm(275);
-	height: gREm(435);
-	padding: gREm(17) gREm(20);
+	width: gREm(282);
+	height: gREm(463);
+	padding: gREm(15) gREm(28);
 	background: #1c1a2e;
 	.add {
-		width: gREm(234);
-		height: gREm(279);
+		width: gREm(226);
+		height: gREm(270);
 
 		position: relative;
 		background: #ffffff;
