@@ -8,16 +8,6 @@
 		<div class="image">
 			<img :src="imageUrl" :alt="imageUrl"/>
 			<div v-if="isDisable" class="lock">
-				<img
-					v-if="isUnlock"
-					src="../assets/img/ic-unlock.svg"
-					class="unlock-img"
-				/>
-				<img
-					v-if="!isUnlock"
-					src="../assets/img/ic-lock.svg"
-					class="lock-img"
-				/>
 				<span v-if="isUnlock" class="lock-desc"
 					>Staking has ended.</span
 				>
@@ -68,7 +58,7 @@ export default {
 				width: '478px',
 				title: 'Success',
 				content:
-					'The selected LANDs has been unlocked and returned to your account.',
+					'The selected LAND has been unlocked and returned to your account.',
 				buttonTxt: 'OK',
 				isShow: true,
 			}
@@ -120,22 +110,6 @@ export default {
 			z-index: 9;
 			border-radius: gREm(3);
 			width: 240px;
-			& .unlock-img {
-				width: 45px;
-				height: 42px;
-				position: absolute;
-				top: gREm(90.5);
-				left: 50%;
-				transform: translate(-50%, -50%);
-			}
-			& .lock-img {
-				width: 36px;
-				height: 46px;
-				position: absolute;
-				top: gREm(90.5);
-				left: 50%;
-				transform: translate(-50%, -50%);
-			}
 			& .lock-desc {
 				width: 100%;
 				font-size: gREm(16);

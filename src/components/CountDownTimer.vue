@@ -1,5 +1,5 @@
 <template>
-	<span v-if="type === 1">Campaign not started yet.</span>
+	<span v-if="type === 1">Campaign is not started yet.</span>
 	<span v-if="type === 2"
 		>Staking campaign starts in:
 		<span class="status green"

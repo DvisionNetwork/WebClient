@@ -14,8 +14,6 @@
 			<LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
 			<LandCard :isDisable="false" :isUnlock="false" />
 			<LandCard :isDisable="false" :isUnlock="true" />
-			<LandCard :isDisable="true" :isUnlock="true" />
-			<LandCard :isDisable="true" :isUnlock="false" />
 		</div>
 	</div>
 	<PopupInput />

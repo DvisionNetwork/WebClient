@@ -11,14 +11,18 @@
 						/>
 						<input type="text" />
 						<div class="fill" @click="setFilter">
-							<span v-if="filterBy === 'asc'"
-								>Sort by Hash Rate (ascending)</span
-							>
-							<span v-else>Sort by Hash Rate (descending)</span>
-							<img
-								class="ic-filter"
-								src="../assets/img/ic-filter.svg"
-							/>
+							<span class="child" v-if="filterBy === 'asc'"
+								><span>Sort by Hash Rate (ascending)</span>
+								<img
+									class="ic-filter"
+									src="../assets/img/ic-filter-asc.svg"
+							/></span>
+							<span class="child" v-else
+								><span>Sort by Hash Rate (descending)</span
+								><img
+									class="ic-filter"
+									src="../assets/img/ic-filter-desc.svg"
+							/></span>
 						</div>
 					</div>
 					<div class="desc">
@@ -300,10 +304,10 @@ export default {
 		.modal-container {
 			background: #181721;
 			border-radius: 10px;
-			width: gREm(1150);
+			width: gREm(1231);
 			max-height: 95vh;
 			margin: 0px auto;
-			padding: 50px 30px;
+			padding: 50px 28px;
 			transition: all 0.3s ease;
 			font-family: 'Montserrat, sans-serif';
 			& .title {
@@ -325,7 +329,7 @@ export default {
 					left: 12px;
 				}
 				& input {
-					width: 821px;
+					width: calc(100% - 273px);
 					height: 100%;
 					border: 1px solid #d6d8dc;
 					border-radius: 10px;
@@ -335,16 +339,19 @@ export default {
 					line-height: gREm(19);
 				}
 				& .fill {
-					width: calc(100% - 831px);
+					width: gREm(263);
 					height: 100%;
 					background: #1c1a2e;
 					border: 1px solid #d6d8dc;
 					border-radius: 10px;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
 					padding: 0 10px;
+					line-height: gREm(44);
 					cursor: pointer;
+					& .child {
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+					}
 				}
 			}
 			& .desc {
@@ -359,8 +366,7 @@ export default {
 				margin-bottom: gREm(19);
 			}
 			& .list-staking {
-				width: 120%;
-				max-width: 1120px;
+				width: 100%;
 				overflow: auto;
 				max-height: 60vh;
 				min-height: 30vh;
