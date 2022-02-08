@@ -1,7 +1,12 @@
 <template>
-	<div class="land-card" :class="{ active: isActive }">
+	<div
+		class="land-card"
+		:class="{ active: isActive }"
+		:key="key"
+		@click="onCheckItem"
+	>
 		<div class="image">
-			<img src="../assets/img/image4.png" />
+			<img :src="imageUrl" :alt="imageUrl"/>
 			<div v-if="isDisable" class="lock">
 				<img
 					v-if="isUnlock"
@@ -21,7 +26,9 @@
 				>
 			</div>
 		</div>
-		<div class="card-title">Dvision LAND: Gangnam-Daero Intersection</div>
+		<div class="card-title">
+			{{ name }}
+		</div>
 		<div class="line" />
 		<div class="bottom">
 			<span class="left">Hash Rate</span>
@@ -29,7 +36,7 @@
 		</div>
 		<div class="bottom">
 			<span class="left">ID</span>
-			<span>173656</span>
+			<span>{{ id }}</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
 			<span>Unlock</span>
@@ -41,12 +48,17 @@
 export default {
 	name: 'LandCard',
 	props: {
+		key: Number,
 		name: String,
+		imageUrl: String,
+		id: Number,
 		hadHarvest: Boolean,
 		value: String,
 		isUnlock: Boolean,
 		isActive: Boolean,
 		isDisable: Boolean,
+		onCheckItem: Function,
+		listNftsCheck: Array,
 	},
 	data() {},
 	methods: {

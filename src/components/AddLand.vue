@@ -23,7 +23,8 @@ export default {
 		name: String,
 		hadHarvest: Boolean,
 		value: String,
-		onClick: Function
+		onClick: Function,
+		listStaking: Array,
 	},
 	data() {
 		return {

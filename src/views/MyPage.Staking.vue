@@ -10,7 +10,7 @@
 			</div>
 		</div>
 		<div class="list-card">
-			<AddLand :onClick="showModal" />
+			<AddLand :onClick="showModal" :listStaking="listStaking" />
 			<LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
 			<LandCard :isDisable="false" :isUnlock="false" />
 			<LandCard :isDisable="false" :isUnlock="true" />
@@ -22,10 +22,7 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Web3 from 'web3'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
 
 import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
@@ -36,7 +33,7 @@ import AddLand from '@/components/AddLand.vue'
 
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
-import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
+import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
 const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
@@ -68,9 +65,7 @@ export default {
 			this.tab_page
 		)
 	},
-	mounted() {
-		this.getCampaignInfo()
-	},
+	mounted() {},
 	beforeUpdate() {},
 	updated() {},
 	data() {
@@ -131,51 +126,14 @@ export default {
 			console.log('Clicked cancel button')
 			this.visible = false
 		},
-
-		async onGetNftowner() {
-			let params = {
-				owner: '0x53f28C491f44EF9d37d3EBc83E2193c170423B80',
-				collectionAddress: '0xd41eddedb1891b626fadd17b328e14077c8248cb',
-				chainId: 97,
-			}
-			console.log('[MyPage.Inventory] callMyItems() query:', params)
-			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-owner`,
-				{ params }
-			)
-			console.log('response', response)
-			// this.mxShowLoading()
-			// _U.callPost({
-			// 	url: `${gConfig.public_api_sotatek}/nft-owner`,
-			// 	data: params,
-			// 	callback: (resp) =>{
-			// 		console.log("[MyPage.Inventory] callMyItems()-> resp ", resp);
-			// 	}
-			// });
-			// console.log('Clicked cancel button111111111111111')
-		},
-
-		async onAddListing() {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
-				const contractConn = await new web3.eth.Contract(
-					ABI_721,
-					Contract721Address
-				)
-				await contractConn.methods
-					.approve(Contract721Address, 0)
-					.send({
-						from: '0xC5FEdBD978E30862957637f32C53E92184E40835',
-					})
-					.then((tx) => {
-						console.log('tx', tx)
-					})
-					.catch((e) => {
-						console.log(e)
-					})
+		async getAccounts() {
+			try {
+				let acc = await window.ethereum.request({
+					method: 'eth_requestAccounts',
+				})
+				return acc
+			} catch (e) {
+				return []
 			}
 		},
 		async getCampaignInfo() {
@@ -185,7 +143,7 @@ export default {
 						'https://data-seed-prebsc-1-s1.binance.org:8545/'
 				)
 				const contractConn = await new web3.eth.Contract(
-					ABI_APPROVE_ADD_LISTING.abi,
+					ABI_STAKING.abi,
 					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
 				)
 				await contractConn.methods

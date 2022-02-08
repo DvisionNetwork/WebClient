@@ -26,14 +26,22 @@
 						Select one or multiple LANDs to stake.
 					</div>
 					<div class="list-staking">
+						<LandCard
+							v-for="item in listNfts"
+							:name="item.name"
+							:id="item.id"
+							:key="item.id"
+							:imageUrl="item.image_url"
+							:isActive="listNftsCheck?.includes(item.id)"
+							:onCheckItem="() => onCheckItem(item.id)"
+						/>
+						<!-- <LandCard />
 						<LandCard />
 						<LandCard />
 						<LandCard />
 						<LandCard />
 						<LandCard />
-						<LandCard />
-						<LandCard />
-						<LandCard />
+						<LandCard /> -->
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
@@ -76,8 +84,21 @@
 </template>
 
 <script>
+import Web3 from 'web3'
+import _ from 'lodash'
+import axios from 'axios'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
+
+import ABI_721 from '@/abi/ABI712.json'
+import ABI_1155 from '@/abi/ABI1155.json'
+import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
+
+const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
+const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
+const STATUS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+const STATUS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
+const STAKING_ABI = '@/abi/StakingABI.json'
 
 import LandCard from '@/components/LandCard.vue'
 
@@ -86,6 +107,7 @@ export default {
 		LandCard,
 	},
 	mounted() {
+		this.onGetNftowner()
 		// this.popType = authInfo.type;
 	},
 	computed: {
@@ -98,6 +120,8 @@ export default {
 			submitData: null,
 			hadUnderstand: false,
 			filterBy: 'asc',
+			listNfts: [],
+			listNftsCheck: [],
 		}
 	},
 	props: {},
@@ -130,6 +154,129 @@ export default {
 			}
 			this.mxShowSuccessModal(obj)
 		},
+
+		onCheckItem(id) {
+			// this.checkStatusNft()
+			if (_.includes(this.listNftsCheck, id)) {
+				const index = this.listNftsCheck.indexOf(id)
+				if (index > -1) {
+					this.listNftsCheck.splice(index, 1)
+				}
+			} else {
+				this.listNftsCheck.push(id)
+			}
+		},
+
+		async onGetNftowner() {
+			let params = {
+				owner: '0xC5FEdBD978E30862957637f32C53E92184E40835',
+				collectionAddress: '0xd41eddedb1891b626fadd17b328e14077c8248cb',
+				chainId: 97,
+			}
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-owner`,
+				{ params }
+			)
+			if (response?.status === 200) {
+				this.listNfts = response.data
+			} else {
+				this.listNfts = []
+			}
+		},
+
+		async getAccounts() {
+			try {
+				let acc = await window.ethereum.request({
+					method: 'eth_requestAccounts',
+				})
+				return acc
+			} catch (e) {
+				return []
+			}
+		},
+
+		async contractConnect(abi, address_ct) {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
+				let contractConn = await new web3.eth.Contract(abi, address_ct)
+				return contractConn
+			}
+		},
+
+		async checkStatusNft() {
+			const contractConn = await this.contractConnect(
+				ABI_721,
+				'0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+			)
+
+			await contractConn.methods
+				.isApprovedForAll(
+					'0xC5FEdBD978E30862957637f32C53E92184E40835',
+					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+				)
+				.send({
+					from: (await this.getAccounts())[0],
+				})
+				.then((tx) => {
+					if (tx?.status === true) {
+						this.onStakeNft()
+					} else {
+						this.onApprovedForAll()
+					}
+					console.log('checkStatusNft', tx)
+				})
+				.catch((e) => {
+					console.log('checkStatusNft e', e)
+				})
+		},
+
+		async onApprovedForAll() {
+			const contractConn = await this.contractConnect(
+				ABI_721,
+				'0xF36721581B3dB68408A7189840C79Ad47C719c71'
+			)
+
+			await contractConn.methods
+				.setApprovalForAll(
+					'0x0e403338cdEe8043D603eF895D987b74AD4603c6',
+					true
+				)
+				.send({
+					from: (await this.getAccounts())[0],
+				})
+				.then((tx) => {
+					console.log('onApprovedForAll', tx)
+				})
+				.catch((e) => {
+					console.log('onApprovedForAll e', e)
+				})
+		},
+
+		async onStakeNft() {
+			const contractConn = await this.contractConnect(
+				ABI_STAKING.abi,
+				'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+			)
+
+			await contractConn.methods
+				.deposit(1, {
+					erc721TokenIds: [430],
+					erc1155TokenIds: [],
+					erc1155Amounts: [],
+				})
+				.send({
+					from: (await this.getAccounts())[0],
+				})
+				.then((tx) => {
+					console.log('onStakeNft', tx)
+				})
+				.catch((e) => {
+					console.log('onStakeNft e', e)
+				})
+		},
 	},
 }
 </script>
@@ -154,7 +301,7 @@ export default {
 			background: #181721;
 			border-radius: 10px;
 			width: gREm(1150);
-			height: gREm(918);
+			max-height: 95vh;
 			margin: 0px auto;
 			padding: 50px 30px;
 			transition: all 0.3s ease;
@@ -215,7 +362,8 @@ export default {
 				width: 120%;
 				max-width: 1120px;
 				overflow: auto;
-				height: 630px;
+				max-height: 60vh;
+				min-height: 30vh;
 				display: flex;
 				justify-content: flex-start;
 				align-items: flex-start;
