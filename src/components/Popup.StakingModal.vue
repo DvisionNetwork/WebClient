@@ -258,7 +258,7 @@ export default {
 		async onStakeNft() {
 			const contractConn = await this.contractConnect(
 				ABI_STAKING.abi,
-				'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+				'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 			)
 
 			await contractConn.methods
