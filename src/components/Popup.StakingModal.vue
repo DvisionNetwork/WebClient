@@ -160,7 +160,7 @@ export default {
 		},
 
 		onCheckItem(id) {
-			// this.checkStatusNft()
+			this.checkStatusNft()
 			if (_.includes(this.listNftsCheck, id)) {
 				const index = this.listNftsCheck.indexOf(id)
 				if (index > -1) {
@@ -173,8 +173,8 @@ export default {
 
 		async onGetNftowner() {
 			let params = {
-				owner: '0xC5FEdBD978E30862957637f32C53E92184E40835',
-				collectionAddress: '0xd41eddedb1891b626fadd17b328e14077c8248cb',
+				owner: this.$store?.state?.userInfo?.wallet_addr,
+				collectionAddress: '0xD41eddEdB1891B626FADD17B328e14077c8248Cb',
 				chainId: 97,
 			}
 			const response = await axios.get(
@@ -218,19 +218,17 @@ export default {
 
 			await contractConn.methods
 				.isApprovedForAll(
-					'0xC5FEdBD978E30862957637f32C53E92184E40835',
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+					'0x53f28C491f44EF9d37d3EBc83E2193c170423B80', //address owner
+					'0x0e403338cdEe8043D603eF895D987b74AD4603c6' // address collection
 				)
-				.send({
-					from: (await this.getAccounts())[0],
-				})
+				.call()
 				.then((tx) => {
-					if (tx?.status === true) {
+					console.log('11111111111111111111111111111111111111111', tx)
+					if (tx === true) {
 						this.onStakeNft()
 					} else {
 						this.onApprovedForAll()
 					}
-					console.log('checkStatusNft', tx)
 				})
 				.catch((e) => {
 					console.log('checkStatusNft e', e)
@@ -253,6 +251,7 @@ export default {
 				})
 				.then((tx) => {
 					console.log('onApprovedForAll', tx)
+					this.onStakeNft()
 				})
 				.catch((e) => {
 					console.log('onApprovedForAll e', e)
@@ -262,12 +261,12 @@ export default {
 		async onStakeNft() {
 			const contractConn = await this.contractConnect(
 				ABI_STAKING.abi,
-				'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+				'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 			)
 
 			await contractConn.methods
 				.deposit(1, {
-					erc721TokenIds: [430],
+					erc721TokenIds: [1],
 					erc1155TokenIds: [],
 					erc1155Amounts: [],
 				})
