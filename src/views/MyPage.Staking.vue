@@ -142,13 +142,12 @@ export default {
 				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+					this.getAccounts()
 				)
 				await contractConn.methods
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						console.log('datadata',data)
 						this.rewardPool = Number(data.rewardRate) * Number(data.duration)
 					})
 			}
