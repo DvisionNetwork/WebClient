@@ -23,4 +23,4 @@ pnpm-debug.log*
 *.sw?
 
 # video files
-*.mp4
+# *.mp4
