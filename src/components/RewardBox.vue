@@ -56,11 +56,13 @@ export default {
 		}
 	},
 	mounted() {
+		this.mxShowLoading()
 		this.getTotalStaked()
 		this.getMyStaked()
 		this.getTotalMiningHasRate()
 		this.getMiningHashRate()
 		this.getMiningHashRatePerHour(this.poolDuration.data)
+		this.mxCloseLoading()
 		setInterval(() => {
 			this.getCampaignEarned()
 		}, 3000)
@@ -85,7 +87,6 @@ export default {
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-total-staked`
 			)
-			console.log('response', response)
 			if (response.status === 200) {
 				this.totalStakedLand = response.data.totalStaked.toString()
 			}
@@ -94,7 +95,6 @@ export default {
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-my-staked`
 			)
-			console.log('response', response)
 			if (response.status === 200) {
 				this.myStakedLand = response.data.myStaked.toString()
 			}
@@ -109,7 +109,6 @@ export default {
 					ABI_APPROVE_ADD_LISTING.abi,
 					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
 				)
-				console.log('contractConn', contractConn)
 				await contractConn.methods
 					.totalCampaignHashrate(1)
 					.call()

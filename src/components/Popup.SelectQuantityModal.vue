@@ -10,20 +10,24 @@
 						<div>Dvision LAND: Gangnam-Daero Intersection 3x3</div>
 					</div>
 					<div class="box-math">
-						<div class="min-max">Min</div>
+						<div class="min-max" @click="quantity = minQuantity">
+							Min
+						</div>
 						<div class="input-box">
 							<img
 								class="icon-minus"
 								src="../assets/img/ic-minus.svg"
+								@click="handleMinus"
 							/>
 
-							<input type="text" value="2" />
+							<input type="text" :value="quantity" />
 							<img
 								class="icon-plus"
 								src="../assets/img/ic-plus.svg"
+								@click="handlePlus"
 							/>
 						</div>
-						<div class="min-max">Max</div>
+						<div class="min-max" @click="quantity = maxQuantity">Max</div>
 					</div>
 					<div class="btn-bottom">
 						<div class="btn-cancel" @click="onCancel">Cancel</div>
@@ -45,7 +49,13 @@ export default {
 		// this.popType = authInfo.type;
 	},
 	computed: {},
-	data() {},
+	data() {
+		return {
+			quantity: 1,
+			minQuantity: 1,
+			maxQuantity: 5,
+		}
+	},
 	props: {
 		onClick: Function,
 		onCancel: Function,
@@ -53,6 +63,20 @@ export default {
 	methods: {
 		closePopup() {
 			this.mxCloseSuccessModal()
+		},
+		handlePlus() {
+			if (this.quantity >= this.maxQuantity) {
+				this.quantity = this.maxQuantity
+			} else {
+				this.quantity = this.quantity + 1
+			}
+		},
+		handleMinus() {
+			if (this.quantity <= 1) {
+				this.quantity = 1
+			} else {
+				this.quantity = this.quantity - 1
+			}
 		},
 	},
 }

@@ -17,8 +17,8 @@
 						<input type="text" />
 						<div class="erc">
 							<span class="child" @click="switchErc">
-								<span v-if="isErc721">ERC-721</span>
-								<span v-else>ERC-1155</span>
+								<span v-if="isErc1155">ERC-1155</span>
+								<span v-else>ERC-721</span>
 								<img
 									class="ic-filter"
 									src="../assets/img/ic-arrow-down.svg"
@@ -123,7 +123,7 @@ export default {
 			submitData: null,
 			hadUnderstand: false,
 			filterBy: 'asc',
-			isErc721: true,
+			isErc1155: true,
 			listNfts: [],
 			listNfts721Check: [],
 			showSelectQuantity: false,
@@ -149,7 +149,7 @@ export default {
 			this.showSelectQuantity = false
 		},
 		confirmSwitch() {
-			this.isErc721 = !this.isErc721
+			this.isErc1155 = !this.isErc1155
 			this.mxCloseConfirmModal()
 		},
 		switchErc() {
