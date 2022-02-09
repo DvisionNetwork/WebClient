@@ -50,7 +50,7 @@
 							:id="item.id"
 							:key="item.id"
 							:imageUrl="item.image_url"
-							:isActive="listNftsCheck?.includes(item.id)"
+							:isActive="listNfts721Check?.includes(item.id)"
 							:onCheckItem="() => onCheckItem(item.id)"
 						/>
 					</div>
@@ -76,7 +76,7 @@
 							<span
 								v-if="hadUnderstand"
 								class="btn-stake active"
-								@click="showSuccess"
+								@click="() => onStakeNft()"
 								>Stake</span
 							>
 							<span v-else class="btn-stake">Stake</span>
@@ -125,7 +125,7 @@ export default {
 			filterBy: 'asc',
 			isErc721: true,
 			listNfts: [],
-			listNftsCheck: [],
+			listNfts721Check: [],
 			showSelectQuantity: false,
 		}
 	},
@@ -195,13 +195,13 @@ export default {
 
 		onCheckItem(id) {
 			if (this.isErc721) {
-				if (_.includes(this.listNftsCheck, id)) {
-					const index = this.listNftsCheck.indexOf(id)
+				if (_.includes(this.listNfts721Check, id)) {
+					const index = this.listNfts721Check.indexOf(id)
 					if (index > -1) {
-						this.listNftsCheck.splice(index, 1)
+						this.listNfts721Check.splice(index, 1)
 					}
 				} else {
-					this.listNftsCheck.push(id)
+					this.listNfts721Check.push(id)
 				}
 			} else {
 				this.showSelectQuantity = true
@@ -233,7 +233,7 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNfts = response.data
-				this.listNftsCheck = []
+				this.listNfts721Check = []
 			} else {
 				this.listNfts = []
 			}
@@ -318,20 +318,29 @@ export default {
 				STAKING_ADDRESS // address Staking
 			)
 
+			const params = {
+				erc721TokenIds: this.isErc721 ? this.listNfts721Check : [],
+				erc1155TokenIds: [],
+				erc1155Amounts: [],
+			}
+			console.log(params)
+
 			await contractConn.methods
-				.deposit(1, {
-					erc721TokenIds: [2],
-					erc1155TokenIds: [],
-					erc1155Amounts: [],
-				})
+				.deposit(
+					1, // 30 days = 1, 60 days = 2, 90 days = 3
+					params
+				)
 				.send({
 					from: (await this.getAccounts())[0],
 				})
 				.then((tx) => {
+					this.showSuccess
 					console.log('onStakeNft', tx)
+					this.onGetNftowner(this.isErc721)
 				})
 				.catch((e) => {
 					console.log('onStakeNft e', e)
+					this.onGetNftowner(this.isErc721)
 				})
 		},
 	},
