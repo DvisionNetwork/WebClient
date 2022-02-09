@@ -56,10 +56,7 @@
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
-						<div
-							class="bottom-left"
-							@click="hadUnderstand = !hadUnderstand"
-						>
+						<div class="bottom-left" @click="onCheckingUnder">
 							<div class="box-chk">
 								<img
 									v-if="hadUnderstand"
@@ -121,15 +118,6 @@ export default {
 		LandCard,
 		SelectQuantityModal,
 	},
-	mounted() {
-		this.onGetNftowner()
-		// this.popType = authInfo.type;
-	},
-	computed: {
-		userInfo() {
-			return this.mxGetUserInfo()
-		},
-	},
 	data() {
 		return {
 			submitData: null,
@@ -141,7 +129,21 @@ export default {
 			showSelectQuantity: false,
 		}
 	},
+	mounted() {
+		this.onGetNftowner(this.isErc721)
+		// this.popType = authInfo.type;
+	},
+	computed: {
+		userInfo() {
+			return this.mxGetUserInfo()
+		},
+	},
 	props: {},
+	watch: {
+		isErc721() {
+			this.onGetNftowner(this.isErc721)
+		},
+	},
 	methods: {
 		closeSelectQuantityModal() {
 			this.showSelectQuantity = false
@@ -192,22 +194,37 @@ export default {
 		},
 
 		onCheckItem(id) {
-			this.showSelectQuantity = true
-			this.checkStatusNft()
-			if (_.includes(this.listNftsCheck, id)) {
-				const index = this.listNftsCheck.indexOf(id)
-				if (index > -1) {
-					this.listNftsCheck.splice(index, 1)
+			if (this.isErc721) {
+				if (_.includes(this.listNftsCheck, id)) {
+					const index = this.listNftsCheck.indexOf(id)
+					if (index > -1) {
+						this.listNftsCheck.splice(index, 1)
+					}
+				} else {
+					this.listNftsCheck.push(id)
 				}
 			} else {
-				this.listNftsCheck.push(id)
+				this.showSelectQuantity = true
 			}
 		},
 
-		async onGetNftowner() {
+		onCheckingUnder() {
+			// if (this.isErc721) {
+			// 	this.checkStatusNft()
+			// } else {
+			// 	this.hadUnderstand = !this.hadUnderstand
+			// }
+			if (this.hadUnderstand) {
+				this.hadUnderstand = false
+			} else {
+				this.checkStatusNft()
+			}
+		},
+
+		async onGetNftowner(collection) {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: ADDRESS_721,
+				collectionAddress: collection ? ADDRESS_721 : ADDRESS_1155,
 				chainId: 97,
 			}
 			const response = await axios.get(
@@ -216,6 +233,7 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNfts = response.data
+				this.listNftsCheck = []
 			} else {
 				this.listNfts = []
 			}
@@ -241,9 +259,10 @@ export default {
 		},
 
 		async checkStatusNft() {
+			this.mxShowLoading()
 			const contractConn = await this.contractConnect(
-				ABI_721, // abi collection
-				ADDRESS_721 // address collection
+				this.isErc721 ? ABI_721 : ABI_1155, // abi collection
+				this.isErc721 ? ADDRESS_721 : ADDRESS_1155 // address collection
 			)
 
 			await contractConn.methods
@@ -253,21 +272,25 @@ export default {
 				)
 				.call()
 				.then((tx) => {
+					this.mxCloseLoading()
 					if (tx === true) {
-						this.onStakeNft()
+						this.hadUnderstand = true
+						// this.onStakeNft()
 					} else {
 						this.onApprovedForAll()
 					}
 				})
 				.catch((e) => {
+					this.mxCloseLoading()
+					this.hadUnderstand = false
 					console.log('checkStatusNft e', e)
 				})
 		},
 
 		async onApprovedForAll() {
 			const contractConn = await this.contractConnect(
-				ABI_721, // abi collection
-				ADDRESS_721 // address collection
+				this.isErc721 ? ABI_721 : ABI_1155, // abi collection
+				this.isErc721 ? ADDRESS_721 : ADDRESS_1155 // address collection
 			)
 
 			await contractConn.methods
@@ -279,10 +302,12 @@ export default {
 					from: (await this.getAccounts())[0],
 				})
 				.then((tx) => {
+					this.hadUnderstand = true
 					console.log('onApprovedForAll', tx)
-					this.onStakeNft()
+					// this.onStakeNft()
 				})
 				.catch((e) => {
+					this.hadUnderstand = false
 					console.log('onApprovedForAll e', e)
 				})
 		},
