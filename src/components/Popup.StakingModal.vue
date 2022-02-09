@@ -100,9 +100,12 @@ import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
 const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
-const STATUS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
-const STATUS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
-const STAKING_ABI = '@/abi/StakingABI.json'
+
+const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
+const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+
+const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
 
 import LandCard from '@/components/LandCard.vue'
 
@@ -174,7 +177,7 @@ export default {
 		async onGetNftowner() {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: '0xD41eddEdB1891B626FADD17B328e14077c8248Cb',
+				collectionAddress: ADDRESS_721,
 				chainId: 97,
 			}
 			const response = await axios.get(
@@ -201,10 +204,7 @@ export default {
 
 		async contractConnect(abi, address_ct) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				let contractConn = await new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
@@ -212,18 +212,17 @@ export default {
 
 		async checkStatusNft() {
 			const contractConn = await this.contractConnect(
-				ABI_721,
-				'0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+				ABI_721, // abi collection
+				ADDRESS_721 // address collection
 			)
 
 			await contractConn.methods
 				.isApprovedForAll(
-					'0x53f28C491f44EF9d37d3EBc83E2193c170423B80', //address owner
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6' // address collection
+					this.$store?.state?.userInfo?.wallet_addr, //address owner
+					STAKING_ADDRESS // address Staking
 				)
 				.call()
 				.then((tx) => {
-					console.log('11111111111111111111111111111111111111111', tx)
 					if (tx === true) {
 						this.onStakeNft()
 					} else {
@@ -237,13 +236,13 @@ export default {
 
 		async onApprovedForAll() {
 			const contractConn = await this.contractConnect(
-				ABI_721,
-				'0xF36721581B3dB68408A7189840C79Ad47C719c71'
+				ABI_721, // abi collection
+				ADDRESS_721 // address collection
 			)
 
 			await contractConn.methods
 				.setApprovalForAll(
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6',
+					STAKING_ADDRESS, // address Staking
 					true
 				)
 				.send({
@@ -261,12 +260,12 @@ export default {
 		async onStakeNft() {
 			const contractConn = await this.contractConnect(
 				ABI_STAKING.abi,
-				'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+				STAKING_ADDRESS // address Staking
 			)
 
 			await contractConn.methods
 				.deposit(1, {
-					erc721TokenIds: [1],
+					erc721TokenIds: [2],
 					erc1155TokenIds: [],
 					erc1155Amounts: [],
 				})
