@@ -194,7 +194,7 @@ export default {
 		},
 
 		onCheckItem(id) {
-			if (this.isErc1155) {
+			if (this.isErc721) {
 				if (_.includes(this.listNftsCheck, id)) {
 					const index = this.listNftsCheck.indexOf(id)
 					if (index > -1) {
@@ -209,7 +209,7 @@ export default {
 		},
 
 		onCheckingUnder() {
-			// if (this.isErc1155) {
+			// if (this.isErc721) {
 			// 	this.checkStatusNft()
 			// } else {
 			// 	this.hadUnderstand = !this.hadUnderstand
