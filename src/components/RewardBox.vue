@@ -182,7 +182,7 @@ export default {
 		justify-content: space-between;
 		margin-bottom: gREm(35);
 		.title {
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 			font-weight: 400;
 			font-size: gREm(16);
 			line-height: gREm(24);
@@ -196,7 +196,7 @@ export default {
 		.point {
 			font-size: gREm(36);
 			line-height: gREm(35);
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 		}
 	}
 	.box-content {

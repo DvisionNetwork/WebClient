@@ -115,7 +115,7 @@ export default {
 				font-size: gREm(16);
 				line-height: gREm(25);
 				font-weight: 600;
-				font-family: 'Montserrat, sans-serif';
+				font-family: Montserrat, sans-serif;
 				text-align: center;
 				position: absolute;
 				top: gREm(148);
@@ -125,7 +125,7 @@ export default {
 		}
 	}
 	.card-title {
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		font-weight: 400;
 		font-size: gREm(16);
 		line-height: gREm(25);
@@ -152,7 +152,7 @@ export default {
 		span {
 			font-size: gREm(12);
 			line-height: gREm(16);
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 			&.left {
 				color: #ffffff66;
 				line-height: gREm(17);
@@ -164,7 +164,7 @@ export default {
 		height: gREm(32);
 		background: #5f5f5f;
 		border-radius: gREm(10);
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		font-weight: 400;
 		font-size: gREm(16);
 		color: #ffffff;

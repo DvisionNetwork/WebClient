@@ -64,14 +64,14 @@ export default {
 	justify-content: space-between;
 	padding: gREm(16) gREm(11) gREm(16) gREm(18);
 	.name {
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		font-size: gREm(16);
 		font-weight: 400;
 		line-height: gREm(22.4);
 		color: #ffffff66;
 	}
 	.point {
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		font-size: gREm(17);
 		font-weight: 400;
 		line-height: gREm(25);
@@ -87,7 +87,7 @@ export default {
 		padding: 0 gREm(17.5);
 		font-size: gREm(16);
 		line-height: gREm(22);
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		cursor: pointer;
 		&.active {
 			background: #f6583e;

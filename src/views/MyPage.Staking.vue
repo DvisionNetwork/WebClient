@@ -164,7 +164,7 @@ export default {
 	@include FLEXV(space-between, flex-start);
 	.title {
 		font-weight: 600;
-		font-family: 'Montserrat, sans-serif';
+		font-family: Montserrat, sans-serif;
 		font-size: gREm(24);
 		line-height: gREm(29);
 		margin-bottom: gREm(25);
@@ -177,7 +177,7 @@ export default {
 		width: 100%;
 		margin-bottom: gREm(17);
 		.staked-title {
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 			font-size: gREm(24);
 			font-style: normal;
 			font-weight: 600;
@@ -194,7 +194,7 @@ export default {
 			padding: 0 gREm(11);
 			font-size: gREm(16);
 			line-height: gREm(22);
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 			background: #5f5f5f;
 			cursor: pointer;
 			&.active {

@@ -308,7 +308,7 @@ export default {
 			margin: 0px auto;
 			padding: 50px 28px;
 			transition: all 0.3s ease;
-			font-family: 'Montserrat, sans-serif';
+			font-family: Montserrat, sans-serif;
 			& .title {
 				font-size: gREm(28);
 				line-height: gREm(20);
@@ -354,7 +354,7 @@ export default {
 				}
 			}
 			& .desc {
-				font-family: 'Montserrat, sans-serif';
+				font-family: Montserrat, sans-serif;
 				font-size: gREm(16);
 				font-style: normal;
 				font-weight: 400;
