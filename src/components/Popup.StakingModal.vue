@@ -1,6 +1,11 @@
 <template>
 	<transition name="modal">
 		<div class="modal-mask">
+			<SelectQuantityModal
+				v-if="showSelectQuantity"
+				:onClick="() => closeSelectQuantityModal()"
+				:onCancel="() => closeSelectQuantityModal()"
+			/>
 			<div class="modal-wrapper">
 				<div class="modal-container">
 					<div class="title">Staking: Add LAND(s)</div>
@@ -10,6 +15,15 @@
 							src="../assets/img/ic-search.svg"
 						/>
 						<input type="text" />
+						<div class="erc">
+							<span class="child" @click="switchErc">
+								<span v-if="isErc721">ERC-721</span>
+								<span v-else>ERC-1155</span>
+								<img
+									class="ic-filter"
+									src="../assets/img/ic-arrow-down.svg"
+							/></span>
+						</div>
 						<div class="fill" @click="setFilter">
 							<span class="child" v-if="filterBy === 'asc'"
 								><span>Sort by Hash Rate (ascending)</span>
@@ -39,13 +53,6 @@
 							:isActive="listNftsCheck?.includes(item.id)"
 							:onCheckItem="() => onCheckItem(item.id)"
 						/>
-						<!-- <LandCard />
-						<LandCard />
-						<LandCard />
-						<LandCard />
-						<LandCard />
-						<LandCard />
-						<LandCard /> -->
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
@@ -93,7 +100,7 @@ import _ from 'lodash'
 import axios from 'axios'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
-
+import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -109,6 +116,7 @@ import LandCard from '@/components/LandCard.vue'
 export default {
 	components: {
 		LandCard,
+		SelectQuantityModal,
 	},
 	mounted() {
 		this.onGetNftowner()
@@ -124,12 +132,33 @@ export default {
 			submitData: null,
 			hadUnderstand: false,
 			filterBy: 'asc',
+			isErc721: true,
 			listNfts: [],
 			listNftsCheck: [],
+			showSelectQuantity: false,
 		}
 	},
 	props: {},
 	methods: {
+		closeSelectQuantityModal() {
+			this.showSelectQuantity = false
+		},
+		confirmSwitch() {
+			this.isErc721 = !this.isErc721
+			this.mxCloseConfirmModal()
+		},
+		switchErc() {
+			const obj = {
+				width: '712px',
+				title: 'Switch LAND type?',
+				content:
+					'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?',
+				buttonTxt: 'Switch LAND type',
+				isShow: true,
+				onClick: this.confirmSwitch,
+			}
+			this.mxShowConfirmModal(obj)
+		},
 		setFilter() {
 			if (this.filterBy === 'asc') {
 				this.filterBy = 'desc'
@@ -160,6 +189,7 @@ export default {
 		},
 
 		onCheckItem(id) {
+			this.showSelectQuantity = true
 			this.checkStatusNft()
 			if (_.includes(this.listNftsCheck, id)) {
 				const index = this.listNftsCheck.indexOf(id)
@@ -322,13 +352,14 @@ export default {
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
+				font-size: gREm(13);
 				& .ic-search {
 					position: absolute;
 					top: 12px;
 					left: 12px;
 				}
 				& input {
-					width: calc(100% - 273px);
+					width: calc(100% - 283px - 140px);
 					height: 100%;
 					border: 1px solid #d6d8dc;
 					border-radius: 10px;
@@ -336,6 +367,21 @@ export default {
 					font-weight: 400;
 					font-size: gREm(13);
 					line-height: gREm(19);
+				}
+				& .erc {
+					width: gREm(140);
+					height: 100%;
+					background: #1c1a2e;
+					border: 1px solid #d6d8dc;
+					border-radius: 10px;
+					padding: 0 10px;
+					line-height: gREm(44);
+					cursor: pointer;
+					& .child {
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
+					}
 				}
 				& .fill {
 					width: gREm(263);

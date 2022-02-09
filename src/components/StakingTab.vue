@@ -51,6 +51,7 @@ export default {
 .tab-menu {
 	width: 100%;
 	max-width: gREm(216);
+	font-family: Montserrat, sans-serif;
 	& .tab {
 		border-radius: gREm(10);
 		margin-bottom: gREm(9);

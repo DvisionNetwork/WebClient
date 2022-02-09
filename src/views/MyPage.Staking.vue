@@ -4,7 +4,7 @@
 		<h2 class="title">Reward Pool</h2>
 		<RewardBox :poolDuration="poolDuration" :rewardPool="rewardPool" />
 		<div class="staked-land">
-			<h2 class="">Staked LANDs</h2>
+			<h2>Staked LANDs</h2>
 			<div class="unlock-lands active" @click="handleUnlockAll">
 				Unlock all LANDs
 			</div>
@@ -148,7 +148,8 @@ export default {
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						this.rewardPool = Number(data.rewardRate) * Number(data.duration)
+						this.rewardPool =
+							Number(data.rewardRate) * Number(data.duration)
 					})
 			}
 		},
@@ -176,6 +177,7 @@ export default {
 		height: gREm(45);
 		width: 100%;
 		margin-bottom: gREm(17);
+		font-family: Montserrat, sans-serif;
 		.staked-title {
 			font-family: Montserrat, sans-serif;
 			font-size: gREm(24);
