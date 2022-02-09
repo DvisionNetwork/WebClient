@@ -130,7 +130,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.onGetNftowner(this.isErc721)
+		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
 	},
 	computed: {
@@ -140,8 +140,8 @@ export default {
 	},
 	props: {},
 	watch: {
-		isErc721() {
-			this.onGetNftowner(this.isErc721)
+		isErc1155() {
+			this.onGetNftowner(this.isErc1155)
 		},
 	},
 	methods: {
@@ -194,7 +194,9 @@ export default {
 		},
 
 		onCheckItem(id) {
-			if (this.isErc721) {
+			if (this.isErc1155) {
+				this.showSelectQuantity = true
+			} else {
 				if (_.includes(this.listNfts721Check, id)) {
 					const index = this.listNfts721Check.indexOf(id)
 					if (index > -1) {
@@ -203,13 +205,11 @@ export default {
 				} else {
 					this.listNfts721Check.push(id)
 				}
-			} else {
-				this.showSelectQuantity = true
 			}
 		},
 
 		onCheckingUnder() {
-			// if (this.isErc721) {
+			// if (this.isErc1155) {
 			// 	this.checkStatusNft()
 			// } else {
 			// 	this.hadUnderstand = !this.hadUnderstand
@@ -224,7 +224,7 @@ export default {
 		async onGetNftowner(collection) {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: collection ? ADDRESS_721 : ADDRESS_1155,
+				collectionAddress: collection ? ADDRESS_1155 : ADDRESS_721,
 				chainId: 97,
 			}
 			const response = await axios.get(
@@ -261,8 +261,8 @@ export default {
 		async checkStatusNft() {
 			this.mxShowLoading()
 			const contractConn = await this.contractConnect(
-				this.isErc721 ? ABI_721 : ABI_1155, // abi collection
-				this.isErc721 ? ADDRESS_721 : ADDRESS_1155 // address collection
+				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
+				this.isErc1155 ? ADDRESS_1155 : ADDRESS_721 // address collection
 			)
 
 			await contractConn.methods
@@ -289,8 +289,8 @@ export default {
 
 		async onApprovedForAll() {
 			const contractConn = await this.contractConnect(
-				this.isErc721 ? ABI_721 : ABI_1155, // abi collection
-				this.isErc721 ? ADDRESS_721 : ADDRESS_1155 // address collection
+				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
+				this.isErc1155 ? ADDRESS_1155 : ADDRESS_721 // address collection
 			)
 
 			await contractConn.methods
@@ -319,7 +319,7 @@ export default {
 			)
 
 			const params = {
-				erc721TokenIds: this.isErc721 ? this.listNfts721Check : [],
+				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
 				erc1155TokenIds: [],
 				erc1155Amounts: [],
 			}
@@ -336,11 +336,11 @@ export default {
 				.then((tx) => {
 					this.showSuccess
 					console.log('onStakeNft', tx)
-					this.onGetNftowner(this.isErc721)
+					this.onGetNftowner(this.isErc1155)
 				})
 				.catch((e) => {
 					console.log('onStakeNft e', e)
-					this.onGetNftowner(this.isErc721)
+					this.onGetNftowner(this.isErc1155)
 				})
 		},
 	},
