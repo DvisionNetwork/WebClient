@@ -50,8 +50,12 @@
 							:id="item.id"
 							:key="item.id"
 							:imageUrl="item.image_url"
-							:isActive="listNfts721Check?.includes(item.id)"
-							:onCheckItem="() => onCheckItem(item.id)"
+							:isActive="
+								listNfts721Check?.includes(Number(item.nft_id))
+							"
+							:onCheckItem="
+								() => onCheckItem(Number(item.nft_id))
+							"
 						/>
 					</div>
 					<div class="line"></div>
@@ -318,11 +322,14 @@ export default {
 				STAKING_ADDRESS // address Staking
 			)
 
-			const params = {
+			let params = {
 				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
 				erc1155TokenIds: [],
 				erc1155Amounts: [],
 			}
+
+			params = JSON.parse(JSON.stringify(params))
+
 			console.log(params)
 
 			await contractConn.methods
