@@ -85,6 +85,18 @@ export default {
 			<p>- or, unlock them now if you want to use them)</p>
 			`
 		},
+		renderCampainNotYetContent() {
+			return `
+			<p>This Staking campaign has not started yet.</p><br />
+			<p>You can only stake your LANDs during the campaign. Please wait until the campaign starts to stake your LANDs.</p>
+			`
+		},
+		renderNotLoginContent() {
+			return `
+			<p>You must connect your wallet before taking part in the Staking campaign.</p>
+			<p>Please connect your wallet to continue.</p>
+			`
+		},
 		handleClick() {
 			this.mxCloseConfirmModal()
 			const obj = {
@@ -109,8 +121,31 @@ export default {
 			this.mxShowConfirmModal(obj)
 		},
 		showModal() {
-			// this.visible = true;
-			this.mxShowStakingModal()
+			const acc = this.$store?.state?.userInfo?.wallet_addr
+			const notyet = true
+			let obj = {}
+			if (!acc) {
+				;(obj.width = '712px'),
+					(obj.title = 'Wallet not connected yet'),
+					(obj.content = this.renderNotLoginContent()),
+					(obj.buttonTxt = 'I understand'),
+					(obj.isShow = true)
+				this.mxShowSuccessModal(obj)
+			} else if (!notyet) {
+				;(obj.width = '712px'),
+					(obj.title = 'Staking campaign is unavailable'),
+					(obj.content = this.renderCampainNotYetContent()),
+					(obj.buttonTxt = 'I understand'),
+					(obj.isShow = true)
+				this.mxShowSuccessModal(obj)
+			} else {
+				this.visible = true
+				const stakingData = {
+					duration: this.poolDuration,
+					isShowModal: true,
+				}
+				this.mxShowStakingModal(stakingData)
+			}
 		},
 		handleOk(e) {
 			this.ModalText = 'The modal will be closed after two seconds'

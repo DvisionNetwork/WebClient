@@ -1,4 +1,10 @@
 <template>
+	<SelectQuantityModal
+		v-if="showSelectQuantity"
+		:onClick="cancelQuantityModal"
+		:onCancel="cancelQuantityModal"
+		:id="id"
+	/>
 	<div
 		class="land-card"
 		:class="{ active: isActive }"
@@ -6,7 +12,7 @@
 		@click="onCheckItem"
 	>
 		<div class="image">
-			<img :src="imageUrl" :alt="imageUrl"/>
+			<img :src="imageUrl" :alt="imageUrl" />
 			<div v-if="isDisable" class="lock">
 				<span v-if="isUnlock" class="lock-desc"
 					>Staking has ended.</span
@@ -35,6 +41,8 @@
 </template>
 
 <script>
+import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
+
 export default {
 	name: 'LandCard',
 	props: {
@@ -49,8 +57,12 @@ export default {
 		isDisable: Boolean,
 		onCheckItem: Function,
 		listNftsCheck: Array,
+		showSelectQuantity:Boolean,
+		cancelQuantityModal:Function
 	},
-	data() {},
+	components: {
+		SelectQuantityModal,
+	},
 	methods: {
 		handleClick() {
 			this.mxCloseConfirmModal()

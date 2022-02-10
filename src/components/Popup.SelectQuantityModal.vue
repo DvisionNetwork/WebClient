@@ -20,14 +20,16 @@
 								@click="handleMinus"
 							/>
 
-							<input type="text" :value="quantity" />
+							<input type="number" :value="quantity" />
 							<img
 								class="icon-plus"
 								src="../assets/img/ic-plus.svg"
 								@click="handlePlus"
 							/>
 						</div>
-						<div class="min-max" @click="quantity = maxQuantity">Max</div>
+						<div class="min-max" @click="quantity = maxQuantity">
+							Max
+						</div>
 					</div>
 					<div class="btn-bottom">
 						<div class="btn-cancel" @click="onCancel">Cancel</div>
@@ -59,6 +61,7 @@ export default {
 	props: {
 		onClick: Function,
 		onCancel: Function,
+		id: Number,
 	},
 	methods: {
 		closePopup() {
@@ -84,12 +87,13 @@ export default {
 
 <style lang="scss" scoped>
 .modal-mask {
-	position: absolute;
+	position: fixed;
+	top: 0;
 	z-index: $Z-INDEX-LOGIN-POPUP;
 	// margin-top: 224px;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	background-color: rgba(0, 0, 0, 0.5);
 	display: table;
 	transition: opacity 0.5s ease;
@@ -173,6 +177,14 @@ export default {
 						line-height: gREm(12);
 						text-align: center;
 						font-weight: 600;
+					}
+					& input::-webkit-outer-spin-button,
+					& input::-webkit-inner-spin-button {
+						-webkit-appearance: none;
+						margin: 0;
+					}
+					& input[type='number'] {
+						-moz-appearance: textfield;
 					}
 					& .icon-minus {
 						background: #f6583e;

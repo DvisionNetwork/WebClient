@@ -1,11 +1,6 @@
 <template>
 	<transition name="modal">
 		<div class="modal-mask">
-			<SelectQuantityModal
-				v-if="showSelectQuantity"
-				:onClick="() => closeSelectQuantityModal()"
-				:onCancel="() => closeSelectQuantityModal()"
-			/>
 			<div class="modal-wrapper">
 				<div class="modal-container">
 					<div class="title">Staking: Add LAND(s)</div>
@@ -56,6 +51,8 @@
 							:onCheckItem="
 								() => onCheckItem(Number(item.nft_id))
 							"
+							:showSelectQuantity="showSelectQuantity"
+							:cancelQuantityModal="()=>closeSelectQuantityModal()"
 						/>
 					</div>
 					<div class="line"></div>
@@ -101,7 +98,6 @@ import _ from 'lodash'
 import axios from 'axios'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
-import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -120,7 +116,6 @@ import LandCard from '@/components/LandCard.vue'
 export default {
 	components: {
 		LandCard,
-		SelectQuantityModal,
 	},
 	data() {
 		return {
@@ -137,12 +132,17 @@ export default {
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
 	},
+	created() {
+		console.log('days', this.data.duration.data)
+	},
 	computed: {
 		userInfo() {
 			return this.mxGetUserInfo()
 		},
 	},
-	props: {},
+	props: {
+		data: Object,
+	},
 	watch: {
 		isErc1155() {
 			this.onGetNftowner(this.isErc1155)

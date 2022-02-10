@@ -116,8 +116,8 @@ var Mixin = {
 		mxCloseEditProfile() {
 			this.$store.dispatch('showEditProfile', false);
 		},
-		mxShowStakingModal() {
-			this.$store.dispatch('showStakingModal', true);
+		mxShowStakingModal(obj) {
+			this.$store.dispatch('showStakingModal', obj);
 		},
 		mxCloseStakingModal() {
 			this.$store.dispatch('showStakingModal', false);

@@ -26,7 +26,8 @@
 	/>
 		<PopupShowStakingModal
 		appear
-		v-if="isShowStakingModal"
+		v-if="isShowStakingModal.isShowModal"
+		:data = isShowStakingModal
 	/>
 	<PopupSuccessModal
 		appear
@@ -314,7 +315,7 @@ export default {
 		isShowSuccessModal() {
 			return this.$store.state.showSuccessModal;
 		},
-			isShowConfirmModal() {
+		isShowConfirmModal() {
 			return this.$store.state.showConfirmModal;
 		},
 		theme() {

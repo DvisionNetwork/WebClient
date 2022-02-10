@@ -11,7 +11,7 @@ export default createStore({
 		showAddWallet: false,
 		showChangePasswordPopup: false,
 		showEditProfile: false,
-		showStakingModal:false,
+		showStakingModal:{},
 		showSuccessModal:{},
 		showConfirmModal:{},
 		countryCodeNo: '82',
