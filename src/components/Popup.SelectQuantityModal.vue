@@ -33,7 +33,12 @@
 					</div>
 					<div class="btn-bottom">
 						<div class="btn-cancel" @click="onCancel">Cancel</div>
-						<div class="btn-confirm" @click="onClick">Confirm</div>
+						<div
+							class="btn-confirm"
+							@click="onClick(quantity)"
+						>
+							Confirm
+						</div>
 					</div>
 				</div>
 			</div>
@@ -53,8 +58,8 @@ export default {
 	computed: {},
 	data() {
 		return {
-			quantity: 1,
-			minQuantity: 1,
+			quantity: 0,
+			minQuantity: 0,
 			maxQuantity: 5,
 		}
 	},

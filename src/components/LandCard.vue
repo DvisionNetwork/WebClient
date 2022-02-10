@@ -1,15 +1,15 @@
 <template>
 	<SelectQuantityModal
 		v-if="showSelectQuantity"
-		:onClick="cancelQuantityModal"
-		:onCancel="cancelQuantityModal"
+		:onClick="(quantity) => onConfirmQuantity(quantity, nftId)"
+		:onCancel="closeSelectQuantityModal"
 		:id="id"
 	/>
 	<div
 		class="land-card"
 		:class="{ active: isActive }"
 		:key="key"
-		@click="onCheckItem"
+		@click="() => onClicktoItem()"
 	>
 		<div class="image">
 			<img :src="imageUrl" :alt="imageUrl" />
@@ -57,11 +57,18 @@ export default {
 		isDisable: Boolean,
 		onCheckItem: Function,
 		listNftsCheck: Array,
-		showSelectQuantity:Boolean,
-		cancelQuantityModal:Function
+		cancelQuantityModal: Function,
+		isErc1155: Boolean,
+		nftId: Number,
+		onConfirmQuantity1155: Function,
 	},
 	components: {
 		SelectQuantityModal,
+	},
+	data() {
+		return {
+			showSelectQuantity: false,
+		}
 	},
 	methods: {
 		handleClick() {
@@ -87,6 +94,23 @@ export default {
 				onClick: this.handleClick,
 			}
 			this.mxShowConfirmModal(obj)
+		},
+
+		closeSelectQuantityModal() {
+			this.showSelectQuantity = false
+		},
+
+		onConfirmQuantity(quantity, nftId) {
+			this.showSelectQuantity = false
+			this.onConfirmQuantity1155(quantity, nftId)
+		},
+
+		onClicktoItem() {
+			if (this.isErc1155) {
+				this.showSelectQuantity = true
+			} else {
+				this.onCheckItem()
+			}
 		},
 	},
 }

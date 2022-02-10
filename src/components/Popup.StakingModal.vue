@@ -44,14 +44,14 @@
 							:name="item.name"
 							:id="item.id"
 							:key="item.id"
+							:nftId="Number(item.nft_id)"
 							:imageUrl="item.image_url"
-							:isActive="
-								listNfts721Check?.includes(Number(item.nft_id))
-							"
+							:isActive="getActive(Number(item.nft_id))"
+							:onConfirmQuantity1155="(quantity, nftId) => onConfirmQuantity1155(quantity, nftId)"
 							:onCheckItem="
 								() => onCheckItem(Number(item.nft_id))
 							"
-							:showSelectQuantity="showSelectQuantity"
+							:isErc1155="isErc1155"
 							:cancelQuantityModal="
 								() => closeSelectQuantityModal()
 							"
@@ -128,7 +128,8 @@ export default {
 			isErc1155: true,
 			listNfts: [],
 			listNfts721Check: [],
-			showSelectQuantity: false,
+			listNfts1155Check: [],
+			listNfts1155Quantity: [],
 		}
 	},
 	mounted() {
@@ -152,9 +153,6 @@ export default {
 		},
 	},
 	methods: {
-		closeSelectQuantityModal() {
-			this.showSelectQuantity = false
-		},
 		confirmSwitch() {
 			this.isErc1155 = !this.isErc1155
 			this.mxCloseConfirmModal()
@@ -194,27 +192,42 @@ export default {
 			this.mxShowSuccessModal(obj)
 		},
 
-		onCheckItem(id) {
+		getActive(nft_id) {
 			if (this.isErc1155) {
-				this.showSelectQuantity = true
+				return this.listNfts1155Check?.includes(Number(nft_id))
 			} else {
-				if (_.includes(this.listNfts721Check, id)) {
-					const index = this.listNfts721Check.indexOf(id)
-					if (index > -1) {
-						this.listNfts721Check.splice(index, 1)
-					}
+				return this.listNfts721Check?.includes(Number(nft_id))
+			}
+		},
+		onConfirmQuantity1155(quantity, nftId) {
+			if (_.includes(this.listNfts1155Check, nftId) || quantity === 0) {
+				let index = this.listNfts1155Check.indexOf(nftId)
+				if (quantity === 0) {
+					this.listNfts1155Check.splice(index, 1)
+					this.listNfts1155Quantity.splice(index, 1)
 				} else {
-					this.listNfts721Check.push(id)
+					this.listNfts1155Quantity[index] = quantity
 				}
+			} else {
+				this.listNfts1155Check.push(nftId)
+				this.listNfts1155Quantity.push(quantity)
+			}
+
+			console.log(this.listNfts1155Check, this.listNfts1155Quantity)
+		},
+
+		onCheckItem(id) {
+			if (_.includes(this.listNfts721Check, id)) {
+				const index = this.listNfts721Check.indexOf(id)
+				if (index > -1) {
+					this.listNfts721Check.splice(index, 1)
+				}
+			} else {
+				this.listNfts721Check.push(id)
 			}
 		},
 
 		onCheckingUnder() {
-			// if (this.isErc1155) {
-			// 	this.checkStatusNft()
-			// } else {
-			// 	this.hadUnderstand = !this.hadUnderstand
-			// }
 			if (this.hadUnderstand) {
 				this.hadUnderstand = false
 			} else {
@@ -313,6 +326,16 @@ export default {
 				})
 		},
 
+		getUint8() {
+			if (this.data.duration.data === 90) {
+				return 3
+			} else if (this.data.duration.data === 60) {
+				return 2
+			} else {
+				return 1
+			}
+		},
+
 		async onStakeNft() {
 			const contractConn = await this.contractConnect(
 				ABI_STAKING.abi,
@@ -321,17 +344,17 @@ export default {
 
 			let params = {
 				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
-				erc1155TokenIds: [],
-				erc1155Amounts: [],
+				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
+				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
 			}
 
 			params = JSON.parse(JSON.stringify(params))
 
-			console.log(params)
+			console.log('params', params)
 
 			await contractConn.methods
 				.deposit(
-					1, // 30 days = 1, 60 days = 2, 90 days = 3
+					this.getUint8, // 30 days = 1, 60 days = 2, 90 days = 3
 					params
 				)
 				.send({
