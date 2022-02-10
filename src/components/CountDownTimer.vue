@@ -24,8 +24,8 @@ export default {
 	data() {
 		return {
 			type: 1,
-			startTime: '2022-02-08T16:49:11+07:00',
-			endTime: '2022-02-08T16:50:11+07:00',
+			startTime: '2022-02-09T16:49:11+07:00',
+			endTime: '2022-02-11T16:50:11+07:00',
 			days: '00',
 			hours: '00',
 			mins: '00',
@@ -63,7 +63,7 @@ export default {
 				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_APPROVE_ADD_LISTING.abi,
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+					'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 				)
 				await contractConn.methods
 					.campaignInfo(1)
