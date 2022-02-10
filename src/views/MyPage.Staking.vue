@@ -2,7 +2,12 @@
 	<StakingTab :poolDuration="poolDuration" />
 	<div class="contents">
 		<h2 class="title">Reward Pool</h2>
-		<RewardBox :poolDuration="poolDuration" :rewardPool="rewardPool" />
+		<RewardBox
+			:poolDuration="poolDuration"
+			:rewardPool="rewardPool"
+			:statusCampain="statusCampain"
+			:switchStatusCampain="switchStatusCampain"
+		/>
 		<div class="staked-land">
 			<h2>Staked LANDs</h2>
 			<div class="unlock-lands active" @click="handleUnlockAll">
@@ -10,7 +15,7 @@
 			</div>
 		</div>
 		<div class="list-card">
-			<AddLand :onClick="showModal" :listStaking="listStaking" />
+			<AddLand :onClick="checkShowModal" :listStaking="listStaking" />
 			<LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
 			<LandCard :isDisable="false" :isUnlock="false" />
 			<LandCard :isDisable="false" :isUnlock="true" />
@@ -32,6 +37,12 @@ import AddLand from '@/components/AddLand.vue'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
+
+import {
+	renderUnlockContent,
+	renderCampainNotYetContent,
+	renderNotLoginContent,
+} from '@/data/RenderContent.js'
 
 const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
 const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
@@ -55,7 +66,17 @@ export default {
 			default: 'staking',
 		},
 	},
-
+	data() {
+		return {
+			pages: [1],
+			currentPage: 1,
+			poolDuration: {
+				data: 30,
+			},
+			rewardPool: 0,
+			statusCampain: 1,
+		}
+	},
 	beforeMount() {
 		console.log(
 			'[Market.Land.vue] beforeMount(), route : ',
@@ -66,36 +87,10 @@ export default {
 	mounted() {},
 	beforeUpdate() {},
 	updated() {},
-	data() {
-		return {
-			pages: [1],
-			currentPage: 1,
-			poolDuration: {
-				data: 30,
-			},
-			rewardPool: 0,
-		}
-	},
+
 	methods: {
-		renderUnlockContent() {
-			return `
-			<p>All staked LANDs will be unlocked and returned to your account. Are you sure you want to unlock all staked LANDs?</p><br />
-			<p>(You can:</p>
-			<p>- leave the staked LANDs in the pool until the next campaign starts to continue staking them</p>
-			<p>- or, unlock them now if you want to use them)</p>
-			`
-		},
-		renderCampainNotYetContent() {
-			return `
-			<p>This Staking campaign has not started yet.</p><br />
-			<p>You can only stake your LANDs during the campaign. Please wait until the campaign starts to stake your LANDs.</p>
-			`
-		},
-		renderNotLoginContent() {
-			return `
-			<p>You must connect your wallet before taking part in the Staking campaign.</p>
-			<p>Please connect your wallet to continue.</p>
-			`
+		switchStatusCampain(status) {
+			this.statusCampain = status
 		},
 		handleClick() {
 			this.mxCloseConfirmModal()
@@ -113,30 +108,27 @@ export default {
 			const obj = {
 				width: '712px',
 				title: 'Unlock all LANDs?',
-				content: this.renderUnlockContent(),
+				content: renderUnlockContent(),
 				buttonTxt: 'Unlock',
 				isShow: true,
 				onClick: this.handleClick,
 			}
 			this.mxShowConfirmModal(obj)
 		},
-		showModal() {
+		checkShowModal() {
 			const acc = this.$store?.state?.userInfo?.wallet_addr
-			const notyet = true
-			let obj = {}
+			let obj = {
+				width: '712px',
+				title: 'Wallet not connected yet',
+				content: renderNotLoginContent(),
+				buttonTxt: 'I understand',
+				isShow: true,
+			}
 			if (!acc) {
-				;(obj.width = '712px'),
-					(obj.title = 'Wallet not connected yet'),
-					(obj.content = this.renderNotLoginContent()),
-					(obj.buttonTxt = 'I understand'),
-					(obj.isShow = true)
 				this.mxShowSuccessModal(obj)
-			} else if (!notyet) {
-				;(obj.width = '712px'),
-					(obj.title = 'Staking campaign is unavailable'),
-					(obj.content = this.renderCampainNotYetContent()),
-					(obj.buttonTxt = 'I understand'),
-					(obj.isShow = true)
+			} else if (this.statusCampain !== 3) {
+				obj.title = 'Staking campaign is unavailable'
+				obj.content = renderCampainNotYetContent()
 				this.mxShowSuccessModal(obj)
 			} else {
 				this.visible = true
@@ -146,18 +138,6 @@ export default {
 				}
 				this.mxShowStakingModal(stakingData)
 			}
-		},
-		handleOk(e) {
-			this.ModalText = 'The modal will be closed after two seconds'
-			this.confirmLoading = true
-			setTimeout(() => {
-				this.visible = false
-				this.confirmLoading = false
-			}, 2000)
-		},
-		handleCancel(e) {
-			console.log('Clicked cancel button')
-			this.visible = false
 		},
 		async getAccounts() {
 			try {

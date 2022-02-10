@@ -3,7 +3,7 @@
 		<div class="box-title">
 			<div>
 				<span class="title">
-					<CountDownTimer />
+					<CountDownTimer :statusCampain="statusCampain" :switchStatusCampain="switchStatusCampain" />
 				</span>
 			</div>
 			<div class="point">{{ rewardPool }} DVG</div>
@@ -69,6 +69,8 @@ export default {
 	},
 
 	props: {
+		statusCampain:Number,
+		switchStatusCampain:Function,
 		poolDuration: {
 			type: Object,
 		},

@@ -1,12 +1,12 @@
 <template>
-	<span v-if="type === 1">Campaign is not started yet.</span>
-	<span v-if="type === 2"
+	<span v-if="statusCampain === 1">Campaign is not started yet.</span>
+	<span v-if="statusCampain === 2"
 		>Staking campaign starts in:
 		<span class="status green"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
 		>
 	</span>
-	<span v-if="type === 3"
+	<span v-if="statusCampain === 3"
 		>Staking campaign ends in:
 		<span class="status red"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
@@ -23,36 +23,40 @@ export default {
 	components: {},
 	data() {
 		return {
-			type: 1,
-			startTime: '2022-02-09T16:49:11+07:00',
-			endTime: '2022-02-11T16:50:11+07:00',
+			startTime: '2022-02-10T15:15:11+07:00',
+			endTime: '2022-02-10T16:16:11+07:00',
 			days: '00',
 			hours: '00',
 			mins: '00',
 			secs: '00',
 		}
 	},
+	props: {
+		statusCampain: Number,
+		switchStatusCampain: Function,
+	},
 	mounted() {
 		this.getCampaignInfo()
-		console.log('this.startTimethis.startTime', this.startTime)
 		const startValue = moment(this.startTime).valueOf()
 		const endValue = moment(this.endTime).valueOf()
-
 		setInterval(() => {
 			const currentValue = moment(new Date()).valueOf()
 			if (currentValue < startValue) {
-				this.type = 2
+				if (this.statusCampain !== 2) {
+					this.switchStatusCampain(2)
+				}
 				this.countStart()
 			} else if (currentValue >= startValue && currentValue < endValue) {
-				this.type = 3
+				if (this.statusCampain !== 3) {
+					this.switchStatusCampain(3)
+				}
 				this.countEnd()
 			} else {
-				this.type = 1
+				if (this.statusCampain !== 1) {
+					this.switchStatusCampain(1)
+				}
 			}
 		}, 1000)
-	},
-	props: {
-		// endTime: String,
 	},
 	methods: {
 		async getCampaignInfo() {
@@ -90,7 +94,7 @@ export default {
 			const startValue = moment(this.startTime).valueOf()
 			const currentValue = moment(currentTime).valueOf()
 			if (startValue <= currentValue) {
-				this.type = 3
+				this.switchStatusCampain(3)
 			}
 		},
 		countEnd() {
@@ -105,7 +109,7 @@ export default {
 			const endValue = moment(this.endTime).valueOf()
 			const currentValue = moment(currentTime).valueOf()
 			if (endValue <= currentValue) {
-				this.type = 1
+				this.switchStatusCampain(1)
 			}
 		},
 	},

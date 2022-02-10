@@ -52,7 +52,9 @@
 								() => onCheckItem(Number(item.nft_id))
 							"
 							:showSelectQuantity="showSelectQuantity"
-							:cancelQuantityModal="()=>closeSelectQuantityModal()"
+							:cancelQuantityModal="
+								() => closeSelectQuantityModal()
+							"
 						/>
 					</div>
 					<div class="line"></div>
@@ -101,6 +103,7 @@ var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
+import { renderSuccessContent } from '@/data/RenderContent.js'
 
 const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
 const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
@@ -178,19 +181,13 @@ export default {
 		closePopup() {
 			this.mxCloseStakingModal()
 		},
-		renderSuccessContent() {
-			return `
-			<p>You have staked your LAND(s) successfully. The staked LANDs will be shown under “Staked LANDs” section.</p><br />
-			<p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can harvest the accumulated DVG reward at any time during the Staking period (up until the Harvest time).</p>
-			`
-		},
 		showSuccess() {
 			this.mxCloseStakingModal()
 			const obj = {
 				width: '712px',
 				height: '328px',
 				title: 'Success',
-				content: this.renderSuccessContent(),
+				content: renderSuccessContent(),
 				buttonTxt: 'I understand',
 				isShow: true,
 			}
