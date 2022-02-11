@@ -223,7 +223,8 @@ export default {
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
-			this.mxCallAndSetMyLandItemList(this.mapId, ()=>{
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+			this.mxCallAndSetMyLandItemList(this.mapId, network, ()=>{
 				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 				this.setLandItems(this.searchQuery);
 			});

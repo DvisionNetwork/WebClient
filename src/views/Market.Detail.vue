@@ -2,7 +2,7 @@
 <template>
 	<div class="Market-Detail" >
 		<div v-if="tab_page=='land-detail'" class="top-land">
-			<MapLand :mapId="mapId" :blockId="blockId"/>
+			<MapLand ref="refMapLand" :mapId="mapId" :blockId="blockId"/>
 		</div>
 		<div v-else class="top-info" :level="mxGetLevelCssType(marketItem.rarity)" >
 			<div class="item-img" :style="mxGetBgImageStyle(marketItem.thumbnail_url)"  />
@@ -31,14 +31,22 @@
 						</div>
 						<div v-if="isItemOwned()" class="price info">
 							<div class="header">{{$t('market.detail.input-price')}}</div>
-							<div class="price-box">
+							<div v-if="marketItem.tokentype=='0'" class="price-box">
+								<div class="pol-icon"></div>
+								<input class="pol-value" id="input-price" type="number" v-model="sellPrice"/>
+							</div>
+							<div v-else class="price-box">
 								<div class="icon"></div>
 								<input class="value" id="input-price" type="number" v-model="sellPrice"/>
 							</div>
 						</div>
 						<div v-else class="price info">
 							<div class="header">{{$t('market.detail.price')}}</div>
-							<div class="price-box">
+							<div v-if="marketItem.tokentype=='0'" class="price-box">
+								<div class="pol-icon"></div>
+								<div class="pol-value">{{marketItem.price}}</div>
+							</div>
+							<div v-else class="price-box">
 								<div class="icon"></div>
 								<div class="value">{{marketItem.price}}</div>
 							</div>
@@ -50,7 +58,7 @@
 				<div class="buy-certificate-photo" :premium="marketItem.premium" :type="getBlockPosInfo('size')" :map_id="mapId">
 
 					<div class="description">
-						<p v-html="marketItem.detail"></p>
+						<p>{{reducedOwnerAddress}}</p>
 					</div>
 
 					<div class="text pos-size">{{getBlockPosInfo('size')}}</div>
@@ -201,9 +209,12 @@ export default {
 		if(this.tab_page == 'land-detail') {
 			var landItems = this.mxGetLandItems();
 			console.log("@@ landItems === ", landItems);
+
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
 			if(typeof landItems == 'undefined' || landItems == null) {
 
-				this.mxCallAndSetLandItemList(this.mapId, ()=>{
+				this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
 					console.log("@@ landItems === undefined ==> after mxCallAndSetLandItemList() ");
 					this.callLandItem();
 					var land = this.getDvLand();
@@ -297,17 +308,27 @@ export default {
 					name: this.blockInfo.n,
 					detail : _U.getIfDefined(this.blockDetail,'description'),
 					price : this.addComma(_U.getIfDefined(this.blockDetail,'dviprice')),
+					tokentype : _U.getIfDefined(this.blockDetail,'tokentype'),
 					owner_id : _U.getIfDefined(this.blockDetail,'owner_address'),
 					token_id : _U.getIfDefined(this.blockDetail,'token_id'),
 					premium : _U.getIfDefined(this.blockDetail,'premium'),
 					total_supply : 1,
 					sell_amount: 1,
 					own_amount: 1,
-					network: gConfig.wlt.getBscAddr().Network // testing
+					network: gConfig.wlt.getNetworkAddr(this.blockInfo.network).Network // testing
 				}
 			}else{
 				return this.mxGetMarketItem();
 			}
+		},
+		reducedOwnerAddress() {
+			var address = this.marketItem.owner_id;
+			var reducedAddress = '';
+			if(address != undefined && address.length == 42) {
+				reducedAddress = address.slice(0, 10) + '...' + address.slice(32,42);
+			}
+
+			return reducedAddress;
 		},
 		networkName() {
 			var marketItem ='';
@@ -357,12 +378,18 @@ export default {
 			return false;
 		},
 
+		refreshPage() {
+			this.$router.go();
+		},
+
 		/// API
 
 		callLandItemList() {
 
 			console.log("[Market.Detail.vue] callLandItemList()");
-			this.mxCallAndSetLandItemList(this.mapId);
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
+			this.mxCallAndSetLandItemList(this.mapId, network);
 
 		},
 
@@ -370,10 +397,11 @@ export default {
 
 			var dvLand = this.getDvLand();
 			var landCode = dvLand.n;
+			var network = gConfig.wlt.getNetworkAddr(dvLand.network).Network;
 			var query = {
 				land_code: landCode,
 				index: this.blockId,
-				network: '("' + this.marketItem.network + '")',
+				network: '("' + network + '")',
 			};
 			console.log("[Market.Detail.vue] callLandItem(), query, dvLand : ", query, dvLand);
 
@@ -391,6 +419,10 @@ export default {
 					console.log('[Market.Detail.vue] callLandItem(), blockDetail:', blockDetail);
 
 					this.mxCloseLoading();
+
+					if(this.$refs.refMapLand) {
+						this.$refs.refMapLand.mapInit();
+					}
 				}
 			});
 		},
@@ -582,11 +614,9 @@ export default {
 						if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
 							this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
 						}else{
-							// console.log("Matched address");
+							var networkName = this.getDvLand().network;
 
-							console.log(this.networkName);
-							console.log(gConfig.getNetwork());
-							if(this.networkName != gConfig.getNetwork())
+							if(gConfig.getNetwork() != networkName)
 							{
 								this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
 								this.mxCloseLoading();
@@ -611,14 +641,16 @@ export default {
 							}
 
 							this.mxShowLoading('inf');
+							var tokenType = this.marketItem.tokentype;
 
 							this.trade_data = {
 								type: 'Sell',
 								category: '721',
 								price: this.sellPrice,
 								tokenId: this.marketItem.token_id,
+								tokenType: tokenType,
 								fToast: this.mxShowToast,
-								network: this.networkName,
+								network: networkName,
 								callback: this.onSellLand
 							};
 
@@ -746,7 +778,9 @@ export default {
 							}else{
 								// console.log("Matched address");
 
-								if(gConfig.getNetwork() != 'BSC')
+								var networkName = this.getDvLand().network;
+
+								if(gConfig.getNetwork() != networkName)
 								{
 									this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
 									this.mxCloseLoading();
@@ -776,21 +810,40 @@ export default {
 
 								var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
 
-								this.approve_data = {
-									type: 'Approval',
-									category: '721',
-									price: priceWithoutComma,
-									fToast: this.mxShowToast,
-									network: this.networkName,
-									callback: this.onApproveDvi
-								};
+								var tokenType = this.marketItem.tokentype;
+								
+								if(tokenType == 0) {
+									var data = {
+										account: buyer,
+										itemId: this.blockInfo.id,
+										ownerId: this.marketItem.owner_id,
+										land_code: this.getDvLand().n,
+										price: this.marketItem.price,
+										network: this.marketItem.network,
+										callback: this.onBuyLandItem
+									};
+									this.mxCloseLoading();
+									wAPI.buyLandItem(data);
+								} else if (tokenType == 1) {
+									this.approve_data = {
+										type: 'Approval',
+										category: '721',
+										price: priceWithoutComma,
+										fToast: this.mxShowToast,
+										network: networkName,
+										callback: this.onApproveDvi
+									};
 
-								this.mxCloseLoading();
-								this.mxShowAlert({
-									msg:this.$t('market.detail.alert-approve-msg'),
-									btn:this.$t('market.detail.alert-approve-button'),
-									callback: this.onCallbackApprovePopup
-								});
+									this.mxCloseLoading();
+									this.mxShowAlert({
+										msg:this.$t('market.detail.alert-approve-msg'),
+										btn:this.$t('market.detail.alert-approve-button'),
+										callback: this.onCallbackApprovePopup
+									});
+								} else {
+									this.mxCloseLoading();
+									this.mxShowAlert({msg:this.$t('market.detail.alert-invalid-token-type')});
+								}
 							}
 
 							return;
@@ -841,15 +894,18 @@ export default {
 
 			var priceWithoutComma = this.marketItem.price.replace(/,/g, '');
 
+			var networkName = this.getDvLand().network;
+
 			this.trade_data = {
 				type: 'Trade',
 				category: '721',
 				price: priceWithoutComma,
+				tokenType: this.marketItem.tokentype,
 				tokenId: this.marketItem.token_id,
 				amount: 1,
 				ownerId: this.marketItem.owner_id,
 				fToast: this.mxShowToast,
-				network: this.networkName,
+				network: networkName,
 				callback: this.onTradeDvi
 			};
 
@@ -943,7 +999,10 @@ export default {
 				if(!msg) msg = '[Error] undefined.';
 				this.trHash = null;
 				this.mxCloseLoading();
-				this.mxShowAlert({msg:msg});
+				this.mxShowAlert({
+					msg:msg,
+					callback: this.refreshPage
+				});
 				return;
 			}
 
@@ -966,7 +1025,10 @@ export default {
 			}
 			this.mxCloseLoading();
 			var msg = this.$t('market.detail.alert-success-on-buy');
-			this.mxShowAlert({msg: msg});
+			this.mxShowAlert({
+				msg: msg,
+				callback: this.refreshPage
+			});
 		},
 		onCallbackSellPopup(resp) {
 			var data = this.trade_data;
@@ -1016,7 +1078,10 @@ export default {
 
 					this.mxCloseLoading();
 					var msg = this.$t('market.detail.alert-success-on-sell');
-					this.mxShowAlert({msg: msg});
+					this.mxShowAlert({
+						msg: msg,
+						callback: this.refreshPage
+					});
 				}
 			});
 		},
@@ -1032,9 +1097,11 @@ export default {
 				return;
 			}
 
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand().network).Network;
+
 			var query = {
 				token_id: this.marketItem.token_id,
-				network: this.marketItem.network,
+				network: network,
 				dvi_price: this.sellPrice,
 				sale_state: 'true',
 			}
@@ -1055,7 +1122,10 @@ export default {
 
 					this.mxCloseLoading();
 					var msg = this.$t('market.detail.alert-success-on-sell');
-					this.mxShowAlert({msg: msg});
+					this.mxShowAlert({
+						msg: msg,
+						callback: this.refreshPage
+					});
 				}
 			});
 		}
@@ -1497,6 +1567,17 @@ export default {
 						.price-box{
 							@include FLEX(flex-start, center);
 							margin-top:gREm(10);
+							.pol-icon{
+								width: gREm(22);
+								height: gREm(19);
+								@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+							}
+							.pol-value{
+								width: auto;
+								height: gREm(22);
+								margin-left:gREm(5);
+								@include Set-Font($AppFont, gREm(18), gREm(22), #7A4ADD);
+							}
 							.icon{
 								width:gREm(14);
 								height: gREm(16);
@@ -1528,13 +1609,11 @@ export default {
 				.description{
 					position: absolute;
 					@include FLEX(center, center);
-					bottom: gREm(60);
+					bottom: gREm(50);
 					height: gREm(30);
 					width: 100%;
-					padding-left: gREm(20);
-					padding-right: gREm(20);
 					@include Set-Font($AppFont, gREm(16), gREm(19), #ffffff,800);
-					-webkit-text-stroke: 1px #555555;
+					// -webkit-text-stroke: 1px #555555;
 					text-shadow: 0px 3px 3px #000000;
 					//  text-shadow:
 					// 	3px 3px 0 #000,
@@ -1542,7 +1621,7 @@ export default {
 					// 	1px -1px 0 #000,
 					// 	-1px 1px 0 #000,
 					// 	1px 1px 0 #000;
-					text-transform: uppercase;
+					text-transform: uppercase;	
 				}
 
 				.text {
@@ -1645,6 +1724,70 @@ export default {
 						}
 					}
 					@include SetBgImage(url('../assets/img/market/certi_land_newyork_04_premium.png'));
+				}
+
+				&[map_id="london"] {
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
+						}
+					}
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
+						}
+					}
+					@include SetBgImage(url('../assets/img/market/certi_land_london_04_premium.png'));
+				}
+
+				&[map_id="tokyo"] {
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_04_premium.png'));
+						}
+					}
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_tokyo_04_premium.png'));
+						}
+					}
+					@include SetBgImage(url('../assets/img/market/certi_land_tokyo_04_premium.png'));
 				}
 			}
 			.buy-box{

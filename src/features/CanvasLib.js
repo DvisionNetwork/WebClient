@@ -204,12 +204,13 @@ export default function CanvasLib() {
 			var info = _O.Data.landInfo;
 			// console.log("==================== info:",info, gConfig.canvas.landBlock, block);
 
-			var style;
+			var style = info.cvStyle.landBlock[block.c.toString()];
 
-			if(block.btn_state == '1' && block.salestate == '1') {
-				style = info.cvStyle.landBlockOnSale[block.c.toString()];
-			} else {
-				style = info.cvStyle.landBlock[block.c.toString()];
+			if(block.salestate == '1') {
+				var openSeaOwnerAddress = gConfig.isProd ? '0x4F405ef65C9421498f2BBbD487E95F4147104C6C' : '0x8a0aeF6BcD559F73e748F4090a85d7b9A4F8cd94';
+				if(block.btn_state == '1' || (block.btn_state == '2' && block.owner_address == openSeaOwnerAddress) ) {
+					style = info.cvStyle.landBlockOnSale[block.c.toString()];
+				}
 			}
 
 			var fillColor = _U.getIfDefined(style,'fillColor');
