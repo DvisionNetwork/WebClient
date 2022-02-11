@@ -13,6 +13,9 @@
 		:key="key"
 		@click="() => onClicktoItem()"
 	>
+		<!-- <div class="quantity-box" v-if="isErc1155">
+			<span class="quantity">2</span>
+		</div> -->
 		<div class="image">
 			<img :src="imageUrl" :alt="imageUrl" />
 			<div v-if="isDisable" class="lock">
@@ -35,6 +38,14 @@
 		<div class="bottom">
 			<span class="left">ID</span>
 			<span>{{ nftId }}</span>
+		</div>
+		<div class="bottom">
+			<span class="left">Quantity</span>
+			<span>1</span>
+		</div>
+		<div class="bottom">
+			<span class="left">Type</span>
+			<span class="erc-type">ERC-1155</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
 			<span>Unlock</span>
@@ -125,8 +136,29 @@ export default {
 	width: 100%;
 	max-width: gREm(282);
 	padding: gREm(15) gREm(20);
+	position: relative;
 	&.active {
 		background: #372e83;
+	}
+	.quantity-box {
+		position: absolute;
+		top: 7px;
+		left: 10px;
+		z-index: 9;
+		min-width: 50px;
+		min-height: 50px;
+		border: 4px solid #ffffff;
+		border-radius: 50%;
+		background: #F6583E;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		& .quantity {
+			width: 40px;
+			text-align: center;
+			font-size: 20px;
+		}
 	}
 	.image {
 		width: gREm(240);
@@ -195,6 +227,18 @@ export default {
 				color: #ffffff66;
 				line-height: gREm(17);
 			}
+		}
+		& .erc-type {
+			width: gREm(57);
+			height: gREm(16);
+			background: #ff7a00;
+			font-weight: 600;
+			font-size: gREm(12);
+			line-height: gREm(12);
+			border-radius: 3px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 	.btn-unlock {

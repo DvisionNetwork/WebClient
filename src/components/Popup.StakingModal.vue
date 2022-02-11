@@ -9,7 +9,11 @@
 							class="ic-search"
 							src="../assets/img/ic-search.svg"
 						/>
-						<input type="text" />
+						<input
+							type="text"
+							v-model="keyword"
+							@change="onSearch"
+						/>
 						<div class="erc">
 							<span class="child" @click="switchErc">
 								<span v-if="isErc1155">ERC-1155</span>
@@ -34,13 +38,13 @@
 							/></span>
 						</div>
 					</div>
-					<div class="desc" v-if="listNfts.length!==0">
+					<div class="desc" v-if="listShowers.length !== 0">
 						Staking a LAND(s) will yield DVG in Dvision WORLD.
 						Select one or multiple LANDs to stake.
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="item in listNfts"
+							v-for="item in listShowers"
 							:name="item.name"
 							:id="item.id"
 							:key="item.id"
@@ -59,7 +63,9 @@
 								() => closeSelectQuantityModal()
 							"
 						/>
-						<div v-if="listNfts.length===0" class="no-lands">No LANDs found.</div>
+						<div v-if="listShowers.length === 0" class="no-lands">
+							No LANDs found.
+						</div>
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
@@ -129,19 +135,18 @@ export default {
 			submitData: null,
 			hadUnderstand: false,
 			filterBy: 'asc',
-			isErc1155: true,
+			isErc1155: false,
 			listNfts: [],
 			listNfts721Check: [],
 			listNfts1155Check: [],
 			listNfts1155Quantity: [],
+			keyword: '',
+			listShowers: [],
 		}
 	},
 	mounted() {
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
-	},
-	created() {
-		console.log('days', this.data.duration.data)
 	},
 	computed: {
 		userInfo() {
@@ -155,23 +160,44 @@ export default {
 		isErc1155() {
 			this.onGetNftowner(this.isErc1155)
 		},
+		value(value) {
+			this.$emit('onChange', value)
+		},
+		keyword() {
+			const result = this.listNfts.filter((x) =>
+				x.name
+					?.toLowerCase()
+					.includes(this.keyword.trim().toLowerCase())
+			)
+			this.listShowers = result
+		},
 	},
 	methods: {
+		onSearch() {
+			console.log('search')
+		},
 		confirmSwitch() {
 			this.isErc1155 = !this.isErc1155
 			this.mxCloseConfirmModal()
 		},
 		switchErc() {
-			const obj = {
-				width: '712px',
-				title: 'Switch LAND type?',
-				content:
-					'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?',
-				buttonTxt: 'Switch LAND type',
-				isShow: true,
-				onClick: this.confirmSwitch,
+			if (
+				this.listNfts721Check.length > 0 ||
+				this.listNfts1155Check.length > 0
+			) {
+				const obj = {
+					width: '712px',
+					title: 'Switch LAND type?',
+					content:
+						'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?',
+					buttonTxt: 'Switch LAND type',
+					isShow: true,
+					onClick: this.confirmSwitch,
+				}
+				this.mxShowConfirmModal(obj)
+			} else {
+				this.confirmSwitch()
 			}
-			this.mxShowConfirmModal(obj)
 		},
 		setFilter() {
 			if (this.filterBy === 'asc') {
@@ -252,6 +278,7 @@ export default {
 			if (response?.status === 200) {
 				this.listNfts = response.data
 				this.listNfts721Check = []
+				this.listShowers = this.listNfts
 			} else {
 				this.listNfts = []
 			}
