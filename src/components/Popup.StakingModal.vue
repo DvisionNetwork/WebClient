@@ -360,8 +360,8 @@ export default {
 					from: (await this.getAccounts())[0],
 				})
 				.then((tx) => {
-					this.showSuccess
 					console.log('onStakeNft', tx)
+					this.showSuccess()
 					this.onGetNftowner(this.isErc1155)
 				})
 				.catch((e) => {
