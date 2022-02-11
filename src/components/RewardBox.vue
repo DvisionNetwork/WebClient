@@ -3,7 +3,11 @@
 		<div class="box-title">
 			<div>
 				<span class="title">
-					<CountDownTimer :statusCampain="statusCampain" :switchStatusCampain="switchStatusCampain" />
+					<CountDownTimer
+						:statusCampain="statusCampain"
+						:switchStatusCampain="switchStatusCampain"
+						:poolDuration="poolDuration"
+					/>
 				</span>
 			</div>
 			<div class="point">{{ rewardPool }} DVG</div>
@@ -55,6 +59,15 @@ export default {
 			harvest: true,
 		}
 	},
+	props: {
+		statusCampain: Number,
+		switchStatusCampain: Function,
+		poolDuration: {
+			type: Object,
+		},
+		rewardPool: Number,
+	},
+
 	mounted() {
 		this.mxShowLoading()
 		this.getTotalStaked()
@@ -66,15 +79,6 @@ export default {
 		setInterval(() => {
 			this.getCampaignEarned()
 		}, 3000)
-	},
-
-	props: {
-		statusCampain:Number,
-		switchStatusCampain:Function,
-		poolDuration: {
-			type: Object,
-		},
-		rewardPool: Number,
 	},
 	watch: {
 		'poolDuration.data': {

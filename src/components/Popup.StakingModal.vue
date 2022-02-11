@@ -55,6 +55,7 @@
 							:cancelQuantityModal="
 								() => closeSelectQuantityModal()
 							"
+							
 						/>
 					</div>
 					<div class="line"></div>

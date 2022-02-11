@@ -26,7 +26,6 @@
 
 <script>
 import Web3 from 'web3'
-
 import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
@@ -74,7 +73,7 @@ export default {
 				data: 30,
 			},
 			rewardPool: 0,
-			statusCampain: 1,
+			statusCampain: 1
 		}
 	},
 	beforeMount() {
@@ -84,7 +83,9 @@ export default {
 			this.tab_page
 		)
 	},
-	mounted() {},
+	mounted() {
+		this.getCampaignInfo()
+	},
 	beforeUpdate() {},
 	updated() {},
 
@@ -157,14 +158,14 @@ export default {
 				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
-					this.getAccounts()
+					'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 				)
 				await contractConn.methods
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						this.rewardPool =
-							Number(data.rewardRate) * Number(data.duration)
+						const x = Number(data.rewardRate) * Number(data.duration);
+						this.rewardPool = Web3.utils.fromWei(`${x}`, 'ether');
 					})
 			}
 		},

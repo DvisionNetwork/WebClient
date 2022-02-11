@@ -23,43 +23,86 @@ export default {
 	components: {},
 	data() {
 		return {
-			startTime: '2022-02-10T15:15:11+07:00',
-			endTime: '2022-02-10T16:16:11+07:00',
+			startTime: '',
+			endTime: '',
 			days: '00',
 			hours: '00',
 			mins: '00',
 			secs: '00',
+			interval_1: null,
+			interval_2: null,
+			interval_3: null,
 		}
 	},
 	props: {
 		statusCampain: Number,
 		switchStatusCampain: Function,
+		poolDuration: {
+			type: Object,
+		},
 	},
 	mounted() {
-		this.getCampaignInfo()
-		const startValue = moment(this.startTime).valueOf()
-		const endValue = moment(this.endTime).valueOf()
-		setInterval(() => {
-			const currentValue = moment(new Date()).valueOf()
-			if (currentValue < startValue) {
-				if (this.statusCampain !== 2) {
-					this.switchStatusCampain(2)
-				}
-				this.countStart()
-			} else if (currentValue >= startValue && currentValue < endValue) {
-				if (this.statusCampain !== 3) {
-					this.switchStatusCampain(3)
-				}
-				this.countEnd()
-			} else {
-				if (this.statusCampain !== 1) {
-					this.switchStatusCampain(1)
-				}
-			}
-		}, 1000)
+		this.getCampaignInfo(1) //default 30 days
+	},
+	watch: {
+		'poolDuration.data': {
+			handler(dur) {
+				this.getCampaignInfo(this.getUint8(dur))
+			},
+		},
 	},
 	methods: {
-		async getCampaignInfo() {
+		getUint8(val) {
+			if (val === 90) {
+				return 3
+			} else if (val === 60) {
+				return 2
+			} else {
+				return 1
+			}
+		},
+		startInterVal_1(startValue, endValue) {
+			console.log('startValue',startValue)
+			console.log('endValue',endValue)
+			clearInterval(this.interval_2)
+			clearInterval(this.interval_3)
+			this.interval_1 = setInterval(() => {
+				this.countInterVal(startValue, endValue)
+			}, 1000)
+		},
+		startInterVal_2(startValue, endValue) {
+			clearInterval(this.interval_1)
+			clearInterval(this.interval_3)
+			this.interval_2 = setInterval(() => {
+				this.countInterVal(startValue, endValue)
+			}, 1000)
+		},
+		startInterVal_3(startValue, endValue) {
+			clearInterval(this.interval_1)
+			clearInterval(this.interval_2)
+			this.interval_3 = setInterval(() => {
+				this.countInterVal(startValue, endValue)
+			}, 1000)
+		},
+		countInterVal(startValue, endValue) {
+			const currentValue = moment(new Date()).valueOf()
+			if (currentValue < startValue) {
+				this.switchStatusCampain(2)
+				this.countStart()
+			}
+			if (startValue <= currentValue && currentValue <= endValue) {
+				this.switchStatusCampain(3)
+				this.countEnd()
+			}
+			if (currentValue > endValue) {
+				clearInterval(this.interval_1)
+				clearInterval(this.interval_2)
+				clearInterval(this.interval_3)
+				this.switchStatusCampain(1)
+			}
+		},
+		async getCampaignInfo(duration) {
+			this.mxShowLoading()
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(
 					Web3.givenProvider ||
@@ -70,19 +113,61 @@ export default {
 					'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 				)
 				await contractConn.methods
-					.campaignInfo(1)
+					.campaignInfo(duration)
 					.call()
 					.then((data) => {
-						const end = Number(data.timestampFinish) * 1000
+						//let end = 0
+						// if (duration === 1) end = Number('1644483112')
+						// if (duration === 2) end = Number('1644546637')
+						// if (duration === 3) end = Number('1644590312')
+						const end = Number(data.timestampFinish)
+						//const start = end - Number('14400')
 						const start = end - Number(data.duration)
 						if (start > 0) {
-							this.startTime = moment(start).format()
-							this.endTime = moment(end).format()
+							this.startTime = moment(start * 1000).format()
+							this.endTime = moment(end * 1000).format()
+							const startValue = moment(this.startTime).valueOf()
+							const endValue = moment(this.endTime).valueOf()
+							const currValue = moment(new Date()).valueOf()
+							if (currValue > endValue) {
+								console.log('currValue > endValue')
+								this.switchStatusCampain(1)
+							} else if (
+								startValue <= currValue &&
+								currValue <= endValue
+							) {
+								console.log('startValue <= currValue && currValue <= endValue')
+								this.switchStatusCampain(3)
+							} else if (currValue < startValue) {
+								console.log('currValue < startValue')
+								this.switchStatusCampain(2)
+							}
+							this.mxCloseLoading()
+
+							if (duration === 1) {
+								this.startInterVal_1(
+									startValue,
+									endValue
+								)
+							}
+							if (duration === 2) {
+								this.startInterVal_2(
+									startValue,
+									endValue
+								)
+							}
+							if (duration === 3) {
+								this.startInterVal_3(
+									startValue,
+									endValue
+								)
+							}
 						}
 					})
 			}
 		},
 		countStart() {
+			// this.switchStatusCampain(2)
 			const currentTime = moment(new Date()).format()
 			const diffDuration = moment.duration(
 				moment(this.startTime).diff(currentTime)
@@ -91,11 +176,6 @@ export default {
 			this.hours = diffDuration.hours()
 			this.mins = diffDuration.minutes()
 			this.secs = diffDuration.seconds()
-			const startValue = moment(this.startTime).valueOf()
-			const currentValue = moment(currentTime).valueOf()
-			if (startValue <= currentValue) {
-				this.switchStatusCampain(3)
-			}
 		},
 		countEnd() {
 			const currentTime = moment(new Date()).format()
@@ -106,11 +186,6 @@ export default {
 			this.hours = diffDuration.hours()
 			this.mins = diffDuration.minutes()
 			this.secs = diffDuration.seconds()
-			const endValue = moment(this.endTime).valueOf()
-			const currentValue = moment(currentTime).valueOf()
-			if (endValue <= currentValue) {
-				this.switchStatusCampain(1)
-			}
 		},
 	},
 }
