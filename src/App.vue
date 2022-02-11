@@ -99,7 +99,15 @@
 	</transition>
 
 		<div id="content">
-			<GNB v-if="!checkMobile()"
+			<!-- <GNB v-if="!checkMobile()"
+				appear
+				@change-locale="changeLocale"
+				@click="showLogin"
+				:theme="theme"
+				:userInfo="userInfo"
+				:wallet="wallet"
+			/> -->
+			<GNB
 				appear
 				@change-locale="changeLocale"
 				@click="showLogin"
