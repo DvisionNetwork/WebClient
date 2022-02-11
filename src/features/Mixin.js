@@ -316,7 +316,7 @@ var Mixin = {
 			return this.$store.state.landItemDetail;
 		},
 
-		mxCallAndSetLandItemList(mapId,func) {
+		mxCallAndSetLandItemList(mapId, network, func) {
 
 			var landMenu = this.mxGetLandMenu();
 			var dvLand = null;
@@ -331,7 +331,7 @@ var Mixin = {
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
-				network: '("'+ gConfig.wlt.getBscAddr().Network + '")'
+				network: '("'+ network + '")'
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
 
@@ -355,12 +355,14 @@ var Mixin = {
 								var block = dvLand.map[midx];
 								if(block.id == Number(row.index)) {
 									var price = _U.getIfDefined(row,'dviprice');
+									var tokentype = _U.getIfDefined(row,'tokentype');
 									var ownAddress = _U.getIfDefined(row,'owner_address');
 									var logoUrl = _U.getIfDefined(row,'logo_url');
 									var btnState = _U.getIfDefined(row,'btn_state');
 									var saleState = _U.getIfDefined(row,'salestate');
 
 									block['dviprice']= price ? price : "0";
+									block['tokentype']= tokentype ? tokentype : "0";
 									block['owner_address'] = ownAddress ? ownAddress : "";
 									block['logo_url'] = logoUrl ? logoUrl : "";
 									block['btn_state'] = btnState ? btnState : "";
@@ -369,6 +371,7 @@ var Mixin = {
 									break;
 								}else{
 									block['dviprice']= "0";
+									block['tokentype']= "0";
 									block['owner_address'] = "";
 									block['logo_url'] = "";
 								}
@@ -391,7 +394,7 @@ var Mixin = {
 
 		},
 
-		mxCallAndSetMyLandItemList(mapId,func) {
+		mxCallAndSetMyLandItemList(mapId, network, func) {
 
 			var landMenu = this.mxGetLandMenu();
 			var dvLand = null;
@@ -406,7 +409,7 @@ var Mixin = {
 			var landCode = dvLand.n;
 			var query = {
 				land_code: landCode,
-				network: '("'+ gConfig.wlt.getBscAddr().Network + '")',
+				network: '("'+ network + '")',
 				owner_addr: _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
@@ -431,12 +434,14 @@ var Mixin = {
 								var block = dvLand.map[midx];
 								if(block.id == Number(row.index)) {
 									var price = _U.getIfDefined(row,'dviprice');
+									var tokentype = _U.getIfDefined(row,'tokentype');
 									var ownAddress = _U.getIfDefined(row,'owner_address');
 									var logoUrl = _U.getIfDefined(row,'logo_url');
 									var btnState = _U.getIfDefined(row,'btn_state');
 									var saleState = _U.getIfDefined(row,'salestate');
 
 									block['dviprice']= price ? price : "0";
+									block['tokentype']= tokentype ? tokentype : "0";
 									block['owner_address'] = ownAddress ? ownAddress : "";
 									block['logo_url'] = logoUrl ? logoUrl : "";
 									block['btn_state'] = btnState ? btnState : "";
@@ -445,6 +450,7 @@ var Mixin = {
 									break;
 								}else{
 									block['dviprice']= "0";
+									block['tokentype']= "0";
 									block['owner_address'] = "";
 									block['logo_url'] = "";
 								}

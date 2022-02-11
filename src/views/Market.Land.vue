@@ -101,7 +101,7 @@
 			</div>
 		</div>
 		<div v-else-if="tab_page=='land-map'" class="canvas-box">
-			<MapLand :mapId="mapId" />
+			<MapLand ref="refMapLand" :mapId="mapId" />
 		</div>
 	</div>
 
@@ -309,10 +309,17 @@ export default {
 		// },
 
 		/// API
+		getDvLand() {
+			return this.mxGetLandMap(this.mapId);
+		},
+
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
-			this.mxCallAndSetLandItemList(this.mapId, ()=>{
+
+			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+
+			this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
 				console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 				this.setLandItems(this.searchQuery);
 			});
@@ -457,6 +464,10 @@ export default {
 
 			var total = blockListAll.length;
 			this.mxSetLandItems({total:total,  page:query.page, cpp: query.count,  list:blockList});
+
+			if(this.$refs.refMapLand) {
+				this.$refs.refMapLand.mapInit();
+			}
 		},
 
 		setPages() {
@@ -877,7 +888,7 @@ export default {
 
 	.canvas-box {
 		width: gREm(933);
-		height: gREm(350);
+		height: gREm(700);
 
 		// @include FLEXV(space-between, flex-start);
 		margin-top: gREm(30);
