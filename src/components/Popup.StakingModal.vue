@@ -351,11 +351,9 @@ export default {
 
 			params = JSON.parse(JSON.stringify(params))
 
-			console.log('params', params)
-
 			await contractConn.methods
 				.deposit(
-					this.getUint8, // 30 days = 1, 60 days = 2, 90 days = 3
+					this.getUint8(), // 30 days = 1, 60 days = 2, 90 days = 3
 					params
 				)
 				.send({
