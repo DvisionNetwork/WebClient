@@ -4,6 +4,8 @@
 		:onClick="(quantity) => onConfirmQuantity(quantity, nftId)"
 		:onCancel="closeSelectQuantityModal"
 		:id="id"
+		:name="name"
+		:imageUrl="imageUrl"
 	/>
 	<div
 		class="land-card"
@@ -32,7 +34,7 @@
 		</div>
 		<div class="bottom">
 			<span class="left">ID</span>
-			<span>{{ id }}</span>
+			<span>{{ nftId }}</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
 			<span>Unlock</span>

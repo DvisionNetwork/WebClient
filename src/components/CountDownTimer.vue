@@ -62,8 +62,8 @@ export default {
 			}
 		},
 		startInterVal_1(startValue, endValue) {
-			console.log('startValue',startValue)
-			console.log('endValue',endValue)
+			console.log('startValue', startValue)
+			console.log('endValue', endValue)
 			clearInterval(this.interval_2)
 			clearInterval(this.interval_3)
 			this.interval_1 = setInterval(() => {
@@ -95,10 +95,10 @@ export default {
 				this.countEnd()
 			}
 			if (currentValue > endValue) {
+				this.switchStatusCampain(1)
 				clearInterval(this.interval_1)
 				clearInterval(this.interval_2)
 				clearInterval(this.interval_3)
-				this.switchStatusCampain(1)
 			}
 		},
 		async getCampaignInfo(duration) {
@@ -116,12 +116,7 @@ export default {
 					.campaignInfo(duration)
 					.call()
 					.then((data) => {
-						//let end = 0
-						// if (duration === 1) end = Number('1644483112')
-						// if (duration === 2) end = Number('1644546637')
-						// if (duration === 3) end = Number('1644590312')
 						const end = Number(data.timestampFinish)
-						//const start = end - Number('14400')
 						const start = end - Number(data.duration)
 						if (start > 0) {
 							this.startTime = moment(start * 1000).format()
@@ -136,7 +131,9 @@ export default {
 								startValue <= currValue &&
 								currValue <= endValue
 							) {
-								console.log('startValue <= currValue && currValue <= endValue')
+								console.log(
+									'startValue <= currValue && currValue <= endValue'
+								)
 								this.switchStatusCampain(3)
 							} else if (currValue < startValue) {
 								console.log('currValue < startValue')
@@ -145,22 +142,13 @@ export default {
 							this.mxCloseLoading()
 
 							if (duration === 1) {
-								this.startInterVal_1(
-									startValue,
-									endValue
-								)
+								this.startInterVal_1(startValue, endValue)
 							}
 							if (duration === 2) {
-								this.startInterVal_2(
-									startValue,
-									endValue
-								)
+								this.startInterVal_2(startValue, endValue)
 							}
 							if (duration === 3) {
-								this.startInterVal_3(
-									startValue,
-									endValue
-								)
+								this.startInterVal_3(startValue, endValue)
 							}
 						}
 					})

@@ -34,7 +34,7 @@
 							/></span>
 						</div>
 					</div>
-					<div class="desc">
+					<div class="desc" v-if="listNfts.length!==0">
 						Staking a LAND(s) will yield DVG in Dvision WORLD.
 						Select one or multiple LANDs to stake.
 					</div>
@@ -47,7 +47,10 @@
 							:nftId="Number(item.nft_id)"
 							:imageUrl="item.image_url"
 							:isActive="getActive(Number(item.nft_id))"
-							:onConfirmQuantity1155="(quantity, nftId) => onConfirmQuantity1155(quantity, nftId)"
+							:onConfirmQuantity1155="
+								(quantity, nftId) =>
+									onConfirmQuantity1155(quantity, nftId)
+							"
 							:onCheckItem="
 								() => onCheckItem(Number(item.nft_id))
 							"
@@ -55,8 +58,8 @@
 							:cancelQuantityModal="
 								() => closeSelectQuantityModal()
 							"
-							
 						/>
+						<div v-if="listNfts.length===0" class="no-lands">No LANDs found.</div>
 					</div>
 					<div class="line"></div>
 					<div class="bottom">
@@ -397,7 +400,7 @@ export default {
 			width: gREm(1231);
 			max-height: 95vh;
 			margin: 0px auto;
-			padding: 50px 28px;
+			padding: 50px 28px 22px 28px;
 			transition: all 0.3s ease;
 			font-family: Montserrat, sans-serif;
 			& .title {
@@ -475,7 +478,7 @@ export default {
 				width: 100%;
 				overflow: auto;
 				max-height: 60vh;
-				min-height: 30vh;
+				min-height: 60vh;
 				display: flex;
 				justify-content: flex-start;
 				align-items: flex-start;
@@ -488,6 +491,12 @@ export default {
 				&::-webkit-scrollbar-thumb {
 					background: #d6d8dc;
 					border-radius: gREm(7);
+				}
+				.no-lands {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
 				}
 			}
 			& .line {

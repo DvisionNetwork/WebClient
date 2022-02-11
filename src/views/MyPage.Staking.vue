@@ -32,7 +32,8 @@ import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
-
+import { BigNumber } from 'ethers'
+import {toFixedDecimal} from '@/features/Common.js'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -42,6 +43,7 @@ import {
 	renderCampainNotYetContent,
 	renderNotLoginContent,
 } from '@/data/RenderContent.js'
+import { formatEther, parseEther } from '@ethersproject/units'
 
 const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
 const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
@@ -164,8 +166,8 @@ export default {
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						const x = Number(data.rewardRate) * Number(data.duration);
-						this.rewardPool = Web3.utils.fromWei(`${x}`, 'ether');
+						let x = BigNumber.from(data.rewardRate).mul(data.duration)
+						this.rewardPool = toFixedDecimal(formatEther(x), 0) 
 					})
 			}
 		},

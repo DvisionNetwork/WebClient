@@ -4,10 +4,12 @@
 			<div class="modal-wrapper">
 				<div class="modal-container">
 					<div class="title">Select quantity</div>
-					<div class="desc">Quantity of the selected LAND: 5</div>
+					<div class="desc">
+						Quantity of the selected LAND: {{ maxQuantity }}
+					</div>
 					<div class="box-image">
-						<img src="../assets/img/image4.png" alt="" />
-						<div>Dvision LAND: Gangnam-Daero Intersection 3x3</div>
+						<img :src="imageUrl" alt="" />
+						<div>{{ name }}</div>
 					</div>
 					<div class="box-math">
 						<div class="min-max" @click="quantity = minQuantity">
@@ -20,7 +22,11 @@
 								@click="handleMinus"
 							/>
 
-							<input type="number" :value="quantity" />
+							<input
+								type="number"
+								v-model="quantity"
+								@change="onInputChange"
+							/>
 							<img
 								class="icon-plus"
 								src="../assets/img/ic-plus.svg"
@@ -33,10 +39,7 @@
 					</div>
 					<div class="btn-bottom">
 						<div class="btn-cancel" @click="onCancel">Cancel</div>
-						<div
-							class="btn-confirm"
-							@click="onClick(quantity)"
-						>
+						<div class="btn-confirm" @click="onClick(quantity)">
 							Confirm
 						</div>
 					</div>
@@ -59,16 +62,36 @@ export default {
 	data() {
 		return {
 			quantity: 0,
-			minQuantity: 0,
-			maxQuantity: 5,
+			minQuantity: 1,
+			maxQuantity: 10,
 		}
+	},
+	watch: {
+		value(value) {
+			this.$emit('onChange', value)
+		},
+		quantity(val) {
+			const inputNum = Number(val)
+			if (inputNum >= this.maxQuantity) {
+				this.quantity = this.maxQuantity
+			}
+			if (inputNum <= this.minQuantity) {
+				this.quantity = this.minQuantity
+			}
+		},
 	},
 	props: {
 		onClick: Function,
 		onCancel: Function,
 		id: Number,
+		imageUrl: String,
+		name: String,
 	},
 	methods: {
+		onInputChange() {
+			///	const x = this.quantity.toString().replace(/./g, '');
+			this.quantity = Number(this.quantity) * 1
+		},
 		closePopup() {
 			this.mxCloseSuccessModal()
 		},
