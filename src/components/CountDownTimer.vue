@@ -125,18 +125,13 @@ export default {
 							const endValue = moment(this.endTime).valueOf()
 							const currValue = moment(new Date()).valueOf()
 							if (currValue > endValue) {
-								console.log('currValue > endValue')
 								this.switchStatusCampain(1)
 							} else if (
 								startValue <= currValue &&
 								currValue <= endValue
 							) {
-								console.log(
-									'startValue <= currValue && currValue <= endValue'
-								)
 								this.switchStatusCampain(3)
 							} else if (currValue < startValue) {
-								console.log('currValue < startValue')
 								this.switchStatusCampain(2)
 							}
 							this.mxCloseLoading()

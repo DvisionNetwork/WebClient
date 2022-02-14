@@ -113,6 +113,9 @@ export default {
 	methods: {
 		switchStatusCampain(status) {
 			this.statusCampain = status
+			if (status === 1) {
+				this.rewardPool = '0'
+			}
 		},
 
 		getUint8(val) {
@@ -198,7 +201,9 @@ export default {
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						let x = BigNumber.from(data.rewardRate).mul(data.duration)
+						let x = BigNumber.from(data.rewardRate).mul(
+							data.duration
+						)
 						this.rewardPool = toFixedDecimal(formatEther(x), 0)
 					})
 			}

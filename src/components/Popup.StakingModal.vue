@@ -62,6 +62,7 @@
 							:cancelQuantityModal="
 								() => closeSelectQuantityModal()
 							"
+							:maxQuantity="item.value"
 						/>
 						<div v-if="listShowers.length === 0" class="no-lands">
 							No LANDs found.
