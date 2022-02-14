@@ -12,7 +12,7 @@
 		class="land-card"
 		:class="{ active: isActive }"
 		:key="key"
-		@click="() => onClicktoItem()"
+		@click="() => (!isUnlock && onClicktoItem())"
 	>
 		<div class="quantity-box" v-if="quantity > 0">
 			<span class="quantity">{{ quantity }}</span>
@@ -49,7 +49,7 @@
 			<span class="erc-type" v-if="isErc1155">ERC-1155</span>
 			<span class="erc-type" v-else>ERC-721</span>
 		</div>
-		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
+		<div v-if="isUnlock" class="btn-unlock" @click="onClicktoItemUnStake">
 			<span>Unlock</span>
 		</div>
 	</div>
@@ -77,6 +77,7 @@ export default {
 		nftId: Number,
 		onConfirmQuantity1155: Function,
 		maxQuantity: Number,
+		isUnstake: Boolean,
 	},
 	components: {
 		SelectQuantityModal,
@@ -108,7 +109,7 @@ export default {
 					'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?',
 				buttonTxt: 'Unlock',
 				isShow: true,
-				onClick: this.handleClick,
+				onClick: this.onClicktoItemUnStake,
 			}
 			this.mxShowConfirmModal(obj)
 		},
@@ -121,6 +122,10 @@ export default {
 			this.quantity = quantity
 			this.showSelectQuantity = false
 			this.onConfirmQuantity1155(quantity, nftId)
+		},
+
+		onClicktoItemUnStake() {
+			this.onCheckItem()
 		},
 
 		onClicktoItem() {

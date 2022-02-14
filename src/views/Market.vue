@@ -17,6 +17,7 @@
 				<div
 					class="item"
 					v-for="(item, idx) in markets"
+					:key="idx"
 					:selected="currTabIdx == idx ? true : false"
 					@click="onTabClick(idx)"
 				>
@@ -28,10 +29,6 @@
 
 			<div v-if="tab_page.indexOf('land') == 0" class="land-box">
 				<MarketLand :tab_page="tab_page" />
-			</div>
-
-			<div v-else-if="tab_page == 'staking'" class="staking-box">
-				<MarketStaking :tab_page="tab_page" />
 			</div>
 
 			<div v-else class="content-box">
@@ -157,7 +154,6 @@ import Product from '@/components/Product.vue'
 import FOOT from '@/components/FOOT.vue'
 import MarketDetail from '@/views/Market.Detail.vue'
 import MarketLand from '@/views/Market.Land.vue'
-import MarketStaking from '@/views/MyPage.Staking.vue'
 
 export default {
 	name: "Market",
@@ -167,7 +163,6 @@ export default {
 		Product,
 		MarketDetail,
 		MarketLand,
-		MarketStaking,
 		FOOT,
 	},
 	props: {
@@ -258,7 +253,6 @@ export default {
 				{name: 'BSC', id:'bsc'},
 				{name: 'ETH', id:'eth'},
 				{name: 'Enjin (soon)', id:'partner_1'},
-				{name: 'Staking (LAND) ', id:'staking'},
 			],
 
 			category_1: 0,

@@ -20,6 +20,7 @@
 			<div class="content-box">
 				<Profile v-if="page=='profile'" />
 				<Inventory v-if="page=='inventory'" />
+				<MyPageStaking v-if="page=='staking'" />
 				<Land v-if="page=='land'" />
 			</div>
 		</div>
@@ -33,6 +34,7 @@
 import Profile from '@/views/MyPage.Profile.vue'
 import Inventory from '@/views/MyPage.Inventory.vue'
 import Land from '@/views/MyPage.Land.vue'
+import MyPageStaking from '@/views/MyPage.Staking.vue'
 import FOOT from '@/components/FOOT.vue'
 
 export default {
@@ -41,6 +43,7 @@ export default {
 		Profile,
 		Inventory,
 		Land,
+		MyPageStaking,
 		FOOT
 	},
 	props: {
@@ -70,7 +73,8 @@ export default {
 			mypageList: [
 				{name:'Profile', id:'profile'},
 				{name:'Inventory', id:'inventory'},
-				{name:'Land', id:'land'}
+				{name:'Land', id:'land'},
+				{name: 'Staking (LAND) ', id:'staking'},
 			],
 			currTabIdx: 'profile',
 		}
