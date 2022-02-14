@@ -45,7 +45,9 @@
 		</div>
 		<div class="bottom">
 			<span class="left">Type</span>
-			<span class="erc-type">ERC-1155</span>
+			<span class="erc-type">{{
+				!!isErc1155 ? 'ERC-1155' : 'ERC-721'
+			}}</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
 			<span>Unlock</span>

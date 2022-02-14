@@ -115,9 +115,6 @@ import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import { renderSuccessContent } from '@/data/RenderContent.js'
 
-const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
-const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
-
 const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
 const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
 const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'

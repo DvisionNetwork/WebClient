@@ -16,9 +16,18 @@
 		</div>
 		<div class="list-card">
 			<AddLand :onClick="checkShowModal" :listStaking="listStaking" />
-			<LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
+			<LandCard
+				v-for="item in listNftsStake"
+				:name="item.name"
+				:id="item.id"
+				:key="item.id"
+				:nftId="Number(item.nft_id)"
+				:imageUrl="item.image_url"
+				:isErc1155="item.is_ERC1155 === 1 ? true : false"
+			/>
+			<!-- <LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
 			<LandCard :isDisable="false" :isUnlock="false" />
-			<LandCard :isDisable="false" :isUnlock="true" />
+			<LandCard :isDisable="false" :isUnlock="true" /> -->
 		</div>
 	</div>
 	<PopupInput />
@@ -26,6 +35,10 @@
 
 <script>
 import Web3 from 'web3'
+import axios from 'axios'
+import AppConfig from '@/App.Config.js'
+var gConfig = AppConfig()
+
 import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
@@ -33,9 +46,7 @@ import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 import { BigNumber } from 'ethers'
-import {toFixedDecimal} from '@/features/Common.js'
-import ABI_721 from '@/abi/ABI712.json'
-import ABI_1155 from '@/abi/ABI1155.json'
+import { toFixedDecimal } from '@/features/Common.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 import {
@@ -45,11 +56,10 @@ import {
 } from '@/data/RenderContent.js'
 import { formatEther, parseEther } from '@ethersproject/units'
 
-const Contract721Address = '0xF36721581B3dB68408A7189840C79Ad47C719c71'
-const Contract1155Address = '0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1'
-const STATUS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
-const STATUS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
-const STAKING_ABI = '@/abi/StakingABI.json'
+const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
+const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
 
 export default {
 	name: 'staking',
@@ -75,7 +85,8 @@ export default {
 				data: 30,
 			},
 			rewardPool: 0,
-			statusCampain: 1
+			statusCampain: 1,
+			listNftsStake: [],
 		}
 	},
 	beforeMount() {
@@ -86,15 +97,34 @@ export default {
 		)
 	},
 	mounted() {
+		this.onGetNftsStaked(1)
 		this.getCampaignInfo()
 	},
 	beforeUpdate() {},
 	updated() {},
+	watch: {
+		'poolDuration.data': {
+			handler(dur) {
+				this.onGetNftsStaked(this.getUint8(dur))
+			},
+		},
+	},
 
 	methods: {
 		switchStatusCampain(status) {
 			this.statusCampain = status
 		},
+
+		getUint8(val) {
+			if (val === 90) {
+				return 3
+			} else if (val === 60) {
+				return 2
+			} else {
+				return 1
+			}
+		},
+
 		handleClick() {
 			this.mxCloseConfirmModal()
 			const obj = {
@@ -142,6 +172,7 @@ export default {
 				this.mxShowStakingModal(stakingData)
 			}
 		},
+
 		async getAccounts() {
 			try {
 				let acc = await window.ethereum.request({
@@ -152,6 +183,7 @@ export default {
 				return []
 			}
 		},
+
 		async getCampaignInfo() {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(
@@ -167,8 +199,28 @@ export default {
 					.call()
 					.then((data) => {
 						let x = BigNumber.from(data.rewardRate).mul(data.duration)
-						this.rewardPool = toFixedDecimal(formatEther(x), 0) 
+						this.rewardPool = toFixedDecimal(formatEther(x), 0)
 					})
+			}
+		},
+
+		async onGetNftsStaked(campaignId) {
+			let params = {
+				owner: this.$store?.state?.userInfo?.wallet_addr,
+				campaignId: campaignId,
+				chainId: 97,
+			}
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-staked`,
+				{ params }
+			)
+			if (response?.status === 200) {
+				console.log('response', response)
+				this.listNftsStake = response.data
+				// this.listNfts721Check = []
+				// this.listShowers = this.listNfts
+			} else {
+				this.listNftsStake = []
 			}
 		},
 	},
