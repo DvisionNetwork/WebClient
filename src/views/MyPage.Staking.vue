@@ -8,6 +8,11 @@
 				:rewardPool="rewardPool"
 				:statusCampain="statusCampain"
 				:switchStatusCampain="switchStatusCampain"
+				:totalStakedLand="totalStakedLand"
+				:myStakedLand="myStakedLand"
+				:totalMiningHashRate="totalMiningHashRate"
+				:myMiningHashRate="myMiningHashRate"
+				:mininghashRatePerHour="mininghashRatePerHour"
 			/>
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
@@ -26,12 +31,16 @@
 					:imageUrl="item.image_url"
 					:isErc1155="item.is_ERC1155 === 1 ? true : false"
 					:isUnstake="true"
-					:onCheckItem="() => onCheckItemUnStakeModalConfirm( Number(item.nft_id), (item.is_ERC1155 === 1 ? true : false), item.locked )"
+					:onCheckItem="
+						() =>
+							onCheckItemUnStakeModalConfirm(
+								Number(item.nft_id),
+								item.is_ERC1155 === 1 ? true : false,
+								item.locked
+							)
+					"
 					:isUnlock="true"
 				/>
-				<!-- <LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
-				<LandCard :isDisable="false" :isUnlock="false" />
-				<LandCard :isDisable="false" :isUnlock="true" /> -->
 			</div>
 		</div>
 		<PopupInput />
@@ -59,13 +68,12 @@ import {
 	renderCampainNotYetContent,
 	renderNotLoginContent,
 } from '@/data/RenderContent.js'
-import { formatEther, parseEther } from '@ethersproject/units'
+import { formatEther } from '@ethersproject/units'
 
 const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
 const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
 const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-
 export default {
 	name: 'staking',
 	components: {
@@ -84,6 +92,7 @@ export default {
 	},
 	data() {
 		return {
+			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			pages: [1],
 			currentPage: 1,
 			poolDuration: {
@@ -92,6 +101,11 @@ export default {
 			rewardPool: 0,
 			statusCampain: 1,
 			listNftsStake: [],
+			totalStakedLand: '0',
+			myStakedLand: '0',
+			totalMiningHashRate: '0',
+			myMiningHashRate: '0',
+			mininghashRatePerHour: '0 DVG',
 		}
 	},
 	beforeMount() {
@@ -103,23 +117,51 @@ export default {
 	},
 	mounted() {
 		this.onGetNftsStaked(1)
-		this.getCampaignInfo()
+		this.getCampaignInfo(1)
+		this.getMyStaked(1)
 	},
 	beforeUpdate() {},
 	updated() {},
 	watch: {
 		'poolDuration.data': {
 			handler(dur) {
-				this.onGetNftsStaked(this.getUint8(dur))
+				const x = this.getUint8(dur)
+				this.getCampaignInfo(x)
+				if (this.statusCampain !== 1) {
+					this.onGetNftsStaked(x)
+					this.getTotalMiningHashRate(x)
+					this.getMyMiningHashRate(x)
+					this.getTotalStaked(x)
+					this.getMyStaked(x)
+				}
 			},
+		},
+		statusCampain() {
+			console.log('statusCampainnn', this.statusCampain)
+			if (this.statusCampain === 1) {
+				this.totalStakedLand = '0'
+				this.myStakedLand = '0'
+				this.totalMiningHashRate = '0'
+				this.myMiningHashRate = '0'
+				this.mininghashRatePerHour = '0'
+			} else {
+				const x = this.getUint8(this.poolDuration.data)
+				this.getCampaignInfo(x)
+				this.onGetNftsStaked(x)
+				this.getTotalMiningHashRate(x)
+				this.getMyMiningHashRate(x)
+				this.getTotalStaked(x)
+				this.getMyStaked(x)
+			}
 		},
 	},
 
 	methods: {
 		switchStatusCampain(status) {
-			this.statusCampain = status
-			if (status === 1) {
-				this.rewardPool = '0'
+			if (this.statusCampain !== status) {
+				this.statusCampain = status
+				if (status === 1) {
+				}
 			}
 		},
 
@@ -134,7 +176,7 @@ export default {
 		},
 
 		pluck(objs, name) {
-			var sol = [];
+			var sol = []
 			for (var i in objs) {
 				if (objs[i]?.hasOwnProperty(name)) {
 					sol.push(Number(objs[i][name]))
@@ -169,7 +211,6 @@ export default {
 		},
 
 		checkShowModal() {
-			const acc = this.$store?.state?.userInfo?.wallet_addr
 			let obj = {
 				width: '712px',
 				title: 'Wallet not connected yet',
@@ -177,7 +218,7 @@ export default {
 				buttonTxt: 'I understand',
 				isShow: true,
 			}
-			if (!acc) {
+			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
 			} else if (this.statusCampain !== 3) {
 				obj.title = 'Staking campaign is unavailable'
@@ -203,8 +244,29 @@ export default {
 				return []
 			}
 		},
+		async getTotalStaked(campaignId) {
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-total-staked?campaignId=${campaignId}`
+			)
 
-		async getCampaignInfo() {
+			if (response.status === 200) {
+				this.totalStakedLand = response.data.total_staked?.toString()
+			}
+		},
+		async getMyStaked(campaignId) {
+			let params = {
+				campaignId: campaignId,
+				user: this.wallet_addr,
+			}
+			const response = await axios.get(
+				`${gConfig.public_api_sotatek}/nft-my-staked`,
+				{ params }
+			)
+			if (response.status === 200 && response.data) {
+				this.myStakedLand = response.data?.totalStaked?.toString()
+			}
+		},
+		async getTotalMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(
 					Web3.givenProvider ||
@@ -212,12 +274,64 @@ export default {
 				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
-					'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+					STAKING_ADDRESS
 				)
 				await contractConn.methods
-					.campaignInfo(1)
+					.totalCampaignHashrate(campainId)
+					.call()
+					.then((tx) => {
+						this.totalMiningHashRate = tx
+						if (Number(tx) > 0) {
+							this.getMiningHashRatePerHour(
+								this.poolDuration.data,
+								tx
+							)
+						}
+					})
+			}
+		},
+		async getMyMiningHashRate(campainId) {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
+				const contractConn = await new web3.eth.Contract(
+					ABI_STAKING.abi,
+					STAKING_ADDRESS
+				)
+				await contractConn.methods
+					.userInfo(campainId, this.wallet_addr)
+					.call()
+					.then((tx) => {
+						this.myMiningHashRate = tx[0]?.toString()
+					})
+			}
+		},
+
+		getMiningHashRatePerHour(days, totalMiningHashRate) {
+			const x =
+				((1000 * Number(this.rewardPool)) /
+					(Number(totalMiningHashRate) * days)) |
+				0
+			this.mininghashRatePerHour = `${x} DVG`
+		},
+
+		async getCampaignInfo(campainId) {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(
+					Web3.givenProvider ||
+						'https://data-seed-prebsc-1-s1.binance.org:8545/'
+				)
+				const contractConn = await new web3.eth.Contract(
+					ABI_STAKING.abi,
+					STAKING_ADDRESS
+				)
+				await contractConn.methods
+					.campaignInfo(campainId)
 					.call()
 					.then((data) => {
+						console.log('data', data)
 						let x = BigNumber.from(data.rewardRate).mul(
 							data.duration
 						)
@@ -338,11 +452,11 @@ export default {
 <style lang="scss" scoped>
 .my-staked-land {
 	display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-top: 4.8125rem;
-    width: 100%;
-    height: auto;
+	justify-content: flex-start;
+	align-items: flex-start;
+	margin-top: 4.8125rem;
+	width: 100%;
+	height: auto;
 }
 .contents {
 	margin-left: gREm(91);

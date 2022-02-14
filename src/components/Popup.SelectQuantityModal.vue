@@ -8,7 +8,8 @@
 						Quantity of the selected LAND: {{ maxQuantity }}
 					</div>
 					<div class="box-image">
-						<img :src="imageUrl" alt="" />
+						<img v-if="imageUrl" :src="imageUrl" :alt="name" />
+						<img v-else src="../assets/img/default.png" :alt="name" />
 						<div>{{ name }}</div>
 					</div>
 					<div class="box-math">
@@ -25,7 +26,7 @@
 							<input
 								type="number"
 								v-model="quantity"
-								@change="onInputChange"
+								@change="(e) => onInputChange(e)"
 							/>
 							<img
 								class="icon-plus"
@@ -51,6 +52,7 @@
 
 <script>
 import AppConfig from '@/App.Config.js'
+import _ from 'lodash'
 var gConfig = AppConfig()
 
 export default {
@@ -70,6 +72,7 @@ export default {
 			this.$emit('onChange', value)
 		},
 		quantity(val) {
+			console.log('val', val)
 			const inputNum = Number(val)
 			if (inputNum >= this.maxQuantity) {
 				this.quantity = this.maxQuantity
@@ -88,7 +91,7 @@ export default {
 		maxQuantity: Number,
 	},
 	methods: {
-		onInputChange() {
+		onInputChange(e) {
 			///	const x = this.quantity.toString().replace(/./g, '');
 			this.quantity = Number(this.quantity) * 1
 		},
@@ -106,7 +109,7 @@ export default {
 			this.quantity = this.quantity - 1
 			if (this.quantity <= 0) {
 				this.quantity = 0
-			} 
+			}
 		},
 	},
 }

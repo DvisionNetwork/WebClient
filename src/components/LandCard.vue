@@ -12,13 +12,14 @@
 		class="land-card"
 		:class="{ active: isActive }"
 		:key="key"
-		@click="() => (!isUnlock && onClicktoItem())"
+		@click="() => !isUnlock && onClicktoItem()"
 	>
 		<div class="quantity-box" v-if="quantity > 0">
 			<span class="quantity">{{ quantity }}</span>
 		</div>
 		<div class="image">
-			<img :src="imageUrl" :alt="imageUrl" />
+			<img v-if="imageUrl" :src="imageUrl" :alt="name" />
+			<img v-else src="../assets/img/default.png" :alt="name" />
 			<div v-if="isDisable" class="lock">
 				<span v-if="isUnlock" class="lock-desc"
 					>Staking has ended.</span
@@ -46,8 +47,8 @@
 		</div>
 		<div class="bottom">
 			<span class="left">Type</span>
-			<span class="erc-type" v-if="isErc1155">ERC-1155</span>
-			<span class="erc-type" v-else>ERC-721</span>
+			<span class="erc-type is1155" v-if="isErc1155">ERC-1155</span>
+			<span class="erc-type is721" v-else>ERC-721</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="onClicktoItemUnStake">
 			<span>Unlock</span>
@@ -246,7 +247,7 @@ export default {
 		& .erc-type {
 			width: gREm(57);
 			height: gREm(16);
-			background: #ff7a00;
+
 			font-weight: 600;
 			font-size: gREm(12);
 			line-height: gREm(12);
@@ -254,6 +255,12 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			&.is1155 {
+				background: #ff7a00;
+			}
+			&.is721 {
+				background: #1BD7BD;
+			}
 		}
 	}
 	.btn-unlock {
