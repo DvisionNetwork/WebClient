@@ -64,8 +64,6 @@ export default {
 			}
 		},
 		startInterVal_1(startValue, endValue) {
-			console.log('startValue', startValue)
-			console.log('endValue', endValue)
 			clearInterval(this.interval_2)
 			clearInterval(this.interval_3)
 			this.interval_1 = setInterval(() => {
@@ -117,7 +115,7 @@ export default {
 					.campaignInfo(duration)
 					.call()
 					.then((data) => {
-						console.log('data', data)
+
 						const end = Number(data.timestampFinish)
 						const start = end - Number(data.duration)
 						if (start > 0) {

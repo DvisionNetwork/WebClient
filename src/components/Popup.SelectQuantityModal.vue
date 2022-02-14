@@ -9,7 +9,11 @@
 					</div>
 					<div class="box-image">
 						<img v-if="imageUrl" :src="imageUrl" :alt="name" />
-						<img v-else src="../assets/img/default.png" :alt="name" />
+						<img
+							v-else
+							src="../assets/img/default.png"
+							:alt="name"
+						/>
 						<div>{{ name }}</div>
 					</div>
 					<div class="box-math">
@@ -27,6 +31,7 @@
 								type="number"
 								v-model="quantity"
 								@change="(e) => onInputChange(e)"
+								@keypress="disableDot"
 							/>
 							<img
 								class="icon-plus"
@@ -52,7 +57,6 @@
 
 <script>
 import AppConfig from '@/App.Config.js'
-import _ from 'lodash'
 var gConfig = AppConfig()
 
 export default {
@@ -72,7 +76,6 @@ export default {
 			this.$emit('onChange', value)
 		},
 		quantity(val) {
-			console.log('val', val)
 			const inputNum = Number(val)
 			if (inputNum >= this.maxQuantity) {
 				this.quantity = this.maxQuantity
@@ -91,6 +94,11 @@ export default {
 		maxQuantity: Number,
 	},
 	methods: {
+		disableDot(e) {
+			if (e.charCode > 31 && e.charCode < 48) {
+				e.preventDefault()
+			}
+		},
 		onInputChange(e) {
 			///	const x = this.quantity.toString().replace(/./g, '');
 			this.quantity = Number(this.quantity) * 1

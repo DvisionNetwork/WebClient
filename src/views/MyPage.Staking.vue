@@ -124,19 +124,12 @@ export default {
 	beforeUpdate() {},
 	updated() {},
 	watch: {
-		'poolDuration.data': {
-			handler(dur) {
-				const x = this.getUint8(dur)
-				this.getCampaignInfo(x)
-				if (this.statusCampain !== 1) {
-					this.onGetNftsStaked(x)
-					this.getTotalMiningHashRate(x)
-					this.getMyMiningHashRate(x)
-					this.getTotalStaked(x)
-					this.getMyStaked(x)
-				}
-			},
-		},
+		// 'poolDuration.data': {
+		// 	handler(dur) {
+		// 		const x = this.getUint8(dur)
+		// 		this.getCampaignInfo(x)
+		// 	},
+		// },
 		statusCampain() {
 			console.log('statusCampainnn', this.statusCampain)
 			if (this.statusCampain === 1) {
@@ -161,8 +154,6 @@ export default {
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
-				if (status === 1) {
-				}
 			}
 		},
 
@@ -332,7 +323,6 @@ export default {
 					.campaignInfo(campainId)
 					.call()
 					.then((data) => {
-						console.log('data', data)
 						let x = BigNumber.from(data.rewardRate).mul(
 							data.duration
 						)
