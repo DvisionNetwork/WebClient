@@ -112,7 +112,7 @@ export default {
 				width: '712px',
 				title: 'Unlock all LANDs?',
 				content: renderUnlockContent(),
-				buttonTxt: 'Unlock',
+				buttonTxt: 'Unlock all',
 				isShow: true,
 				onClick: this.handleClick,
 			}

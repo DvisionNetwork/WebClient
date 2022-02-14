@@ -13,9 +13,9 @@
 		:key="key"
 		@click="() => onClicktoItem()"
 	>
-		<!-- <div class="quantity-box" v-if="isErc1155">
-			<span class="quantity">2</span>
-		</div> -->
+		<div class="quantity-box" v-if="quantity>0">
+			<span class="quantity">{{quantity}}</span>
+		</div>
 		<div class="image">
 			<img :src="imageUrl" :alt="imageUrl" />
 			<div v-if="isDisable" class="lock">
@@ -81,6 +81,7 @@ export default {
 	data() {
 		return {
 			showSelectQuantity: false,
+			quantity:0
 		}
 	},
 	methods: {
@@ -114,6 +115,7 @@ export default {
 		},
 
 		onConfirmQuantity(quantity, nftId) {
+			this.quantity=quantity
 			this.showSelectQuantity = false
 			this.onConfirmQuantity1155(quantity, nftId)
 		},
