@@ -158,6 +158,7 @@ export default {
 					)
 					.call()
 					.then((data) => {
+						console.log('data earn', data)
 						this.dvgEarned = `${data} DVG`
 					})
 			}

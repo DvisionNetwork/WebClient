@@ -33,7 +33,7 @@ import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 import { BigNumber } from 'ethers'
-import {toFixedDecimal} from '@/features/Common.js'
+import { toFixedDecimal } from '@/features/Common.js'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -75,7 +75,7 @@ export default {
 				data: 30,
 			},
 			rewardPool: 0,
-			statusCampain: 1
+			statusCampain: 1,
 		}
 	},
 	beforeMount() {
@@ -90,10 +90,12 @@ export default {
 	},
 	beforeUpdate() {},
 	updated() {},
-
 	methods: {
 		switchStatusCampain(status) {
 			this.statusCampain = status
+			if (status === 1) {
+				this.rewardPool = '0'
+			}
 		},
 		handleClick() {
 			this.mxCloseConfirmModal()
@@ -166,8 +168,10 @@ export default {
 					.campaignInfo(1)
 					.call()
 					.then((data) => {
-						let x = BigNumber.from(data.rewardRate).mul(data.duration)
-						this.rewardPool = toFixedDecimal(formatEther(x), 0) 
+						let x = BigNumber.from(data.rewardRate).mul(
+							data.duration
+						)
+						this.rewardPool = toFixedDecimal(formatEther(x), 0)
 					})
 			}
 		},

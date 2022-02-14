@@ -61,9 +61,8 @@ export default {
 	computed: {},
 	data() {
 		return {
-			quantity: 0,
+			quantity: 1,
 			minQuantity: 1,
-			maxQuantity: 10,
 		}
 	},
 	watch: {
@@ -75,8 +74,8 @@ export default {
 			if (inputNum >= this.maxQuantity) {
 				this.quantity = this.maxQuantity
 			}
-			if (inputNum <= this.minQuantity) {
-				this.quantity = this.minQuantity
+			if (inputNum <= -1) {
+				this.quantity = ''
 			}
 		},
 	},
@@ -86,6 +85,7 @@ export default {
 		id: Number,
 		imageUrl: String,
 		name: String,
+		maxQuantity: Number,
 	},
 	methods: {
 		onInputChange() {
@@ -103,11 +103,10 @@ export default {
 			}
 		},
 		handleMinus() {
-			if (this.quantity <= 1) {
-				this.quantity = 1
-			} else {
-				this.quantity = this.quantity - 1
-			}
+			this.quantity = this.quantity - 1
+			if (this.quantity <= 0) {
+				this.quantity = 0
+			} 
 		},
 	},
 }

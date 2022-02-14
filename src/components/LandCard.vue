@@ -6,6 +6,7 @@
 		:id="id"
 		:name="name"
 		:imageUrl="imageUrl"
+		:maxQuantity="maxQuantity"
 	/>
 	<div
 		class="land-card"
@@ -13,8 +14,8 @@
 		:key="key"
 		@click="() => onClicktoItem()"
 	>
-		<div class="quantity-box" v-if="quantity>0">
-			<span class="quantity">{{quantity}}</span>
+		<div class="quantity-box" v-if="quantity > 0">
+			<span class="quantity">{{ quantity }}</span>
 		</div>
 		<div class="image">
 			<img :src="imageUrl" :alt="imageUrl" />
@@ -41,11 +42,12 @@
 		</div>
 		<div class="bottom">
 			<span class="left">Quantity</span>
-			<span>1</span>
+			<span>{{ maxQuantity }}</span>
 		</div>
 		<div class="bottom">
 			<span class="left">Type</span>
-			<span class="erc-type">ERC-1155</span>
+			<span class="erc-type" v-if="isErc1155">ERC-1155</span>
+			<span class="erc-type" v-else>ERC-721</span>
 		</div>
 		<div v-if="isUnlock" class="btn-unlock" @click="handleUnlockClick">
 			<span>Unlock</span>
@@ -74,6 +76,7 @@ export default {
 		isErc1155: Boolean,
 		nftId: Number,
 		onConfirmQuantity1155: Function,
+		maxQuantity: Number,
 	},
 	components: {
 		SelectQuantityModal,
@@ -81,7 +84,7 @@ export default {
 	data() {
 		return {
 			showSelectQuantity: false,
-			quantity:0
+			quantity: 0,
 		}
 	},
 	methods: {
@@ -115,14 +118,19 @@ export default {
 		},
 
 		onConfirmQuantity(quantity, nftId) {
-			this.quantity=quantity
+			this.quantity = quantity
 			this.showSelectQuantity = false
 			this.onConfirmQuantity1155(quantity, nftId)
 		},
 
 		onClicktoItem() {
 			if (this.isErc1155) {
-				this.showSelectQuantity = true
+				if (this.isActive) {
+					this.quantity = 0
+					this.onConfirmQuantity1155(this.quantity, this.nftId)
+				} else {
+					this.showSelectQuantity = true
+				}
 			} else {
 				this.onCheckItem()
 			}
@@ -151,7 +159,7 @@ export default {
 		min-height: 50px;
 		border: 4px solid #ffffff;
 		border-radius: 50%;
-		background: #F6583E;
+		background: #f6583e;
 		overflow: hidden;
 		display: flex;
 		align-items: center;
