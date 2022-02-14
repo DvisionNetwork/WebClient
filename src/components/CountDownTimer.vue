@@ -18,6 +18,8 @@
 import moment from 'moment'
 import Web3 from 'web3'
 import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
+const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+
 export default {
 	name: 'CountDownTimer',
 	components: {},
@@ -87,22 +89,21 @@ export default {
 		countInterVal(startValue, endValue) {
 			const currentValue = moment(new Date()).valueOf()
 			if (currentValue < startValue) {
-				this.switchStatusCampain(2)
+				if (this.statusCampain !== 2) this.switchStatusCampain(2)
 				this.countStart()
 			}
 			if (startValue <= currentValue && currentValue <= endValue) {
-				this.switchStatusCampain(3)
+				if (this.statusCampain !== 3) this.switchStatusCampain(3)
 				this.countEnd()
 			}
 			if (currentValue > endValue) {
-				this.switchStatusCampain(1)
+				if (this.statusCampain !== 1) this.switchStatusCampain(1)
 				clearInterval(this.interval_1)
 				clearInterval(this.interval_2)
 				clearInterval(this.interval_3)
 			}
 		},
 		async getCampaignInfo(duration) {
-			this.mxShowLoading()
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(
 					Web3.givenProvider ||
@@ -110,12 +111,13 @@ export default {
 				)
 				const contractConn = await new web3.eth.Contract(
 					ABI_APPROVE_ADD_LISTING.abi,
-					'0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+					STAKING_ADDRESS
 				)
 				await contractConn.methods
 					.campaignInfo(duration)
 					.call()
 					.then((data) => {
+						console.log('data', data)
 						const end = Number(data.timestampFinish)
 						const start = end - Number(data.duration)
 						if (start > 0) {
@@ -134,7 +136,6 @@ export default {
 							} else if (currValue < startValue) {
 								this.switchStatusCampain(2)
 							}
-							this.mxCloseLoading()
 
 							if (duration === 1) {
 								this.startInterVal_1(startValue, endValue)

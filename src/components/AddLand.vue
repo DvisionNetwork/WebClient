@@ -7,10 +7,14 @@
 		<div class="line" />
 		<div class="bottom">
 			<span class="left">Hash Rate</span>
-			<span>ID</span>
+			<span>--</span>
 		</div>
 		<div class="bottom">
-			<span class="left">--</span>
+			<span class="left">ID</span>
+			<span>--</span>
+		</div>
+		<div class="bottom">
+			<span class="left">Quantity</span>
 			<span>--</span>
 		</div>
 	</div>
@@ -84,12 +88,15 @@ export default {
 		align-items: center;
 		justify-content: space-between;
 		margin-top: gREm(5);
-		span {
+		& .left {
 			font-size: gREm(12);
 			line-height: gREm(16);
 			font-family: Montserrat, sans-serif;
-			color: #ffffff66;
 			line-height: gREm(17);
+			color: #ffffff66;
+			& span {
+				color: #ffffff;
+			}
 		}
 	}
 }

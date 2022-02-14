@@ -10,25 +10,16 @@
 					/>
 				</span>
 			</div>
-			<div class="point">{{ rewardPool }} DVG</div>
+			<div class="point" v-if="statusCampain === 1">0 DVG</div>
+			<div class="point" v-else>{{ rewardPool }} DVG</div>
 		</div>
 		<div class="box-content">
-			<RewardBoxItem
-				name="DVG Earned"
-				:hadHarvest="harvest"
-				:data="dvgEarned"
-			/>
+			<RewardBoxItem name="DVG Earned" :hadHarvest="harvest" :data="dvgEarned" />
 			<RewardBoxItem name="Total Staked LANDs" :data="totalStakedLand" />
 			<RewardBoxItem name="My Staked LANDs" :data="myStakedLand" />
-			<RewardBoxItem
-				name="Total Mining Hash Rate"
-				:data="totalMiningHashRate"
-			/>
-			<RewardBoxItem name="My Mining Hash Rate" :data="miningHashRate" />
-			<RewardBoxItem
-				name="1000 Hash Rate/24H to get"
-				:data="mininghashRatePerHour"
-			/>
+			<RewardBoxItem name="Total Mining Hash Rate" :data="totalMiningHashRate" />
+			<RewardBoxItem name="My Mining Hash Rate" :data="myMiningHashRate" />
+			<RewardBoxItem name="1000 Hash Rate/24H to get" :data="mininghashRatePerHour" />
 		</div>
 	</div>
 </template>
@@ -36,11 +27,13 @@
 <script>
 import RewardBoxItem from '@/components/RewardBox.Item.vue'
 import Web3 from 'web3'
-import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
+import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
-import axios from 'axios'
 import AppConfig from '@/App.Config.js'
+import { formatEther } from '@ethersproject/units'
+import { toFixedDecimal } from '@/features/Common.js'
 var gConfig = AppConfig()
+const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 
 export default {
 	name: 'RewardBox',
@@ -50,13 +43,10 @@ export default {
 	},
 	data() {
 		return {
-			totalStakedLand: '0',
-			myStakedLand: '0',
-			totalMiningHashRate: '0',
 			miningHashRate: '0',
-			mininghashRatePerHour: '0 DVG',
 			dvgEarned: '0 DVG',
 			harvest: true,
+			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 		}
 	},
 	props: {
@@ -66,16 +56,18 @@ export default {
 			type: Object,
 		},
 		rewardPool: Number,
+		totalStakedLand:String,
+		myStakedLand:String,
+		totalMiningHashRate:String,
+		myMiningHashRate:String,
+		mininghashRatePerHour:String
 	},
 
 	mounted() {
-		this.mxShowLoading()
-		this.getTotalStaked()
-		this.getMyStaked()
-		this.getTotalMiningHasRate()
-		this.getMiningHashRate()
-		this.getMiningHashRatePerHour(this.poolDuration.data)
-		this.mxCloseLoading()
+		if (this.statusCampain !== 1) {
+			this.getTotalStaked()
+			this.getMyStaked()
+		}
 		setInterval(() => {
 			this.getCampaignEarned()
 		}, 3000)
@@ -83,62 +75,19 @@ export default {
 	watch: {
 		'poolDuration.data': {
 			handler(val) {
-				this.getMiningHashRatePerHour(val)
+				const x = this.getUint8(val)
 				this.getCampaignEarned()
 			},
 		},
 	},
 	methods: {
-		async getTotalStaked() {
-			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-total-staked`
-			)
-			if (response.status === 200) {
-				this.totalStakedLand = response.data.totalStaked.toString()
-			}
-		},
-		async getMyStaked() {
-			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-my-staked`
-			)
-			if (response.status === 200) {
-				this.myStakedLand = response.data.myStaked.toString()
-			}
-		},
-		async getTotalMiningHasRate() {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
-				const contractConn = await new web3.eth.Contract(
-					ABI_APPROVE_ADD_LISTING.abi,
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
-				)
-				await contractConn.methods
-					.totalCampaignHashrate(1)
-					.call()
-					.then((tx) => {
-						this.totalMiningHasRate = tx.toString()
-					})
-			}
-		},
-		async getMiningHashRate() {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
-				const contractConn = await new web3.eth.Contract(
-					ABI_APPROVE_ADD_LISTING.abi,
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
-				)
-				await contractConn.methods
-					.userInfo(1, '0x0e403338cdEe8043D603eF895D987b74AD4603c6')
-					.call()
-					.then((tx) => {
-						this.miningHashRate = tx[0].toString()
-					})
+		getUint8(val) {
+			if (val === 90) {
+				return 3
+			} else if (val === 60) {
+				return 2
+			} else {
+				return 1
 			}
 		},
 		async getCampaignEarned() {
@@ -148,28 +97,21 @@ export default {
 						'https://data-seed-prebsc-1-s1.binance.org:8545/'
 				)
 				const contractConn = await new web3.eth.Contract(
-					ABI_APPROVE_ADD_LISTING.abi,
-					'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
+					ABI_STAKING.abi,
+					STAKING_ADDRESS
 				)
 				await contractConn.methods
-					.getCampaignEarned(
-						1,
-						'0x0e403338cdEe8043D603eF895D987b74AD4603c6'
-					)
+					.getCampaignEarned(this.statusCampain, this.wallet_addr)
 					.call()
 					.then((data) => {
-						console.log('data earn', data)
-						this.dvgEarned = `${data} DVG`
+						this.dvgEarned = `${toFixedDecimal(
+							formatEther(data),
+							0
+						)} DVG`
 					})
 			}
 		},
-		getMiningHashRatePerHour(duration) {
-			const x =
-				((1000 * this.rewardPool) /
-					(Number(this.totalMiningHashRate) * duration)) |
-				0
-			this.mininghashRatePerHour = `${x} DVG`
-		},
+	
 	},
 }
 </script>
