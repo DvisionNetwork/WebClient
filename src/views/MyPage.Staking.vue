@@ -28,6 +28,7 @@
 					:isUnstake="true"
 					:onCheckItem="() => onCheckItemUnStakeModalConfirm( Number(item.nft_id), (item.is_ERC1155 === 1 ? true : false), item.locked )"
 					:isUnlock="true"
+					:maxQuantity="item.locked"
 				/>
 				<!-- <LandCard :isDisable="false" :isUnlock="false" :isActive="true" />
 				<LandCard :isDisable="false" :isUnlock="false" />
