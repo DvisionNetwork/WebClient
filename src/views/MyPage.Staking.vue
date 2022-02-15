@@ -61,20 +61,23 @@ import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 import { BigNumber } from 'ethers'
-import { toFixedDecimal } from '@/features/Common.js'
+import {
+	toFixedDecimal,
+	STAKING_ADDRESS,
+	BSC_RPC_ENDPOINT,
+} from '@/features/Common.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 import {
 	renderUnlockContent,
 	renderCampainNotYetContent,
 	renderNotLoginContent,
+	renderOnUnStakeAllNftsSuccessContent,
+	renderOnUnStakeNftsSuccessContent,
+	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import { formatEther } from '@ethersproject/units'
 
-const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
-const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
-const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
-const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
 export default {
 	name: 'staking',
 	components: {
@@ -110,24 +113,17 @@ export default {
 		}
 	},
 	beforeMount() {
-		console.log(
-			'[Market.Land.vue] beforeMount(), route : ',
-			this.$route,
-			this.tab_page
-		)
+		console.log(this.$route, this.tab_page)
 	},
 	mounted() {
 		this.onGetNftsStaked(1)
 		this.getCampaignInfo(1)
 		this.getMyStaked(1)
 	},
-	beforeUpdate() {},
-	updated() {},
 	watch: {
 		'poolDuration.data': {
 			handler(dur) {
 				const x = this.getUint8(dur)
-				// this.getCampaignInfo(x)
 				this.onGetNftsStaked(x)
 			},
 		},
@@ -261,10 +257,7 @@ export default {
 		},
 		async getTotalMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
 					STAKING_ADDRESS
@@ -285,10 +278,7 @@ export default {
 		},
 		async getMyMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
 					STAKING_ADDRESS
@@ -311,24 +301,28 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
-				const contractConn = await new web3.eth.Contract(
-					ABI_STAKING.abi,
-					STAKING_ADDRESS
-				)
-				await contractConn.methods
-					.campaignInfo(campainId)
-					.call()
-					.then((data) => {
-						let x = BigNumber.from(data.rewardRate).mul(
-							data.duration
-						)
-						this.rewardPool = toFixedDecimal(formatEther(x), 0)
-					})
+			try {
+				this.mxShowLoading('inf')
+				if (typeof window.ethereum !== 'undefined') {
+					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+					const contractConn = await new web3.eth.Contract(
+						ABI_STAKING.abi,
+						STAKING_ADDRESS
+					)
+					await contractConn.methods
+						.campaignInfo(campainId)
+						.call()
+						.then((data) => {
+							let x = BigNumber.from(data.rewardRate).mul(
+								data.duration
+							)
+							this.rewardPool = toFixedDecimal(formatEther(x), 0)
+							this.mxCloseLoading()
+						})
+				}
+			} catch (err) {
+				this.mxCloseLoading()
+				console.log('catch', err)
 			}
 		},
 
@@ -364,8 +358,7 @@ export default {
 			const obj = {
 				width: '478px',
 				title: 'Success',
-				content:
-					'All of your staked LANDs have been unlocked and returned to your account.',
+				content: renderOnUnStakeAllNftsSuccessContent(),
 				buttonTxt: 'OK',
 				isShow: true,
 			}
@@ -377,8 +370,7 @@ export default {
 			const obj = {
 				width: '478px',
 				title: 'Success',
-				content:
-					'The selected LAND has been unlocked and returned to your account.',
+				content: renderOnUnStakeNftsSuccessContent(),
 				buttonTxt: 'OK',
 				isShow: true,
 			}
@@ -395,8 +387,7 @@ export default {
 			const obj = {
 				width: '712px',
 				title: 'Unlock the selected LAND?',
-				content:
-					'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?',
+				content: renderOnCheckItemUnStakeModalConfirmContent(),
 				buttonTxt: 'Unlock',
 				isShow: true,
 				onClick: () => this.onUnStakeNfts(params, false),

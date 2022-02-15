@@ -421,6 +421,7 @@ export default {
 			background: #181721;
 			border-radius: 10px;
 			width: gREm(1231);
+			max-width: 90vw;
 			max-height: 95vh;
 			margin: 0px auto;
 			padding: 50px 28px 22px 28px;

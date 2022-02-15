@@ -18,7 +18,7 @@
 import moment from 'moment'
 import Web3 from 'web3'
 import ABI_APPROVE_ADD_LISTING from '@/abi/DvisionStakingUpgradeable.json'
-const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+import { STAKING_ADDRESS, BSC_RPC_ENDPOINT } from '@/features/Common.js'
 
 export default {
 	name: 'CountDownTimer',
@@ -102,50 +102,54 @@ export default {
 			}
 		},
 		async getCampaignInfo(duration) {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
-				const contractConn = await new web3.eth.Contract(
-					ABI_APPROVE_ADD_LISTING.abi,
-					STAKING_ADDRESS
-				)
-				await contractConn.methods
-					.campaignInfo(duration)
-					.call()
-					.then((data) => {
-
-						const end = Number(data.timestampFinish)
-						const start = end - Number(data.duration)
-						if (start > 0) {
-							this.startTime = moment(start * 1000).format()
-							this.endTime = moment(end * 1000).format()
-							const startValue = moment(this.startTime).valueOf()
-							const endValue = moment(this.endTime).valueOf()
-							const currValue = moment(new Date()).valueOf()
-							if (currValue > endValue) {
-								this.switchStatusCampain(1)
-							} else if (
-								startValue <= currValue &&
-								currValue <= endValue
-							) {
-								this.switchStatusCampain(3)
-							} else if (currValue < startValue) {
-								this.switchStatusCampain(2)
+			try {
+				this.mxShowLoading('inf')
+				if (typeof window.ethereum !== 'undefined') {
+					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+					const contractConn = await new web3.eth.Contract(
+						ABI_APPROVE_ADD_LISTING.abi,
+						STAKING_ADDRESS
+					)
+					await contractConn.methods
+						.campaignInfo(duration)
+						.call()
+						.then((data) => {
+							const end = Number(data.timestampFinish)
+							const start = end - Number(data.duration)
+							if (start > 0) {
+								this.startTime = moment(start * 1000).format()
+								this.endTime = moment(end * 1000).format()
+								const startValue = moment(
+									this.startTime
+								).valueOf()
+								const endValue = moment(this.endTime).valueOf()
+								const currValue = moment(new Date()).valueOf()
+								if (currValue > endValue) {
+									this.switchStatusCampain(1)
+								} else if (
+									startValue <= currValue &&
+									currValue <= endValue
+								) {
+									this.switchStatusCampain(3)
+								} else if (currValue < startValue) {
+									this.switchStatusCampain(2)
+								}
+								this.mxCloseLoading()
+								if (duration === 1) {
+									this.startInterVal_1(startValue, endValue)
+								}
+								if (duration === 2) {
+									this.startInterVal_2(startValue, endValue)
+								}
+								if (duration === 3) {
+									this.startInterVal_3(startValue, endValue)
+								}
 							}
-
-							if (duration === 1) {
-								this.startInterVal_1(startValue, endValue)
-							}
-							if (duration === 2) {
-								this.startInterVal_2(startValue, endValue)
-							}
-							if (duration === 3) {
-								this.startInterVal_3(startValue, endValue)
-							}
-						}
-					})
+						})
+				}
+			} catch (err) {
+				this.mxCloseLoading()
+				console.log('catch', err)
 			}
 		},
 		countStart() {

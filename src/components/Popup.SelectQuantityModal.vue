@@ -95,13 +95,11 @@ export default {
 	},
 	methods: {
 		disableDot(e) {
-			console.log('charCode', e.charCode)
 			if ((e.charCode > 31 && e.charCode < 48) || e.charCode > 57) {
 				e.preventDefault()
 			}
 		},
 		onInputChange(e) {
-			///	const x = this.quantity.toString().replace(/./g, '');
 			this.quantity = Number(this.quantity) * 1
 		},
 		closePopup() {

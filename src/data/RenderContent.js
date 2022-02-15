@@ -24,3 +24,22 @@ export function renderSuccessContent() {
   <p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can harvest the accumulated DVG reward at any time during the Staking period (up until the Harvest time).</p>
   `
 }
+export function renderOnClickHarvestContent(data){
+  return `
+  <p>You got ${data} DVG from the staking campaign!</p>
+  <br />
+    <p>
+      The earned DVG has been transferred to your Dvision
+      WORLD DVG balance.
+    </p>
+  `
+}
+export function renderOnUnStakeAllNftsSuccessContent() {
+  return 'All of your staked LANDs have been unlocked and returned to your account.'
+}
+export function renderOnUnStakeNftsSuccessContent() {
+  return 'The selected LAND has been unlocked and returned to your account.'
+}
+export function renderOnCheckItemUnStakeModalConfirmContent() {
+  return 'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?'
+}

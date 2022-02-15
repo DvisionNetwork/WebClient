@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { renderOnClickHarvestContent } from '@/data/RenderContent.js'
 export default {
 	name: 'RewardBox',
 	props: {
@@ -29,20 +30,12 @@ export default {
 		}
 	},
 	methods: {
-		renderContent() {
-			return `<p>You got 234432 DVG from the staking campaign!</p>
-				<br />
-					<p>
-						The earned DVG has been transferred to your Dvision
-						WORLD DVG balance.
-					</p>`
-		},
 		handleClickHarvest() {
 			const obj = {
 				width: '712px',
 				height: '244px',
 				title: 'Reward harvested',
-				content: this.renderContent(),
+				content: renderOnClickHarvestContent('3123'),
 				buttonTxt: 'OK',
 				isShow: true,
 			}

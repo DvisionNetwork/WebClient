@@ -14,12 +14,25 @@
 			<div class="point" v-else>{{ rewardPool }} DVG</div>
 		</div>
 		<div class="box-content">
-			<RewardBoxItem name="DVG Earned" :hadHarvest="harvest" :data="dvgEarned" />
+			<RewardBoxItem
+				name="DVG Earned"
+				:hadHarvest="harvest"
+				:data="dvgEarned"
+			/>
 			<RewardBoxItem name="Total Staked LANDs" :data="totalStakedLand" />
 			<RewardBoxItem name="My Staked LANDs" :data="myStakedLand" />
-			<RewardBoxItem name="Total Mining Hash Rate" :data="totalMiningHashRate" />
-			<RewardBoxItem name="My Mining Hash Rate" :data="myMiningHashRate" />
-			<RewardBoxItem name="1000 Hash Rate/24H to get" :data="mininghashRatePerHour" />
+			<RewardBoxItem
+				name="Total Mining Hash Rate"
+				:data="totalMiningHashRate"
+			/>
+			<RewardBoxItem
+				name="My Mining Hash Rate"
+				:data="myMiningHashRate"
+			/>
+			<RewardBoxItem
+				name="1000 Hash Rate/24H to get"
+				:data="mininghashRatePerHour"
+			/>
 		</div>
 	</div>
 </template>
@@ -31,9 +44,12 @@ import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
 import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
-import { toFixedDecimal } from '@/features/Common.js'
+import {
+	toFixedDecimal,
+	STAKING_ADDRESS,
+	BSC_RPC_ENDPOINT,
+} from '@/features/Common.js'
 var gConfig = AppConfig()
-const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
 
 export default {
 	name: 'RewardBox',
@@ -56,11 +72,11 @@ export default {
 			type: Object,
 		},
 		rewardPool: Number,
-		totalStakedLand:String,
-		myStakedLand:String,
-		totalMiningHashRate:String,
-		myMiningHashRate:String,
-		mininghashRatePerHour:String
+		totalStakedLand: String,
+		myStakedLand: String,
+		totalMiningHashRate: String,
+		myMiningHashRate: String,
+		mininghashRatePerHour: String,
 	},
 
 	mounted() {
@@ -92,10 +108,7 @@ export default {
 		},
 		async getCampaignEarned() {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(
-					Web3.givenProvider ||
-						'https://data-seed-prebsc-1-s1.binance.org:8545/'
-				)
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING.abi,
 					STAKING_ADDRESS
@@ -111,7 +124,6 @@ export default {
 					})
 			}
 		},
-	
 	},
 }
 </script>

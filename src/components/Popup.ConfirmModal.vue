@@ -66,7 +66,7 @@ export default {
 		.modal-container {
 			background: #181721;
 			border-radius: 10px;
-
+			max-width: 90vw;
 			margin: 0px auto;
 			padding: 35px 30px 24px;
 			transition: all 0.3s ease;
