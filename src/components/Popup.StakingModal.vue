@@ -114,13 +114,16 @@ var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-import { renderSuccessContent } from '@/data/RenderContent.js'
-
-const ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
-const ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
-const STAKING_ADDRESS = '0x36ca44FC054F1d135CF655f739540611E58E760b'
-
-const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+import {
+	renderSuccessContent,
+	renderSwitchNftContent,
+} from '@/data/RenderContent.js'
+import {
+	STAKING_ADDRESS,
+	BSC_RPC_ENDPOINT,
+	ADDRESS_721,
+	ADDRESS_1155,
+} from '@/features/Common.js'
 
 import LandCard from '@/components/LandCard.vue'
 
@@ -186,8 +189,7 @@ export default {
 				const obj = {
 					width: '712px',
 					title: 'Switch LAND type?',
-					content:
-						'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?',
+					content: renderSwitchNftContent(),
 					buttonTxt: 'Switch LAND type',
 					isShow: true,
 					onClick: this.confirmSwitch,

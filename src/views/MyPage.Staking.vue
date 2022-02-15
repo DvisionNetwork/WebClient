@@ -64,7 +64,7 @@ import { BigNumber } from 'ethers'
 import {
 	toFixedDecimal,
 	STAKING_ADDRESS,
-	BSC_RPC_ENDPOINT,
+	BSC_RPC_ENDPOINT
 } from '@/features/Common.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
@@ -302,7 +302,6 @@ export default {
 
 		async getCampaignInfo(campainId) {
 			try {
-				this.mxShowLoading('inf')
 				if (typeof window.ethereum !== 'undefined') {
 					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 					const contractConn = await new web3.eth.Contract(
@@ -317,11 +316,9 @@ export default {
 								data.duration
 							)
 							this.rewardPool = toFixedDecimal(formatEther(x), 0)
-							this.mxCloseLoading()
 						})
 				}
 			} catch (err) {
-				this.mxCloseLoading()
 				console.log('catch', err)
 			}
 		},
