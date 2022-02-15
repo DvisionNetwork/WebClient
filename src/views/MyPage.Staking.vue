@@ -124,12 +124,13 @@ export default {
 	beforeUpdate() {},
 	updated() {},
 	watch: {
-		// 'poolDuration.data': {
-		// 	handler(dur) {
-		// 		const x = this.getUint8(dur)
-		// 		this.getCampaignInfo(x)
-		// 	},
-		// },
+		'poolDuration.data': {
+			handler(dur) {
+				const x = this.getUint8(dur)
+				// this.getCampaignInfo(x)
+				this.onGetNftsStaked(x)
+			},
+		},
 		statusCampain() {
 			console.log('statusCampainnn', this.statusCampain)
 			if (this.statusCampain === 1) {
