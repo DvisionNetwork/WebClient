@@ -44,10 +44,10 @@
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="(item, idx) in listShowers"
+							v-for="item in listShowers"
 							:name="item.name"
 							:id="item.id"
-							:key="idx"
+							:key="item.id"
 							:nftId="Number(item.nft_id)"
 							:imageUrl="item.image_url"
 							:isActive="getActive(Number(item.nft_id))"
@@ -63,7 +63,7 @@
 								() => closeSelectQuantityModal()
 							"
 							:maxQuantity="item.value"
-							:hashRate="listHashRate[idx]"
+							:hashRate="item.hashRate"
 						/>
 						<div v-if="listShowers.length === 0" class="no-lands">
 							No LANDs found.
@@ -144,7 +144,6 @@ export default {
 			listNfts1155Quantity: [],
 			keyword: '',
 			listShowers: [],
-			listHashRate: [],
 		}
 	},
 	mounted() {
@@ -190,7 +189,10 @@ export default {
 					.tokenHashrate(campainId, nft_id)
 					.call()
 					.then((tx) => {
-						this.listHashRate.push(Number(tx))
+						const nft = this.listNfts.find(
+							(x) => x.nft_id === nft_id
+						)
+						nft.hashRate = Number(tx)
 					})
 			} catch (err) {
 				console.log('catch', err)
@@ -224,7 +226,13 @@ export default {
 		setFilter() {
 			if (this.filterBy === 'asc') {
 				this.filterBy = 'desc'
+				this.listShowers = this.listShowers.sort(function (a, b) {
+					return b.hashRate - a.hashRate
+				})
 			} else {
+				this.listShowers = this.listShowers.sort(function (a, b) {
+					return a.hashRate - b.hashRate
+				})
 				this.filterBy = 'asc'
 			}
 		},
@@ -296,13 +304,12 @@ export default {
 				{ params }
 			)
 			if (response?.status === 200) {
-				this.listHashRate = []
-				response.data.map((item) => {
-					this.onGetHashRate(this.getUint8(), item.nft_id)
-				})
 				this.listNfts = response.data
 				this.listNfts721Check = []
 				this.listShowers = this.listNfts
+				response.data.map((item) => {
+					this.onGetHashRate(this.getUint8(), item.nft_id)
+				})
 			} else {
 				this.listNfts = []
 			}
