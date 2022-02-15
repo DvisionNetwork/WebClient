@@ -504,5 +504,20 @@ export default {
 	// 1024
 	.contents {
 	}
+	
+}
+@include media-max($media_small) {
+.my-staked-land {
+		display: unset;
+		margin-top: 20px;
+		padding: 0 10px;
+		.tab-menu{
+			max-width: unset;
+		}
+		 .contents{
+			margin-left: unset;
+			max-width: unset;
+		}
+	}
 }
 </style>

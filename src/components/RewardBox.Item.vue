@@ -87,4 +87,17 @@ export default {
 		}
 	}
 }
+@include media-max($media_small) {
+	.MyPage {
+		display: unset;
+		.content-body-wrap {
+			width: 100%;
+			max-width: 100%;
+			.box-item {
+				width: 100%;
+				max-width: 100%;
+			}
+		}
+	}
+}
 </style>

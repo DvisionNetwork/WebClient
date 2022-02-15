@@ -167,4 +167,17 @@ export default {
 		gap: gREm(20);
 	}
 }
+@include media-max($media_small){
+	.reward-box{
+		padding:20px;
+		.box-title{
+			display: block;
+			margin-bottom: 10px;
+			.point{
+				text-align: right;
+				margin-top: 10px;
+			}
+		}
+	}
+}
 </style>

@@ -165,12 +165,17 @@ export default {
 			this.$emit('onChange', value)
 		},
 		keyword() {
-			const result = this.listNfts.filter((x) =>
-				x.name
-					?.toLowerCase()
-					.includes(this.keyword.trim().toLowerCase())
-			)
-			this.listShowers = result
+			if (this.keyword !== '' || this.keyword !== null) {
+				const result = this.listNfts.filter((x) =>
+					x.name
+						?.toLowerCase()
+						.includes(this.keyword.trim().toLowerCase())
+				)
+				this.listShowers = result
+			}
+			else{
+				this.listShowers = this.listNfts
+			}
 		},
 	},
 	methods: {
@@ -304,7 +309,7 @@ export default {
 		},
 
 		async checkStatusNft() {
-			this.mxShowLoading()
+			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? ADDRESS_1155 : ADDRESS_721 // address collection

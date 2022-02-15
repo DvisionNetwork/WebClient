@@ -199,4 +199,10 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) {
+.MyPage .content-body-wrap {
+		width: 100%;
+	}
+}
 </style>
