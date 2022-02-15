@@ -95,7 +95,8 @@ export default {
 	},
 	methods: {
 		disableDot(e) {
-			if (e.charCode > 31 && e.charCode < 48) {
+			console.log('charCode', e.charCode)
+			if ((e.charCode > 31 && e.charCode < 48) || e.charCode > 57) {
 				e.preventDefault()
 			}
 		},
