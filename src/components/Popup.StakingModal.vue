@@ -44,10 +44,10 @@
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="item in listShowers"
+							v-for="(item, idx) in listShowers"
 							:name="item.name"
 							:id="item.id"
-							:key="item.id"
+							:key="idx"
 							:nftId="Number(item.nft_id)"
 							:imageUrl="item.image_url"
 							:isActive="getActive(Number(item.nft_id))"
@@ -63,6 +63,7 @@
 								() => closeSelectQuantityModal()
 							"
 							:maxQuantity="item.value"
+							:hashRate="listHashRate[idx]"
 						/>
 						<div v-if="listShowers.length === 0" class="no-lands">
 							No LANDs found.
@@ -143,6 +144,7 @@ export default {
 			listNfts1155Quantity: [],
 			keyword: '',
 			listShowers: [],
+			listHashRate: [],
 		}
 	},
 	mounted() {
@@ -165,20 +167,35 @@ export default {
 			this.$emit('onChange', value)
 		},
 		keyword() {
-			if (this.keyword !== '' || this.keyword !== null) {
+			if (this.keyword.length > 0) {
 				const result = this.listNfts.filter((x) =>
 					x.name
 						?.toLowerCase()
 						.includes(this.keyword.trim().toLowerCase())
 				)
 				this.listShowers = result
-			}
-			else{
+			} else {
 				this.listShowers = this.listNfts
 			}
 		},
 	},
 	methods: {
+		async onGetHashRate(campainId, nft_id) {
+			try {
+				const contractConn = await this.contractConnect(
+					ABI_STAKING,
+					STAKING_ADDRESS
+				)
+				await contractConn.methods
+					.tokenHashrate(campainId, nft_id)
+					.call()
+					.then((tx) => {
+						this.listHashRate.push(Number(tx))
+					})
+			} catch (err) {
+				console.log('catch', err)
+			}
+		},
 		onSearch() {
 			console.log('search')
 		},
@@ -226,7 +243,6 @@ export default {
 			}
 			this.mxShowSuccessModal(obj)
 		},
-
 		getActive(nft_id) {
 			if (this.isErc1155) {
 				return this.listNfts1155Check?.includes(Number(nft_id))
@@ -269,7 +285,6 @@ export default {
 				this.checkStatusNft()
 			}
 		},
-
 		async onGetNftowner(collection) {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
@@ -281,6 +296,10 @@ export default {
 				{ params }
 			)
 			if (response?.status === 200) {
+				this.listHashRate = []
+				response.data.map((item) => {
+					this.onGetHashRate(this.getUint8(), item.nft_id)
+				})
 				this.listNfts = response.data
 				this.listNfts721Check = []
 				this.listShowers = this.listNfts
@@ -288,7 +307,6 @@ export default {
 				this.listNfts = []
 			}
 		},
-
 		async getAccounts() {
 			try {
 				let acc = await window.ethereum.request({
@@ -322,9 +340,10 @@ export default {
 				)
 				.call()
 				.then((tx) => {
-					this.mxCloseLoading()
+					console.log('txx', tx)
 					if (tx === true) {
 						this.hadUnderstand = true
+						this.mxCloseLoading()
 						// this.onStakeNft()
 					} else {
 						this.onApprovedForAll()
@@ -352,6 +371,7 @@ export default {
 					from: (await this.getAccounts())[0],
 				})
 				.then((tx) => {
+					this.mxCloseLoading()
 					this.hadUnderstand = true
 					console.log('onApprovedForAll', tx)
 					// this.onStakeNft()
@@ -373,6 +393,7 @@ export default {
 		},
 
 		async onStakeNft() {
+			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
 				STAKING_ADDRESS // address Staking
@@ -396,10 +417,12 @@ export default {
 				})
 				.then((tx) => {
 					console.log('onStakeNft', tx)
+					this.mxCloseLoading()
 					this.showSuccess()
 					this.onGetNftowner(this.isErc1155)
 				})
 				.catch((e) => {
+					this.mxCloseLoading()
 					console.log('onStakeNft e', e)
 					this.onGetNftowner(this.isErc1155)
 				})

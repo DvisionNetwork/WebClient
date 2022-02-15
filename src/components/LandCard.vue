@@ -35,7 +35,7 @@
 		<div class="line" />
 		<div class="bottom">
 			<span class="left">Hash Rate</span>
-			<span>4</span>
+			<span>{{ hashRate }}</span>
 		</div>
 		<div class="bottom">
 			<span class="left">ID</span>
@@ -58,7 +58,10 @@
 
 <script>
 import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
-
+import {
+	renderOnUnStakeNftsSuccessContent,
+	renderOnCheckItemUnStakeModalConfirmContent,
+} from '@/data/RenderContent.js'
 export default {
 	name: 'LandCard',
 	props: {
@@ -79,6 +82,7 @@ export default {
 		onConfirmQuantity1155: Function,
 		maxQuantity: Number,
 		isUnstake: Boolean,
+		hashRate: Number,
 	},
 	components: {
 		SelectQuantityModal,
@@ -95,8 +99,7 @@ export default {
 			const obj = {
 				width: '478px',
 				title: 'Success',
-				content:
-					'The selected LAND has been unlocked and returned to your account.',
+				content: renderOnUnStakeNftsSuccessContent(),
 				buttonTxt: 'OK',
 				isShow: true,
 			}
@@ -106,8 +109,7 @@ export default {
 			const obj = {
 				width: '712px',
 				title: 'Unlock the selected LAND?',
-				content:
-					'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?',
+				content: renderOnCheckItemUnStakeModalConfirmContent(),
 				buttonTxt: 'Unlock',
 				isShow: true,
 				onClick: this.onClicktoItemUnStake,
@@ -259,7 +261,7 @@ export default {
 				background: #ff7a00;
 			}
 			&.is721 {
-				background: #1BD7BD;
+				background: #1bd7bd;
 			}
 		}
 	}
