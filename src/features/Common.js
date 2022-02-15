@@ -12,5 +12,5 @@ export function toFixedDecimal(val, decimals = 18) {
   }
 }
 
-export const STAKING_ADDRESS = '0x019D5b2B45fb01FbD77401bd1809EA121e222A23'
+export const STAKING_ADDRESS = '0x36ca44FC054F1d135CF655f739540611E58E760b'
 export const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'

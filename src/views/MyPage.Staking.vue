@@ -259,7 +259,7 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
-					ABI_STAKING.abi,
+					ABI_STAKING,
 					STAKING_ADDRESS
 				)
 				await contractConn.methods
@@ -280,7 +280,7 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
-					ABI_STAKING.abi,
+					ABI_STAKING,
 					STAKING_ADDRESS
 				)
 				await contractConn.methods
@@ -306,7 +306,7 @@ export default {
 				if (typeof window.ethereum !== 'undefined') {
 					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 					const contractConn = await new web3.eth.Contract(
-						ABI_STAKING.abi,
+						ABI_STAKING,
 						STAKING_ADDRESS
 					)
 					await contractConn.methods
@@ -397,7 +397,7 @@ export default {
 
 		async onUnStakeNfts(params, unLockAll) {
 			const contractConn = await this.contractConnect(
-				ABI_STAKING.abi,
+				ABI_STAKING,
 				STAKING_ADDRESS // address Staking
 			)
 
