@@ -104,7 +104,7 @@ export default {
 					STAKING_ADDRESS
 				)
 				await contractConn.methods
-					.getCampaignEarned(this.statusCampain, this.wallet_addr)
+					.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
 					.call()
 					.then((data) => {
 						this.dvgEarned = `${toFixedDecimal(

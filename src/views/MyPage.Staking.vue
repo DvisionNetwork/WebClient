@@ -41,6 +41,7 @@
 					"
 					:isUnlock="true"
 					:maxQuantity="item.locked"
+					:hashRate="item.hashRate"
 				/>
 			</div>
 		</div>
@@ -124,7 +125,12 @@ export default {
 	watch: {
 		'poolDuration.id': {
 			handler(id) {
+				this.getCampaignInfo(id)
 				this.onGetNftsStaked(id)
+				this.getTotalMiningHashRate(id)
+				this.getMyMiningHashRate(id)
+				this.getTotalStaked(id)
+				this.getMyStaked(id)
 			},
 		},
 		statusCampain() {
@@ -226,9 +232,8 @@ export default {
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-total-staked?campaignId=${campaignId}`
 			)
-
 			if (response.status === 200) {
-				this.totalStakedLand = response.data.total_staked?.toString()
+				this.totalStakedLand = response.data?.total_staked?.toString()
 			}
 		},
 		async getMyStaked(campaignId) {
@@ -255,12 +260,12 @@ export default {
 					.totalCampaignHashrate(campainId)
 					.call()
 					.then((tx) => {
-						console.log('tx',tx)
-						this.totalMiningHashRate = tx
+						const mathTx = Number(tx) / 10
+						this.totalMiningHashRate = mathTx
 						if (Number(tx) > 0) {
 							this.getMiningHashRatePerHour(
 								this.poolDuration.duration,
-								tx
+								this.totalMiningHashRate
 							)
 						}
 					})
@@ -326,8 +331,9 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
-				// this.listNfts721Check = []
-				// this.listShowers = this.listNfts
+				response.data.map((item) => {
+					this.onGetHashRate(this.poolDuration.id, item.nft_id)
+				})
 			} else {
 				this.listNftsStake = []
 			}
@@ -340,7 +346,25 @@ export default {
 				return contractConn
 			}
 		},
-
+		async onGetHashRate(campainId, nft_id) {
+			try {
+				const contractConn = await this.contractConnect(
+					ABI_STAKING,
+					STAKING_ADDRESS
+				)
+				await contractConn.methods
+					.tokenHashrate(campainId, nft_id)
+					.call()
+					.then((tx) => {
+						const nft = this.listNftsStake.find(
+							(x) => x.nft_id === nft_id
+						)
+						nft.hashRate = Number(tx)
+					})
+			} catch (err) {
+				console.log('catch', err)
+			}
+		},
 		onUnStakeAllNftsSuccess() {
 			this.mxCloseConfirmModal()
 			const obj = {
@@ -384,6 +408,7 @@ export default {
 		},
 
 		async onUnStakeNfts(params, unLockAll) {
+			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
 				STAKING_ADDRESS // address Staking
@@ -392,15 +417,13 @@ export default {
 			console.log('params', params)
 
 			await contractConn.methods
-				.withdraw(
-					this.poolDuration.id,
-					params
-				)
+				.withdraw(this.poolDuration.id, params)
 				.send({
 					from: (await this.getAccounts())[0],
 				})
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
+					this.mxCloseLoading()
 					this.onGetNftsStaked(this.poolDuration.id)
 					this.mxCloseConfirmModal()
 					if (unLockAll) {
@@ -410,6 +433,7 @@ export default {
 					}
 				})
 				.catch((e) => {
+					this.mxCloseLoading()
 					console.log('onUnStakeNfts e', e)
 					this.mxCloseConfirmModal()
 				})
