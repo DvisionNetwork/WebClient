@@ -308,7 +308,7 @@ export default {
 				this.listNfts721Check = []
 				this.listShowers = this.listNfts
 				response.data.map((item) => {
-					this.onGetHashRate(this.getUint8(), item.nft_id)
+					this.onGetHashRate(this.data.duration.id, item.nft_id)
 				})
 			} else {
 				this.listNfts = []
@@ -389,16 +389,6 @@ export default {
 				})
 		},
 
-		getUint8() {
-			if (this.data.duration.data === 90) {
-				return 3
-			} else if (this.data.duration.data === 60) {
-				return 2
-			} else {
-				return 1
-			}
-		},
-
 		async onStakeNft() {
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
@@ -416,7 +406,7 @@ export default {
 
 			await contractConn.methods
 				.deposit(
-					this.getUint8(), // 30 days = 1, 60 days = 2, 90 days = 3
+					this.data.duration.id,
 					params
 				)
 				.send({

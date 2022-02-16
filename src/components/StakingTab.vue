@@ -2,22 +2,22 @@
 	<div class="tab-menu">
 		<div
 			class="tab"
-			:class="{ active: poolDuration.data === 30 }"
-			@click="setPoolDuration(30)"
+			:class="{ active: poolDuration.id === 1 }"
+			@click="setPoolDuration(1)"
 		>
 			30 days
 		</div>
 		<div
 			class="tab"
-			:class="{ active: poolDuration.data === 60 }"
-			@click="setPoolDuration(60)"
+			:class="{ active: poolDuration.id === 2 }"
+			@click="setPoolDuration(2)"
 		>
 			60 days
 		</div>
 		<div
 			class="tab"
-			:class="{ active: poolDuration.data === 90 }"
-			@click="setPoolDuration(90)"
+			:class="{ active: poolDuration.id === 3 }"
+			@click="setPoolDuration(3)"
 		>
 			90 days
 		</div>
@@ -41,7 +41,7 @@ export default {
 	
 	methods: {
 		setPoolDuration: function (value) {
-			this.poolDuration.data = value
+			this.poolDuration.id = value
 		},
 	},
 }

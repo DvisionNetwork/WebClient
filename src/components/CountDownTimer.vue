@@ -47,22 +47,13 @@ export default {
 		this.getCampaignInfo(1) //default 30 days
 	},
 	watch: {
-		'poolDuration.data': {
-			handler(dur) {
-				this.getCampaignInfo(this.getUint8(dur))
+		'poolDuration.id': {
+			handler(id) {
+				this.getCampaignInfo(id)
 			},
 		},
 	},
 	methods: {
-		getUint8(val) {
-			if (val === 90) {
-				return 3
-			} else if (val === 60) {
-				return 2
-			} else {
-				return 1
-			}
-		},
 		startInterVal_1(startValue, endValue) {
 			clearInterval(this.interval_2)
 			clearInterval(this.interval_3)

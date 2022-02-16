@@ -89,23 +89,13 @@ export default {
 		}, 3000)
 	},
 	watch: {
-		'poolDuration.data': {
-			handler(val) {
-				const x = this.getUint8(val)
+		'poolDuration.id': {
+			handler() {
 				this.getCampaignEarned()
 			},
 		},
 	},
 	methods: {
-		getUint8(val) {
-			if (val === 90) {
-				return 3
-			} else if (val === 60) {
-				return 2
-			} else {
-				return 1
-			}
-		},
 		async getCampaignEarned() {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)

@@ -64,7 +64,7 @@ import { BigNumber } from 'ethers'
 import {
 	toFixedDecimal,
 	STAKING_ADDRESS,
-	BSC_RPC_ENDPOINT
+	BSC_RPC_ENDPOINT,
 } from '@/features/Common.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
@@ -100,7 +100,8 @@ export default {
 			pages: [1],
 			currentPage: 1,
 			poolDuration: {
-				data: 30,
+				id: 1,
+				duration: 0,
 			},
 			rewardPool: 0,
 			statusCampain: 1,
@@ -121,14 +122,12 @@ export default {
 		this.getMyStaked(1)
 	},
 	watch: {
-		'poolDuration.data': {
-			handler(dur) {
-				const x = this.getUint8(dur)
-				this.onGetNftsStaked(x)
+		'poolDuration.id': {
+			handler(id) {
+				this.onGetNftsStaked(id)
 			},
 		},
 		statusCampain() {
-			console.log('statusCampainnn', this.statusCampain)
 			if (this.statusCampain === 1) {
 				this.totalStakedLand = '0'
 				this.myStakedLand = '0'
@@ -136,13 +135,13 @@ export default {
 				this.myMiningHashRate = '0'
 				this.mininghashRatePerHour = '0'
 			} else {
-				const x = this.getUint8(this.poolDuration.data)
-				this.getCampaignInfo(x)
-				this.onGetNftsStaked(x)
-				this.getTotalMiningHashRate(x)
-				this.getMyMiningHashRate(x)
-				this.getTotalStaked(x)
-				this.getMyStaked(x)
+				const campainId = this.poolDuration.id
+				this.getCampaignInfo(campainId)
+				this.onGetNftsStaked(campainId)
+				this.getTotalMiningHashRate(campainId)
+				this.getMyMiningHashRate(campainId)
+				this.getTotalStaked(campainId)
+				this.getMyStaked(campainId)
 			}
 		},
 	},
@@ -151,16 +150,6 @@ export default {
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
-			}
-		},
-
-		getUint8(val) {
-			if (val === 90) {
-				return 3
-			} else if (val === 60) {
-				return 2
-			} else {
-				return 1
 			}
 		},
 
@@ -266,10 +255,11 @@ export default {
 					.totalCampaignHashrate(campainId)
 					.call()
 					.then((tx) => {
+						console.log('tx',tx)
 						this.totalMiningHashRate = tx
 						if (Number(tx) > 0) {
 							this.getMiningHashRatePerHour(
-								this.poolDuration.data,
+								this.poolDuration.duration,
 								tx
 							)
 						}
@@ -292,12 +282,12 @@ export default {
 			}
 		},
 
-		getMiningHashRatePerHour(days, totalMiningHashRate) {
-			const x =
+		getMiningHashRatePerHour(duration, totalMiningHashRate) {
+			const mininghashRatePerHour =
 				((1000 * Number(this.rewardPool)) /
-					(Number(totalMiningHashRate) * days)) |
+					(Number(totalMiningHashRate) * (duration / 86400))) |
 				0
-			this.mininghashRatePerHour = `${x} DVG`
+			this.mininghashRatePerHour = `${mininghashRatePerHour} DVG`
 		},
 
 		async getCampaignInfo(campainId) {
@@ -312,6 +302,7 @@ export default {
 						.campaignInfo(campainId)
 						.call()
 						.then((data) => {
+							this.poolDuration.duration = Number(data.duration)
 							let x = BigNumber.from(data.rewardRate).mul(
 								data.duration
 							)
@@ -398,13 +389,11 @@ export default {
 				STAKING_ADDRESS // address Staking
 			)
 
-			const unit8 = await this.getUint8(this.poolDuration.data)
-
 			console.log('params', params)
 
 			await contractConn.methods
 				.withdraw(
-					unit8, // 30 days = 1, 60 days = 2, 90 days = 3
+					this.poolDuration.id,
 					params
 				)
 				.send({
@@ -412,7 +401,7 @@ export default {
 				})
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
-					this.onGetNftsStaked(unit8)
+					this.onGetNftsStaked(this.poolDuration.id)
 					this.mxCloseConfirmModal()
 					if (unLockAll) {
 						this.onUnStakeAllNftsSuccess()
@@ -504,17 +493,16 @@ export default {
 	// 1024
 	.contents {
 	}
-	
 }
 @include media-max($media_small) {
-.my-staked-land {
+	.my-staked-land {
 		display: unset;
 		margin-top: 20px;
 		padding: 0 10px;
-		.tab-menu{
+		.tab-menu {
 			max-width: unset;
 		}
-		 .contents{
+		.contents {
 			margin-left: unset;
 			max-width: unset;
 		}
