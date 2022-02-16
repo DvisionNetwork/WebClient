@@ -28,6 +28,7 @@
 		appear
 		v-if="isShowStakingModal.isShowModal"
 		:data = isShowStakingModal
+		:onStakingSuccess="isShowStakingModal.onStakingSuccess"
 	/>
 	<PopupSuccessModal
 		appear
@@ -149,7 +150,6 @@ import PopupEditProfile from './components/Popup.EditProfile.vue'
 import PopupShowStakingModal from './components/Popup.StakingModal.vue'
 import PopupSuccessModal from './components/Popup.SuccessModal.vue'
 import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
-
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 

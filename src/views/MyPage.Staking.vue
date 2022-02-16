@@ -213,6 +213,7 @@ export default {
 				const stakingData = {
 					duration: this.poolDuration,
 					isShowModal: true,
+					onStakingSuccess: ()=>this.onGetNftsStaked(this.poolDuration.id)
 				}
 				this.mxShowStakingModal(stakingData)
 			}

@@ -89,7 +89,7 @@
 						</div>
 						<div class="bottom-right">
 							<span
-								v-if="hadUnderstand"
+								v-if="onEnableStakeButton()"
 								class="btn-stake active"
 								@click="() => onStakeNft()"
 								>Stake</span
@@ -157,6 +157,7 @@ export default {
 	},
 	props: {
 		data: Object,
+		onStakingSuccess:Function
 	},
 	watch: {
 		isErc1155() {
@@ -179,6 +180,14 @@ export default {
 		},
 	},
 	methods: {
+		onEnableStakeButton() {
+			if (!this.hadUnderstand) return false
+			if (this.isErc1155 && this.listNfts1155Check.length === 0)
+				return false
+			if (!this.isErc1155 && this.listNfts721Check.length === 0)
+				return false
+			return true
+		},
 		async onGetHashRate(campainId, nft_id) {
 			try {
 				const contractConn = await this.contractConnect(
@@ -203,6 +212,8 @@ export default {
 		},
 		confirmSwitch() {
 			this.isErc1155 = !this.isErc1155
+			this.listNfts721Check = []
+			this.listNfts1155Check = []
 			this.mxCloseConfirmModal()
 		},
 		switchErc() {
@@ -347,11 +358,9 @@ export default {
 				)
 				.call()
 				.then((tx) => {
-					console.log('txx', tx)
 					if (tx === true) {
 						this.hadUnderstand = true
 						this.mxCloseLoading()
-						// this.onStakeNft()
 					} else {
 						this.onApprovedForAll()
 					}
@@ -381,7 +390,6 @@ export default {
 					this.mxCloseLoading()
 					this.hadUnderstand = true
 					console.log('onApprovedForAll', tx)
-					// this.onStakeNft()
 				})
 				.catch((e) => {
 					this.hadUnderstand = false
@@ -405,10 +413,7 @@ export default {
 			params = JSON.parse(JSON.stringify(params))
 
 			await contractConn.methods
-				.deposit(
-					this.data.duration.id,
-					params
-				)
+				.deposit(this.data.duration.id, params)
 				.send({
 					from: (await this.getAccounts())[0],
 				})
@@ -417,10 +422,12 @@ export default {
 					this.mxCloseLoading()
 					this.showSuccess()
 					this.onGetNftowner(this.isErc1155)
+					this.onStakingSuccess()
 				})
 				.catch((e) => {
-					this.mxCloseLoading()
 					console.log('onStakeNft e', e)
+					this.mxCloseLoading()
+					this.mxShowToast(e.message)
 					this.onGetNftowner(this.isErc1155)
 				})
 		},
