@@ -315,7 +315,6 @@ export default {
 							let x = BigNumber.from(data.rewardRate).mul(
 								data.duration
 							)
-							console.log('XXX',toFixedDecimal(formatEther(x), 2).parseInt())
 							this.rewardPool = toFixedDecimal(formatEther(x), 2)
 						})
 				}
