@@ -393,6 +393,8 @@ export default {
 				})
 				.catch((e) => {
 					this.hadUnderstand = false
+					this.mxCloseLoading()
+					this.mxShowToast(e.message)
 					console.log('onApprovedForAll e', e)
 				})
 		},

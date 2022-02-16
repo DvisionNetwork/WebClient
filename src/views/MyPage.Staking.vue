@@ -213,7 +213,8 @@ export default {
 				const stakingData = {
 					duration: this.poolDuration,
 					isShowModal: true,
-					onStakingSuccess: ()=>this.onGetNftsStaked(this.poolDuration.id)
+					onStakingSuccess: () =>
+						this.onGetNftsStaked(this.poolDuration.id),
 				}
 				this.mxShowStakingModal(stakingData)
 			}
@@ -283,7 +284,8 @@ export default {
 					.userInfo(campainId, this.wallet_addr)
 					.call()
 					.then((tx) => {
-						this.myMiningHashRate = tx[0]?.toString()
+						const myMiningHashRate = Number(tx[0]) / 10
+						this.myMiningHashRate = myMiningHashRate.toString()
 					})
 			}
 		},
@@ -500,7 +502,7 @@ export default {
 	}
 	.list-card {
 		display: flex;
-		justify-content: space-between;
+		justify-content: flex-start;
 		align-items: flex-start;
 		flex-wrap: wrap;
 		gap: gREm(34);
