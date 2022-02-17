@@ -13,6 +13,7 @@
 				:totalMiningHashRate="totalMiningHashRate"
 				:myMiningHashRate="myMiningHashRate"
 				:mininghashRatePerHour="mininghashRatePerHour"
+				:timeCount="timeCount"
 			/>
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
@@ -79,6 +80,7 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import { formatEther } from '@ethersproject/units'
+import moment from 'moment'
 
 const { ethereum } = window
 
@@ -103,8 +105,13 @@ export default {
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: '',
 			current_network: '',
+
 			pages: [1],
 			currentPage: 1,
+			timeCount: {
+				startValue: 0,
+				endValue: 0,
+			},
 			poolDuration: {
 				id: 1,
 				duration: 0,
@@ -133,8 +140,8 @@ export default {
 		})
 		ethereum.on('accountsChanged', function (accounts) {
 			window.location.reload()
-			console.log('accountsChanged[0]', accounts[0])
 		})
+		this.getCurrentNetwork()
 		this.getCurrentAddress()
 		this.onGetNftsStaked(1)
 		this.getCampaignInfo(1)
@@ -152,15 +159,9 @@ export default {
 			},
 		},
 		statusCampain() {
-			if (this.statusCampain === 1) {
-				this.totalStakedLand = '0'
-				this.myStakedLand = '0'
-				this.totalMiningHashRate = '0'
-				this.myMiningHashRate = '0'
-				this.mininghashRatePerHour = '0'
-			} else {
+			if (this.statusCampain !== 1) {
 				const campainId = this.poolDuration.id
-				this.getCampaignInfo(campainId)
+				// this.getCampaignInfo(campainId)
 				this.onGetNftsStaked(campainId)
 				this.getTotalMiningHashRate(campainId)
 				this.getMyMiningHashRate(campainId)
@@ -183,6 +184,12 @@ export default {
 			)
 				return true
 			else return false
+		},
+		async getCurrentNetwork() {
+			const chainId = await ethereum.request({
+				method: 'eth_chainId',
+			})
+			this.current_network = chainId
 		},
 		async getCurrentAddress() {
 			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
@@ -268,11 +275,16 @@ export default {
 			}
 		},
 		async getTotalStaked(campaignId) {
-			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-total-staked?campaignId=${campaignId}`
-			)
-			if (response.status === 200) {
-				this.totalStakedLand = response.data?.total_staked?.toString()
+			try {
+				const response = await axios.get(
+					`${gConfig.public_api_sotatek}/nft-total-staked?campaignId=${campaignId}`
+				)
+				if (response.status === 200) {
+					this.totalStakedLand =
+						response.data?.total_staked?.toString()
+				}
+			} catch (err) {
+				console.log('catch', err)
 			}
 		},
 		async getMyStaked(campaignId) {
@@ -352,6 +364,25 @@ export default {
 								data.duration
 							)
 							this.rewardPool = toFixedDecimal(formatEther(x), 2)
+							//set time countdown
+							const endValue = Number(data.timestampFinish)
+							const startValue = endValue - Number(data.duration)
+							const currValue = moment().unix()
+							this.timeCount.startValue = startValue
+							this.timeCount.endValue = endValue
+							if (currValue > endValue) {
+								//it's end
+								this.switchStatusCampain(1)
+							} else if (
+								startValue <= currValue &&
+								currValue <= endValue
+							) {
+								//had start
+								this.switchStatusCampain(3)
+							} else if (currValue < startValue) {
+								//not start yet
+								this.switchStatusCampain(2)
+							}
 						})
 				}
 			} catch (err) {
@@ -372,7 +403,7 @@ export default {
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
 				response.data.map((item) => {
-					this.onGetHashRate(this.poolDuration.id, item.nft_id)
+					this.onGetHashRate(item.is_ERC1155, item.nft_id)
 				})
 			} else {
 				this.listNftsStake = []

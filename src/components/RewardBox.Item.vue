@@ -2,7 +2,8 @@
 	<div class="box-item">
 		<div>
 			<div class="name">{{ name }}</div>
-			<div class="point" v-if="data">{{ data }}</div>
+			<div class="point" v-if="statusCampain === 1 && !hadHarvest">0</div>
+			<div class="point" v-else>{{ data }}</div>
 		</div>
 		<div
 			class="harvest"
@@ -23,6 +24,7 @@ export default {
 		name: String,
 		hadHarvest: Boolean,
 		data: String,
+		statusCampain: Number,
 	},
 	data() {
 		return {

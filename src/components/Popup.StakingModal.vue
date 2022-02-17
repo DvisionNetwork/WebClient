@@ -125,7 +125,7 @@ import {
 	ADDRESS_721,
 	ADDRESS_1155,
 } from '@/features/Common.js'
-import { MSG_METAMASK_1 } from '@/features/Messages.js'
+import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
 
@@ -147,6 +147,7 @@ export default {
 			listShowers: [],
 			current_addr: '',
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			current_network: '',
 		}
 	},
 	mounted() {
@@ -184,6 +185,11 @@ export default {
 		},
 	},
 	methods: {
+		checkNetwork(chainId) {
+			const network = gConfig.wlt.getBscAddr().Network
+			if (network === chainId) return true
+			return false
+		},
 		checkAddress() {
 			if (
 				this.current_addr.toLowerCase() ===
@@ -206,7 +212,7 @@ export default {
 				return false
 			return true
 		},
-		async onGetHashRate(campainId, nft_id) {
+		async onGetHashRate(is_ERC1155, nft_id) {
 			try {
 				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
 				//cal API
@@ -224,7 +230,7 @@ export default {
 					STAKING_ADDRESS
 				)
 				await contractConn.methods
-					.tokenHashrate(campainId, nft_id)
+					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
 					.then((tx) => {
 						nft.hashRate = Number(tx)
@@ -328,6 +334,10 @@ export default {
 				this.mxShowToast(MSG_METAMASK_1)
 				return
 			}
+			// if (!this.checkNetwork(this.current_network)) {
+			// 	this.mxShowToast(MSG_METAMASK_2)
+			// 	return
+			// }
 			if (this.hadUnderstand) {
 				this.hadUnderstand = false
 			} else {
@@ -349,7 +359,7 @@ export default {
 				this.listNfts721Check = []
 				this.listShowers = this.listNfts
 				response.data.map((item) => {
-					this.onGetHashRate(this.data.duration.id, item.nft_id)
+					this.onGetHashRate(item.is_ERC1155, item.nft_id)
 				})
 			} else {
 				this.listNfts = []

@@ -16,9 +16,6 @@
 
 <script>
 import moment from 'moment'
-import Web3 from 'web3'
-import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-import { STAKING_ADDRESS, BSC_RPC_ENDPOINT } from '@/features/Common.js'
 
 export default {
 	name: 'CountDownTimer',
@@ -42,14 +39,26 @@ export default {
 		poolDuration: {
 			type: Object,
 		},
-	},
-	mounted() {
-		this.getCampaignInfo(1) //default 30 days
+		timeCount: {
+			type: Object,
+		},
 	},
 	watch: {
-		'poolDuration.id': {
-			handler(id) {
-				this.getCampaignInfo(id)
+		'timeCount.endValue': {
+			handler() {
+				const startValue = this.timeCount.startValue
+				const endValue = this.timeCount.endValue
+				this.startTime = moment(startValue * 1000).format()
+				this.endTime = moment(endValue * 1000).format()
+				if (this.poolDuration.id === 1) {
+					this.startInterVal_1(startValue, endValue)
+				}
+				if (this.poolDuration.id === 2) {
+					this.startInterVal_2(startValue, endValue)
+				}
+				if (this.poolDuration.id === 3) {
+					this.startInterVal_3(startValue, endValue)
+				}
 			},
 		},
 	},
@@ -76,7 +85,7 @@ export default {
 			}, 1000)
 		},
 		countInterVal(startValue, endValue) {
-			const currentValue = moment(new Date()).valueOf()
+			const currentValue = moment().unix()
 			if (currentValue < startValue) {
 				if (this.statusCampain !== 2) this.switchStatusCampain(2)
 				this.countStart()
@@ -92,60 +101,7 @@ export default {
 				clearInterval(this.interval_3)
 			}
 		},
-		async getCampaignInfo(duration) {
-			try {
-				this.mxShowLoading()
-				if (typeof window.ethereum !== 'undefined') {
-					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-					const contractConn = await new web3.eth.Contract(
-						ABI_STAKING,
-						STAKING_ADDRESS
-					)
-					await contractConn.methods
-						.campaignInfo(duration)
-						.call()
-						.then((data) => {
-							console.log('dataaa',data)
-							const end = Number(data.timestampFinish)
-							const start = end - Number(data.duration)
-							if (start > 0) {
-								this.startTime = moment(start * 1000).format()
-								this.endTime = moment(end * 1000).format()
-								const startValue = moment(
-									this.startTime
-								).valueOf()
-								const endValue = moment(this.endTime).valueOf()
-								const currValue = moment(new Date()).valueOf()
-								if (currValue > endValue) {
-									this.switchStatusCampain(1)
-								} else if (
-									startValue <= currValue &&
-									currValue <= endValue
-								) {
-									this.switchStatusCampain(3)
-								} else if (currValue < startValue) {
-									this.switchStatusCampain(2)
-								}
-								this.mxCloseLoading()
-								if (duration === 1) {
-									this.startInterVal_1(startValue, endValue)
-								}
-								if (duration === 2) {
-									this.startInterVal_2(startValue, endValue)
-								}
-								if (duration === 3) {
-									this.startInterVal_3(startValue, endValue)
-								}
-							}
-						})
-				}
-			} catch (err) {
-				this.mxCloseLoading()
-				console.log('catch', err)
-			}
-		},
 		countStart() {
-			// this.switchStatusCampain(2)
 			const currentTime = moment(new Date()).format()
 			const diffDuration = moment.duration(
 				moment(this.startTime).diff(currentTime)

@@ -7,6 +7,7 @@
 						:statusCampain="statusCampain"
 						:switchStatusCampain="switchStatusCampain"
 						:poolDuration="poolDuration"
+						:timeCount="timeCount"
 					/>
 				</span>
 			</div>
@@ -18,20 +19,32 @@
 				name="DVG Earned"
 				:hadHarvest="harvest"
 				:data="dvgEarned"
+				:statusCampain="statusCampain"
 			/>
-			<RewardBoxItem name="Total Staked LANDs" :data="totalStakedLand" />
-			<RewardBoxItem name="My Staked LANDs" :data="myStakedLand" />
+			<RewardBoxItem
+				name="Total Staked LANDs"
+				:data="totalStakedLand"
+				:statusCampain="statusCampain"
+			/>
+			<RewardBoxItem
+				name="My Staked LANDs"
+				:data="myStakedLand"
+				:statusCampain="statusCampain"
+			/>
 			<RewardBoxItem
 				name="Total Mining Hash Rate"
 				:data="totalMiningHashRate"
+				:statusCampain="statusCampain"
 			/>
 			<RewardBoxItem
 				name="My Mining Hash Rate"
 				:data="myMiningHashRate"
+				:statusCampain="statusCampain"
 			/>
 			<RewardBoxItem
 				name="10 Hash Rate/24H to get"
 				:data="mininghashRatePerHour"
+				:statusCampain="statusCampain"
 			/>
 		</div>
 	</div>
@@ -68,6 +81,9 @@ export default {
 	props: {
 		statusCampain: Number,
 		switchStatusCampain: Function,
+		timeCount: {
+			type: Object,
+		},
 		poolDuration: {
 			type: Object,
 		},
@@ -157,13 +173,13 @@ export default {
 		gap: gREm(20);
 	}
 }
-@include media-max($media_small){
-	.reward-box{
-		padding:20px;
-		.box-title{
+@include media-max($media_small) {
+	.reward-box {
+		padding: 20px;
+		.box-title {
 			display: block;
 			margin-bottom: 10px;
-			.point{
+			.point {
 				text-align: right;
 				margin-top: 10px;
 			}
