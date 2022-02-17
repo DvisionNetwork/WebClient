@@ -50,7 +50,12 @@
 			<span class="erc-type is1155" v-if="isErc1155">ERC-1155</span>
 			<span class="erc-type is721" v-else>ERC-721</span>
 		</div>
-		<div v-if="isUnlock" class="btn-unlock" @click="onClicktoItemUnStake">
+		<div
+			v-if="isUnlock"
+			:class="enableUnlock ? 'active' : ''"
+			class="btn-unlock"
+			v-on="enableUnlock ? { click: onClicktoItemUnStake } : {}"
+		>
 			<span>Unlock</span>
 		</div>
 	</div>
@@ -58,10 +63,7 @@
 
 <script>
 import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
-import {
-	renderOnUnStakeNftsSuccessContent,
-	renderOnCheckItemUnStakeModalConfirmContent,
-} from '@/data/RenderContent.js'
+
 export default {
 	name: 'LandCard',
 	props: {
@@ -83,6 +85,7 @@ export default {
 		maxQuantity: Number,
 		isUnstake: Boolean,
 		hashRate: Number,
+		enableUnlock: Boolean,
 	},
 	components: {
 		SelectQuantityModal,
@@ -94,29 +97,6 @@ export default {
 		}
 	},
 	methods: {
-		handleClick() {
-			this.mxCloseConfirmModal()
-			const obj = {
-				width: '478px',
-				title: 'Success',
-				content: renderOnUnStakeNftsSuccessContent(),
-				buttonTxt: 'OK',
-				isShow: true,
-			}
-			this.mxShowSuccessModal(obj)
-		},
-		handleUnlockClick() {
-			const obj = {
-				width: '712px',
-				title: 'Unlock the selected LAND?',
-				content: renderOnCheckItemUnStakeModalConfirmContent(),
-				buttonTxt: 'Unlock',
-				isShow: true,
-				onClick: this.onClicktoItemUnStake,
-			}
-			this.mxShowConfirmModal(obj)
-		},
-
 		closeSelectQuantityModal() {
 			this.showSelectQuantity = false
 		},
@@ -275,13 +255,13 @@ export default {
 		font-size: gREm(16);
 		color: #ffffff;
 		text-align: center;
-		cursor: pointer;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		margin-top: gREm(17);
-		&:hover {
+		&.active {
 			background: #f6583e;
+			cursor: pointer;
 		}
 	}
 }

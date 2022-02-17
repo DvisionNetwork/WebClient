@@ -138,7 +138,7 @@ export default {
 		return {
 			submitData: null,
 			hadUnderstand: false,
-			filterBy: 'asc',
+			filterBy: 'default',
 			isErc1155: false,
 			listNfts: [],
 			listNfts721Check: [],
@@ -213,7 +213,6 @@ export default {
 		async getCurrentAddress() {
 			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 			const acc = await web3.eth.getAccounts()
-			console.log('acc', acc)
 			this.current_addr = acc[0]
 		},
 		onEnableStakeButton() {
@@ -224,7 +223,7 @@ export default {
 				return false
 			return true
 		},
-		async onGetHashRate(is_ERC1155, nft_id) {
+		async onGetHashRate(is_ERC1155, nft_id, idx) {
 			try {
 				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
 				//cal API
@@ -248,7 +247,14 @@ export default {
 					.then((tx) => {
 						nft.hashRate = Number(tx)
 					})
+				if (this.listNfts.length - 1 === idx) {
+					setTimeout(() => {
+						this.setFilter()
+						this.mxCloseLoading()
+					}, 2000)
+				}
 			} catch (err) {
+				this.mxCloseLoading()
 				console.log('catch', err)
 			}
 		},
@@ -280,13 +286,18 @@ export default {
 			}
 		},
 		setFilter() {
-			if (this.filterBy === 'asc') {
+			if (this.filterBy === 'default') {
+				this.listShowers = this.listShowers.sort(function (a, b) {
+					return a.hashRate - b.hashRate
+				})
+				this.filterBy = 'asc'
+			} else if (this.filterBy === 'asc') {
 				this.filterBy = 'desc'
-				this.listShowers = this.listNfts.sort(function (a, b) {
+				this.listShowers = this.listShowers.sort(function (a, b) {
 					return b.hashRate - a.hashRate
 				})
 			} else {
-				this.listShowers = this.listNfts.sort(function (a, b) {
+				this.listShowers = this.listShowers.sort(function (a, b) {
 					return a.hashRate - b.hashRate
 				})
 				this.filterBy = 'asc'
@@ -358,6 +369,7 @@ export default {
 			}
 		},
 		async onGetNftowner(collection) {
+			this.mxShowLoading()
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
 				collectionAddress: collection ? ADDRESS_1155 : ADDRESS_721,
@@ -370,12 +382,12 @@ export default {
 			if (response?.status === 200) {
 				this.listNfts = response.data
 				this.listNfts721Check = []
-				this.listShowers = this.listNfts
-				response.data.map((item) => {
-					this.onGetHashRate(item.is_ERC1155, item.nft_id)
+				response.data.map((item, idx) => {
+					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
 				})
-				this.setFilter()
+				this.listShowers = this.listNfts
 			} else {
+				this.mxCloseLoading()
 				this.listNfts = []
 			}
 		},
@@ -483,14 +495,14 @@ export default {
 					console.log('onStakeNft', tx)
 					this.mxCloseLoading()
 					this.showSuccess()
-					this.onGetNftowner(this.isErc1155)
+					// this.onGetNftowner(this.isErc1155)
 					this.onStakingSuccess()
 				})
 				.catch((e) => {
 					console.log('onStakeNft e', e)
 					this.mxCloseLoading()
 					this.mxShowToast(e.message)
-					this.onGetNftowner(this.isErc1155)
+					// this.onGetNftowner(this.isErc1155)
 				})
 		},
 	},

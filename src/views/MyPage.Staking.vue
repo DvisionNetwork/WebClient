@@ -17,9 +17,14 @@
 			/>
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
-				<div class="unlock-lands active" @click="handleUnlockAll">
+				<div
+					v-if="allowWithdraw"
+					class="unlock-lands active"
+					@click="handleUnlockAll"
+				>
 					Unlock all LANDs
 				</div>
+				<div v-else class="unlock-lands">Unlock all LANDs</div>
 			</div>
 			<div class="list-card">
 				<AddLand :onClick="checkShowModal" :listStaking="listStaking" />
@@ -37,10 +42,12 @@
 							onCheckItemUnStakeModalConfirm(
 								Number(item.nft_id),
 								item.is_ERC1155 === 1 ? true : false,
-								item.locked
+								item.locked,
+								item.name
 							)
 					"
 					:isUnlock="true"
+					:enableUnlock="allowWithdraw"
 					:maxQuantity="item.locked"
 					:hashRate="item.hashRate"
 				/>
@@ -124,6 +131,7 @@ export default {
 			totalMiningHashRate: '0',
 			myMiningHashRate: '0',
 			mininghashRatePerHour: '0 DVG',
+			allowWithdraw: false,
 		}
 	},
 	beforeMount() {
@@ -209,7 +217,6 @@ export default {
 			}
 			return sol
 		},
-
 		async handleUnlockAll() {
 			const item721 = await this.listNftsStake.filter(
 				(item) => item.is_ERC1155 === 0
@@ -365,6 +372,7 @@ export default {
 							this.rewardPool = Number(
 								formatEther(resultNumber)
 							).toFixed()
+							this.allowWithdraw = data.allowWithdraw
 							//set time countdown
 							const endValue = Number(data.timestampFinish)
 							const startValue = endValue - Number(data.duration)
@@ -470,7 +478,7 @@ export default {
 			this.mxShowSuccessModal(obj)
 		},
 
-		onCheckItemUnStakeModalConfirm(nftId, is_ERC1155, locked) {
+		onCheckItemUnStakeModalConfirm(nftId, is_ERC1155, locked, name) {
 			let params = {
 				erc721TokenIds: is_ERC1155 ? [] : [nftId],
 				erc1155TokenIds: is_ERC1155 ? [nftId] : [],
@@ -480,7 +488,7 @@ export default {
 			const obj = {
 				width: '712px',
 				title: 'Unlock the selected LAND?',
-				content: renderOnCheckItemUnStakeModalConfirmContent(),
+				content: renderOnCheckItemUnStakeModalConfirmContent(name),
 				buttonTxt: 'Unlock',
 				isShow: true,
 				onClick: () => this.onUnStakeNfts(params, false),
@@ -582,9 +590,9 @@ export default {
 			line-height: gREm(22);
 			font-family: Montserrat, sans-serif;
 			background: #5f5f5f;
-			cursor: pointer;
 			&.active {
 				background: #f6583e;
+				cursor: pointer;
 			}
 		}
 	}

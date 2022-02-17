@@ -40,8 +40,8 @@ export function renderOnUnStakeAllNftsSuccessContent() {
 export function renderOnUnStakeNftsSuccessContent() {
   return 'The selected LAND has been unlocked and returned to your account.'
 }
-export function renderOnCheckItemUnStakeModalConfirmContent() {
-  return 'The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: Gangnam-Daero Intersection 3x3?'
+export function renderOnCheckItemUnStakeModalConfirmContent(name) {
+  return `The selected LAND will be unlocked and returned to your account. Are you sure you want to unlock Dvision LAND: ${name}?`
 }
 export function renderSwitchNftContent(){
   return 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?'
