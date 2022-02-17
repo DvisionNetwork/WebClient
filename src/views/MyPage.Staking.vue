@@ -61,12 +61,13 @@ import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import {
 	toFixedDecimal,
 	STAKING_ADDRESS,
 	BSC_RPC_ENDPOINT,
 } from '@/features/Common.js'
+import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 import {
@@ -78,6 +79,8 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import { formatEther } from '@ethersproject/units'
+
+const { ethereum } = window
 
 export default {
 	name: 'staking',
@@ -98,6 +101,8 @@ export default {
 	data() {
 		return {
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			current_addr: '',
+			current_network: '',
 			pages: [1],
 			currentPage: 1,
 			poolDuration: {
@@ -118,6 +123,19 @@ export default {
 		console.log(this.$route, this.tab_page)
 	},
 	mounted() {
+		ethereum.on('chainChanged', (chainId) => {
+			const network = gConfig.wlt.getBscAddr().Network
+			this.current_network = chainId
+			this.checkNetwork(this.current_network)
+			if (chainId !== network) {
+				this.mxShowToast(MSG_METAMASK_2)
+			}
+		})
+		ethereum.on('accountsChanged', function (accounts) {
+			window.location.reload()
+			console.log('accountsChanged[0]', accounts[0])
+		})
+		this.getCurrentAddress()
 		this.onGetNftsStaked(1)
 		this.getCampaignInfo(1)
 		this.getMyStaked(1)
@@ -153,6 +171,25 @@ export default {
 	},
 
 	methods: {
+		checkNetwork(chainId) {
+			const network = gConfig.wlt.getBscAddr().Network
+			if (network === chainId) return true
+			return false
+		},
+		checkAddress() {
+			if (
+				this.current_addr.toLowerCase() ===
+				this.wallet_addr.toLowerCase()
+			)
+				return true
+			else return false
+		},
+		async getCurrentAddress() {
+			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+			const acc = await web3.eth.getAccounts()
+			console.log('accacc', acc)
+			this.current_addr = acc[0]
+		},
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
@@ -292,7 +329,7 @@ export default {
 
 		getMiningHashRatePerHour(duration, totalMiningHashRate) {
 			const mininghashRatePerHour =
-				((1000 * Number(this.rewardPool)) /
+				((10 * Number(this.rewardPool)) /
 					(Number(totalMiningHashRate) * (duration / 86400))) |
 				0
 			this.mininghashRatePerHour = `${mininghashRatePerHour} DVG`
@@ -409,8 +446,17 @@ export default {
 			}
 			this.mxShowConfirmModal(obj)
 		},
-
 		async onUnStakeNfts(params, unLockAll) {
+			if (!this.checkAddress()) {
+				this.mxShowToast(MSG_METAMASK_1)
+				this.mxCloseConfirmModal()
+				return
+			}
+			if (!this.checkNetwork(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_2)
+				this.mxCloseConfirmModal()
+				return
+			}
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
@@ -438,6 +484,7 @@ export default {
 				.catch((e) => {
 					this.mxCloseLoading()
 					console.log('onUnStakeNfts e', e)
+					this.mxShowToast(e.message)
 					this.mxCloseConfirmModal()
 				})
 		},

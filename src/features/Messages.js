@@ -1,0 +1,2 @@
+export const MSG_METAMASK_1 = 'Your metamask in not on account item registered. Change your account.'
+export const MSG_METAMASK_2 = 'Your metamask in not on network item registered. Change your network.'

@@ -555,6 +555,7 @@ export default function AppConfig() {
 
 		test_url: "https://www.multiverse.so/m/api/terms_list_ex",
 		public_api_sotatek: "https://division-api.sotatek.works",
+		public_api_sotatek_2: "https://www.multiverse.so/m/api"
 
 	}
 }

@@ -125,8 +125,9 @@ import {
 	ADDRESS_721,
 	ADDRESS_1155,
 } from '@/features/Common.js'
-
+import { MSG_METAMASK_1 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
+const { ethereum } = window
 
 export default {
 	components: {
@@ -144,9 +145,12 @@ export default {
 			listNfts1155Quantity: [],
 			keyword: '',
 			listShowers: [],
+			current_addr: '',
+			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 		}
 	},
 	mounted() {
+		this.getCurrentAddress()
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
 	},
@@ -157,7 +161,7 @@ export default {
 	},
 	props: {
 		data: Object,
-		onStakingSuccess:Function
+		onStakingSuccess: Function,
 	},
 	watch: {
 		isErc1155() {
@@ -180,6 +184,20 @@ export default {
 		},
 	},
 	methods: {
+		checkAddress() {
+			if (
+				this.current_addr.toLowerCase() ===
+				this.wallet_addr.toLowerCase()
+			)
+				return true
+			else return false
+		},
+		async getCurrentAddress() {
+			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+			const acc = await web3.eth.getAccounts()
+			console.log('acc', acc)
+			this.current_addr = acc[0]
+		},
 		onEnableStakeButton() {
 			if (!this.hadUnderstand) return false
 			if (this.isErc1155 && this.listNfts1155Check.length === 0)
@@ -190,6 +208,17 @@ export default {
 		},
 		async onGetHashRate(campainId, nft_id) {
 			try {
+				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
+				//cal API
+				const response = await axios.get(
+					`${gConfig.public_api_sotatek_2}/search_bep_721?token_id=${nft_id}`
+				)
+				if (response.status === 200) {
+					nft.name = response.data.name
+					nft.imageUrl = response.data.image
+					nft.description = response.data.description
+				}
+				//Call SC
 				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					STAKING_ADDRESS
@@ -198,9 +227,6 @@ export default {
 					.tokenHashrate(campainId, nft_id)
 					.call()
 					.then((tx) => {
-						const nft = this.listNfts.find(
-							(x) => x.nft_id === nft_id
-						)
 						nft.hashRate = Number(tx)
 					})
 			} catch (err) {
@@ -298,6 +324,10 @@ export default {
 		},
 
 		onCheckingUnder() {
+			if (!this.checkAddress()) {
+				this.mxShowToast(MSG_METAMASK_1)
+				return
+			}
 			if (this.hadUnderstand) {
 				this.hadUnderstand = false
 			} else {
@@ -368,7 +398,7 @@ export default {
 				.catch((e) => {
 					this.mxCloseLoading()
 					this.hadUnderstand = false
-					console.log('checkStatusNft e', e)
+					this.mxShowToast(e.message)
 				})
 		},
 
@@ -389,13 +419,11 @@ export default {
 				.then((tx) => {
 					this.mxCloseLoading()
 					this.hadUnderstand = true
-					console.log('onApprovedForAll', tx)
 				})
 				.catch((e) => {
 					this.hadUnderstand = false
 					this.mxCloseLoading()
 					this.mxShowToast(e.message)
-					console.log('onApprovedForAll e', e)
 				})
 		},
 

@@ -30,7 +30,7 @@
 				:data="myMiningHashRate"
 			/>
 			<RewardBoxItem
-				name="1000 Hash Rate/24H to get"
+				name="10 Hash Rate/24H to get"
 				:data="mininghashRatePerHour"
 			/>
 		</div>
