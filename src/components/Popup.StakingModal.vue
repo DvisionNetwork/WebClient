@@ -13,6 +13,7 @@
 							type="text"
 							v-model="keyword"
 							@change="onSearch"
+							maxlength="255"
 						/>
 						<div class="erc">
 							<span class="child" @click="switchErc">
@@ -227,8 +228,9 @@ export default {
 			try {
 				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
 				//cal API
+				const search = is_ERC1155 ? '1155' : '721'
 				const response = await axios.get(
-					`${gConfig.public_api_sotatek_2}/search_bep_721?token_id=${nft_id}`
+					`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
 				)
 				if (response.status === 200) {
 					nft.name = response.data.name
@@ -280,11 +282,11 @@ export default {
 		setFilter() {
 			if (this.filterBy === 'asc') {
 				this.filterBy = 'desc'
-				this.listShowers = this.listShowers.sort(function (a, b) {
+				this.listShowers = this.listNfts.sort(function (a, b) {
 					return b.hashRate - a.hashRate
 				})
 			} else {
-				this.listShowers = this.listShowers.sort(function (a, b) {
+				this.listShowers = this.listNfts.sort(function (a, b) {
 					return a.hashRate - b.hashRate
 				})
 				this.filterBy = 'asc'
@@ -372,6 +374,7 @@ export default {
 				response.data.map((item) => {
 					this.onGetHashRate(item.is_ERC1155, item.nft_id)
 				})
+				this.setFilter()
 			} else {
 				this.listNfts = []
 			}

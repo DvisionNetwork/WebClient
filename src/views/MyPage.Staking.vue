@@ -418,19 +418,28 @@ export default {
 				return contractConn
 			}
 		},
-		async onGetHashRate(campainId, nft_id) {
+		async onGetHashRate(is_ERC1155, nft_id) {
 			try {
+				const nft = this.listNftsStake.find((x) => x.nft_id === nft_id)
+				//cal API
+				const search = is_ERC1155 ? '1155' : '721'
+				const response = await axios.get(
+					`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+				)
+				if (response.status === 200) {
+					nft.name = response.data.name
+					nft.imageUrl = response.data.image
+					nft.description = response.data.description
+				}
+				//Call SC
 				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					STAKING_ADDRESS
 				)
 				await contractConn.methods
-					.tokenHashrate(campainId, nft_id)
+					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
 					.then((tx) => {
-						const nft = this.listNftsStake.find(
-							(x) => x.nft_id === nft_id
-						)
 						nft.hashRate = Number(tx)
 					})
 			} catch (err) {
