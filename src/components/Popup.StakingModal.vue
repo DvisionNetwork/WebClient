@@ -91,7 +91,7 @@
 							<span
 								v-if="onEnableStakeButton()"
 								class="btn-stake active"
-								@click="() => onStakeNft()"
+								@click="onStakeNft"
 								>Stake</span
 							>
 							<span v-else class="btn-stake">Stake</span>
@@ -147,10 +147,22 @@ export default {
 			listShowers: [],
 			current_addr: '',
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			current_network: '',
+			current_network: gConfig.wlt.getBscAddr().Network, //default
 		}
 	},
 	mounted() {
+		ethereum.on('chainChanged', (chainId) => {
+			const network = gConfig.wlt.getBscAddr().Network
+			this.current_network = chainId
+			this.checkNetwork(this.current_network)
+			if (chainId !== network) {
+				this.mxShowToast(MSG_METAMASK_2)
+			}
+		})
+		ethereum.on('accountsChanged', (accounts) => {
+			this.current_addr = accounts[0]
+		})
+
 		this.getCurrentAddress()
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
@@ -173,10 +185,12 @@ export default {
 		},
 		keyword() {
 			if (this.keyword.length > 0) {
-				const result = this.listNfts.filter((x) =>
-					x.name
-						?.toLowerCase()
-						.includes(this.keyword.trim().toLowerCase())
+				const result = this.listNfts.filter(
+					(x) =>
+						x.name
+							?.toLowerCase()
+							.includes(this.keyword.trim().toLowerCase()) ||
+						x.nft_id === this.keyword
 				)
 				this.listShowers = result
 			} else {
@@ -190,11 +204,8 @@ export default {
 			if (network === chainId) return true
 			return false
 		},
-		checkAddress() {
-			if (
-				this.current_addr.toLowerCase() ===
-				this.wallet_addr.toLowerCase()
-			)
+		checkAddress(current_addr) {
+			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
 		},
@@ -330,14 +341,14 @@ export default {
 		},
 
 		onCheckingUnder() {
-			if (!this.checkAddress()) {
+			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				return
 			}
-			// if (!this.checkNetwork(this.current_network)) {
-			// 	this.mxShowToast(MSG_METAMASK_2)
-			// 	return
-			// }
+			if (!this.checkNetwork(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			}
 			if (this.hadUnderstand) {
 				this.hadUnderstand = false
 			} else {
@@ -438,6 +449,14 @@ export default {
 		},
 
 		async onStakeNft() {
+			if (!this.checkAddress(this.current_addr)) {
+				this.mxShowToast(MSG_METAMASK_1)
+				return
+			}
+			if (!this.checkNetwork(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			}
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,

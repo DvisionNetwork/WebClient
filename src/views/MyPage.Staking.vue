@@ -133,13 +133,14 @@ export default {
 		ethereum.on('chainChanged', (chainId) => {
 			const network = gConfig.wlt.getBscAddr().Network
 			this.current_network = chainId
+
 			this.checkNetwork(this.current_network)
 			if (chainId !== network) {
 				this.mxShowToast(MSG_METAMASK_2)
 			}
 		})
-		ethereum.on('accountsChanged', function (accounts) {
-			window.location.reload()
+		ethereum.on('accountsChanged', (accounts) => {
+			this.current_addr = accounts[0]
 		})
 		this.getCurrentNetwork()
 		this.getCurrentAddress()
@@ -177,11 +178,8 @@ export default {
 			if (network === chainId) return true
 			return false
 		},
-		checkAddress() {
-			if (
-				this.current_addr.toLowerCase() ===
-				this.wallet_addr.toLowerCase()
-			)
+		checkAddress(current_addr) {
+			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
 		},
@@ -194,7 +192,6 @@ export default {
 		async getCurrentAddress() {
 			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 			const acc = await web3.eth.getAccounts()
-			console.log('accacc', acc)
 			this.current_addr = acc[0]
 		},
 		switchStatusCampain(status) {
@@ -248,11 +245,13 @@ export default {
 			}
 			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
-			} else if (this.statusCampain !== 3) {
-				obj.title = 'Staking campaign is unavailable'
-				obj.content = renderCampainNotYetContent()
-				this.mxShowSuccessModal(obj)
-			} else {
+			}
+			// else if (this.statusCampain !== 3) {
+			// 	obj.title = 'Staking campaign is unavailable'
+			// 	obj.content = renderCampainNotYetContent()
+			// 	this.mxShowSuccessModal(obj)
+			// }
+			else {
 				this.visible = true
 				const stakingData = {
 					duration: this.poolDuration,
@@ -360,10 +359,12 @@ export default {
 						.call()
 						.then((data) => {
 							this.poolDuration.duration = Number(data.duration)
-							let x = BigNumber.from(data.rewardRate).mul(
-								data.duration
-							)
-							this.rewardPool = toFixedDecimal(formatEther(x), 2)
+							let resultNumber = BigNumber.from(
+								data.rewardRate
+							).mul(data.duration)
+							this.rewardPool = Number(
+								formatEther(resultNumber)
+							).toFixed()
 							//set time countdown
 							const endValue = Number(data.timestampFinish)
 							const startValue = endValue - Number(data.duration)
@@ -478,7 +479,7 @@ export default {
 			this.mxShowConfirmModal(obj)
 		},
 		async onUnStakeNfts(params, unLockAll) {
-			if (!this.checkAddress()) {
+			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				this.mxCloseConfirmModal()
 				return
