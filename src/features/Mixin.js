@@ -116,7 +116,24 @@ var Mixin = {
 		mxCloseEditProfile() {
 			this.$store.dispatch('showEditProfile', false);
 		},
-
+		mxShowStakingModal(obj) {
+			this.$store.dispatch('showStakingModal', obj);
+		},
+		mxCloseStakingModal() {
+			this.$store.dispatch('showStakingModal', false);
+		},
+		mxShowSuccessModal(obj) {
+			this.$store.dispatch('showSuccessModal', obj);
+		},
+		mxCloseSuccessModal() {
+			this.$store.dispatch('showSuccessModal', false);
+		},
+		mxShowConfirmModal(obj) {
+			this.$store.dispatch('showConfirmModal', obj);
+		},
+		mxCloseConfirmModal() {
+			this.$store.dispatch('showConfirmModal', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},

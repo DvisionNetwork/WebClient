@@ -10,10 +10,13 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+    "ant-design-vue": "^1.7.8",
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
+    "ethers": "^5.5.4",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "node-sass": "^6.0.1",
     "sass-loader": "^10.2.0",
     "velocity-animate": "^1.5.2",
@@ -25,7 +28,8 @@
     "vue3-cookies": "^1.0.6",
     "vue3-recaptcha2": "^1.4.0",
     "vue3-touch-events": "^4.1.0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "web3": "^1.7.0"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^2.1.0",

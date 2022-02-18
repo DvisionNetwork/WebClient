@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # video files
 # *.mp4
+
+Makefile
+app.json

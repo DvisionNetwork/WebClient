@@ -554,6 +554,8 @@ export default function AppConfig() {
 		market_land_sell : getApiUrl("lgl0004_ex"),
 
 		test_url: "https://www.multiverse.so/m/api/terms_list_ex",
+		public_api_sotatek: "https://division-api.sotatek.works",
+		public_api_sotatek_2: "https://www.multiverse.so/m/api"
 
 	}
 }
