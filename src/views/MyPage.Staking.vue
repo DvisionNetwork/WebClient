@@ -14,6 +14,7 @@
 				:myMiningHashRate="myMiningHashRate"
 				:mininghashRatePerHour="mininghashRatePerHour"
 				:timeCount="timeCount"
+				:staking_address="staking_address"
 			/>
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
@@ -72,8 +73,10 @@ import AddLand from '@/components/AddLand.vue'
 import { BigNumber, ethers } from 'ethers'
 import {
 	toFixedDecimal,
-	STAKING_ADDRESS,
 	BSC_RPC_ENDPOINT,
+	BSC_STAKING_ADDRESS,
+	ETH_STAKING_ADDRESS,
+	MATIC_STAKING_ADDRESS,
 } from '@/features/Common.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -132,34 +135,25 @@ export default {
 			myMiningHashRate: '0',
 			mininghashRatePerHour: '0 DVG',
 			allowWithdraw: false,
+			staking_address: '',
 		}
 	},
 	beforeMount() {
-		console.log(this.$route, this.tab_page)
-		this.getAllowWithdrawAll()
+		this.getCurrentNetwork()
+		this.getCurrentAddress()
 	},
 	mounted() {
 		ethereum.on('chainChanged', (chainId) => {
-			console.log('chainId', chainId)
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			console.log('network BSC', networkBSC)
-			console.log('network Poygon', networkPoygon)
 			this.current_network = chainId
-
-			this.checkNetwork(this.current_network)
-			if (chainId !== networkBSC) {
-				this.mxShowToast(MSG_METAMASK_2)
-			}
+			this.checkNetwork(chainId)
 		})
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
-		this.getCurrentNetwork()
-		this.getCurrentAddress()
-		this.onGetNftsStaked(1)
-		this.getCampaignInfo(1)
-		this.getMyStaked(1)
+		// this.getAllowWithdrawAll()
+		// this.onGetNftsStaked(1)
+		// this.getCampaignInfo(1)
+		// this.getMyStaked(1)
 	},
 	watch: {
 		'poolDuration.id': {
@@ -183,15 +177,57 @@ export default {
 				this.getMyStaked(campainId)
 			}
 		},
+		current_network() {
+			if (this.current_network) {
+				this.setStakingAddress(this.current_network)
+			}
+		},
 	},
 
 	methods: {
+		setStakingAddress(chainId) {
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkETH = gConfig.wlt.getAddr().Network
+			const id = this.poolDuration.id
+			if (chainId === networkBSC) {
+				this.staking_address = BSC_STAKING_ADDRESS
+				this.getAllowWithdrawAll()
+				this.getCampaignInfo(id)
+				this.onGetNftsStaked(id)
+				this.getTotalMiningHashRate(id)
+				this.getMyMiningHashRate(id)
+				this.getTotalStaked(id)
+				this.getMyStaked(id)
+			} else if (chainId === networkETH) {
+				this.staking_address = ETH_STAKING_ADDRESS
+				this.getAllowWithdrawAll()
+				this.getCampaignInfo(id)
+				this.onGetNftsStaked(id)
+				this.getTotalMiningHashRate(id)
+				this.getMyMiningHashRate(id)
+				this.getTotalStaked(id)
+				this.getMyStaked(id)
+			} else if (chainId === networkPoygon) {
+				this.staking_address = MATIC_STAKING_ADDRESS
+				this.getAllowWithdrawAll()
+				this.getCampaignInfo(id)
+				this.onGetNftsStaked(id)
+				this.getTotalMiningHashRate(id)
+				this.getMyMiningHashRate(id)
+				this.getTotalStaked(id)
+				this.getMyStaked(id)
+			} else {
+				this.staking_address = ''
+				this.mxShowToast(MSG_METAMASK_2)
+			}
+		},
 		async getAllowWithdrawAll() {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.staking_address
 				)
 				await contractConn.methods
 					.allowWithdrawAll()
@@ -202,9 +238,19 @@ export default {
 			}
 		},
 		checkNetwork(chainId) {
-			const network = gConfig.wlt.getBscAddr().Network
-			if (network === chainId) return true
-			return false
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkETH = gConfig.wlt.getAddr().Network
+			if (
+				chainId === networkBSC ||
+				chainId === networkPoygon ||
+				chainId === networkETH
+			) {
+				return true
+			} else {
+				this.mxShowToast(MSG_METAMASK_2)
+				return false
+			}
 		},
 		checkAddress(current_addr) {
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
@@ -216,6 +262,7 @@ export default {
 				method: 'eth_chainId',
 			})
 			this.current_network = chainId
+			this.setStakingAddress(chainId)
 		},
 		async getCurrentAddress() {
 			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
@@ -281,6 +328,7 @@ export default {
 				const stakingData = {
 					duration: this.poolDuration,
 					isShowModal: true,
+					staking_address: this.staking_address,
 					onStakingSuccess: () =>
 						this.onGetNftsStaked(this.poolDuration.id),
 				}
@@ -329,7 +377,7 @@ export default {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.staking_address
 				)
 				await contractConn.methods
 					.totalCampaignHashrate(campainId)
@@ -351,7 +399,7 @@ export default {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.staking_address
 				)
 				await contractConn.methods
 					.userInfo(campainId, this.wallet_addr)
@@ -372,12 +420,13 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
+			console.log('staking_address', this.staking_address)
 			try {
 				if (typeof window.ethereum !== 'undefined') {
 					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 					const contractConn = await new web3.eth.Contract(
 						ABI_STAKING,
-						STAKING_ADDRESS
+						this.staking_address
 					)
 					await contractConn.methods
 						.campaignInfo(campainId)
@@ -460,13 +509,13 @@ export default {
 				//Call SC
 				const contractConn = await this.contractConnect(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.staking_address
 				)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
 					.then((tx) => {
-						nft.hashRate = Number(tx)
+						nft.hashRate = Number(tx) / 10
 					})
 			} catch (err) {
 				console.log('catch', err)
@@ -520,14 +569,13 @@ export default {
 				return
 			}
 			if (!this.checkNetwork(this.current_network)) {
-				this.mxShowToast(MSG_METAMASK_2)
 				this.mxCloseConfirmModal()
 				return
 			}
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
-				STAKING_ADDRESS // address Staking
+				this.staking_address // address Staking
 			)
 
 			console.log('params', params)

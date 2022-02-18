@@ -93,6 +93,7 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
+		staking_address:String
 	},
 
 	mounted() {
@@ -117,7 +118,7 @@ export default {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				const contractConn = await new web3.eth.Contract(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.staking_address
 				)
 				await contractConn.methods
 					.getCampaignEarned(this.poolDuration.id, this.wallet_addr)

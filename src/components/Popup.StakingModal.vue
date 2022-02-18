@@ -121,7 +121,6 @@ import {
 	renderSwitchNftContent,
 } from '@/data/RenderContent.js'
 import {
-	STAKING_ADDRESS,
 	BSC_RPC_ENDPOINT,
 	ADDRESS_721,
 	ADDRESS_1155,
@@ -147,24 +146,22 @@ export default {
 			keyword: '',
 			listShowers: [],
 			current_addr: '',
+			current_network: '',
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			current_network: gConfig.wlt.getBscAddr().Network, //default
 		}
+	},
+	beforeMount() {
+		this.getCurrentNetwork()
+		this.getCurrentAddress()
 	},
 	mounted() {
 		ethereum.on('chainChanged', (chainId) => {
-			const network = gConfig.wlt.getBscAddr().Network
 			this.current_network = chainId
-			this.checkNetwork(this.current_network)
-			if (chainId !== network) {
-				this.mxShowToast(MSG_METAMASK_2)
-			}
+			this.checkNetwork(chainId)
 		})
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
-
-		this.getCurrentAddress()
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
 	},
@@ -201,9 +198,19 @@ export default {
 	},
 	methods: {
 		checkNetwork(chainId) {
-			const network = gConfig.wlt.getBscAddr().Network
-			if (network === chainId) return true
-			return false
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkETH = gConfig.wlt.getAddr().Network
+			if (
+				chainId === networkBSC ||
+				chainId === networkPoygon ||
+				chainId === networkETH
+			) {
+				return true
+			} else {
+				this.mxShowToast(MSG_METAMASK_2)
+				return false
+			}
 		},
 		checkAddress(current_addr) {
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
@@ -214,6 +221,12 @@ export default {
 			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 			const acc = await web3.eth.getAccounts()
 			this.current_addr = acc[0]
+		},
+		async getCurrentNetwork() {
+			const chainId = await ethereum.request({
+				method: 'eth_chainId',
+			})
+			this.current_network = chainId
 		},
 		onEnableStakeButton() {
 			if (!this.hadUnderstand) return false
@@ -239,13 +252,13 @@ export default {
 				//Call SC
 				const contractConn = await this.contractConnect(
 					ABI_STAKING,
-					STAKING_ADDRESS
+					this.data.staking_address
 				)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
 					.then((tx) => {
-						nft.hashRate = Number(tx)
+						nft.hashRate = Number(tx) / 10
 					})
 				if (this.listNfts.length - 1 === idx) {
 					setTimeout(() => {
@@ -262,6 +275,7 @@ export default {
 			console.log('search')
 		},
 		confirmSwitch() {
+			this.filterBy = 'default'
 			this.isErc1155 = !this.isErc1155
 			this.listNfts721Check = []
 			this.listNfts1155Check = []
@@ -411,6 +425,14 @@ export default {
 		},
 
 		async checkStatusNft() {
+			if (!this.checkAddress(this.current_addr)) {
+				this.mxShowToast(MSG_METAMASK_1)
+				return
+			}
+			if (!this.checkNetwork(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			}
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
@@ -420,7 +442,7 @@ export default {
 			await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
-					STAKING_ADDRESS // address Staking
+					this.data.staking_address // address Staking
 				)
 				.call()
 				.then((tx) => {
@@ -446,7 +468,7 @@ export default {
 
 			await contractConn.methods
 				.setApprovalForAll(
-					STAKING_ADDRESS, // address Staking
+					this.data.staking_address, // address Staking
 					true
 				)
 				.send({
@@ -475,7 +497,7 @@ export default {
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
-				STAKING_ADDRESS // address Staking
+				this.data.staking_address // address Staking
 			)
 
 			let params = {
