@@ -272,13 +272,11 @@ export default {
 			}
 			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
-			}
-			// else if (this.statusCampain !== 3) {
-			// 	obj.title = 'Staking campaign is unavailable'
-			// 	obj.content = renderCampainNotYetContent()
-			// 	this.mxShowSuccessModal(obj)
-			// }
-			else {
+			} else if (this.statusCampain !== 3) {
+				obj.title = 'Staking campaign is unavailable'
+				obj.content = renderCampainNotYetContent()
+				this.mxShowSuccessModal(obj)
+			} else {
 				this.visible = true
 				const stakingData = {
 					duration: this.poolDuration,
