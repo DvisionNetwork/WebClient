@@ -136,14 +136,19 @@ export default {
 	},
 	beforeMount() {
 		console.log(this.$route, this.tab_page)
+		this.getAllowWithdrawAll()
 	},
 	mounted() {
 		ethereum.on('chainChanged', (chainId) => {
-			const network = gConfig.wlt.getBscAddr().Network
+			console.log('chainId', chainId)
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			console.log('network BSC', networkBSC)
+			console.log('network Poygon', networkPoygon)
 			this.current_network = chainId
 
 			this.checkNetwork(this.current_network)
-			if (chainId !== network) {
+			if (chainId !== networkBSC) {
 				this.mxShowToast(MSG_METAMASK_2)
 			}
 		})
@@ -181,6 +186,21 @@ export default {
 	},
 
 	methods: {
+		async getAllowWithdrawAll() {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+				const contractConn = await new web3.eth.Contract(
+					ABI_STAKING,
+					STAKING_ADDRESS
+				)
+				await contractConn.methods
+					.allowWithdrawAll()
+					.call()
+					.then((tx) => {
+						this.allowWithdraw = tx
+					})
+			}
+		},
 		checkNetwork(chainId) {
 			const network = gConfig.wlt.getBscAddr().Network
 			if (network === chainId) return true
@@ -372,7 +392,7 @@ export default {
 							this.rewardPool = Number(
 								formatEther(resultNumber)
 							).toFixed()
-							this.allowWithdraw = data.allowWithdraw
+							if (!this.allowWithdraw) data.allowWithdraw
 							//set time countdown
 							const endValue = Number(data.timestampFinish)
 							const startValue = endValue - Number(data.duration)
