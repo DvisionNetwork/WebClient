@@ -21,6 +21,10 @@
 								{{$t('login.popup.btn-connect')}}
 							</BaseButton>
 
+							<BaseButton type="button" class="connectbtn g-btn" @click="connectWalletConnect">
+								Connect WalletConnect
+							</BaseButton>
+
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
 								<div class="title">{{$t('login.popup.label-id')}}</div>
@@ -98,6 +102,8 @@
 
 <script>
 
+import WalletConnect from '@walletconnect/client'
+import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig();
 
@@ -105,6 +111,8 @@ import sha256 from 'crypto-js/sha256';
 
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
+
+import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
 
 export default {
 	mounted() {
@@ -237,6 +245,34 @@ export default {
 				}
 			});
 
+		},
+
+		async connectWalletConnect() {
+			const bridge = BRIDGE_WALLETCONNECT
+			const connector = new WalletConnect({
+				bridge,
+				qrcodeModal: QRCodeModal,
+			})
+			if (!connector.connected) {
+				// create new session
+				await connector.createSession()
+			} else {
+				this.reqLogin({ wallet_addr: connector._accounts[0] })
+				// connector.killSession()
+				return
+			}
+
+			connector.on('connect', (error, payload) => {
+				console.log(payload, error)
+				const { accounts } = JSON.parse(
+					JSON.stringify(payload.params[0])
+				)
+				if (accounts) {
+					this.reqLogin({ wallet_addr: accounts })
+				} else if (error) {
+					this.mxShowAlert({ msg: 'error' })
+				}
+			})
 		},
 
 		// signin() {
