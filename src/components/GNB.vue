@@ -212,6 +212,7 @@ export default {
 	@include Transition($tsTime);
 	width: 100%;
 	height: gREm(164);
+	
 	// @include M-Field('height',gREm(120)) ;
 	z-index: $Z-INDEX-GNB;
 	.button-nav{
