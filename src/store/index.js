@@ -7,6 +7,7 @@ export default createStore({
 		showLoading: false,
 		showGameStartLoading: false,
 		showLoginPopup: false,
+		showSelectWalletPopup: {},
 		showEventPopup: false,
 		showAddWallet: false,
 		showChangePasswordPopup: false,
@@ -69,6 +70,9 @@ export default createStore({
 		},
 		SHOW_LOGIN_POPUP(state, value) {
 			state.showLoginPopup = value;
+		},
+		SHOW_SELECT_WALLET_POPUP(state, value) {
+			state.showSelectWalletPopup = value;
 		},
 		SHOW_EVENT_POPUP(state, value) {
 			state.showEventPopup = value;
@@ -199,6 +203,10 @@ export default createStore({
 		showLoginPopup(context, value) {
 			// console.log("[STORE.actions] showLoginPopup(), ", value);
 			context.commit('SHOW_LOGIN_POPUP',value);
+		},
+		showSelectWalletPopup(context, value) {
+			// console.log("[STORE.actions] showSelectWalletPopup(), ", value);
+			context.commit('SHOW_SELECT_WALLET_POPUP', value)
 		},
 		showEventPopup(context, value) {
 			// console.log("[STORE.actions] showEventPopup(), ", value);

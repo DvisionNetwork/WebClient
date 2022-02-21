@@ -63,20 +63,22 @@
 </template>
 
 <script>
-
+import WalletConnect from '@walletconnect/client'
+import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+var gConfig = AppConfig()
 
 import PopupInput from '@/components/PopupInput.vue'
 import WalletAPI from '@/features/WalletAPI.js'
 
-import sha256 from 'crypto-js/sha256';
+import sha256 from 'crypto-js/sha256'
 
-var wAPI = new WalletAPI();
+var wAPI = new WalletAPI()
 
 import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes();
+var CCodes = new CountryCodes()
+
+import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
 
 
 export default {
@@ -202,11 +204,10 @@ export default {
 	computed: {
 	},
 	methods : {
-		onCancel () {
+		onCancel() {
 			this.$router.go(-1);
 		},
-		onSubmit () {
-
+		onSubmit() {
 			var chFS = this.checkFieldSet();
 			if(chFS.result==false) {
 				this.mxShowToast(this.$t('signup.register.error-form-join')+chFS.message);
@@ -252,68 +253,149 @@ export default {
 			}
 			return rv;
 		},
-		checkFieldSet() {
 
+		checkFieldSet() {
 			var rv = {
 				result: true,
-				message: ''
-			};
+				message: '',
+			}
 
-			for(var infoName in this.fieldset) {
-				console.log("=== info: ", infoName)
-				for(var itemName in this.fieldset[infoName]) {
+			for (var infoName in this.fieldset) {
+				console.log('=== info: ', infoName)
+				for (var itemName in this.fieldset[infoName]) {
 					var item = this.fieldset[infoName][itemName]
-					console.log("=== === item: ", item)
-					if(itemName == 'referral') { // optional field
+					console.log('=== === item: ', item)
+					if (itemName == 'referral') {
+						// optional field
 						item.checked = true;
 					}
-					if(item.checked==false) {
+					if (item.checked == false) {
 						rv.result = false;
-						rv.message = '<br>('+item.placeholder+')';
-						break;
+						rv.message = '<br>(' + item.placeholder + ')'
+						break
 					}
 				}
 			}
 			return rv;
 		},
-		onBtnClick(fieldName, val) {
-			console.log("==== field name =", fieldName, val);
-			switch(fieldName) {
-				case 'id':
-					this.callCheckId(val);
-					break;
 
-				case 'email':
-					this.callEmail(val);
-					break;
-
-				case 'wallet-address':
-					console.log("==== wAPI==", wAPI);
-
-					wAPI.checkMetamask().then((rv)=>{
-						if(rv!='NONE') {
-							wAPI.Request_Account((resp) => {
-								console.log('[Signup.Register] onBtnClick() -> Request_Account : resp', resp);
-								if(resp.res_code == 200) {
-									var account = _U.getIfDefined(resp,['data','account']);
-									if(account) {
-										this.walletAddr = account;
-										this.fieldset.walletInfo.walletAddress.value = account;
-										this.fieldset.walletInfo.walletAddress.checked=true;
-										return;
-									}
-								}
-								console.log("Error on get wallet url", resp);
-								this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
-							});
-						}else{
-							this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-chain-not-matched')});
-						}
-					});
-
-					break;
+		async sinUpWithwalletConnect() {
+			const bridge = BRIDGE_WALLETCONNECT
+			const connector = new WalletConnect({
+				bridge,
+				qrcodeModal: QRCodeModal,
+			})
+			if (!connector.connected) {
+				// create new session
+				await connector.createSession()
+			} else {
+				this.walletAddr = connector._accounts[0]
+				this.fieldset.walletInfo.walletAddress.value = connector._accounts[0]
+				this.fieldset.walletInfo.walletAddress.checked = true
+				// connector.killSession()
 			}
 
+			connector.on('connect', (error, payload) => {
+				console.log(payload, error)
+				const { accounts } = JSON.parse(
+					JSON.stringify(payload.params[0])
+				)
+				if (accounts) {
+					this.walletAddr = accounts
+					this.fieldset.walletInfo.walletAddress.value = accounts
+					this.fieldset.walletInfo.walletAddress.checked = true
+					return
+				} else if (error) {
+					this.mxShowAlert({
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.metamask-request-error') +
+							'\n'
+					})
+					throw error
+				}
+			})
+		},
+
+		sinUpWithMetamask() {
+			wAPI.checkMetamask().then((rv) => {
+				if (rv != 'NONE') {
+					wAPI.Request_Account((resp) => {
+						console.log(
+							'[Signup.Register] onBtnClick() -> Request_Account : resp',
+							resp
+						)
+						if (resp.res_code == 200) {
+							var account = _U.getIfDefined(resp, [
+								'data',
+								'account',
+							])
+							if (account) {
+								this.walletAddr = account
+								this.fieldset.walletInfo.walletAddress.value = account
+								this.fieldset.walletInfo.walletAddress.checked = true
+								return
+							}
+						}
+						console.log('Error on get wallet url', resp)
+						this.mxShowAlert({
+							msg:
+								this.$t('signup.register.error-on-wallet-url') +
+								'\n' +
+								this.$t('popup.metamask-request-error') +
+								'\n' +
+								resp.res_code,
+						})
+					})
+				} else {
+					this.mxShowAlert({
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.metamask-chain-not-matched'),
+					})
+				}
+			})
+		},
+
+		sinUpWith(value) {
+			this.mxCloseSelectWalletModal()
+			switch (value) {
+				case 'sinUpWith-Metamask':
+					this.sinUpWithMetamask()
+					break
+				case 'sinUpWith-walletConnect':
+					this.sinUpWithwalletConnect()
+					break
+			}
+			console.log(value)
+		},
+
+		onBtnClick(fieldName, val) {
+			console.log('==== field name =====', fieldName, val)
+			const objSelectWalletPopup = {
+				isShow: true,
+				sinUpWith: (value) => this.sinUpWith(value),
+			}
+			switch (fieldName) {
+				case 'id':
+					this.callCheckId(val)
+					break
+
+				case 'email':
+					this.callEmail(val)
+					break
+
+				case 'wallet-address':
+					console.log('==== wAPI ====', wAPI)
+
+					this.$store.dispatch(
+						'showSelectWalletPopup',
+						objSelectWalletPopup
+					)
+					break
+			}
 		},
 		// callAddWalletAddress() {
 		// 	var data = {
@@ -335,64 +417,61 @@ export default {
 		// 			}
 		// 		}
 		// 	});
-		// },
+		// },|
 		callCheckId(val) {
-
-			var data = {'account' : val};
-			console.log("[Signup.Register] callCheckId()-> req ", data);
+			var data = { account: val }
+			console.log('[Signup.Register] callCheckId()-> req ', data)
 
 			_U.callPost({
-				url:gConfig.check_account,
+				url: gConfig.check_account,
 				data: data,
-				callback: (resp) =>{
-					if(_U.getIfDefined(resp,'data')==false) {
-						this.mxShowToast(this.$t('signup.register.id-usable'));
-						this.fieldset.idInfo.id.checked=true;
-						this.fieldset.idInfo.id.errorMsg='';
-					}else{
-						this.mxShowToast(this.$t('signup.register.id-duplicated'));
+				callback: (resp) => {
+					if (_U.getIfDefined(resp, 'data') == false) {
+						this.mxShowToast(this.$t('signup.register.id-usable'))
+						this.fieldset.idInfo.id.checked = true
+						this.fieldset.idInfo.id.errorMsg = ''
+					} else{
+						this.mxShowToast(
+							this.$t('signup.register.id-duplicated')
+						)
 					}
 				}
 			});
 
 		},
 		callTest() {
-
 			// var a = sha256('my message').toString()
 			var data = {
-				page : 0,
-				count : 10,
-				sort : 0,
-				network : "0x02",
-				category_1 : 0,
-				category_2 : 0,
-				filter : '',
+				page: 0,
+				count: 10,
+				sort: 0,
+				network: '0x02',
+				category_1: 0,
+				category_2: 0,
+				filter: '',
 			};
 
 			_U.callPost({
-				url:gConfig.market_url,
+				url: gConfig.market_url,
 				data: data,
-				callback: (resp) =>{
-					console.log("[Signup.Register] Test()-> resp ", resp);
-				}
-			});
-
+				callback: (resp) => {
+					console.log('[Signup.Register] Test()-> resp ', resp)
+				},
+			})
 		},
 
-		toggleOptionList(){
-			this.isActive = !this.isActive;
-        },
+		toggleOptionList() {
+			this.isActive = !this.isActive
+		},
 
-		setValue(code){
-			this.isActive = false; // close
-			this.value = code.value;
+		setValue(code) {
+			this.isActive = false // close
+			this.value = code.value
 			this.title = code.name+' ('+code.mcode+')'
-			console.log("select-click:", code);
-		}
-
-	}
+			console.log('select-click:', code)
+		},
+	},
 }
-
 </script>
 
 <style lang="scss" scoped>

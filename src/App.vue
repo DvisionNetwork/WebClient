@@ -1,4 +1,9 @@
 <template>
+	<SelectWalletModal
+		appear
+		v-if="isShowSelectWalletPopup.isShow"
+		:data="isShowSelectWalletPopup"
+	/>
 
 	<Login
 		appear
@@ -143,6 +148,7 @@ var gConfig = AppConfig();
 
 import GNB from './components/GNB.vue'
 import Login from './components/Login.vue'
+import SelectWalletModal from './components/Popup.SelectWalletModal.vue'
 import Event from './components/Event.vue'
 import PopupAddWallet from './components/Popup.AddWallet.vue'
 import PopupChangePassword from './components/Popup.ChangePassword.vue'
@@ -178,6 +184,7 @@ export default {
 		Scrollbar,
 		GNB,
 		Login,
+		SelectWalletModal,
 		Event,
 		PopupAddWallet,
 		PopupChangePassword,
@@ -316,6 +323,9 @@ export default {
 		},
 		isShowLoginPopup() {
 			return this.$store.state.showLoginPopup;
+		},
+		isShowSelectWalletPopup() {
+			return this.$store.state.showSelectWalletPopup;
 		},
 		isShowEventPopup() {
 			return this.$store.state.showEventPopup;

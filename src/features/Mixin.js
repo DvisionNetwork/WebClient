@@ -134,6 +134,9 @@ var Mixin = {
 		mxCloseConfirmModal() {
 			this.$store.dispatch('showConfirmModal', false);
 		},
+		mxCloseSelectWalletModal() {
+			this.$store.dispatch('showSelectWalletPopup', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},
