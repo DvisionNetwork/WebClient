@@ -276,6 +276,7 @@ export default {
 		},
 		confirmSwitch() {
 			this.filterBy = 'default'
+			this.keyword = ''
 			this.isErc1155 = !this.isErc1155
 			this.listNfts721Check = []
 			this.listNfts1155Check = []
