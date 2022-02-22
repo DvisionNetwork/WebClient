@@ -72,11 +72,13 @@ import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
 import { BigNumber, ethers } from 'ethers'
 import {
-	toFixedDecimal,
 	BSC_RPC_ENDPOINT,
 	BSC_STAKING_ADDRESS,
 	ETH_STAKING_ADDRESS,
 	MATIC_STAKING_ADDRESS,
+	BSC_CHAIN_ID,
+	ETH_CHAIN_ID,
+	MATIC_CHAIN_ID
 } from '@/features/Common.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -136,6 +138,7 @@ export default {
 			mininghashRatePerHour: '0 DVG',
 			allowWithdraw: false,
 			staking_address: '',
+			chainId : 0
 		}
 	},
 	beforeMount() {
@@ -143,10 +146,6 @@ export default {
 		this.getCurrentAddress()
 	},
 	mounted() {
-		ethereum.on('chainChanged', (chainId) => {
-			this.current_network = chainId
-			this.checkNetwork(chainId)
-		})
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
@@ -188,39 +187,32 @@ export default {
 		setStakingAddress(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getAddr().Network
+			const networkETH = gConfig.wlt.getEthAddr().Network
 			const id = this.poolDuration.id
-			if (chainId === networkBSC) {
+			if (
+				chainId !== networkBSC &&
+				chainId !== networkETH &&
+				chainId !== networkPoygon
+			) {
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			} else if (chainId === networkBSC) {
 				this.staking_address = BSC_STAKING_ADDRESS
-				this.getAllowWithdrawAll()
-				this.getCampaignInfo(id)
-				this.onGetNftsStaked(id)
-				this.getTotalMiningHashRate(id)
-				this.getMyMiningHashRate(id)
-				this.getTotalStaked(id)
-				this.getMyStaked(id)
+				this.chainId = BSC_CHAIN_ID
 			} else if (chainId === networkETH) {
 				this.staking_address = ETH_STAKING_ADDRESS
-				this.getAllowWithdrawAll()
-				this.getCampaignInfo(id)
-				this.onGetNftsStaked(id)
-				this.getTotalMiningHashRate(id)
-				this.getMyMiningHashRate(id)
-				this.getTotalStaked(id)
-				this.getMyStaked(id)
+				this.chainId = ETH_CHAIN_ID
 			} else if (chainId === networkPoygon) {
 				this.staking_address = MATIC_STAKING_ADDRESS
-				this.getAllowWithdrawAll()
-				this.getCampaignInfo(id)
-				this.onGetNftsStaked(id)
-				this.getTotalMiningHashRate(id)
-				this.getMyMiningHashRate(id)
-				this.getTotalStaked(id)
-				this.getMyStaked(id)
-			} else {
-				this.staking_address = ''
-				this.mxShowToast(MSG_METAMASK_2)
+				this.chainId = MATIC_CHAIN_ID
 			}
+			this.getAllowWithdrawAll()
+			this.getCampaignInfo(id)
+			this.onGetNftsStaked(id)
+			this.getTotalMiningHashRate(id)
+			this.getMyMiningHashRate(id)
+			this.getTotalStaked(id)
+			this.getMyStaked(id)
 		},
 		async getAllowWithdrawAll() {
 			if (typeof window.ethereum !== 'undefined') {
@@ -240,7 +232,7 @@ export default {
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getAddr().Network
+			const networkETH = gConfig.wlt.getEthAddr().Network
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -329,6 +321,7 @@ export default {
 					duration: this.poolDuration,
 					isShowModal: true,
 					staking_address: this.staking_address,
+					chainId:this.chainId,
 					onStakingSuccess: () =>
 						this.onGetNftsStaked(this.poolDuration.id),
 				}
@@ -470,7 +463,7 @@ export default {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
 				campaignId: campaignId,
-				chainId: 97,
+				chainId: this.chainId,
 			}
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-staked`,

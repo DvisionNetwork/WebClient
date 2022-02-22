@@ -165,7 +165,7 @@ var CCodes = new CountryCodes();
 import DVILand from '@/data/Market.LandInfo.js'
 
 import vueRecaptcha from 'vue3-recaptcha2';
-
+import { MSG_METAMASK_2 } from '@/features/Messages.js'
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/plugin.md
 class myPlugin extends ScrollbarPlugin {
 	static pluginName = 'myPlugin';
@@ -178,7 +178,7 @@ class myPlugin extends ScrollbarPlugin {
 		};
 	}
 }
-
+const { ethereum } = window
 export default {
 	components: {
 		Scrollbar,
@@ -198,7 +198,9 @@ export default {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
-
+		ethereum.on('chainChanged', (chainId) => {
+			this.checkNetwork(chainId)
+		})
 		if(!Scrollbar.has(_U.Q('#content'))) {
 			Scrollbar.use(myPlugin);
 			this.scrollbar = Scrollbar.init(_U.Q('#content'));
@@ -408,7 +410,17 @@ export default {
 	},
 
 	methods: {
-
+		checkNetwork(chainId) {
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkETH = gConfig.wlt.getEthAddr().Network
+			if (
+				chainId !== networkBSC &&
+				chainId !== networkPoygon &&
+				chainId !== networkETH
+			) this.mxShowToast(MSG_METAMASK_2)
+			else window.location.reload()
+		},
 		historyBack(e) {
 			// if(e.keyCode == 8) {
 			// 	console.log("===================== history Back...", e.keyCode);

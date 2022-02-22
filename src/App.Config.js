@@ -97,7 +97,9 @@ export default function AppConfig() {
 				// Mainnet: "0x1", Testnet: "0x3"
 				Network : "0x1"
 			},
-
+			addrEthDev: {
+				Network : "0x4"
+			},
 			/* -----------------  Binance Smart Chain Network ----------------- */
 			addrBscDev: {
 				// token contract for dev
@@ -145,6 +147,12 @@ export default function AppConfig() {
 					return gConfig.wlt.addrProd;
 				}
 				return gConfig.wlt.addrDev;
+			},
+			getEthAddr () {
+				if(gConfig.isProd) {
+					return gConfig.wlt.addrProd;
+				}
+				return gConfig.wlt.addrEthDev;
 			},
 			getBscAddr () {
 				if(gConfig.isProd) {

@@ -155,10 +155,10 @@ export default {
 		this.getCurrentAddress()
 	},
 	mounted() {
-		ethereum.on('chainChanged', (chainId) => {
-			this.current_network = chainId
-			this.checkNetwork(chainId)
-		})
+		// ethereum.on('chainChanged', (chainId) => {
+		// 	this.current_network = chainId
+		// 	this.checkNetwork(chainId)
+		// })
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
@@ -388,7 +388,7 @@ export default {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
 				collectionAddress: collection ? ADDRESS_1155 : ADDRESS_721,
-				chainId: 97,
+				chainId: this.data.chainId,
 			}
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-owner`,
