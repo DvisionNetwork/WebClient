@@ -144,9 +144,9 @@ export default {
 			mininghashRatePerHour: '0 DVG',
 			allowWithdraw: false,
 			staking_address: '',
-			chainId : 0,
-			address721:'',
-			address1155:''
+			chainId: 0,
+			address721: '',
+			address1155: '',
 		}
 	},
 	beforeMount() {
@@ -335,9 +335,9 @@ export default {
 					duration: this.poolDuration,
 					isShowModal: true,
 					staking_address: this.staking_address,
-					chainId:this.chainId,
-					address721 : this.address721,
-					address1155 : this.address1155,
+					chainId: this.chainId,
+					address721: this.address721,
+					address1155: this.address1155,
 					onStakingSuccess: () =>
 						this.onGetNftsStaked(this.poolDuration.id),
 				}
@@ -357,8 +357,13 @@ export default {
 		},
 		async getTotalStaked(campaignId) {
 			try {
+				let params = {
+					campaignId: campaignId,
+					chainId: this.chainId,
+				}
 				const response = await axios.get(
-					`${gConfig.public_api_sotatek}/nft-total-staked?campaignId=${campaignId}`
+					`${gConfig.public_api_sotatek}/nft-total-staked`,
+					{ params }
 				)
 				if (response.status === 200) {
 					this.totalStakedLand =
@@ -372,6 +377,7 @@ export default {
 			let params = {
 				campaignId: campaignId,
 				user: this.wallet_addr,
+				chainId: this.chainId,
 			}
 			const response = await axios.get(
 				`${gConfig.public_api_sotatek}/nft-my-staked`,
