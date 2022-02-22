@@ -198,7 +198,7 @@ export default {
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getAddr().Network
+			const networkETH = gConfig.wlt.getEthAddr().Network
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
