@@ -122,8 +122,6 @@ import {
 } from '@/data/RenderContent.js'
 import {
 	BSC_RPC_ENDPOINT,
-	ADDRESS_721,
-	ADDRESS_1155,
 } from '@/features/Common.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
@@ -387,7 +385,7 @@ export default {
 			this.mxShowLoading()
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: collection ? ADDRESS_1155 : ADDRESS_721,
+				collectionAddress: collection ? this.data.address1155 : this.data.address721,
 				chainId: this.data.chainId,
 			}
 			const response = await axios.get(
@@ -437,7 +435,7 @@ export default {
 			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
-				this.isErc1155 ? ADDRESS_1155 : ADDRESS_721 // address collection
+				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
 
 			await contractConn.methods
@@ -464,7 +462,7 @@ export default {
 		async onApprovedForAll() {
 			const contractConn = await this.contractConnect(
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
-				this.isErc1155 ? ADDRESS_1155 : ADDRESS_721 // address collection
+				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
 
 			await contractConn.methods

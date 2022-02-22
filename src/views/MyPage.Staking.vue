@@ -78,7 +78,13 @@ import {
 	MATIC_STAKING_ADDRESS,
 	BSC_CHAIN_ID,
 	ETH_CHAIN_ID,
-	MATIC_CHAIN_ID
+	MATIC_CHAIN_ID,
+	BSC_ADDRESS_721,
+	BSC_ADDRESS_1155,
+	ETH_ADDRESS_721,
+	ETH_ADDRESS_1155,
+	MATIC_ADDRESS_721,
+	MATIC_ADDRESS_1155,
 } from '@/features/Common.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -138,7 +144,9 @@ export default {
 			mininghashRatePerHour: '0 DVG',
 			allowWithdraw: false,
 			staking_address: '',
-			chainId : 0
+			chainId : 0,
+			address721:'',
+			address1155:''
 		}
 	},
 	beforeMount() {
@@ -199,12 +207,18 @@ export default {
 			} else if (chainId === networkBSC) {
 				this.staking_address = BSC_STAKING_ADDRESS
 				this.chainId = BSC_CHAIN_ID
+				this.address721 = BSC_ADDRESS_721
+				this.address1155 = BSC_ADDRESS_1155
 			} else if (chainId === networkETH) {
 				this.staking_address = ETH_STAKING_ADDRESS
 				this.chainId = ETH_CHAIN_ID
+				this.address721 = ETH_ADDRESS_721
+				this.address1155 = ETH_ADDRESS_1155
 			} else if (chainId === networkPoygon) {
 				this.staking_address = MATIC_STAKING_ADDRESS
 				this.chainId = MATIC_CHAIN_ID
+				this.address721 = MATIC_ADDRESS_721
+				this.address1155 = MATIC_ADDRESS_1155
 			}
 			this.getAllowWithdrawAll()
 			this.getCampaignInfo(id)
@@ -322,6 +336,8 @@ export default {
 					isShowModal: true,
 					staking_address: this.staking_address,
 					chainId:this.chainId,
+					address721 : this.address721,
+					address1155 : this.address1155,
 					onStakingSuccess: () =>
 						this.onGetNftsStaked(this.poolDuration.id),
 				}
