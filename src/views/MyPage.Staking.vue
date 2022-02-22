@@ -454,11 +454,13 @@ export default {
 							this.rewardPool = Number(
 								formatEther(resultNumber)
 							).toFixed()
-							if (!this.allowWithdraw) data.allowWithdraw
 							//set time countdown
 							const endValue = Number(data.timestampFinish)
 							const startValue = endValue - Number(data.duration)
 							const currValue = moment().unix()
+							if (!this.allowWithdraw && currValue > endValue) {
+								this.allowWithdraw = true
+							}
 							this.timeCount.startValue = startValue
 							this.timeCount.endValue = endValue
 							if (currValue > endValue) {
