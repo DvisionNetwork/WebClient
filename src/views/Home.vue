@@ -63,7 +63,11 @@ export default {
 			mainVisual: {
 				titleHtml: this.$t('home.main-visual.title'),
 				noticeHtml: this.$t('home.main-visual.notice'),
-				msgHtml: this.$t('home.main-visual.desc'),
+				msgHtml: this.$t(
+					this.checkMobile()
+						? 'home.main-visual.desc-mobile'
+						: 'home.main-visual.desc'
+				),
 				dvw_started: false,
 			},
 			cards: [
@@ -432,17 +436,22 @@ export default {
 	height: gREm(720);
 
 	.msg-box {
+		padding: 0 gREm(20);
+		width: 100%;
+
 		.notice {
-			@include Set-Font($AppFont, gREm(16), 1.22, #ee4705, 600);
+			@include Set-Font($AppFont, gREm(14), 1.375, #777682, 200);
+			white-space: pre-line;
+			margin-bottom: gREm(20);
 		}
 		.title {
 			width: 100%;
 			@include Set-Font($AppFont, gREm(32), 1.31, #ffffff, 600);
 		}
 		.message {
-			margin-top: gREm(14);
-			width: 90vw;
 			@include Set-Font($AppFont, gREm(16), 1.39, #f6f4ff);
+			margin-top: gREm(16);
+			white-space: pre-line;
 		}
 
 		.button {

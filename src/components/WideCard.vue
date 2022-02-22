@@ -272,21 +272,23 @@ export default {
 	height: gREm(444);
 	.desc-box {
 		@include FLEXV(center, center);
-		margin-left: 0px;
+		margin: 0;
 		width: 100%;
 		.title {
 			height: gREm(37);
-			width: gW_S(500);
-			text-align: center;
+			width: 100%;
+			text-align: left;
 			@include Set-Font($AppFont, gREm(30), 1.23, #ffffff, 600);
 		}
 		.description {
+			@include Set-Font($AppFont, gREm(14), 1.375, #ffffff);
 			height: auto;
-			width: gW_S(500);
+			width: 100%;
 			margin-top:gREm(14);
-			text-align: center;
-			@include Set-Font($AppFont, gREm(14), 1.57, #f6f4ff);
-			@include Multiline-Dotted-Text(3, center);
+			text-align: left;
+			white-space: pre-line;
+			display: list-item;
+			// @include Multiline-Dotted-Text(3, left);
 		}
 		.btn {
 			height: gREm(48);
@@ -306,11 +308,13 @@ export default {
 	&[isdisplayed="on"][even-odd="even"] .desc-box {
 		// transform: perspective(10px) rotateY(180deg);
 		margin-left: 0px;
+		padding: 0 gREm(55) 0 gREm(22);
 	}
 	&[isdisplayed="on"][even-odd="odd"] .desc-box {
-		margin-left: 0px;
+		margin: 0;
+		padding: 0 gREm(22) 0 gREm(55);
 		.title, .description {
-			width: gW_S(500);
+			width: 100%;
 		}
 	}
 }}

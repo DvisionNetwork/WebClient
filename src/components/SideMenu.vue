@@ -59,6 +59,7 @@ export default {
 	name: 'SideMenu',
 	props: {
 		sideMenu: Object,
+		isMobile: Boolean,
 	},
 	data() {
 		return {
@@ -78,8 +79,7 @@ export default {
 			return true;
 		}
 	},
-	mounted() {
-	},
+	mounted() {},
 	methods: {
 		isActive(o) {
 			if(_U.getIfDefined(o,'active')==true) return true;
