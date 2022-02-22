@@ -153,10 +153,6 @@ export default {
 		this.getCurrentAddress()
 	},
 	mounted() {
-		// ethereum.on('chainChanged', (chainId) => {
-		// 	this.current_network = chainId
-		// 	this.checkNetwork(chainId)
-		// })
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
@@ -275,6 +271,7 @@ export default {
 		confirmSwitch() {
 			this.filterBy = 'default'
 			this.keyword = ''
+			this.hadUnderstand = false
 			this.isErc1155 = !this.isErc1155
 			this.listNfts721Check = []
 			this.listNfts1155Check = []

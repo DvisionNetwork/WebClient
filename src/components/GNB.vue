@@ -17,7 +17,7 @@
 						<div class="dvs-nav-item">
 							<div class="dvg-coin">
 								<img src="../assets/img/ic-dvi-market.svg" alt="">
-								0
+								{{addComma(wallet.balance)}}
 							</div>
 						</div>
 							<div class="dvs-nav-item" > 
