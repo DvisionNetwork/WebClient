@@ -157,7 +157,6 @@ export default {
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
-		// this.getAllowWithdrawAll()
 		// this.onGetNftsStaked(1)
 		// this.getCampaignInfo(1)
 		// this.getMyStaked(1)
@@ -220,7 +219,6 @@ export default {
 				this.address721 = MATIC_ADDRESS_721
 				this.address1155 = MATIC_ADDRESS_1155
 			}
-			this.getAllowWithdrawAll()
 			this.getCampaignInfo(id)
 			this.onGetNftsStaked(id)
 			this.getTotalMiningHashRate(id)
@@ -435,7 +433,7 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
-			console.log('staking_address', this.staking_address)
+			this.getAllowWithdrawAll()
 			try {
 				if (typeof window.ethereum !== 'undefined') {
 					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
@@ -465,7 +463,6 @@ export default {
 									this.allowWithdraw = false
 								}
 							}
-
 							this.timeCount.startValue = startValue
 							this.timeCount.endValue = endValue
 							if (currValue > endValue) {
