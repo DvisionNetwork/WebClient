@@ -14,6 +14,7 @@ export default createStore({
 		showStakingModal:{},
 		showSuccessModal:{},
 		showConfirmModal:{},
+		showInfoModal: {},
 		countryCodeNo: '82',
 		userInfo: {
 			"id": "",
@@ -90,6 +91,10 @@ export default createStore({
 		},
 		SHOW_CONFIRM_MODAL(state, value) {
 			state.showConfirmModal = value;
+		},
+		SHOW_INFO_MODAL(state, value) {
+			console.log('state123123', state, value);
+			state.showInfoModal = value;
 		},
 		SET_USER_INFO(state, value) {
 			state.userInfo = value;
@@ -230,6 +235,9 @@ export default createStore({
 		showConfirmModal(context, value) {
 			// console.log("[STORE.actions] showConfirmModal(), ", value);
 			context.commit('SHOW_CONFIRM_MODAL',value);
+		},
+		showInforModal(context, value) {
+			context.commit('SHOW_INFO_MODAL', value);
 		},
 		setUserInfo(context, value) {
 			// console.log("[STORE.actions] setUserInfo(), ", value);

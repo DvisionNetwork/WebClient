@@ -41,6 +41,12 @@
 		:data = isShowConfirmModal
 	/>
 
+		<PopupInforModal
+		appear
+		v-if="isShowInfoModal.isShow"
+		:data = isShowInfoModal
+	/>
+
 	<transition	appear name="fade">
 		<div v-if="isShowAlert" class="alert-box">
 			<div class="message-box" >
@@ -150,6 +156,7 @@ import PopupEditProfile from './components/Popup.EditProfile.vue'
 import PopupShowStakingModal from './components/Popup.StakingModal.vue'
 import PopupSuccessModal from './components/Popup.SuccessModal.vue'
 import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
+import PopupInforModal from './components/Popup.Information.vue';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -185,6 +192,7 @@ export default {
 		PopupShowStakingModal,
 		PopupSuccessModal,
 		PopupConfirmModal,
+		PopupInforModal,
 		vueRecaptcha
 	},
 	created() {
@@ -337,6 +345,9 @@ export default {
 		},
 		isShowConfirmModal() {
 			return this.$store.state.showConfirmModal;
+		},
+		isShowInfoModal() {
+			return this.$store.state.showInfoModal;
 		},
 		theme() {
 			return (

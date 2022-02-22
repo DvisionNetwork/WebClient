@@ -12,7 +12,6 @@
 			<div class="title-desc" v-html="getTitleDesc"></div>
 		</div>
 		<div class="content-body-wrap">
-
 			<div class="tabs">
 				<div
 					class="item"
@@ -28,13 +27,17 @@
 			<div class="tab-line"></div>
 
 			<div v-if="tab_page.indexOf('land') == 0" class="land-box">
-				<MarketLand :tab_page="tab_page" />
+				<MarketLand :isMobile="isMobile" :tab_page="tab_page" />
 			</div>
 
 			<div v-else class="content-box">
 
 				<div class="side-menu">
-					<SideMenu :sideMenu="assetMenu" @selection-changed="onChangeSideMenu"/>
+					<SideMenu
+						v-if="!isMobile"
+						:sideMenu="assetMenu"
+						@selection-changed="onChangeSideMenu"
+					/>
 				</div>
 				<div class="contents">
 					<div class="content-menu-box">
@@ -120,12 +123,13 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
-
 		</div>
-
-
+		<div class="filter">
+			<div class="img-wrapper">
+				<img src="../assets/img/Filter.svg" alt="filter" @click="openInfoModal">
+			</div>
+		</div>
 	</div>
 
 	<FOOT :theme="'black'"/>
@@ -154,6 +158,7 @@ import Product from '@/components/Product.vue'
 import FOOT from '@/components/FOOT.vue'
 import MarketDetail from '@/views/Market.Detail.vue'
 import MarketLand from '@/views/Market.Land.vue'
+import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 
 export default {
 	name: "Market",
@@ -213,6 +218,7 @@ export default {
 			this.setSearchQuery(1);
 			this.callMarketItems(this.searchQuery);
 		}
+		this.isMobile = this.checkMobile();
 	},
 	beforeUpdate () {
 		console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
@@ -259,7 +265,7 @@ export default {
 			category_2: 0,
 			filters: '',
 			search: '',
-
+			isMobile: false,
 		}
 	},
 	computed: {
@@ -280,7 +286,7 @@ export default {
 			}
 			return idx;
 		},
-		getTitleDesc() { return this.$t('market.title-desc'); },
+		getTitleDesc() { return this.$t(`market.title-desc${this.isMobile ? '-mobile': ''}`); },
 		marketItems() {
 			// console.log("[Market] computed, marketItems ", this.mxGetMarketItems());
 			return this.mxGetMarketItems();
@@ -302,9 +308,19 @@ export default {
 			this.callMarketItems(newVal);
 		}
 	},
-	methods : {
-
-		onTabClick (idx) {
+	methods: {
+		openInfoModal() {
+			const isLand = this.tab_page.indexOf('land') === 0;
+			const obj = {
+				title: 'Filter',
+				component: isLand ? SimpleSideMenu : SideMenu,
+				dataComponent: isLand ? this.mxGetLandMenu() : this.assetMenu,
+				isShow: true,
+			}
+			console.log('obj123123123', obj);
+			this.mxShowInfoModal(obj);
+		},
+		onTabClick(idx) {
 			var curTab = this.tab_page;
 			var newTab = this.markets[idx].id;
 
@@ -579,8 +595,11 @@ export default {
 					this.mxCloseLoading();
 				}
 			});
-		}
+		},
 
+		checkMobile() {
+			return window.matchMedia('(max-width: 768px)').matches;
+		}
 	}
 }
 </script>
@@ -874,12 +893,12 @@ export default {
 					@include FLEX(center, flex-start);
 					height: gREm(44);
 					width: 100%;
-					margin-top: gREm(100);
-					margin-bottom: gREm(132);
 					.page-wrap {
 						@include FLEX(center, center);
 						height: gREm(44);
 						width: gREm(600);
+						margin-top: gREm(100);
+						margin-bottom: gREm(132);
 						.arrow-left, .arrow-right, .page {
 							@include FLEX(center, center);
 							width: gREm(40);
@@ -968,5 +987,143 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) { // 768
+
+	.Market {
+		.title-box {
+			padding: 0 gREm(20);
+			height: 100%;
+	
+			.title,
+			.title-desc {
+				white-space: pre-line;
+				height: 100%;
+			}
+
+			.title {
+				width: 100%;
+				margin-top: gREm(132);
+
+				&-desc {
+					width: 75%;
+				}
+			}
+		}
+
+		.content-body-wrap {
+			padding: 0 gREm(20);
+			width: 100%;
+
+			.tabs {
+				width: 100%;
+				margin-top: gREm(41);
+				align-items: center;
+				overflow-x: auto;
+				overscroll-behavior: contain;
+				overflow-y: hidden;
+				height: 100%;
+				padding-bottom: gREm(20);
+
+				.item {
+					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
+					display: flex;
+					align-items: center;
+					margin-right: gREm(16);
+					border: 1px solid #777682;
+					border-radius: gREm(8);
+					padding: gREm(25) gREm(30);
+
+					&[selected='true'] {
+						border: 2px solid #f6583e;
+
+						&:after {
+							background: none;
+						}
+					}
+				}
+			}
+
+			.tab-line {
+				display: none;
+			}
+
+			.land-box {
+				width: 100%;
+				flex-direction: column-reverse;
+				margin-top: gREm(16);
+
+				.contents {
+					padding-left: 0;
+
+					.content-menu-box {
+						width: 100%;
+					}
+				}
+			}
+
+			.content-box {
+				width: 100%;
+				flex-direction: column-reverse;
+				margin-top: 1rem;
+
+				.contents {
+					padding-left: 0;
+
+					.content-menu-box {
+						width: 100%;
+						padding-right: 0;
+
+						.search-box,
+						.switch-box,
+						.order-by-box {
+							width: 100%;
+						}
+
+						.search-box {
+							.icon {
+								width: gREm(20);
+								height: gREm(20);
+							}
+							.text-input {
+								display: none;
+							}
+
+							&:hover, &:active {
+								.text-input {
+									display: block;
+								}
+							}
+						}
+					}
+
+					.item-box {
+						.items {
+							justify-content: center;
+
+							.product-card {
+								margin-right: 0;
+							}
+						}
+					}
+				}
+			}
+		}
+		.filter {
+			width: 100%;
+
+			.img-wrapper {
+				position: absolute;
+				z-index: 11;
+				background: #2A2932;
+				border-radius: 50%;
+				right: gREm(20);
+				padding: gREm(22);
+				bottom: gREm(-30);
+				box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.28);
+			}
+		}
+	}
+}
 
 </style>

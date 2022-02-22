@@ -134,6 +134,12 @@ var Mixin = {
 		mxCloseConfirmModal() {
 			this.$store.dispatch('showConfirmModal', false);
 		},
+		mxShowInfoModal(obj) {
+			this.$store.dispatch('showInforModal', obj);
+		},
+		mxCloseInfoModal() {
+			this.$store.dispatch('showInforModal', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},
