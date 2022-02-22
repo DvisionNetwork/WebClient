@@ -458,9 +458,14 @@ export default {
 							const endValue = Number(data.timestampFinish)
 							const startValue = endValue - Number(data.duration)
 							const currValue = moment().unix()
-							if (!this.allowWithdraw && currValue > endValue) {
-								this.allowWithdraw = true
+							if (!this.allowWithdraw) {
+								if (currValue > endValue) {
+									this.allowWithdraw = true
+								} else {
+									this.allowWithdraw = false
+								}
 							}
+
 							this.timeCount.startValue = startValue
 							this.timeCount.endValue = endValue
 							if (currValue > endValue) {
