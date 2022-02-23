@@ -26,7 +26,7 @@ export function renderSuccessContent() {
 }
 export function renderOnClickHarvestContent(data){
   return `
-  <p>You got ${data} DVG from the staking campaign!</p>
+  <p>You got ${data} from the staking campaign!</p>
   <br />
     <p>
       The earned DVG has been transferred to your Dvision

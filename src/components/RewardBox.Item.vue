@@ -31,13 +31,28 @@ export default {
 			isActive: false,
 		}
 	},
+	watch: {
+		data() {
+			if (this.data.length > 0) {
+				const harvest = Number(
+					this.data.substring(0, this.data.length - 4)
+				)
+				if (harvest > 0) {
+					this.isActive = true
+				}
+				else{
+					this.isActive = false
+				}
+			}
+		},
+	},
 	methods: {
 		handleClickHarvest() {
 			const obj = {
 				width: '712px',
 				height: '244px',
 				title: 'Reward harvested',
-				content: renderOnClickHarvestContent('3123'),
+				content: renderOnClickHarvestContent(this.data),
 				buttonTxt: 'OK',
 				isShow: true,
 			}

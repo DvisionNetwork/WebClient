@@ -59,7 +59,6 @@ import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
 import {
 	toFixedDecimal,
-	STAKING_ADDRESS,
 	BSC_RPC_ENDPOINT,
 } from '@/features/Common.js'
 var gConfig = AppConfig()
