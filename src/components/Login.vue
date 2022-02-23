@@ -113,8 +113,7 @@ import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
-
+import { BRIDGE_WALLETCONNECT, ethereum } from '@/features/Common.js'
 export default {
 	mounted() {
 		// this.popType = authInfo.type;
@@ -248,9 +247,13 @@ export default {
 
 		},
 		async connectCoinbase(){
-			// const client = new Client({
-
-			// })
+		await ethereum.enable().then((accounts) => {
+			if (accounts) {
+					this.reqLogin({ wallet_addr: accounts[0] })
+				} else if (error) {
+					this.mxShowAlert({ msg: 'error' })
+				}
+		})
 		},
 		async connectWalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
@@ -351,7 +354,7 @@ export default {
 
 		.modal-container {
 			width: 520px;
-			height: 300px;
+			height: 500px;
 			margin: 0px auto;
 			// padding: 20px 30px;
 			background-color: #fff;
@@ -366,7 +369,7 @@ export default {
 .form {
 	@include FLEXV(flex-start,center);
 	width: 100%;
-	height: gREm(300);
+	height: gREm(600);
 	.closebtn {
 		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
 		width : gREm(40);

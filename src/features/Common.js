@@ -1,3 +1,15 @@
+import WalletLink  from 'walletlink'
+export const walletLink = new WalletLink({
+	appName: 'Division Network',
+  appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
+  darkMode: false
+})
+export const DEFAULT_ETH_JSONRPC_URL = 'https://mainnet.infura.io/v3/14ff3a7ed1484486aac3e5573bcae20d'
+export const DEFAULT_CHAIN_ID = 1
+export const ethereum = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+
+
+
 export function toFixedDecimal(val, decimals = 18) {
   val = String(val);
   const split = val.split('.');

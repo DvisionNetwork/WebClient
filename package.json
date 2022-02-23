@@ -31,6 +31,7 @@
     "vue3-recaptcha2": "^1.4.0",
     "vue3-touch-events": "^4.1.0",
     "vuex": "^4.0.0-0",
+    "walletlink": "^2.5.0",
     "web3": "^1.7.0"
   },
   "devDependencies": {

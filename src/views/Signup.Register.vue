@@ -78,9 +78,7 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
-
-
+import { BRIDGE_WALLETCONNECT, ethereum } from '@/features/Common.js'
 export default {
 	name: "Register",
 	components: {
@@ -278,7 +276,18 @@ export default {
 			}
 			return rv;
 		},
-
+		async sinUpWithCoinbase(){
+			ethereum.enable().then((accounts) => {
+  		if(!accounts){
+				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
+			}
+			else{
+				this.walletAddr = accounts[0]
+				this.fieldset.walletInfo.walletAddress.value = accounts[0]
+				this.fieldset.walletInfo.walletAddress.checked = true
+			}
+			})
+		},
 		async sinUpWithwalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
 			const connector = new WalletConnect({
@@ -367,6 +376,9 @@ export default {
 					break
 				case 'sinUpWith-walletConnect':
 					this.sinUpWithwalletConnect()
+					break
+				case 'sinUpWith-coinbase' :
+					this.sinUpWithCoinbase()
 					break
 			}
 			console.log(value)

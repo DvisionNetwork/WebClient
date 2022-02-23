@@ -27,10 +27,19 @@
 								type="button"
 								class="connectbtn g-btn"
 								@click="
-									data.sinUpWith('sinUpWith-walletConnect')
+									data.sinUpWith('sinUpWith-coinbase')
 								"
 							>
 								WalletConnect
+							</BaseButton>
+							<BaseButton
+								type="button"
+								class="connectbtn g-btn"
+								@click="
+									data.sinUpWith('sinUpWith-coinbase')
+								"
+							>
+								CoinBase
 							</BaseButton>
 						</div>
 					</div>
@@ -87,7 +96,7 @@ export default {
 .form {
 	@include FLEXV(flex-start,center);
 	width: 100%;
-	height: gREm(300);
+	height: gREm(400);
 	.closebtn {
 		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
 		width: gREm(40);
