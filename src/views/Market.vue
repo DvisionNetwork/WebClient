@@ -42,11 +42,16 @@
 				<div class="contents">
 					<div class="content-menu-box">
 						<div class="search-box">
-							<div class="icon"></div>
-							<input class="text-input"
+							<div id="iconSearch"
+								@click="handleClickOnMobile"
+								class="icon"
+							></div>
+							<input
+								id="searchInput"
+								class="text-input"
 								placeholder="Search..."
 								@input="onSearchBoxChange($event)"
-							>
+							/>
 						</div>
 
 						<div class="right-menu-box">
@@ -219,6 +224,7 @@ export default {
 			this.callMarketItems(this.searchQuery);
 		}
 		this.isMobile = this.checkMobile();
+		this.listenToWindowClickEvent();
 	},
 	beforeUpdate () {
 		console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
@@ -306,6 +312,10 @@ export default {
 		searchQuery(newVal, oldVal) {
 			// console.log("[Market.vue] watch searchQuery ", newVal, oldVal);
 			this.callMarketItems(newVal);
+		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu();
+			this.mxCloseInfoModal();
 		}
 	},
 	methods: {
@@ -317,7 +327,6 @@ export default {
 				dataComponent: isLand ? this.mxGetLandMenu() : this.assetMenu,
 				isShow: true,
 			}
-			console.log('obj123123123', obj);
 			this.mxShowInfoModal(obj);
 		},
 		onTabClick(idx) {
@@ -599,8 +608,46 @@ export default {
 
 		checkMobile() {
 			return window.matchMedia('(max-width: 768px)').matches;
-		}
-	}
+		},
+		setStyleInput({searchBox, contentMenuBox, width, display, direction, iconWidth}) {
+			searchBox.style.width = width;
+			searchBox.children[0].style.width = iconWidth;
+			searchBox.children[1].style.display = display;
+			contentMenuBox.style.flexDirection = direction;
+		},
+		handleClickOnMobile(event) {
+			if (this.isMobile) {
+				const obj = {
+					searchBox: event.target.offsetParent,
+					contentMenuBox: event.target.offsetParent.offsetParent,
+					width: '100%',
+					display: 'block',
+					direction: 'column',
+					iconWidth: '1.375rem',
+				};
+				this.setStyleInput(obj);
+			}
+		},
+		listenToWindowClickEvent() {
+			window.onclick = (e) => {
+				if (e.target.id !== 'iconSearch' && e.target.id !== 'searchInput') {
+					const contentMenuBox =
+						document.querySelector('.content-menu-box');
+					const searchBox =
+						contentMenuBox.querySelector('.search-box')
+					const obj = {
+						searchBox,
+						contentMenuBox,
+						width: 'auto',
+						display: 'none',
+						direction: 'row',
+						iconWidth: '1.25rem',
+					}
+					this.setStyleInput(obj)
+				}
+			}
+		},
+	},
 }
 </script>
 
@@ -1003,7 +1050,7 @@ export default {
 
 			.title {
 				width: 100%;
-				margin-top: gREm(132);
+				margin-top: gREm(40);
 
 				&-desc {
 					width: 75%;
@@ -1073,14 +1120,36 @@ export default {
 					.content-menu-box {
 						width: 100%;
 						padding-right: 0;
+						height: 100%;
 
 						.search-box,
 						.switch-box,
 						.order-by-box {
-							width: 100%;
+							padding: 0 gREm(16);
+						}
+
+						.search-box,
+						.switch-box{
+							border-right: 1px solid #2E2C3E;
+							margin-bottom: gREm(16);
+						}
+
+						.order-by-box {
+							margin: 0;
+							margin-bottom: gREm(16);
+						}
+
+						.order-popup-box-wrap {
+							left: unset;
+						}
+
+						.switch-box {
+							width: auto;
+							height: 100%;
 						}
 
 						.search-box {
+							width: auto;
 							.icon {
 								width: gREm(20);
 								height: gREm(20);
@@ -1095,6 +1164,11 @@ export default {
 								}
 							}
 						}
+
+						.right-menu-box {
+							flex-wrap: wrap;
+							width: 100%;
+						}
 					}
 
 					.item-box {
@@ -1103,6 +1177,7 @@ export default {
 
 							.product-card {
 								margin-right: 0;
+								width: 100%;
 							}
 						}
 					}
@@ -1111,6 +1186,7 @@ export default {
 		}
 		.filter {
 			width: 100%;
+			height: gREm(80);
 
 			.img-wrapper {
 				position: absolute;

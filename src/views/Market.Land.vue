@@ -6,8 +6,8 @@
 	<div class="contents">
 		<div class="content-menu-box">
 			<div class="search-box">
-				<div class="icon"></div>
-				<input class="text-input"
+				<div id="iconSearch" class="icon" @click="handleClickOnMobile"></div>
+				<input id="searchInput" class="text-input"
 					placeholder="Search..."
 					@input="onSearchBoxChange($event)"
 				>
@@ -291,6 +291,10 @@ export default {
 		landItems(newVal, oldVal) {
 			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
 			this.setPages();
+		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu(this.$store.state.dataClickedInfoModal);
+			this.mxCloseInfoModal();
 		},
 	},
 	methods : {
@@ -589,7 +593,16 @@ export default {
 				}
 			},1000)
 		},
-
+		handleClickOnMobile(event) {
+			if (this.isMobile) {
+				const searchBox = event.target.offsetParent;
+				const contentMenuBox = searchBox.offsetParent;
+				searchBox.style.width = '100%';
+				searchBox.children[0].style.width = '22px';
+				searchBox.children[1].style.display = 'block';
+				contentMenuBox.style.flexDirection = 'column';
+			}
+		},
 	}
 }
 </script>
@@ -914,20 +927,69 @@ export default {
 
 			.content-menu-box {
 				width: 100%;
+				height: 100%;
+
+				.search-box {
+					width: auto;
+					margin-bottom: gREm(16);
+
+					.icon {
+						width: gREm(20);
+						height: gREm(20);
+					}
+					.text-input {
+						display: none;
+					}
+				}
+
+				.search-box,
+				.switch-box,
+				.order-by-box {
+					padding: 0 gREm(16);
+					border-right: 1px solid #2E2C3E;
+				}
 
 				.right-menu-box {
+					width: 100%;
+					flex-wrap: wrap;
+
+					.switch-box,
+					.order-by-box {
+						height: 100%;
+						margin-bottom: gREm(16);
+					}
+
+					.content-type-box {
+						margin-bottom: gREm(16);
+					}
+
 					.order-popup-box-wrap {
 						left: unset;
+					}
+
+					.switch-box {
+						width: auto;
 					}
 				}
 			}
 
+			.canvas-box {
+				width: 100%;
+				height: 50vh;
+				margin-bottom: 0;
+			}
+
 			.item-box {
 				width: 100%;
-				margin-left: 0;
+				margin: 0 0 gREm(15) 0;
 
 				.items {
 					justify-content: center;
+
+					.item-card {
+						width: 100%;
+						margin: 1.125rem 0;
+					}
 				}
 
 				.page-box {

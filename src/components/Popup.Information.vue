@@ -16,6 +16,7 @@
 					<component
 						:sideMenu="data.dataComponent"
 						:is="data.component"
+						@selection-changed="onChangeSideMenu"
 					></component>
 				</div>
 			</div>
@@ -35,7 +36,10 @@ export default {
 	created() {},
 	methods: {
 		closePopup() {
-			this.mxCloseInfoModal()
+			this.mxCloseInfoModal();
+		},
+		onChangeSideMenu(mapId) {
+			this.mxHandleClickPopup(mapId);
 		},
 	},
 }
@@ -67,6 +71,8 @@ export default {
 			position: absolute;
 			bottom: 0;
 			width: 100%;
+			max-height: 100vh;
+			overflow-y: auto;
 
 			.modal-header {
 				display: flex;
