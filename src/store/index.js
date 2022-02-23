@@ -98,11 +98,9 @@ export default createStore({
 			state.showConfirmModal = value;
 		},
 		SHOW_INFO_MODAL(state, value) {
-			console.log('in commit');
 			state.showInfoModal = value;
 		},
 		CLICK_INFO_MODAL(state, value) {
-			console.log('in commit', value);
 			state.dataClickedInfoModal = value;
 		},
 		SET_USER_INFO(state, value) {
@@ -253,7 +251,6 @@ export default createStore({
 			context.commit('SHOW_INFO_MODAL', value);
 		},
 		clickInfoModal(context, value) {
-			console.log('in context', value);
 			context.commit('CLICK_INFO_MODAL', value);
 		},
 		setUserInfo(context, value) {
@@ -360,10 +357,4 @@ export default createStore({
 		},
 	},
 	modules: {},
-	getters: {
-		getDataModalClick(state, getters) {
-			console.log('state,', state, getters);
-			return state;
-		}
-	}
 })
