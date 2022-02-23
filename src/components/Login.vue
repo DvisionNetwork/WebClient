@@ -24,7 +24,9 @@
 							<BaseButton type="button" class="connectbtn g-btn" @click="connectWalletConnect">
 								Connect WalletConnect
 							</BaseButton>
-
+							<BaseButton type="button" class="connectbtn g-btn" @click="connectCoinbase">
+								Connect Coinbase
+							</BaseButton>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
 								<div class="title">{{$t('login.popup.label-id')}}</div>
@@ -101,7 +103,6 @@
 </template>
 
 <script>
-
 import WalletConnect from '@walletconnect/client'
 import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
@@ -246,7 +247,11 @@ export default {
 			});
 
 		},
+		async connectCoinbase(){
+			// const client = new Client({
 
+			// })
+		},
 		async connectWalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
 			const connector = new WalletConnect({

@@ -363,9 +363,12 @@ export default {
 					`${gConfig.public_api_sotatek}/nft-total-staked`,
 					{ params }
 				)
-				if (response.status === 200) {
+				if (response.status === 200 && response.data.total_staked) {
 					this.totalStakedLand =
 						response.data?.total_staked?.toString()
+				}
+				else{
+					this.totalStakedLand = '0'
 				}
 			} catch (err) {
 				console.log('catch', err)
@@ -381,8 +384,11 @@ export default {
 				`${gConfig.public_api_sotatek}/nft-my-staked`,
 				{ params }
 			)
-			if (response.status === 200 && response.data) {
+			if (response.status === 200 && response.data.totalStaked) {
 				this.myStakedLand = response.data?.totalStaked?.toString()
+			}
+			else{
+				this.myStakedLand = '0'
 			}
 		},
 		async getTotalMiningHashRate(campainId) {
