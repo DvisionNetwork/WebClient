@@ -497,8 +497,8 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
-				response.data.map((item) => {
-					this.onGetHashRate(item.is_ERC1155, item.nft_id)
+				response.data.map((item, idx) => {
+					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
 				})
 			} else {
 				this.listNftsStake = []
@@ -512,9 +512,9 @@ export default {
 				return contractConn
 			}
 		},
-		async onGetHashRate(is_ERC1155, nft_id) {
+		async onGetHashRate(is_ERC1155, nft_id, idx) {
 			try {
-				const nft = this.listNftsStake.find((x) => x.nft_id === nft_id)
+				const nft = this.listNftsStake[idx]	
 				//cal API
 				const search = is_ERC1155 ? '1155' : '721'
 				const response = await axios.get(
