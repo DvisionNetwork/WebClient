@@ -183,9 +183,10 @@
 		"view-more" : "VIEW MORE",
 		"news-title" : "Press release",
 		"main-visual" : {
-			"notice":"<span> This site is optimized for the pc version. <br> Please access the PC version to use all functions.<span>",
+			"notice":"This site is optimized for the pc version. <br> Please access the PC version to use all functions.",
 			"title":"<span> Welcome to <br> Dvision Network<span>",
-			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>"
+			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>",
+			"desc-mobile": "<span>Create, Trade and Play in the blockchain <br> based NFT metaverse owned by players.</span>"
 		},
 		"meta-space" : {
 			"title":"Meta-Space",
@@ -203,6 +204,7 @@
 	"market": {
 		"title": "Dvision Marketplace",
 		"title-desc": "Search and purchase NFT ITEMS from Dvision World creators <br> with your DVIs and incorporate them into your SPACE.",
+		"title-desc-mobile": "Search and purchase NFT ITEMS from Dvision World creators with your DVIs and incorporate them into your SPACE.",
 		"search": {
 			"content":"Not found for this search.",
 			"sale": {

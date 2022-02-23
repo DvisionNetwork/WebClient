@@ -137,6 +137,12 @@ var Mixin = {
 		mxCloseSelectWalletModal() {
 			this.$store.dispatch('showSelectWalletPopup', false);
 		},
+		mxShowInfoModal(obj) {
+			this.$store.dispatch('showInforModal', obj);
+		},
+		mxCloseInfoModal() {
+			this.$store.dispatch('showInforModal', false);
+		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},

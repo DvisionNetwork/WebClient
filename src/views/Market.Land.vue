@@ -1,7 +1,7 @@
 <template>
 
 	<div class="side-menu">
-		<SimpleSideMenu :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
+		<SimpleSideMenu v-if="!isMobile" :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
 	</div>
 	<div class="contents">
 		<div class="content-menu-box">
@@ -129,6 +129,7 @@ export default {
 			type: String,
 			default: 'land-map',
 		},
+		isMobile: Boolean,
 	},
 
 	// beforeRouteEnter (to, from, next) {
@@ -905,5 +906,40 @@ export default {
 @include media-max($media_medium) { // 1024
 .contents  {
 }}
+
+@include media-max($media_small) { // 768
+	.land-box {
+		.contents {
+			padding-left: 0;
+
+			.content-menu-box {
+				width: 100%;
+
+				.right-menu-box {
+					.order-popup-box-wrap {
+						left: unset;
+					}
+				}
+			}
+
+			.item-box {
+				width: 100%;
+				margin-left: 0;
+
+				.items {
+					justify-content: center;
+				}
+
+				.page-box {
+					margin-top: gREm(40);
+
+					.page-wrap {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+}
 
 </style>
