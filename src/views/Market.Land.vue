@@ -598,6 +598,7 @@ export default {
 				const searchBox = event.target.offsetParent;
 				const contentMenuBox = searchBox.offsetParent;
 				searchBox.style.width = '100%';
+				searchBox.children[0].style.width = '22px';
 				searchBox.children[1].style.display = 'block';
 				contentMenuBox.style.flexDirection = 'column';
 			}

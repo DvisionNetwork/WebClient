@@ -609,8 +609,9 @@ export default {
 		checkMobile() {
 			return window.matchMedia('(max-width: 768px)').matches;
 		},
-		setStyleInput({searchBox, contentMenuBox, width, display, direction}) {
+		setStyleInput({searchBox, contentMenuBox, width, display, direction, iconWidth}) {
 			searchBox.style.width = width;
+			searchBox.children[0].style.width = iconWidth;
 			searchBox.children[1].style.display = display;
 			contentMenuBox.style.flexDirection = direction;
 		},
@@ -622,6 +623,7 @@ export default {
 					width: '100%',
 					display: 'block',
 					direction: 'column',
+					iconWidth: '1.375rem',
 				};
 				this.setStyleInput(obj);
 			}
@@ -631,7 +633,6 @@ export default {
 				if (e.target.id !== 'iconSearch' && e.target.id !== 'searchInput') {
 					const contentMenuBox =
 						document.querySelector('.content-menu-box');
-					console.log(contentMenuBox, 123213123123);
 					const searchBox =
 						contentMenuBox.querySelector('.search-box')
 					const obj = {
@@ -640,6 +641,7 @@ export default {
 						width: 'auto',
 						display: 'none',
 						direction: 'row',
+						iconWidth: '1.25rem',
 					}
 					this.setStyleInput(obj)
 				}
@@ -1048,7 +1050,7 @@ export default {
 
 			.title {
 				width: 100%;
-				margin-top: gREm(132);
+				margin-top: gREm(40);
 
 				&-desc {
 					width: 75%;
@@ -1129,10 +1131,12 @@ export default {
 						.search-box,
 						.switch-box{
 							border-right: 1px solid #2E2C3E;
+							margin-bottom: gREm(16);
 						}
 
 						.order-by-box {
 							margin: 0;
+							margin-bottom: gREm(16);
 						}
 
 						.order-popup-box-wrap {
