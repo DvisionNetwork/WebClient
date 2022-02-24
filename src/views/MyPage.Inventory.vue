@@ -132,7 +132,7 @@ export default {
 			console.log("======= onClickItem :: itemInfo", item.id);
 
 			if(item.name == 'ATTENDANCE TICKET') {
-				this.mxShowToast('Ticket has no detail page. Wait for future update!');
+				this.mxShowToast('After opening the Dvision Meta-City, you can exchange the tickets for various items.');
 				return;
 			}
 
