@@ -131,6 +131,11 @@ export default {
 		onClickItem(item) {
 			console.log("======= onClickItem :: itemInfo", item.id);
 
+			if(item.name == 'ATTENDANCE TICKET') {
+				this.mxShowToast('Ticket has no detail page. Wait for future update!');
+				return;
+			}
+
 			this.mxSetMarketItem(item);
 			this.$router.push({name:"Market-Detail", 
 				params:{
