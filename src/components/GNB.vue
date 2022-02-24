@@ -109,6 +109,14 @@
 <script>
 
 import AppConfig from '@/App.Config.js'
+import WalletLink  from 'walletlink'
+export const walletLink = new WalletLink({
+	appName: 'Division Network',
+  appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
+  darkMode: false
+})
+import { DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
+export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
 var gConfig = AppConfig();
 
 export default {
@@ -154,6 +162,8 @@ export default {
 		logout() {
 			this.isShowNavbar = false
 			this.$store.dispatch('logout')
+			walletLink.disconnect()
+			ether.disconnect()
 		},
 		showLanguage() {
 			this.isShowNavbar = false

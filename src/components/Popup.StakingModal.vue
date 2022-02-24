@@ -123,7 +123,7 @@ import {
 import {
 	BSC_RPC_ENDPOINT,
 } from '@/features/Common.js'
-import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
+import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_3 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
 
@@ -519,7 +519,7 @@ export default {
 				.catch((e) => {
 					console.log('onStakeNft e', e)
 					this.mxCloseLoading()
-					this.mxShowToast(e.message)
+					this.mxShowToast(MSG_METAMASK_3)
 					// this.onGetNftowner(this.isErc1155)
 				})
 		},

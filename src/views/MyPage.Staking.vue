@@ -86,7 +86,11 @@ import {
 	MATIC_ADDRESS_721,
 	MATIC_ADDRESS_1155,
 } from '@/features/Common.js'
-import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
+import {
+	MSG_METAMASK_1,
+	MSG_METAMASK_2,
+	MSG_METAMASK_4,
+} from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 
 import {
@@ -337,12 +341,20 @@ export default {
 					address721: this.address721,
 					address1155: this.address1155,
 					onStakingSuccess: () =>
-						this.onGetNftsStaked(this.poolDuration.id),
+						this.onStakingSuccess(this.poolDuration.id),
 				}
 				this.mxShowStakingModal(stakingData)
 			}
 		},
-
+		onStakingSuccess(campaignId) {
+			this.onGetNftsStaked(campaignId)
+			this.getCampaignInfo(campaignId)
+			this.onGetNftsStaked(campaignId)
+			this.getTotalMiningHashRate(campaignId)
+			this.getMyMiningHashRate(campaignId)
+			this.getTotalStaked(campaignId)
+			this.getMyStaked(campaignId)
+		},
 		async getAccounts() {
 			try {
 				let acc = await window.ethereum.request({
@@ -366,8 +378,7 @@ export default {
 				if (response.status === 200 && response.data.total_staked) {
 					this.totalStakedLand =
 						response.data?.total_staked?.toString()
-				}
-				else{
+				} else {
 					this.totalStakedLand = '0'
 				}
 			} catch (err) {
@@ -386,8 +397,7 @@ export default {
 			)
 			if (response.status === 200 && response.data.totalStaked) {
 				this.myStakedLand = response.data?.totalStaked?.toString()
-			}
-			else{
+			} else {
 				this.myStakedLand = '0'
 			}
 		},
@@ -520,7 +530,7 @@ export default {
 		},
 		async onGetHashRate(is_ERC1155, nft_id, idx) {
 			try {
-				const nft = this.listNftsStake[idx]	
+				const nft = this.listNftsStake[idx]
 				//cal API
 				const search = is_ERC1155 ? '1155' : '721'
 				const response = await axios.get(
@@ -613,7 +623,7 @@ export default {
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
 					this.mxCloseLoading()
-					this.onGetNftsStaked(this.poolDuration.id)
+					this.onStakingSuccess(this.poolDuration.id)
 					this.mxCloseConfirmModal()
 					if (unLockAll) {
 						this.onUnStakeAllNftsSuccess()
@@ -624,7 +634,7 @@ export default {
 				.catch((e) => {
 					this.mxCloseLoading()
 					console.log('onUnStakeNfts e', e)
-					this.mxShowToast(e.message)
+					this.mxShowToast(MSG_METAMASK_4)
 					this.mxCloseConfirmModal()
 				})
 		},

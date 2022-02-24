@@ -78,17 +78,16 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
-import WalletLink  from 'walletlink'
+import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
 
-const walletLink = new WalletLink({
+import WalletLink  from 'walletlink'
+export const walletLink = new WalletLink({
 	appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-const DEFAULT_ETH_JSONRPC_URL = 'https://mainnet.infura.io/v3/14ff3a7ed1484486aac3e5573bcae20d'
-const DEFAULT_CHAIN_ID = 1
-const ethereum = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+
 export default {
 	name: "Register",
 	components: {
@@ -287,7 +286,7 @@ export default {
 			return rv;
 		},
 		async sinUpWithCoinbase(){
-			ethereum.enable().then((accounts) => {
+			ether.enable().then((accounts) => {
   		if(!accounts){
 				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
 			}

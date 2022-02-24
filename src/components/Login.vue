@@ -113,16 +113,15 @@ import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import { BRIDGE_WALLETCONNECT } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
-const walletLink = new WalletLink({
+export const walletLink = new WalletLink({
 	appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-const DEFAULT_ETH_JSONRPC_URL = 'https://mainnet.infura.io/v3/14ff3a7ed1484486aac3e5573bcae20d'
-const DEFAULT_CHAIN_ID = 1
-const ethereum = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+
+export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
 
 export default {
 	mounted() {
@@ -232,7 +231,6 @@ export default {
 
 		connect() {
 			console.log("[Login] connect metamask account");
-
 			wAPI.checkMetamask().then((rv)=>{
 				if(rv != 'NONE') {
 					wAPI.Request_Account((resp) => {
@@ -257,7 +255,7 @@ export default {
 
 		},
 		async connectCoinbase(){
-		await ethereum.enable().then((accounts) => {
+			await ether.enable().then((accounts) => {
 			if (accounts) {
 					this.reqLogin({ wallet_addr: accounts[0] })
 				} else if (error) {
