@@ -1,5 +1,5 @@
 <template>
-	<div class="tab-menu">
+	<div v-if="!isMobile" class="tab-menu">
 		<div
 			class="tab"
 			:class="{ active: poolDuration.id === 1 }"
@@ -22,26 +22,53 @@
 			90 days
 		</div>
 	</div>
+	<div v-else class="select-tab">
+		<select @change="setPoolDuration($event.target.value)" name="tab">
+			<option v-for="item in listId" :value="item.id" :key="item.id">
+				{{ item.name }}
+			</option>
+		</select>
+	</div>
 </template>
 
 <script>
 export default {
 	name: 'StakingTab',
-	
+
 	props: {
-		poolDuration:{
-			type: Object
-		}
+		poolDuration: {
+			type: Object,
+		},
 	},
 	data() {
-		return{
+		return {
 			// duration: this.poolDuration
+			isMobile: false,
+			listId: [
+				{
+					id: 1,
+					name: '30 days',
+				},
+				{
+					id: 2,
+					name: '60 days',
+				},
+				{
+					id: 3,
+					name: '90 days',
+				},
+			],
 		}
 	},
-	
+	mounted() {
+		this.checkMobile()
+	},
 	methods: {
 		setPoolDuration: function (value) {
-			this.poolDuration.id = value
+			this.poolDuration.id = value;
+		},
+		checkMobile() {
+			this.isMobile = window.matchMedia('(max-width: 768px)').matches
 		},
 	},
 }
@@ -60,6 +87,16 @@ export default {
 		&.active,
 		&:hover {
 			background: #2a2932;
+		}
+	}
+}
+
+@include media-max($media_small) {
+	.select-tab {
+		text-align: right;
+		padding: 0 gREm(20) gREm(32);
+		select {
+			color: #F6583E;
 		}
 	}
 }

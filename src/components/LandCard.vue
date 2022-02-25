@@ -265,4 +265,40 @@ export default {
 		}
 	}
 }
+@include media-max($media_small) {
+	.land-card {
+		width: 100%;
+		max-width: 100%;
+		margin-bottom: gREm(15);
+
+		.image {
+			width: 100%;
+		}
+
+		.line {
+			margin-bottom: gREm(8);
+			margin-top: gREm(32);
+		}
+
+		.card-title {
+			margin-top: gREm(8);
+		}
+
+		.bottom {
+			margin-bottom: gREm(8);
+			.left {
+				@include Set-Font($AppFont, gREm(14), gREm(24), #777682, 200);
+			}
+
+			.erc-type {
+				width: auto;
+				padding: gREm(1) gREm(10);
+			}
+
+			span:last-child:not(.erc-type) {
+				font-size: gREm(14);
+			}
+		}
+	}
+}
 </style>

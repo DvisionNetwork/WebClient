@@ -402,4 +402,72 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) {
+	.Profile {
+		.content-box-wrap {
+			.content-box {
+				margin-top: gREm(40);
+				flex-direction: column;
+				align-items: center;
+				width: 100%;
+
+				.info-box {
+					margin-left: 0;
+					padding: 0 gREm(20);
+					width: 100%;
+
+					.user-box {
+						.user-email,
+						.user-referral {
+							margin-top: gREm(24);
+						}
+					}
+
+					.DVI-box {
+						margin-top: gREm(60);
+					}
+
+					.wallet-box-wrap {
+						.wallet-code-box {
+							.code-bg {
+								.code-box {
+									.code {
+										width: 100%;
+										max-width: 100%;
+										overflow-x: auto;
+										padding: gREm(16) gREm(30);
+										@include Set-Font(
+											$AppFont,
+											gREm(16),
+											gREm(24),
+											rgba(255, 255, 255, 0.4),
+											200
+										);
+										height: 100%;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.profile-image-box {
+					.edit-profile-btn {
+						@include Set-Font(
+							$AppFont,
+							gREm(14),
+							gREm(22),
+							#ffffff,
+							200
+						);
+						width: 100%;
+						padding: gREm(20) 0;
+						opacity: 0.7;
+					}
+				}
+			}
+		}
+	}
+}
 </style>
