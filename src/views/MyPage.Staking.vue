@@ -341,7 +341,9 @@ export default {
 					address721: this.address721,
 					address1155: this.address1155,
 					onStakingSuccess: () =>
-						this.onStakingSuccess(this.poolDuration.id),
+						setTimeout(() => {
+							this.onStakingSuccess(this.poolDuration.id)
+						}, 1000),
 				}
 				this.mxShowStakingModal(stakingData)
 			}
@@ -633,8 +635,13 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					console.log('onUnStakeNfts e', e)
-					this.mxShowToast(MSG_METAMASK_4)
+					console.log('onUnStakeNfts e', e.code + ' ' + e.message)
+					if (e.code === 4001) {
+						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_4)
+					}
+
 					this.mxCloseConfirmModal()
 				})
 		},
