@@ -452,7 +452,7 @@ export default {
 				.catch((e) => {
 					this.mxCloseLoading()
 					this.hadUnderstand = false
-					this.mxShowToast(e.message)
+					this.mxShowToast(MSG_METAMASK_3)
 				})
 		},
 
@@ -477,7 +477,7 @@ export default {
 				.catch((e) => {
 					this.hadUnderstand = false
 					this.mxCloseLoading()
-					this.mxShowToast(e.message)
+					this.mxShowToast(MSG_METAMASK_3)
 				})
 		},
 
