@@ -120,10 +120,12 @@ import {
 	renderSuccessContent,
 	renderSwitchNftContent,
 } from '@/data/RenderContent.js'
+import { BSC_RPC_ENDPOINT } from '@/features/Common.js'
 import {
-	BSC_RPC_ENDPOINT,
-} from '@/features/Common.js'
-import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_3 } from '@/features/Messages.js'
+	MSG_METAMASK_1,
+	MSG_METAMASK_2,
+	MSG_METAMASK_3,
+} from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
 
@@ -382,7 +384,9 @@ export default {
 			this.mxShowLoading()
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: collection ? this.data.address1155 : this.data.address721,
+				collectionAddress: collection
+					? this.data.address1155
+					: this.data.address721,
 				chainId: this.data.chainId,
 			}
 			const response = await axios.get(
@@ -452,7 +456,11 @@ export default {
 				.catch((e) => {
 					this.mxCloseLoading()
 					this.hadUnderstand = false
-					this.mxShowToast(MSG_METAMASK_3)
+					if (e.code === 4001) {
+						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_3)
+					}
 				})
 		},
 
@@ -477,7 +485,11 @@ export default {
 				.catch((e) => {
 					this.hadUnderstand = false
 					this.mxCloseLoading()
-					this.mxShowToast(MSG_METAMASK_3)
+					if (e.code === 4001) {
+						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_3)
+					}
 				})
 		},
 
@@ -517,9 +529,13 @@ export default {
 					this.onStakingSuccess()
 				})
 				.catch((e) => {
-					console.log('onStakeNft e', e)
+					console.log('onStakeNft e', e.code)
 					this.mxCloseLoading()
-					this.mxShowToast(MSG_METAMASK_3)
+					if (e.code === 4001) {
+						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_3)
+					}
 					// this.onGetNftowner(this.isErc1155)
 				})
 		},
