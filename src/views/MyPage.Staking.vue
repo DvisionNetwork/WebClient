@@ -746,6 +746,34 @@ export default {
 		.contents {
 			margin-left: unset;
 			max-width: unset;
+
+			.title {
+				padding: 0 gREm(20);
+			}
+
+			.staked-land {
+				flex-direction: column;
+				height: 100%;
+				gap: gREm(16);
+				align-items: flex-start;
+				padding: 0 gREm(20);
+				h2 {
+					@include Set-Font($AppFont, gREm(22), gREm(32), #ffffff, 600);
+				}
+
+				.unlock-lands {
+					@include Set-Font($AppFont, gREm(16), gREm(24), #ffffff, 200);
+				}
+			}
+
+			.list-card {
+				padding: 0 gREm(20);
+				width: 100%;
+				.add-land {
+					width: 100%;
+					max-width: 100%;
+				}
+			}
 		}
 	}
 }

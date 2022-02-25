@@ -3,7 +3,16 @@
 		<div class="modal-mask">
 			<div class="modal-wrapper">
 				<div class="modal-container">
-					<div class="title">Staking: Add LAND(s)</div>
+					<div class="modal-header">
+						<div class="title">Staking: Add LAND(s)</div>
+						<button class="modal-close-btn">
+							<img
+								src="../assets/img/Close.svg"
+								alt="close"
+								@click="closePopup"
+							/>
+						</button>
+					</div>
 					<div class="search">
 						<img
 							class="ic-search"
@@ -800,5 +809,69 @@ export default {
 .modal-leave-active .modal-container {
 	-webkit-transform: scale(1.1);
 	transform: scale(1.1);
+}
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				padding: gREm(32) gREm(20);
+				margin: 0;
+				width: 100%;
+				max-width: 100vw;
+				max-height: 100vh;
+				height: 100vh;
+				top: gREm(160);
+
+				.modal-header {
+					display: flex;
+					justify-content: space-between;
+					.title {
+						@include Set-Font(
+							$AppFont,
+							gREm(22),
+							gREm(32),
+							#ffffff,
+							600
+						);
+					}
+				}
+
+				.search {
+					flex-wrap: wrap;
+					gap: gREm(10);
+					height: auto;
+					input {
+						width: 57%;
+						padding: gREm(14) gREm(16) gREm(14) gREm(34);
+					}
+
+					.erc {
+						width: 40%;
+					}
+
+					.fill {
+						width: 100%;
+					}
+
+					.erc,
+					.fill {
+						@include Set-Font(
+							$AppFont,
+							gREm(14),
+							gREm(44),
+							#ffffff,
+							200
+						);
+					}
+				}
+
+				.desc {
+					color: #777682;
+					line-height: gREm(24);
+				}
+			}
+		}
+	}
 }
 </style>

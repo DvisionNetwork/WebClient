@@ -294,4 +294,59 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				max-width: 100vw;
+				width: 100%;
+				margin: 0;
+
+				.title {
+					@include Set-Font(
+						$AppFont,
+						gREm(22),
+						gREm(32),
+						#ffffff,
+						600
+					);
+					white-space: pre-wrap;
+				}
+
+				.desc {
+					line-height: gREm(24);
+				}
+
+				.box-image {
+					img {
+						width: 100%;
+					}
+					div {
+						width: 100%;
+						@include Set-Font(
+							$AppFont,
+							gREm(16),
+							gREm(24),
+							#ffffff,
+							500
+						);
+						white-space: pre-wrap;
+					}
+				}
+
+				.btn-bottom {
+					.btn-confirm,
+					.btn-cancel {
+						font-size: gREm(14);
+						width: auto;
+						height: auto;
+						padding: gREm(13) gREm(30);
+						line-height: gREm(22);
+					}
+				}
+			}
+		}
+	}
+}
 </style>
