@@ -245,14 +245,15 @@ export default {
 					})
 			}
 		},
-		checkNetwork(chainId) {
+		checkNetwork() {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			if (
-				chainId === networkBSC ||
-				chainId === networkPoygon ||
-				chainId === networkETH
+				currentNetwork === networkBSC ||
+				currentNetwork === networkPoygon ||
+				currentNetwork === networkETH
 			) {
 				return true
 			} else {
@@ -270,6 +271,7 @@ export default {
 				method: 'eth_chainId',
 			})
 			this.current_network = chainId
+			window.localStorage.setItem('currentNetwork', chainId)
 			this.setStakingAddress(chainId)
 		},
 		async getCurrentAddress() {
@@ -343,7 +345,7 @@ export default {
 					onStakingSuccess: () =>
 						setTimeout(() => {
 							this.onStakingSuccess(this.poolDuration.id)
-						}, 1000),
+						}, 2000),
 				}
 				this.mxShowStakingModal(stakingData)
 			}
@@ -351,7 +353,6 @@ export default {
 		onStakingSuccess(campaignId) {
 			this.onGetNftsStaked(campaignId)
 			this.getCampaignInfo(campaignId)
-			this.onGetNftsStaked(campaignId)
 			this.getTotalMiningHashRate(campaignId)
 			this.getMyMiningHashRate(campaignId)
 			this.getTotalStaked(campaignId)
@@ -567,6 +568,9 @@ export default {
 				buttonTxt: 'OK',
 				isShow: true,
 			}
+			setTimeout(() => {
+				this.onStakingSuccess(this.poolDuration.id)
+			}, 2000);
 			this.mxShowSuccessModal(obj)
 		},
 
@@ -579,10 +583,17 @@ export default {
 				buttonTxt: 'OK',
 				isShow: true,
 			}
+			setTimeout(() => {
+				this.onStakingSuccess(this.poolDuration.id)
+			}, 2000);
 			this.mxShowSuccessModal(obj)
 		},
 
 		onCheckItemUnStakeModalConfirm(nftId, is_ERC1155, locked, name) {
+			if (!this.checkNetwork()) {
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			}
 			let params = {
 				erc721TokenIds: is_ERC1155 ? [] : [nftId],
 				erc1155TokenIds: is_ERC1155 ? [nftId] : [],
@@ -605,7 +616,7 @@ export default {
 				this.mxCloseConfirmModal()
 				return
 			}
-			if (!this.checkNetwork(this.current_network)) {
+			if (!this.checkNetwork()) {
 				this.mxCloseConfirmModal()
 				return
 			}
@@ -635,7 +646,6 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					console.log('onUnStakeNfts e', e.code + ' ' + e.message)
 					if (e.code === 4001) {
 						this.mxShowToast(e.message)
 					} else {
