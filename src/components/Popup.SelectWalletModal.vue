@@ -131,4 +131,15 @@ export default {
 		@include OnOverTransition();
 	}
 }
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			padding: 0 gREm(20);
+			.modal-container {
+				width: 100%;
+			}
+		}
+	}
+}
 </style>

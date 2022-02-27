@@ -585,4 +585,43 @@ export default {
 	}
 
 }
+
+@include media-max($media_small) { // 768
+	.Register {
+		.title-box {
+			height: 100%;
+			margin-bottom: gREm(32);
+		}
+		.register-box {
+			.frm_signup {
+				.field-set {
+					flex-direction: column;
+				}
+
+				.wallet-info {
+					margin-top: 0;
+
+					.title,
+					.title-desc {
+						white-space: pre-wrap;
+					}
+
+					.title-desc {
+						font-size: gREm(16);
+						line-height: gREm(24);
+
+						span {
+							color: red;
+						}
+					}
+				}
+			}
+		}
+
+		.button-box {
+			width: 100%;
+			margin-top: gREm(16);
+		}
+	}
+}
 </style>
