@@ -754,26 +754,65 @@ export default {
 	.field-set[popup-style="signup-register"] {
 		width:100%;
 		height: auto;
+		margin-bottom: gREm(32);
 		.label {
 			// width: gREm(109+50);
 			width: auto;
 			height: gREm(30);
-			@include Set-Font($AppFont, gREm(15), gREm(30), #1d1f2a,300);
+			@include Set-Font($AppFont, gREm(16), gREm(30), #1d1f2a,300);
 		}
 		.field-box-wrap {
-			width: gREm(300);
-			height: gREm(30 + 11 + 2);
+			width: 100%;
+			height: auto;
+			gap: gREm(12);
 			.field-box {
-				@include FLEX(space-between, center);
-				width: gREm(300);
+				// @include FLEX(space-between, center);
+				width: 100%;
 				height: gREm(30);
-				padding-left: gREm(20);
+				padding-left: 0;
+				display: block;
+				height: auto;
 				.field {
-					width: gREm(550);
+					width: 100%;
+					border-bottom: 1px solid #dedede;
+					font-size: gREm(14);
+					padding: 0 gREm(16);
+
+					&:focus {
+						border-bottom: 2px solid #6c38ef;
+					}
 				}
 				.field::placeholder {
 					color: transparent;
 				}
+
+				.field-right {
+					position: static;
+					height: auto;
+					padding: 0;
+					flex-direction: column;
+					align-items: flex-start;
+					margin-top: gREm(12);
+
+					.field-button {
+						margin-left: 0;
+						padding: gREm(12) gREm(30);
+						height: auto;
+						font-size: gREm(16);
+						line-height: gREm(24);
+						margin-top: gREm(12);
+					}
+
+					.field-error {
+						width: 100%;
+					}
+				}
+			}
+
+			.h-bar {
+				position: absolute;
+				top: 50%;
+				display: none;
 			}
 		}
 	}

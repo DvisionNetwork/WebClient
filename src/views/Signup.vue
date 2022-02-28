@@ -104,4 +104,15 @@ export default {
 	}
 
 }
+
+@include media-max($media_small) { // 768
+	.Signup {
+		padding: gREm(20);
+
+		.content-box {
+			width: 100%;
+			padding-top: gREm(40);
+		}
+	}
+}
 </style>
