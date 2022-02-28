@@ -2,19 +2,14 @@
 	<transition name="modal">
 		<div class="modal-mask">
 			<div class="modal-wrapper">
-				<div
-					class="modal-container"
-					:style="{ width: data.width }"
-				>
+				<div class="modal-container" :style="{ width: data.width }">
 					<div class="title">{{ data.title }}</div>
 					<div class="desc" v-html="data.content"></div>
 					<div class="btn-bottom">
 						<div class="btn-confirm" @click="data.onClick">
 							{{ data.buttonTxt }}
 						</div>
-						<div class="btn-cancel" @click="closePopup">
-							Cancel
-						</div>
+						<div class="btn-cancel" @click="closePopup">Cancel</div>
 					</div>
 				</div>
 			</div>
@@ -103,7 +98,7 @@ export default {
 					letter-spacing: 0em;
 					text-align: center;
 					color: #f6583e;
-					border:1px solid #f6583e;
+					border: 1px solid #f6583e;
 					border-radius: gREm(10);
 					display: flex;
 					align-items: center;
@@ -132,6 +127,44 @@ export default {
 					cursor: pointer;
 					&:hover {
 						background: #db4028;
+					}
+				}
+			}
+		}
+	}
+}
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				max-width: 100vw;
+				width: 100%;
+				margin: 0;
+
+				.title {
+					@include Set-Font(
+						$AppFont,
+						gREm(22),
+						gREm(32),
+						#ffffff,
+						600
+					);
+					white-space: pre-wrap;
+				}
+
+				.desc {
+					line-height: gREm(24);
+				}
+
+				.btn-bottom {
+					.btn-confirm,
+					.btn-cancel {
+						font-size: gREm(14);
+						width: auto;
+						height: auto;
+						padding: gREm(13) gREm(30);
+						line-height: gREm(22);
 					}
 				}
 			}

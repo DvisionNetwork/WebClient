@@ -100,4 +100,21 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) {
+	.add-land {
+		border: 1px solid rgba(255, 255, 255, 0.7);
+		border-radius: gREm(8);
+		padding: gREm(24);
+		.add {
+			width: 100%;
+		}
+
+		.bottom {
+			.left {
+				@include Set-Font($AppFont, gREm(14), gREm(24), #777682, 200);
+			}
+		}
+	}
+}
 </style>

@@ -103,4 +103,35 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				max-width: 100vw;
+				width: 100%;
+				margin: 0;
+
+				.title {
+					@include Set-Font(
+						$AppFont,
+						gREm(22),
+						gREm(32),
+						#ffffff,
+						600
+					);
+					white-space: pre-wrap;
+				}
+
+				.desc {
+					line-height: gREm(24);
+				}
+
+				.btn-success {
+					font-size: gREm(14);
+				}
+			}
+		}
+	}
+}
 </style>

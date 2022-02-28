@@ -201,8 +201,62 @@ export default {
 }}
 
 @include media-max($media_small) {
-.MyPage .content-body-wrap {
-		width: 100%;
+	.MyPage {
+		.content-body-wrap {
+			width: 100%;
+			margin-top: 0;
+
+			.tabs {
+				width: 100%;
+				margin-top: 0;
+				align-items: center;
+				overflow-x: auto;
+				overscroll-behavior: contain;
+				overflow-y: hidden;
+				height: 100%;
+				padding-bottom: gREm(20);
+
+				.item {
+					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
+					display: flex;
+					align-items: center;
+					margin-right: gREm(16);
+					border: 1px solid #777682;
+					border-radius: gREm(8);
+					padding: gREm(25) gREm(30);
+
+					&[selected='true'] {
+						border: 2px solid #f6583e;
+
+						&:after {
+							background: none;
+						}
+					}
+
+					&:first-child {
+						margin-left: gREm(20);
+					}
+
+					&:last-child {
+						margin-right: gREm(20);
+					}
+				}
+
+			}
+			.tab-line {
+				display: none;
+			}
+			.content-box {
+				.Profile {
+					.content-box-wrap {
+						.content-box {
+							margin-top: gREm(40);
+							flex-direction: column;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 </style>
