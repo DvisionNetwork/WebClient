@@ -821,7 +821,6 @@ export default {
 				max-width: 100vw;
 				max-height: 100vh;
 				height: 100vh;
-				top: gREm(160);
 
 				.modal-header {
 					display: flex;
@@ -869,6 +868,42 @@ export default {
 				.desc {
 					color: #777682;
 					line-height: gREm(24);
+				}
+
+				.line {
+					display: none;
+				}
+
+				.bottom {
+					flex-direction: column;
+					bottom: gREm(50);
+					background: #181721;
+					width: 100%;
+					padding: gREm(20);
+					position: absolute;
+					margin-left: gREm(-20);
+
+					.bottom-left {
+						align-items: flex-start;
+						gap: gREm(16);
+						margin-bottom: gREm(32);
+
+						span {
+							line-height: gREm(24);
+						}
+					}
+
+					.bottom-right {
+						.btn-stake,
+						.btn-cancel {
+							border-radius: gREm(6);
+							padding: gREm(13) gREm(30);
+							line-height: gREm(22);
+							font-size: gREm(14);
+							width: auto;
+							height: auto;
+						}
+					}
 				}
 			}
 		}
