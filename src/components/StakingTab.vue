@@ -65,7 +65,7 @@ export default {
 	},
 	methods: {
 		setPoolDuration: function (value) {
-			this.poolDuration.id = value;
+			this.poolDuration.id = +value;
 		},
 		checkMobile() {
 			this.isMobile = window.matchMedia('(max-width: 768px)').matches
@@ -96,7 +96,10 @@ export default {
 		text-align: right;
 		padding: 0 gREm(20) gREm(32);
 		select {
+			font-size: gREm(16);
+			line-height: gREm(24);
 			color: #F6583E;
+			font-family: $AppFont;
 		}
 	}
 }

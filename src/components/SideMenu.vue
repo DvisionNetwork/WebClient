@@ -506,4 +506,65 @@ export default {
 // 		}
 // 	}
 // }
+
+@include media-max($media_small) {
+	// 768
+	.sub-menu-1 {
+		.menu-1 {
+			height: auto;
+			.title {
+				font-size: gREm(16);
+				font-weight: 700;
+				padding: 0;
+			}
+
+			&:hover {
+				background-color: unset;
+				.title {
+					color: #ffd041;
+				}
+			}
+		}
+
+		.sub-menu-2 {
+			.menu-2 {
+				padding: 0;
+				.title {
+					font-size: gREm(16);
+					font-weight: 700;
+				}
+				&:hover {
+					background-color: unset;
+					.title {
+						color: #ffd041;
+					}
+				}
+			}
+
+			.sub-menu-3 {
+				padding-left: 0;
+				.menu-3 {
+					padding-left: 0;
+				}
+			}
+			&:after {
+				background-color: #ffffff;
+				opacity: 0.2;
+				margin: gREm(24) 0;
+			}
+		}
+
+		&[active='on'][menu-name='all-assets'][all-asset-selected='on'] {
+			.menu-1 {
+				background-color: unset;
+			}
+		}
+
+		&:after {
+			background-color: #ffffff;
+			opacity: 0.2;
+			margin: gREm(24) 0;
+		}
+	}
+}
 </style>

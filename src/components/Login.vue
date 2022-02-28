@@ -608,4 +608,15 @@ export default {
 	-webkit-transform: scale(1.1);
 	transform: scale(1.1);
 }
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				width: 100%;
+				max-width: 90vw;
+			}
+		}
+	}
+}
 </style>

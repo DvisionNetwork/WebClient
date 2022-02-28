@@ -185,4 +185,53 @@ export default {
 // 	box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2),
 // 		0 1px 15px 0 rgba(0, 0, 0, 0.19);
 // }
+
+@include media-max($media_small) {
+	.product-card {
+		height: auto;
+		margin-top: gREm(24);
+		margin-bottom: 0;
+		.level-box {
+			padding: 0 gREm(20);
+			margin-top: gREm(15);
+			margin-bottom: gREm(28);
+
+			.leveltag {
+				padding: gREm(4) gREm(10);
+				font-size: gREm(16);
+				line-height: gREm(24);
+				height: auto;
+				margin-right: gREm(15);
+			}
+			.amount-level {
+				font-size: gREm(14);
+				line-height: gREm(22);
+				height: auto;
+			}
+		}
+		.image {
+			width: gREm(190);
+			height: gREm(190);
+		}
+
+		.regularimage {
+			height: gREm(57);
+		}
+
+		.desc-box {
+			margin-top: gREm(57);
+			.price-box {
+				.marketimage {
+					width: gREm(18);
+					height: gREm(19);
+				}
+				.desc-price {
+					font-size: gREm(18);
+					line-height: gREm(26);
+					height: auto;
+				}
+			}
+		}
+	}
+}
 </style>

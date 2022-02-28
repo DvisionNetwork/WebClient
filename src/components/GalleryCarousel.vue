@@ -54,7 +54,7 @@
 					:card-id="card.id"
 					@click="onClickCard(card.ext_link)"
 				>
-					<div class="img-box" :style="mxGetBgImageStyle(card.thumbnail)"></div>
+					<div class="img-box" :style="renderBgImage(card.thumbnail)"></div>
 					<ul class="desc-box">
 						<li class="title">
 							{{ card.title }}
@@ -209,6 +209,17 @@ export default {
 		},
 		clickMore() {
 			console.log("[GalleryCarousel.vue] onclickMore() ");
+		},
+		renderBgImage(thumbnail) {
+			const isMobile = window.matchMedia('(max-width: 768px)').matches;
+			if (!isMobile) {
+				return this.mxGetBgImageStyle(thumbnail)
+			}
+			return {
+				'background-image': `url(${thumbnail})`,
+				'background-repeat': 'no-repeat',
+				'background-position': 'center'
+			}
 		}
 	},
 }
@@ -584,4 +595,58 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) {
+	.gallery-carousel {
+		.title-box {
+			width: 100%;
+			text-align: center;
+			.news-title {
+				font-size: gREm(36);
+				width: 100%;
+				margin-top: gREm(72);
+			}
+		}
+		.gc-wrap-1500 {
+			padding: 0 gREm(20);
+
+			.slide-box {
+				margin-top: gREm(56);
+				width: 100%;
+
+				.card-box {
+					width: 100%;
+					height: auto;
+					margin: 0;
+					margin-bottom: gREm(48);
+
+					.img-box {
+						background-size: cover;
+						border-radius: gREm(8);
+						object-fit: unset;
+					}
+
+					.desc-box {
+						width: 100%;
+						height: auto;
+
+						.title {
+							height: auto;
+							line-height: gREm(26);
+						}
+
+						.description {
+							height: auto;
+							width: 100%;
+							overflow: visible;
+							font-size: gREm(16);
+							line-height: gREm(24);
+							display: block;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 </style>
