@@ -206,9 +206,11 @@ export default {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
-		ethereum.on('chainChanged', (chainId) => {
+		if(ethereum) {
+			ethereum.on('chainChanged', (chainId) => {
 			this.checkNetwork(chainId)
 		})
+		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
 			Scrollbar.use(myPlugin);
 			this.scrollbar = Scrollbar.init(_U.Q('#content'));
