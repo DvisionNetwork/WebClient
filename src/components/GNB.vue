@@ -115,8 +115,8 @@ export const walletLink = new WalletLink({
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-import { DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
-export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
+export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 var gConfig = AppConfig();
 
 export default {
@@ -162,8 +162,7 @@ export default {
 		logout() {
 			this.isShowNavbar = false
 			this.$store.dispatch('logout')
-			walletLink.disconnect()
-			ether.disconnect()
+			this.mxSetWallet({});
 		},
 		showLanguage() {
 			this.isShowNavbar = false

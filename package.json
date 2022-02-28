@@ -10,6 +10,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
     "@walletconnect/client": "^1.7.1",
     "@walletconnect/qrcode-modal": "^1.7.1",
     "ant-design-vue": "^1.7.8",

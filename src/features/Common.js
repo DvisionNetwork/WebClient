@@ -1,7 +1,6 @@
 
 
 export const DEFAULT_ETH_JSONRPC_URL = 'https://mainnet.infura.io/v3/14ff3a7ed1484486aac3e5573bcae20d'
-export const DEFAULT_CHAIN_ID = 97
 
 export function toFixedDecimal(val, decimals = 18) {
   val = String(val);

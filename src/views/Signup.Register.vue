@@ -78,7 +78,7 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
 
 import WalletLink  from 'walletlink'
 export const walletLink = new WalletLink({
@@ -86,7 +86,7 @@ export const walletLink = new WalletLink({
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 
 export default {
 	name: "Register",

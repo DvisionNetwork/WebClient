@@ -15,6 +15,7 @@ async checkMetamask() {
 
 	var network = 'NONE';
 	var addr = gConfig.wlt.getAddr();
+	var ethaddr = gConfig.wlt.getEthAddr();
 	var bscAddr = gConfig.wlt.getBscAddr();
 	var polygonAddr = gConfig.wlt.getPolygonAddr();
 
@@ -25,7 +26,7 @@ async checkMetamask() {
 			var chainId = await ethereum.request({method :'eth_chainId'});
 			console.log("chain Id : " + chainId);
 
-			if(chainId === addr.Network) {
+			if(chainId === addr.Network || chainId === ethaddr.Network) {
 				// console.log("ETH network matched");
 				network = 'ETH';
 			}else if(chainId === bscAddr.Network) {

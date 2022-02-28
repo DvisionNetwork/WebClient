@@ -17,7 +17,7 @@
 							<div class="welcome">{{$t('login.popup.welcome-msg')}}</div>
 							<div class="popup-title">{{$t('login.popup.title')}}</div>
 
-							<BaseButton type="button" class="connectbtn g-btn" @click="connect">
+							<BaseButton type="button" class="connectbtn g-btn" @click="connectMetamask">
 								{{$t('login.popup.btn-connect')}}
 							</BaseButton>
 
@@ -113,15 +113,14 @@ import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-
-export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID)
+const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 
 export default {
 	mounted() {
@@ -229,7 +228,8 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
-		connect() {
+		connectMetamask() {
+			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			wAPI.checkMetamask().then((rv)=>{
 				if(rv != 'NONE') {
@@ -255,12 +255,14 @@ export default {
 
 		},
 		async connectCoinbase(){
-			await ether.enable().then((accounts) => {
+			const rv = await wAPI.checkMetamask()
+			ether.enable().then((accounts) => {
 			if (accounts) {
-					this.reqLogin({ wallet_addr: accounts[0] })
+					wAPI.Sign_Account(accounts[0], this.reqLogin);
+					this.mxSetNetwork(rv);
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
-				}
+			}
 		})
 		},
 		async connectWalletConnect() {
