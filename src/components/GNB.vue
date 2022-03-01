@@ -115,7 +115,8 @@ export const walletLink = new WalletLink({
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
   darkMode: false
 })
-import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
+import WalletConnect from '@walletconnect/client'
+import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, BRIDGE_WALLETCONNECT } from '@/features/Common.js'
 export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 var gConfig = AppConfig();
 
@@ -190,6 +191,11 @@ export default {
 			this.isShowNavbar = false
 		},
 		logout() {
+			const bridge = BRIDGE_WALLETCONNECT
+			const connector = new WalletConnect({
+				bridge
+			})
+			connector.killSession()
 			var userInfo = {};
 			this.isShowNavbar = false
 			this.isShowAccountMenu = false;
