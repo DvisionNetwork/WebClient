@@ -1,7 +1,11 @@
 <template>
 
 	<div class="side-menu">
-		<SimpleSideMenu :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
+		<SimpleSideMenu
+			v-if="!isMobile"
+			:sideMenu="landMenu"
+			@selection-changed="onChangeSideMenu"
+		/>
 	</div>
 	<div class="contents">
 		<div class="item-box">
@@ -40,6 +44,15 @@
 						<div class="icon"></div>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="filter">
+			<div class="img-wrapper">
+				<img
+					src="../assets/img/Filter.svg"
+					alt="filter"
+					@click="openInfoModal"
+				/>
 			</div>
 		</div>
 	</div>
@@ -112,6 +125,7 @@ export default {
 		// console.log("[Market.Land.vue] && mounted(), route : ", this.$route);
 		// this.setLandItems(this.searchQuery);
 		this.callLandItemList();
+		this.isMobile = this.checkMobile();
 	},
 	beforeUpdate () {
 		// console.log("[Market.Land.vue] ##### beforeUpdate(), route : ", this.tab_page, this.mapId, this.$route);
@@ -141,7 +155,7 @@ export default {
 
 			search: '',
 			searchInputTimer: null,
-
+			isMobile: false,
 		}
 	},
 	computed: {
@@ -202,6 +216,10 @@ export default {
 			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
 			this.setPages();
 		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu(this.$store.state.dataClickedInfoModal);
+			this.mxCloseInfoModal();
+		}
 	},
 	methods : {
 		// getLandType() {
@@ -390,6 +408,18 @@ export default {
 			// console.log("[Market.Land.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
 
 			this.setSearchQuery(page);
+		},
+		checkMobile() {
+			return window.matchMedia('(max-width: 768px)').matches;
+		},
+		openInfoModal() {
+			const obj = {
+				title: 'Filter',
+				component: SimpleSideMenu,
+				dataComponent: this.landMenu,
+				isShow: true,
+			}
+			this.mxShowInfoModal(obj);
 		},
 	}
 }
@@ -708,4 +738,23 @@ export default {
 .contents  {
 }}
 
+@include media-max($media_small) { // 768
+	.content-box {
+		.filter {
+			width: 100%;
+			height: gREm(80);
+	
+			.img-wrapper {
+				position: absolute;
+				z-index: 11;
+				background: #2A2932;
+				border-radius: 50%;
+				right: gREm(20);
+				padding: gREm(22);
+				bottom: -100%;
+				box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.28);
+			}
+		}
+	}
+}
 </style>

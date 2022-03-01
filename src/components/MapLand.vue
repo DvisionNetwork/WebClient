@@ -599,4 +599,9 @@ export default {
 		}
 	}
 
+@include media-max($media_small) { // 768
+	.item-land-wrap {
+		width: 100%;
+	}
+}
 </style>

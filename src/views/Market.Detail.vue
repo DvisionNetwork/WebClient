@@ -1837,5 +1837,233 @@ export default {
 	}
 }}
 
+@include media-max($media_small) { // 768
+	.Market-Detail {
+		padding: 0 gREm(20);
 
+		.item-land-wrap {
+			width: 100%;
+			height: auto;
+			flex-direction: column;
+
+			.item-info {
+				width: 100%;
+				margin-top: gREm(40);
+
+				.item-title-box {
+					height: auto;
+
+					.item-navi-path {
+						height: auto;
+						.item-category,
+						.item-level {
+							font-size: gREm(16);
+							line-height: gREm(24);
+						}
+					}
+				}
+
+				.item-desc-box {
+					.title-count-box {
+						.name {
+							width: 100%;
+							height: auto;
+							margin-top: gREm(24);
+							white-space: pre-wrap;
+						}
+					}
+				}
+
+				.item-detail-box {
+					margin-top: gREm(24);
+					margin-bottom: 0;
+					width: 100%;
+					
+					.detail-info {
+						width: 100%;
+						height: auto;
+						min-width: unset;
+
+						.description-box,
+						.info {
+							width: 100%;
+						}
+
+						.info {
+							margin-top: gREm(24);
+						}
+
+						.description {
+							font-size: gREm(18);
+						}
+					}
+				}
+			}
+
+			.buy-info {
+				width: 100%;
+				margin-top: gREm(40);
+				border: 1px solid #ffffff;
+				padding: gREm(30);
+				border-radius: gREm(8);
+
+				.buy-box {
+					.buy-button {
+						width: auto;
+						padding: gREm(12) gREm(94.5);
+						height: auto;
+						font-size: gREm(16);
+						line-height: gREm(24);
+					}
+				}
+			}
+		}
+
+		.top-info {
+			height: auto;
+			border: 1px solid #FFFFFF;
+			border-radius: gREm(6);
+
+			.item-img {
+				width: gREm(190);
+				border-radius: gREm(6);
+			}
+
+			&[level="common"] {
+				background-color: rgba(42, 41, 50, 0.7);
+				opacity: 0.7;
+			}
+		}
+
+		.item-info-wrap {
+			height: auto;
+			.item-info {
+				width: 100%;
+
+				.item-title-box {
+					.item-navi-path {
+						margin-top: gREm(40);
+						height: auto;
+						margin-bottom: gREm(24);
+						.item-category {
+							text-transform: capitalize;
+							line-height: gREm(24);
+							color: #a0a0a0;
+						}
+
+						.item-level {
+							font-size: gREm(16);
+						}
+					}
+				}
+
+				.item-desc-box {
+					.title-count-box {
+						flex-direction: column;
+						align-items: flex-start;
+
+						.name {
+							font-size: gREm(36);
+							line-height: gREm(48);
+						}
+
+						.count-image {
+							flex-direction: row;
+							align-items: center;
+							height: auto;
+							width: auto;
+							gap: gREm(8);
+							margin-top: gREm(8);
+
+							.owned,
+							.owned-label {
+								margin-top: 0;
+							}
+						}
+					}
+
+					.description-box {
+						margin-top: gREm(40);
+
+						.label {
+							color: #a0a0a0;
+							width: 100%;
+							height: auto;
+						}
+
+						.description {
+							width: 100%;
+							height: auto;
+							font-size: gREm(18);
+							line-height: gREm(24);
+						}
+					}
+				}
+
+				.item-detail-box {
+					width: 100%;
+					margin-top: gREm(24);
+					flex-direction: column;
+
+					.detail-info {
+						flex-direction: column;
+						align-items: flex-start;
+						height: auto;
+
+						.info:not(:last-child) {
+							margin-bottom: gREm(24);
+
+							.header,
+							.value {
+								height: auto;
+								width: 100%;
+								font-size: gREm(16);
+								line-height: gREm(24);
+							}
+
+							.header {
+								color: #a0a0a0;
+								margin-bottom: gREm(8);
+							}
+
+							.value {
+								margin: 0;
+							}
+						}
+					}
+
+					.buy-info {
+						padding-left: 0;
+						width: 100%;
+						margin-top: gREm(32);
+
+						.count-box {
+							margin-right: 0;
+							width: gREm(136);
+							.icon {
+								width: gREm(32);
+								height: gREm(32);
+							}
+
+							.buy-count {
+								height: auto;
+								padding: 0;
+							}
+						}
+
+						.buy-box {
+							.buy-button {
+								font-size: gREm(14);
+								line-height: gREm(22);
+								width: auto;
+								height: auto;
+								padding: gREm(13) gREm(30);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 </style>

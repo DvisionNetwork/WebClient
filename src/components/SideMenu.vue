@@ -552,6 +552,15 @@ export default {
 				opacity: 0.2;
 				margin: gREm(24) 0;
 			}
+
+			&[is-selected="on"] {
+				.menu-2 {
+					background-color: unset;
+					.title {
+						color: #ffd041;
+					}
+				}
+			}
 		}
 
 		&[active='on'][menu-name='all-assets'][all-asset-selected='on'] {
