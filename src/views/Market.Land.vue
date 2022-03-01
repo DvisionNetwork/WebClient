@@ -977,6 +977,12 @@ export default {
 				width: 100%;
 				height: 50vh;
 				margin-bottom: 0;
+				border: 2px solid #77777E;
+				border-radius: gREm(8);
+
+				#cv-land {
+					border-radius: gREm(8);
+				}
 			}
 
 			.item-box {
@@ -994,9 +1000,18 @@ export default {
 
 				.page-box {
 					margin-top: gREm(40);
+					padding: 0;
 
 					.page-wrap {
 						width: 100%;
+						.page {
+							font-size: gREm(16);
+							line-height: gREm(24);
+
+							&[active="on"] {
+								padding: gREm(10) gREm(19);
+							}
+						}
 					}
 				}
 			}

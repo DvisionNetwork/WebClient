@@ -190,15 +190,18 @@
 		},
 		"meta-space" : {
 			"title":"Meta-Space",
-			"desc": "Acquire your own virtual space inside of the Dvision World. <br>All of your wildest dreams and boldest imaginations can <br>be realized in your tailored virtual space."
+			"desc": "Acquire your own virtual space inside of the Dvision World. <br>All of your wildest dreams and boldest imaginations can <br>be realized in your tailored virtual space.",
+			"desc-mobile": "Acquire your own virtual space inside of the Dvision World. All of your wildest dreams and boldest imaginations can be realized in your tailored virtual space."
 		},
 		"meta-city" : {
 			"title":"Meta-City",
-			"desc": "Meta-City is the wider collection of multiple Meta-Spaces. <br>Various pieces of content are provided inside of the Meta- <br>City. In the Dvision World, Meta-City can be owned by <br>anyone who purchases the NFT Land."
+			"desc": "Meta-City is the wider collection of multiple Meta-Spaces. <br>Various pieces of content are provided inside of the Meta- <br>City. In the Dvision World, Meta-City can be owned by <br>anyone who purchases the NFT Land.",
+			"desc-mobile": "Meta-City is the wider collection of multiple Meta-Spaces. Various pieces of content are provided inside of the Meta-City. In the Dvision World, Meta-City can be owned by anyone who purchases the NFT Land."
 		},
 		"nft-market" : {
 			"title":"NFT Market",
-			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World."
+			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World.",
+			"desc-mobile": "NFT Market is the primary place, where you can trade NFT items inside of the Dvision World. Create and sell your own designed items, that are protected by the ERC-721 or ERC-1155 standards, inside of the Dvision World."
 		}
 	},
 	"market": {

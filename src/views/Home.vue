@@ -73,17 +73,27 @@ export default {
 			cards: [
 				{
 					title: this.$t('home.meta-space.title'),
-					description: this.$t('home.meta-space.desc'),
+					description: this.$t(`home.meta-space.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'meta-space'
 				},
 				{
 					title: this.$t('home.meta-city.title'),
-					description: this.$t('home.meta-city.desc'),
+					description: this.$t(
+						`home.meta-city.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'meta-city'
 				},
 				{
 					title: this.$t('home.nft-market.title'),
-					description: this.$t('home.nft-market.desc'),
+					description: this.$t(`home.nft-market.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'nft-market'
 				},
 			],

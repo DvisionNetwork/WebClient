@@ -132,4 +132,10 @@ export default {
 .red {
 	color: #f6583e;
 }
+
+@include media-max($media_small) {
+	.status {
+		display: block;
+	}
+}
 </style>
