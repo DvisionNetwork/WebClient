@@ -31,3 +31,4 @@ export const BRIDGE_WALLETCONNECT = 'https://bridge.walletconnect.org'
 export const BSC_CHAIN_ID = 97
 export const ETH_CHAIN_ID = 4
 export const MATIC_CHAIN_ID = 80001
+export const FORTMATIC_API_KEY = 'pk_live_8D9F70BA9F518425'
