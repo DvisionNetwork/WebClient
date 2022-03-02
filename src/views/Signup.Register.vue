@@ -351,6 +351,7 @@ export default {
 		},
 
 		sinUpWithMetamask() {
+			ethereum.request({ method: 'eth_requestAccounts' });
 			wAPI.checkMetamask().then((rv) => {
 				if (rv != 'NONE') {
 					wAPI.Request_Account((resp) => {

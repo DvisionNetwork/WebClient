@@ -86,7 +86,34 @@ textarea:focus, input:focus{
 	cursor: pointer;
 	background-image: linear-gradient(235deg, rgb(53,4,355), rgb(159,82,255));
 }
-
+.metamask-btn{
+	@include FLEX(left,center);
+	cursor: pointer;
+	border: 2px solid #F6851B;
+	background: #F6851B1A;
+	color: #F6851B;
+}
+.walletconnect-btn{
+	@include FLEX(left,center);
+	cursor: pointer;
+	border: 2px solid #3B99FC;
+	background: #3B99FC1A;
+	color: #3B99FC;
+}
+.coinbase-btn{
+	@include FLEX(left,center);
+	cursor: pointer;
+	border: 2px solid #0052FF;
+	background: #0052FF1A;
+	color: #0052FF;
+}
+.fortmatic-btn{
+	@include FLEX(left,center);
+	cursor: pointer;
+	border: 2px solid #0052FF;
+	background: #0052FF1A;
+	color: #0052FF;
+}
 .text {
 	// font-family: App-Regular, "Noto Sans KR", sans-serif;
 	display: inline-flex;
