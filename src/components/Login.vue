@@ -39,10 +39,12 @@
 								<span class="text">or</span>
 								<span class="line"></span>
 							</div>
-							<input type="text" class="login-input" placeholder="example@gmail.com" />
-							<div>
-								<input type="password" class="login-input" placeholder="***********" />
-								<img src="../assets/img/ic-eye.svg" alt="">
+							<div class="login-input">
+								<input type="text" placeholder="example@gmail.com" />
+							</div>
+							<div class="login-pwd">
+								<input type="password" placeholder="***********" />
+								<img class="img-eye" src="../assets/img/ic-eye.svg" alt="">
 							</div>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
@@ -452,13 +454,32 @@ export default {
 	width: 100%;
 	height: gREm(733);
 	.login-input{
-		border: 1px solid #E2E2E2;
-		width: gREm(324);
-		height: gREm(48);
-		padding: 0 gREm(32);
-		color: #181721;
-		border-radius: 10px;
-		margin-bottom: gREm(14)
+		margin-bottom: gREm(14);
+		& input{
+			border: 1px solid #E2E2E2;
+			width: gREm(324);
+			height: gREm(48);
+			padding: 0 gREm(32);
+			color: #181721;
+			border-radius: 10px;
+		}
+	}
+	.login-pwd{
+		position: relative;
+		& input{
+			border: 1px solid #E2E2E2;
+			width: gREm(324);
+			height: gREm(48);
+			padding: 0 gREm(32);
+			color: #181721;
+			border-radius: 10px;
+		}
+		& .img-eye {
+			position: absolute;
+			top: 50%;
+			right: gREm(30);
+			transform: translate(-50%, -50%)
+		}
 	}
 	.closebtn {
 		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
