@@ -1965,6 +1965,11 @@ export default {
 						.name {
 							font-size: gREm(36);
 							line-height: gREm(48);
+							white-space: pre-wrap;
+							height: auto;
+							width: 100%;
+							overflow: hidden;
+							text-overflow: ellipsis;
 						}
 
 						.count-image {

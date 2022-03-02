@@ -28,6 +28,7 @@
 				{{ item.name }}
 			</option>
 		</select>
+		<img src="../assets/img/arrow-dropdown.svg" alt="dropdown">
 	</div>
 </template>
 
@@ -93,13 +94,17 @@ export default {
 
 @include media-max($media_small) {
 	.select-tab {
-		text-align: right;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: gREm(10);
 		padding: 0 gREm(20) gREm(32);
 		select {
 			font-size: gREm(16);
 			line-height: gREm(24);
 			color: #F6583E;
 			font-family: $AppFont;
+    	-webkit-appearance: none;
 		}
 	}
 }
