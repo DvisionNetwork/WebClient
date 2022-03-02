@@ -48,7 +48,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="filter">
+		<div class="filter" v-if="isMobile">
 			<div class="img-wrapper">
 				<img src="../assets/img/Filter.svg" alt="filter" @click="openInfoModal">
 			</div>

@@ -776,14 +776,15 @@ export default {
 					width: 100%;
 					border-bottom: 1px solid #dedede;
 					font-size: gREm(14);
-					padding: 0 gREm(16);
+					padding: gREm(16);
+					height: auto;
 
 					&:focus {
 						border-bottom: 2px solid #6c38ef;
 					}
 				}
 				.field::placeholder {
-					color: transparent;
+					color: #A0A0A0;
 				}
 
 				.field-right {
