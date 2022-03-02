@@ -130,7 +130,12 @@ import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, FORTMATIC_API_KEY } from '@/features/Common.js'
+import {
+	BRIDGE_WALLETCONNECT,
+	DEFAULT_ETH_JSONRPC_URL,
+	BSC_CHAIN_ID,
+	FORTMATIC_API_KEY,
+} from '@/features/Common.js'
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
@@ -340,7 +345,7 @@ export default {
 					JSON.stringify(payload.params[0])
 				)
 				if (accounts) {
-					this.reqLogin({ wallet_addr: accounts })
+					this.reqLogin({ wallet_addr: accounts[0] })
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}
