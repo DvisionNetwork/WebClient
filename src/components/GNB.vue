@@ -31,7 +31,7 @@
 								<span class="menu text" @click="login">{{ $t("gnb.login")}}</span>
 								<router-link @click="isShowNavbar=false" class="menu text signup" :active="(currentPage=='Signup' || currentPage=='Signup-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Signup'}"> {{$t("gnb.signup")}} </router-link>
 							</div>
-							<button class="btn g-btn" @click="startNow">{{$t("gnb.start_now")}}</button>
+							<button class="btn g-btn" :class="{'no-login-btn': signed != 'on'}" @click="startNow">{{$t("gnb.start_now")}}</button>
 						</div>
 						<div class="dvs-nav-item">
 							<div class="menu text" @click="isShowLangMenu=!isShowLangMenu">
@@ -673,6 +673,10 @@ export default {
 										@include Set-Font($AppFont, gREm(22), gREm(24), #6c38ef, 600);
 									}
 								}
+
+								.mypage {
+									font-family: $AppFont;
+								}
 							}
 							& .dvs-no-user{
 								display: flex;
@@ -701,6 +705,14 @@ export default {
     							text-align: center;
     							transition: transform 0.5s ease-in-out;
 								}
+
+								.no-login-btn {
+									background: linear-gradient(
+									94.76deg,
+									#62ffb3 0%,
+									#01c9c1 108.93%
+								);
+							}
 								& .menu{
 									text-transform: unset;
 									margin-bottom: unset;
@@ -727,6 +739,10 @@ export default {
 										}
 
 									}
+								}
+
+								.logout {
+									font-family: $AppFont;
 								}
 						}
 					}

@@ -144,7 +144,7 @@ var Mixin = {
 			this.$store.dispatch('showInforModal', false);
 		},
 		mxHandleClickPopup(id) {
-			this.$store.dispatch('clickInfoModal', id);
+			this.$store.dispatch('clickInfoModal', (this.$store.state.dataClickedInfoModal === id && id === undefined) ? -1 : id);
 		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
