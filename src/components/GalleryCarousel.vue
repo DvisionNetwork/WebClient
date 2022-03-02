@@ -638,10 +638,11 @@ export default {
 						.description {
 							height: auto;
 							width: 100%;
-							overflow: visible;
+							// overflow: visible;
 							font-size: gREm(16);
 							line-height: gREm(24);
-							display: block;
+							-webkit-line-clamp: 4;
+							// display: block;
 						}
 					}
 				}

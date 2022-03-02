@@ -78,9 +78,10 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
-
+import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, FORTMATIC_API_KEY } from '@/features/Common.js'
+import Fortmatic from 'fortmatic'
 import WalletLink  from 'walletlink'
+import Web3 from 'web3'
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
@@ -290,12 +291,25 @@ export default {
   		if(!accounts){
 				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
 			}
-			else{
+			else {
 				this.walletAddr = accounts[0]
 				this.fieldset.walletInfo.walletAddress.value = accounts[0]
 				this.fieldset.walletInfo.walletAddress.checked = true
 			}
 			})
+		},
+		async sinUpWithFortmatic() {
+			const fm = new Fortmatic(FORTMATIC_API_KEY)
+			window.web3 = new Web3(fm.getProvider())
+			fm.user.login().then(() => {
+  		web3.eth.getAccounts().then((accounts) => {
+				if(accounts) {
+					this.walletAddr = accounts[0]
+					this.fieldset.walletInfo.walletAddress.value = accounts[0]
+					this.fieldset.walletInfo.walletAddress.checked = true
+					}
+				});
+			});
 		},
 		async sinUpWithwalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
@@ -337,6 +351,7 @@ export default {
 		},
 
 		sinUpWithMetamask() {
+			ethereum.request({ method: 'eth_requestAccounts' });
 			wAPI.checkMetamask().then((rv) => {
 				if (rv != 'NONE') {
 					wAPI.Request_Account((resp) => {
@@ -388,6 +403,9 @@ export default {
 					break
 				case 'sinUpWith-coinbase' :
 					this.sinUpWithCoinbase()
+					break
+				case 'sinUpWith-fortmatic' :
+					this.sinUpWithFortmatic()
 					break
 			}
 			console.log(value)

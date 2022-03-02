@@ -17,16 +17,33 @@
 							<div class="welcome">{{$t('login.popup.welcome-msg')}}</div>
 							<div class="popup-title">{{$t('login.popup.title')}}</div>
 
-							<BaseButton type="button" class="connectbtn g-btn" @click="connectMetamask">
-								{{$t('login.popup.btn-connect')}}
+							<BaseButton type="button" class="connectbtn metamask-btn" @click="connectMetamask">
+								<img src="../assets/img/ic-metamask.svg" alt="" class="ic-image">
+								Metamask
 							</BaseButton>
 
-							<BaseButton type="button" class="connectbtn g-btn" @click="connectWalletConnect">
-								Connect WalletConnect
+							<BaseButton type="button" class="connectbtn walletconnect-btn" @click="connectWalletConnect">
+								<img src="../assets/img/ic-walletconnect.svg" alt="" class="ic-image">
+								WalletConnect
 							</BaseButton>
-							<BaseButton type="button" class="connectbtn g-btn" @click="connectCoinbase">
-								Connect Coinbase
+							<BaseButton type="button" class="connectbtn coinbase-btn" @click="connectCoinbase">
+								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
+								Coinbase
 							</BaseButton>
+							<BaseButton type="button" class="connectbtn fortmatic-btn" @click="connectFortmatic">
+								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
+								Fortmatic
+							</BaseButton>
+							<div class="or">
+								<span class="line"></span>
+								<span class="text">or</span>
+								<span class="line"></span>
+							</div>
+							<input type="text" class="login-input" placeholder="example@gmail.com" />
+							<div>
+								<input type="password" class="login-input" placeholder="***********" />
+								<img src="../assets/img/ic-eye.svg" alt="">
+							</div>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
 								<div class="title">{{$t('login.popup.label-id')}}</div>
@@ -113,8 +130,11 @@ import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT,DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, FORTMATIC_API_KEY } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
+import Fortmatic from 'fortmatic'
+import Web3 from 'web3'
+
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
@@ -254,7 +274,7 @@ export default {
 			});
 
 		},
-		async connectCoinbase(){
+		async connectCoinbase() {
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
 			if (accounts) {
@@ -264,6 +284,40 @@ export default {
 					this.mxShowAlert({ msg: 'error' })
 			}
 		})
+		},
+		async connectFortmatic() {
+			try {
+				const fm = new Fortmatic(FORTMATIC_API_KEY)
+				window.web3 = new Web3(fm.getProvider())
+				var ref = this
+				web3.eth.getAccounts((error, accounts) =>{
+					if(error) throw error
+					const from = accounts[0]
+					const msgToShow = 'Welcome to Dvision World, please sign this message for the user verification. Then you can use market and connect to dvision world after verification.';
+					const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`
+					const params = [msg, from]
+					const method = 'personal_sign'
+					web3.currentProvider.sendAsync({
+						id: 1,
+						method,
+						params,
+						from
+					}, function(error, result) {
+						if(error) throw error
+						ref.reqLogin({ wallet_addr: from })
+					})
+				})
+				// fm.user.login().then(() => {
+  			// web3.eth.getAccounts().then((accounts) => {
+				// 	if(accounts) {
+				// 			this.reqLogin({ wallet_addr: accounts[0] })
+				// 		}
+				// 	});
+				// });
+			}
+			catch(err){
+				console.log('catch',err)
+			}
 		},
 		async connectWalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
@@ -363,8 +417,8 @@ export default {
 		vertical-align: middle;
 
 		.modal-container {
-			width: 520px;
-			height: 500px;
+			width: 480px;
+			height: 733px;
 			margin: 0px auto;
 			// padding: 20px 30px;
 			background-color: #fff;
@@ -372,6 +426,23 @@ export default {
 			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 			transition: all 0.3s ease;
 			font-family: Helvetica, Arial, sans-serif;
+			& .or{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 7px;
+				line-height: 22px;
+				margin-top: gREm(24);
+				margin-bottom: gREm(22);
+				& .text{
+					color: #E2E2E2;
+				}
+				& .line{
+					width: 147px;
+					height: 1px;
+					background: #E2E2E2;
+				}
+			}
 		}
 	}
 }
@@ -379,7 +450,16 @@ export default {
 .form {
 	@include FLEXV(flex-start,center);
 	width: 100%;
-	height: gREm(600);
+	height: gREm(733);
+	.login-input{
+		border: 1px solid #E2E2E2;
+		width: gREm(324);
+		height: gREm(48);
+		padding: 0 gREm(32);
+		color: #181721;
+		border-radius: 10px;
+		margin-bottom: gREm(14)
+	}
 	.closebtn {
 		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
 		width : gREm(40);
@@ -400,6 +480,7 @@ export default {
 		height: gREm(29);
 		width:100%;
 		margin-top: gREm(8);
+		margin-bottom: gREm(12);
 		text-align: center;
 		@include Set-Font($AppFont, gREm(24), gREm(24), #0d0c22, 600);
    }
@@ -542,14 +623,21 @@ export default {
 		@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
 		@include OnOverTransition();
 	}
-
+	
 	.connectbtn {
-		margin-top: gREm(30);
-		width: gREm(300);
-		height: gREm(60);
+		padding-left: gREm(75);
+		margin-top: gREm(10);
+		width: gREm(324);
+		height: gREm(64);
 		border-radius: 6px;
-		@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
+		// @include Set-Font($AppFont, gREm(18), gREm(22), unset);
 		@include OnOverTransition();
+		& .ic-image{
+			margin-right: gREm(15);
+		}
+		&:hover{
+			transform: translateY(-2px);
+		}
 	}
 
 	.signup-box{

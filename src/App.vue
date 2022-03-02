@@ -212,10 +212,10 @@ export default {
 		})
 		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
-			Scrollbar.use(myPlugin);
-			this.scrollbar = Scrollbar.init(_U.Q('#content'));
-			this.scrollbar.track.xAxis.element.remove();
-			window['gMainScrollbar'] = this.scrollbar;
+			// Scrollbar.use(myPlugin);
+			// this.scrollbar = Scrollbar.init(_U.Q('#content'));
+			// this.scrollbar.track.xAxis.element.remove();
+			// window['gMainScrollbar'] = this.scrollbar;
 		}
 
 		if (window.orientation !== undefined) {
@@ -318,7 +318,7 @@ export default {
 		if(this.$route.params.routerReplace == 'true') { // MapLand.vue : onClick_Map() ->Market-Detail-Index
 			return;
 		}
-		this.scrollTop();
+		// this.scrollTop();
 	},
 	computed: {
 		isShowAlert() {
@@ -909,6 +909,7 @@ body {
     display: block;
     width: 100vw;
     height: 100vh;
+		overflow-y: auto;
 }
 .top-btn{
 	position: fixed;
@@ -919,5 +920,16 @@ body {
 	// @include FLEX(flex-end,flex-end);
 	@include SetBgImage(url('./assets/img/home/btn-page-up-n.svg'));
 	z-index: $Z-INDEX-GO-TOP-BTN;
+}
+
+@include media-max($media_small) { // 768
+	.toast-box {
+		.message-box {
+			width: 100%;
+			max-width: 90vw;
+			white-space: pre-wrap;
+			padding: gREm(20);
+		}
+	}
 }
 </style>

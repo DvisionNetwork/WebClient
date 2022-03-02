@@ -202,6 +202,7 @@ export default {
 
 @include media-max($media_small) {
 	.MyPage {
+		min-height: unset;
 		.content-body-wrap {
 			width: 100%;
 			margin-top: 0;

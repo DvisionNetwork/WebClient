@@ -283,7 +283,7 @@ export default {
 	background-color: #201360;
 
 	max-width:100vw;
-	overflow-x:hidden;
+	overflow:hidden;
 
 	min-height: calc(100vh - 176px); // Foot 176px
 

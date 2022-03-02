@@ -928,6 +928,7 @@ export default {
 			.content-menu-box {
 				width: 100%;
 				height: 100%;
+				align-items: flex-start;
 
 				.search-box {
 					width: auto;

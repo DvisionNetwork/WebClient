@@ -876,7 +876,7 @@ export default {
 
 				.bottom {
 					flex-direction: column;
-					bottom: gREm(50);
+					bottom: gREm(0);
 					background: #181721;
 					width: 100%;
 					padding: gREm(20);
