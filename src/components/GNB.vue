@@ -190,13 +190,15 @@ export default {
 			this.$router.push({name:"MyPage"});
 			this.isShowNavbar = false
 		},
+		
+		// eslint-disable-next-line no-dupe-keys
 		logout() {
 			const bridge = BRIDGE_WALLETCONNECT
 			const connector = new WalletConnect({
 				bridge
 			})
 			connector.killSession()
-			var userInfo = {};
+			var userInfo = {}
 			this.isShowNavbar = false
 			this.isShowAccountMenu = false;
 			this.$store.dispatch('setUserInfo',userInfo);
