@@ -921,4 +921,15 @@ body {
 	@include SetBgImage(url('./assets/img/home/btn-page-up-n.svg'));
 	z-index: $Z-INDEX-GO-TOP-BTN;
 }
+
+@include media-max($media_small) { // 768
+	.toast-box {
+		.message-box {
+			width: 100%;
+			max-width: 90vw;
+			white-space: pre-wrap;
+			padding: gREm(20);
+		}
+	}
+}
 </style>

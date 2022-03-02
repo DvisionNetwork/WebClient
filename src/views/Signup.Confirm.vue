@@ -123,4 +123,29 @@ export default {
 	}
 
 }
+
+@include media-max($media_small) {
+	.Confirm {
+		width: 100%;
+		
+		.title-box {
+			width: 100%;
+			height: auto;
+			margin-bottom: gREm(32);
+
+			.title {
+				width: 100%;
+				white-space: pre-wrap;
+			}
+		}
+
+		.message-box-wrap {
+			.message-box {
+				width: 100%;
+				height: auto;
+				white-space: pre-wrap;
+			}
+		}
+	}
+}
 </style>
