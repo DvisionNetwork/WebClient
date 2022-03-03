@@ -426,10 +426,10 @@ export default {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
 					const customNodeOptions = {
-    			rpcUrl: 'https://bsc-dataseed.binance.org/',
-    			chainId: 56
-				}
-				const fm = new Fortmatic(FORTMATIC_API_KEY)
+						rpcUrl: 'https://bsc-dataseed.binance.org/',
+						chainId: 56,
+					}
+					const fm = new Fortmatic(FORTMATIC_API_KEY)
 					web3 = new Web3(fm.getProvider())
 				}
 				let contractConn = new web3.eth.Contract(abi, address_ct)
@@ -451,30 +451,27 @@ export default {
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
-
-			await contractConn.methods
+			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
 					this.data.staking_address // address Staking
 				)
 				.call()
-				.then((tx) => {
-					if (tx === true) {
-						this.hadUnderstand = true
-						this.mxCloseLoading()
-					} else {
-						this.onApprovedForAll()
-					}
-				})
 				.catch((e) => {
 					this.mxCloseLoading()
 					this.hadUnderstand = false
-					if (e.code === 4001) {
+					if (e.code === 4001 || e.code === -32603) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_3)
 					}
 				})
+			if (res === true) {
+				this.hadUnderstand = true
+				this.mxCloseLoading()
+			} else {
+				this.onApprovedForAll()
+			}
 		},
 
 		async onApprovedForAll() {
@@ -483,27 +480,27 @@ export default {
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
 
-			await contractConn.methods
+			const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking
 					true
 				)
 				.send({
-					from: (await this.getAccounts())[0],
-				})
-				.then((tx) => {
-					this.mxCloseLoading()
-					this.hadUnderstand = true
+					from: this.current_addr,
 				})
 				.catch((e) => {
 					this.hadUnderstand = false
 					this.mxCloseLoading()
-					if (e.code === 4001) {
+					if (e.code === 4001 || e.code === -32603) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_3)
 					}
 				})
+			if (res) {
+				this.mxCloseLoading()
+				this.hadUnderstand = true
+			}
 		},
 
 		async onStakeNft() {
@@ -529,28 +526,25 @@ export default {
 
 			params = JSON.parse(JSON.stringify(params))
 
-			await contractConn.methods
+			const res = await contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
-					from: (await this.getAccounts())[0],
-				})
-				.then((tx) => {
-					console.log('onStakeNft', tx)
-					this.mxCloseLoading()
-					this.showSuccess()
-					// this.onGetNftowner(this.isErc1155)
-					this.onStakingSuccess()
+					from: this.current_addr,
 				})
 				.catch((e) => {
-					console.log('onStakeNft e', e.code)
+					console.log('onStakeNft e', e)
 					this.mxCloseLoading()
-					if (e.code === 4001) {
+					if (e.code === 4001 || e.code === -32603) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_3)
 					}
-					// this.onGetNftowner(this.isErc1155)
 				})
+			if (res) {
+				this.mxCloseLoading()
+				this.showSuccess()
+				this.onStakingSuccess()
+			}
 		},
 	},
 }
@@ -586,7 +580,7 @@ export default {
 			.modal-close-btn {
 				display: none;
 			}
-			
+
 			& .title {
 				font-size: gREm(28);
 				line-height: gREm(20);
