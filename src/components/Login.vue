@@ -358,43 +358,43 @@ export default {
 		},
 		async connectWalletConnect() {
 
-			this.setProviderWalletCon.on("accountsChanged", (accounts) => {
-				if (accounts) {
-					this.reqLogin({ wallet_addr: accounts[0] })
-					window.localStorage.setItem('loginBy','WalletConnect')
-				} else {
-					this.mxShowAlert({ msg: 'error' })
-				}
-			});
-
-			await this.setProviderWalletCon.enable()
-
-			// const bridge = BRIDGE_WALLETCONNECT
-			// const connector = new WalletConnect({
-			// 	bridge,
-			// 	qrcodeModal: QRCodeModal,
-			// })
-			// if (!connector.connected) {
-			// 	// create new session
-			// 	await connector.createSession()
-			// } else {
-			// 	this.reqLogin({ wallet_addr: connector._accounts[0] })
-			// 	// connector.killSession()
-			// 	return
-			// }
-
-			// connector.on('connect', (error, payload) => {
-			// 	console.log(payload, error)
-			// 	const { accounts } = JSON.parse(
-			// 		JSON.stringify(payload.params[0])
-			// 	)
+			// this.setProviderWalletCon.on("accountsChanged", (accounts) => {
 			// 	if (accounts) {
 			// 		this.reqLogin({ wallet_addr: accounts[0] })
 			// 		window.localStorage.setItem('loginBy','WalletConnect')
-			// 	} else if (error) {
+			// 	} else {
 			// 		this.mxShowAlert({ msg: 'error' })
 			// 	}
-			// })
+			// });
+
+			// await this.setProviderWalletCon.enable()
+
+			const bridge = BRIDGE_WALLETCONNECT
+			const connector = new WalletConnect({
+				bridge,
+				qrcodeModal: QRCodeModal,
+			})
+			if (!connector.connected) {
+				// create new session
+				await connector.createSession()
+			} else {
+				this.reqLogin({ wallet_addr: connector._accounts[0] })
+				// connector.killSession()
+				return
+			}
+
+			connector.on('connect', (error, payload) => {
+				console.log(payload, error)
+				const { accounts } = JSON.parse(
+					JSON.stringify(payload.params[0])
+				)
+				if (accounts) {
+					this.reqLogin({ wallet_addr: accounts[0] })
+					window.localStorage.setItem('loginBy','WalletConnect')
+				} else if (error) {
+					this.mxShowAlert({ msg: 'error' })
+				}
+			})
 		},
 
 		// signin() {
