@@ -141,11 +141,11 @@ import {
 	DEFAULT_ETH_JSONRPC_URL,
 	BSC_CHAIN_ID,
 	FORTMATIC_API_KEY,
+	VALUE_LOGIN,
 } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
-import { VALUE_LOGIN } from '../features/Common';
 
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
