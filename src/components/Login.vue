@@ -40,11 +40,11 @@
 								<span class="line"></span>
 							</div>
 							<div class="login-input">
-								<input type="text" placeholder="example@gmail.com" />
+								<input v-model="idLogin" type="text" placeholder="id" />
 							</div>
 							<div class="login-pwd">
-								<input type="password" placeholder="***********" />
-								<img class="img-eye" src="../assets/img/ic-eye.svg" alt="">
+								<input v-model="passwordLogin" :type="passwordType" placeholder="***********" />
+								<img class="img-eye" src="../assets/img/ic-eye.svg" alt="eye" @click="handleEyeClick()">
 							</div>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
@@ -96,7 +96,7 @@
 								</div>
 							</div>
 
-							<BaseButton type="button" class="login-btn"
+							<BaseButton @click="loginWithEmail" type="button" class="login-btn"
 								>Login</BaseButton
 							>
 
@@ -184,12 +184,28 @@ export default {
 				id:'',
 				password:''
 			},
-
+			passwordType: 'password',
+			idLogin: '',
+			passwordLogin: ''
 		}
 	},
 	props: {
 	},
 	methods: {
+		loginWithEmail() {
+			const data = {
+				account: this.idLogin,
+				password: sha256(this.passwordLogin).toString(),
+				key: "0",
+				value: "7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5",
+				usedomain: 'false',
+			}
+			this.reqLogin(data);
+		},
+		handleEyeClick() {
+			this.passwordType =
+				this.passwordType === 'password' ? 'text' : 'password';
+		},
 		closePopup() {
 			this.$store.dispatch('showLoginPopup',false);
 			// this.$emit('close-auth')
@@ -493,7 +509,8 @@ export default {
 			position: absolute;
 			top: 50%;
 			right: gREm(30);
-			transform: translate(-50%, -50%)
+			transform: translate(-50%, -50%);
+			cursor: pointer;
 		}
 	}
 
@@ -514,6 +531,7 @@ export default {
 		font-weight: 700;
 		text-align: center;
 		margin-top: gREm(24);
+		cursor: pointer;
 	}
 
 	.closebtn {
