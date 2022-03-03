@@ -402,6 +402,7 @@ export default {
 								@include FLEX(center, center);
 								text-align: center;
 								@include Set-Font($AppFont, gREm(12), gREm(16), #6c38ef,300);
+								white-space: pre-wrap;
 							}
 						}
 					}
@@ -760,6 +761,23 @@ export default {
 			width: auto;
 			height: gREm(30);
 			@include Set-Font($AppFont, gREm(16), gREm(30), #1d1f2a,300);
+		}
+		.icon {
+
+			&[active='on'] {
+				.icon-popup-box {
+					.content-wrap {
+						width: 50vw;
+						height: auto;
+						.content {
+							white-space: pre-wrap;
+							padding: gREm(10) gREm(20);
+							line-height: gREm(20);
+							text-align: left;
+						}
+					}
+				}
+			}
 		}
 		.field-box-wrap {
 			width: 100%;

@@ -138,7 +138,7 @@ export default {
 			isShowAccountMenu: false,
 			isShowLangMenu: false,
 			supportMobileMenu: false,
-			isShowNavbar:false
+			isShowNavbar: false,
 		}
 	},
 	computed: {
@@ -157,8 +157,12 @@ export default {
 		this.currentPage = this.$route.params.id
 	},
 	methods: {
+		checkStyleOverflow() {
+			const content = document.getElementById('content');
+			content.style.overflowY = this.isShowNavbar ? 'hidden' : 'auto';
+		},
 		showNavbar() {
-			this.isShowNavbar = !this.isShowNavbar
+			this.isShowNavbar = !this.isShowNavbar;
 		},
 		logout() {
 			this.isShowNavbar = false
@@ -206,6 +210,11 @@ export default {
 			this.$router.push({name:"Home"});
 		}
 
+	},
+	watch: {
+		isShowNavbar: function () {
+			this.checkStyleOverflow();
+		},
 	},
 }
 </script>
