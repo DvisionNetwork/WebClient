@@ -85,6 +85,7 @@ import {
 	ETH_ADDRESS_1155,
 	MATIC_ADDRESS_721,
 	MATIC_ADDRESS_1155,
+	FORTMATIC_API_KEY,
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -103,7 +104,7 @@ import {
 } from '@/data/RenderContent.js'
 import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
-
+import Fortmatic from 'fortmatic'
 const { ethereum } = window
 
 export default {
@@ -124,8 +125,9 @@ export default {
 	},
 	data() {
 		return {
+			loginBy: window.localStorage.getItem('loginBy'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			current_addr: '',
+			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: '',
 
 			pages: [1],
@@ -155,9 +157,9 @@ export default {
 	},
 	beforeMount() {
 		this.getCurrentNetwork()
-		this.getCurrentAddress()
 	},
 	mounted() {
+		console.log('loginBy', this.loginBy)
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
@@ -199,6 +201,8 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
+			console.log('chainId', chainId)
+			console.log('chainId networkBSC', networkBSC)
 			const id = this.poolDuration.id
 			if (
 				chainId !== networkBSC &&
@@ -232,17 +236,14 @@ export default {
 		},
 		async getAllowWithdrawAll() {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				const contractConn = await new web3.eth.Contract(
+				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					this.staking_address
 				)
-				await contractConn.methods
-					.allowWithdrawAll()
-					.call()
-					.then((tx) => {
-						this.allowWithdraw = tx
-					})
+				const res = await contractConn.methods
+				.allowWithdrawAll()
+				.call()
+				if(res) this.allowWithdraw = tx
 			}
 		},
 		checkNetwork() {
@@ -273,11 +274,6 @@ export default {
 			this.current_network = chainId
 			window.localStorage.setItem('currentNetwork', chainId)
 			this.setStakingAddress(chainId)
-		},
-		async getCurrentAddress() {
-			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-			const acc = await web3.eth.getAccounts()
-			this.current_addr = acc[0]
 		},
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
@@ -406,8 +402,7 @@ export default {
 		},
 		async getTotalMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				const contractConn = await new web3.eth.Contract(
+				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					this.staking_address
 				)
@@ -428,8 +423,7 @@ export default {
 		},
 		async getMyMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				const contractConn = await new web3.eth.Contract(
+				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					this.staking_address
 				)
@@ -455,8 +449,7 @@ export default {
 			this.getAllowWithdrawAll()
 			try {
 				if (typeof window.ethereum !== 'undefined') {
-					let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-					const contractConn = await new web3.eth.Contract(
+					const contractConn = await this.contractConnect(
 						ABI_STAKING,
 						this.staking_address
 					)
@@ -527,7 +520,11 @@ export default {
 		async contractConnect(abi, address_ct) {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				let contractConn = await new web3.eth.Contract(abi, address_ct)
+				if (this.loginBy === 'Fortmatic') {
+				const fm = new Fortmatic(FORTMATIC_API_KEY)
+					web3 = new Web3(fm.getProvider())
+				}
+				let contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
 		},
@@ -570,7 +567,7 @@ export default {
 			}
 			setTimeout(() => {
 				this.onStakingSuccess(this.poolDuration.id)
-			}, 2000);
+			}, 2000)
 			this.mxShowSuccessModal(obj)
 		},
 
@@ -585,7 +582,7 @@ export default {
 			}
 			setTimeout(() => {
 				this.onStakingSuccess(this.poolDuration.id)
-			}, 2000);
+			}, 2000)
 			this.mxShowSuccessModal(obj)
 		},
 
@@ -758,11 +755,23 @@ export default {
 				align-items: flex-start;
 				padding: 0 gREm(20);
 				h2 {
-					@include Set-Font($AppFont, gREm(22), gREm(32), #ffffff, 600);
+					@include Set-Font(
+						$AppFont,
+						gREm(22),
+						gREm(32),
+						#ffffff,
+						600
+					);
 				}
 
 				.unlock-lands {
-					@include Set-Font($AppFont, gREm(16), gREm(24), #ffffff, 200);
+					@include Set-Font(
+						$AppFont,
+						gREm(16),
+						gREm(24),
+						#ffffff,
+						200
+					);
 				}
 			}
 

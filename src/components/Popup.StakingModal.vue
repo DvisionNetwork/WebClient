@@ -129,13 +129,14 @@ import {
 	renderSuccessContent,
 	renderSwitchNftContent,
 } from '@/data/RenderContent.js'
-import { BSC_RPC_ENDPOINT } from '@/features/Common.js'
+import { BSC_RPC_ENDPOINT, FORTMATIC_API_KEY } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
 	MSG_METAMASK_3,
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
+import Fortmatic from 'fortmatic'
 const { ethereum } = window
 
 export default {
@@ -144,6 +145,7 @@ export default {
 	},
 	data() {
 		return {
+			loginBy: window.localStorage.getItem('loginBy'),
 			submitData: null,
 			hadUnderstand: false,
 			filterBy: 'default',
@@ -154,14 +156,13 @@ export default {
 			listNfts1155Quantity: [],
 			keyword: '',
 			listShowers: [],
-			current_addr: '',
+			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: '',
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 		}
 	},
 	beforeMount() {
 		this.getCurrentNetwork()
-		this.getCurrentAddress()
 	},
 	mounted() {
 		ethereum.on('accountsChanged', (accounts) => {
@@ -221,11 +222,6 @@ export default {
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
-		},
-		async getCurrentAddress() {
-			let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-			const acc = await web3.eth.getAccounts()
-			this.current_addr = acc[0]
 		},
 		async getCurrentNetwork() {
 			const chainId = await ethereum.request({
@@ -428,7 +424,15 @@ export default {
 		async contractConnect(abi, address_ct) {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				let contractConn = await new web3.eth.Contract(abi, address_ct)
+				if (this.loginBy === 'Fortmatic') {
+					const customNodeOptions = {
+    			rpcUrl: 'https://bsc-dataseed.binance.org/',
+    			chainId: 56
+				}
+				const fm = new Fortmatic(FORTMATIC_API_KEY)
+					web3 = new Web3(fm.getProvider())
+				}
+				let contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
 		},

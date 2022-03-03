@@ -141,6 +141,7 @@ import {
 	DEFAULT_ETH_JSONRPC_URL,
 	BSC_CHAIN_ID,
 	FORTMATIC_API_KEY,
+	BSC_RPC_ENDPOINT
 } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
@@ -272,7 +273,7 @@ export default {
 							if(account) {
 								wAPI.Sign_Account(account, this.reqLogin);
 								this.mxSetNetwork(rv);
-
+								window.localStorage.setItem('loginBy','Metamask')
 								return;
 							}
 						}
@@ -291,6 +292,7 @@ export default {
 			if (accounts) {
 					wAPI.Sign_Account(accounts[0], this.reqLogin);
 					this.mxSetNetwork(rv);
+					window.localStorage.setItem('loginBy','Coinbase')
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 			}
@@ -298,8 +300,12 @@ export default {
 		},
 		async connectFortmatic() {
 			try {
-				const fm = new Fortmatic(FORTMATIC_API_KEY)
-				window.web3 = new Web3(fm.getProvider())
+				const customNodeOptions = {
+    			rpcUrl: 'https://bsc-dataseed.binance.org/',
+    			chainId: 56
+				}
+				const fm = new Fortmatic(FORTMATIC_API_KEY, customNodeOptions)
+				web3 = new Web3(fm.getProvider())
 				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
 					if(error) throw error
@@ -316,6 +322,8 @@ export default {
 					}, function(error, result) {
 						if(error) throw error
 						ref.reqLogin({ wallet_addr: from })
+						ref.mxSetNetwork('BSC');
+						window.localStorage.setItem('loginBy','Fortmatic')
 					})
 				})
 				// fm.user.login().then(() => {
@@ -352,6 +360,7 @@ export default {
 				)
 				if (accounts) {
 					this.reqLogin({ wallet_addr: accounts[0] })
+					window.localStorage.setItem('loginBy','WalletConnect')
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}
@@ -394,7 +403,7 @@ export default {
 								updated: true,
 							}
 							this.mxSetWallet(wlt);
-
+							console.log('AAAAAAAAAAAAAAAAAa')
 							this.$store.dispatch('setUserInfo',userInfo);
 							this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
 							console.log('===== LOGIN OK, userInfo:', userInfo, this.$route.name);
