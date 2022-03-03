@@ -32,3 +32,4 @@ export const BSC_CHAIN_ID = 97
 export const ETH_CHAIN_ID = 4
 export const MATIC_CHAIN_ID = 80001
 export const FORTMATIC_API_KEY = 'pk_live_8D9F70BA9F518425'
+export const VALUE_LOGIN = '7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5';
