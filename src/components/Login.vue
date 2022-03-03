@@ -146,6 +146,7 @@ import {
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
+import { VALUE_LOGIN } from '../features/Common';
 
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
@@ -198,7 +199,7 @@ export default {
 				account: this.idLogin,
 				password: sha256(this.passwordLogin).toString(),
 				key: "0",
-				value: "7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5",
+				value: VALUE_LOGIN,
 				usedomain: 'false',
 			}
 			this.reqLogin(data);
