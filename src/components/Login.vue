@@ -518,8 +518,8 @@ export default {
 		cursor: pointer;
 		@include OnOverTransition();
 		position: absolute;
-    top: gREm(27);
-    right: gREm(29);
+		top: gREm(27);
+		right: gREm(29);
 	}
 	.welcome {
 		height: auto;
@@ -527,26 +527,27 @@ export default {
 		margin-top: gREm(50);
 		text-align: center;
 		@include Set-Font($AppFont, gREm(14), gREm(24), #0d0c22);
-   }
-   .popup-title {
+	}
+	.popup-title {
 		height: gREm(29);
 		width:100%;
 		margin-top: gREm(8);
 		margin-bottom: gREm(12);
 		text-align: center;
 		@include Set-Font($AppFont, gREm(28), gREm(38), #181721, 600);
-   }
-   .id, .password {
+	}
+	.id,
+	.password {
 		height: gREm(40+18);
 		width: gREm(420);
 		margin-top: gREm(72);
-		.title{
+		.title {
 			height: gREm(18);
 			width: 100%;
 			@include Set-Font($AppFont, gREm(14), gREm(24), #6a6a6a);
 			text-align: left;
 		}
-		.input-box{
+		.input-box {
 			width: gREm(420);
 			height: gREm(20);
 			margin-top: gREm(15);
@@ -558,7 +559,7 @@ export default {
 				text-align: left;
 
 			}
-			.icon{
+			.icon {
 				&[active='on']{
 					width: gREm(20);
 					height: gREm(20);
@@ -566,7 +567,7 @@ export default {
 					@include SetBgImage(url('../assets/img/ic-closed-input-n.svg'));
 					// @include OnOverTransition();
 				}
-				&[active='on']:hover{
+				&[active='on']:hover {
 					@include SetBgImage(url('../assets/img/ic-closed-input-h.svg'));
 				}
 			}

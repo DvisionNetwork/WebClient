@@ -140,8 +140,8 @@ export default {
 		cursor: pointer;
 		@include OnOverTransition();
 		position: absolute;
-    top: gREm(27);
-    right: gREm(29);
+		top: gREm(27);
+		right: gREm(29);
 	}
 
 	.signup-box {
