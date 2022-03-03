@@ -141,7 +141,7 @@ import {
 	DEFAULT_ETH_JSONRPC_URL,
 	BSC_CHAIN_ID,
 	FORTMATIC_API_KEY,
-	BSC_RPC_ENDPOINT
+	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
 } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
