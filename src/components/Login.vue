@@ -96,6 +96,10 @@
 								</div>
 							</div>
 
+							<BaseButton type="button" class="login-btn"
+								>Login</BaseButton
+							>
+
 							<!-- <BaseButton type="button" class="loginbtn g-btn" @click="signin">
 								{{$t('login.popup.btn-login')}}
 							</BaseButton> -->
@@ -420,7 +424,7 @@ export default {
 
 		.modal-container {
 			width: 480px;
-			height: 733px;
+			height: auto;
 			margin: 0px auto;
 			// padding: 20px 30px;
 			background-color: #fff;
@@ -432,15 +436,17 @@ export default {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				gap: 7px;
+				gap: gREm(8);
 				line-height: 22px;
-				margin-top: gREm(24);
-				margin-bottom: gREm(22);
+				margin-top: gREm(37);
+				margin-bottom: gREm(31);
 				& .text{
-					color: #E2E2E2;
+					color: #A0A0A0;
+					font-size: gREm(14);
+					line-height: gREm(22);
 				}
 				& .line{
-					width: 147px;
+					width: gREm(147);
 					height: 1px;
 					background: #E2E2E2;
 				}
@@ -452,16 +458,18 @@ export default {
 .form {
 	@include FLEXV(flex-start,center);
 	width: 100%;
-	height: gREm(733);
+	height: auto;
 	.login-input{
 		margin-bottom: gREm(14);
 		& input{
-			border: 1px solid #E2E2E2;
+			border: 1px solid rgba(24, 23, 33, 0.1);
 			width: gREm(324);
-			height: gREm(48);
-			padding: 0 gREm(32);
+			height: auto;
+			padding: gREm(13) gREm(32);
 			color: #181721;
 			border-radius: 10px;
+			font-size: gREm(14);
+			line-height: gREm(22);
 		}
 	}
 	.login-pwd{
@@ -469,10 +477,12 @@ export default {
 		& input{
 			border: 1px solid #E2E2E2;
 			width: gREm(324);
-			height: gREm(48);
-			padding: 0 gREm(32);
+			height: auto;
+			padding: gREm(13) gREm(75) gREm(13) gREm(32);
 			color: #181721;
 			border-radius: 10px;
+			font-size: gREm(14);
+			line-height: gREm(22);
 		}
 		& .img-eye {
 			position: absolute;
@@ -481,17 +491,38 @@ export default {
 			transform: translate(-50%, -50%)
 		}
 	}
+
+	input::placeholder {
+		color: #BABABA;
+	}
+
+	.login-btn {
+		width: 100%;
+		max-width: gREm(324);
+		padding: gREm(17) 0;
+		height: auto;
+		background: linear-gradient(85.48deg, #9f52ff 0%, #3504ff 99.18%);
+		border-radius: 10px;
+		font-family: $AppFont;
+		font-size: gREm(14);
+		line-height: gREm(22);
+		font-weight: 700;
+		text-align: center;
+		margin-top: gREm(24);
+	}
+
 	.closebtn {
-		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
-		width : gREm(40);
-		height: gREm(40);
-		margin-top:gREm(-51);
-		margin-bottom:gREm(10);
+		@include SetBgImage(url('../assets/img/close-popup.svg'));
+		width: gREm(18);
+		height: gREm(18);
 		cursor: pointer;
 		@include OnOverTransition();
+		position: absolute;
+    top: gREm(27);
+    right: gREm(29);
 	}
 	.welcome {
-		height: gREm(18);
+		height: auto;
 		width:100%;
 		margin-top: gREm(50);
 		text-align: center;
@@ -503,7 +534,7 @@ export default {
 		margin-top: gREm(8);
 		margin-bottom: gREm(12);
 		text-align: center;
-		@include Set-Font($AppFont, gREm(24), gREm(24), #0d0c22, 600);
+		@include Set-Font($AppFont, gREm(28), gREm(38), #181721, 600);
    }
    .id, .password {
 		height: gREm(40+18);
@@ -583,10 +614,11 @@ export default {
 	}
 
 	.remember-me {
-		margin-top: gREm(20);
-		width: gREm(420);
-		height: gREm(18);
-		@include FLEX(space-between,center);
+		margin-top: gREm(16);
+		width: 100%;
+		max-width: gREm(324);
+		height: auto;
+		@include FLEX(flex-end,center);
 		.check-box{
 			width: gREm(120);
 			@include FLEX(flex-start,center);
@@ -662,21 +694,25 @@ export default {
 	}
 
 	.signup-box{
-		margin-top: gREm(30);
+		margin-top: gREm(16);
+		margin-bottom: gREm(50);
+		width: 100%;
+		max-width: gREm(324);
+		text-align: left;
 		.signup-box-wrap{
 			width: 100%;
-			height:gREm(18);
+			height: auto;
 			@include FLEX(flex-start,center);
 
 			.notamember{
 				width:auto;
-				@include Set-Font($AppFont, gREm(14), gREm(24), #6a6a6a);
+				@include Set-Font($AppFont, gREm(14), gREm(22), #6a6a6a);
 			}
 			.signup-msg{
 				width: auto;
 				margin-left:gREm(7);
 				cursor: pointer;
-				@include Set-Font($AppFont, gREm(14), gREm(24), #18a7f8);
+				@include Set-Font($AppFont, gREm(14), gREm(22), #6C38EF, 500);
 				&:hover {
 					text-decoration-line: underline;
 				}

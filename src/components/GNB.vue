@@ -583,6 +583,7 @@ export default {
 
 @include media-max($media_small) { // 768px
 	.GNB {
+		transition: none;
 		&.shadow{
 					background: #181721;
 					z-index: 999;

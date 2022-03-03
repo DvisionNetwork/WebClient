@@ -578,6 +578,11 @@ export default {
 			padding: 50px 28px 22px 28px;
 			transition: all 0.3s ease;
 			font-family: Montserrat, sans-serif;
+
+			.modal-close-btn {
+				display: none;
+			}
+			
 			& .title {
 				font-size: gREm(28);
 				line-height: gREm(20);
@@ -833,6 +838,10 @@ export default {
 							#ffffff,
 							600
 						);
+					}
+
+					.modal-close-btn {
+						display: block;
 					}
 				}
 

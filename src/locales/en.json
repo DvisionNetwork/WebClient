@@ -27,8 +27,10 @@
 			"forgot": "Forgot",
 			"btn-login": "LOGIN",
 			"btn-connect": "Connect Metamask",
-			"not-a-member": "Not a member?",
-			"sign-up": "Sign up"
+			"not-a-member": "Don’t have an account?",
+			"sign-up": "Sign up",
+			"already-have-account": "You already have an account?",
+			"login": "Login"
 		}
 	},
 	"popup": {
