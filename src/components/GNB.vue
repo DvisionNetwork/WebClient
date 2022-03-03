@@ -116,7 +116,7 @@ export const walletLink = new WalletLink({
   darkMode: false
 })
 import WalletConnect from '@walletconnect/client'
-import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID } from '@/features/Common.js'
+import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID , BRIDGE_WALLETCONNECT} from '@/features/Common.js'
 export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 var gConfig = AppConfig();
 
@@ -200,6 +200,12 @@ export default {
 			window.localStorage.removeItem('loginBy')
 			window.location.reload()
 
+
+			const bridge = BRIDGE_WALLETCONNECT
+			const connector = new WalletConnect({
+				bridge
+			})
+			connector.killSession()
 			var userInfo = {}
 			this.isShowNavbar = false
 			this.isShowAccountMenu = false;
