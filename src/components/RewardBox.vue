@@ -57,9 +57,11 @@ import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
 import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
+import Fortmatic from 'fortmatic'
 import {
 	toFixedDecimal,
 	BSC_RPC_ENDPOINT,
+	FORTMATIC_API_KEY,
 } from '@/features/Common.js'
 var gConfig = AppConfig()
 
@@ -71,6 +73,7 @@ export default {
 	},
 	data() {
 		return {
+			loginBy: window.localStorage.getItem('loginBy'),
 			miningHashRate: '0',
 			dvgEarned: '0 DVG',
 			harvest: true,
@@ -92,7 +95,7 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
-		staking_address:String
+		staking_address: String,
 	},
 
 	mounted() {
@@ -114,20 +117,30 @@ export default {
 	methods: {
 		async getCampaignEarned() {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				const contractConn = await new web3.eth.Contract(
+				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					this.staking_address
 				)
-				await contractConn.methods
+				const data = await contractConn.methods
 					.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
 					.call()
-					.then((data) => {
-						this.dvgEarned = `${toFixedDecimal(
-							formatEther(data),
-							0
-						)} DVG`
-					})
+				if (data) {
+					this.dvgEarned = `${toFixedDecimal(
+						formatEther(data),
+						0
+					)} DVG`
+				}
+			}
+		},
+		async contractConnect(abi, address_ct) {
+			if (typeof window.ethereum !== 'undefined') {
+				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+				if (this.loginBy === 'Fortmatic') {
+					const fm = new Fortmatic(FORTMATIC_API_KEY)
+					web3 = new Web3(fm.getProvider())
+				}
+				let contractConn = new web3.eth.Contract(abi, address_ct)
+				return contractConn
 			}
 		},
 	},

@@ -453,11 +453,11 @@ export default {
 						ABI_STAKING,
 						this.staking_address
 					)
-					await contractConn.methods
+					const data =	await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
-						.then((data) => {
-							this.poolDuration.duration = Number(data.duration)
+					if(data) {
+						this.poolDuration.duration = Number(data.duration)
 							let resultNumber = BigNumber.from(
 								data.rewardRate
 							).mul(data.duration)
@@ -490,7 +490,7 @@ export default {
 								//not start yet
 								this.switchStatusCampain(2)
 							}
-						})
+					}
 				}
 			} catch (err) {
 				console.log('catch', err)
