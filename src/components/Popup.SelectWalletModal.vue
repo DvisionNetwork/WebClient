@@ -185,6 +185,7 @@ export default {
 		line-height: gREm(22);
 		font-weight: 700;
 		text-align: center;
+		cursor: pointer;
 	}
 
 	.agree-policy {
