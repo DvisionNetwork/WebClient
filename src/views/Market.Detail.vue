@@ -1983,6 +1983,8 @@ export default {
 							.owned,
 							.owned-label {
 								margin-top: 0;
+								width: auto;
+								height: auto;
 							}
 						}
 					}

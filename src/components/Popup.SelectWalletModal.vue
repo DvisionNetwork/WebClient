@@ -12,44 +12,71 @@
 							>
 							</BaseButton>
 
-							<div class="welcome">SIGN UP</div>
-							<div class="popup-title">Sigup with</div>
+							<div class="welcome">Sign Up</div>
+							<div class="popup-title">Signup with</div>
 
 							<BaseButton
 								type="button"
-								class="connectbtn g-btn"
+								class="connectbtn metamask-btn"
 								@click="data.sinUpWith('sinUpWith-Metamask')"
 							>
+								<img src="../assets/img/ic-metamask.svg" alt="" class="ic-image">
 								Metamask
 							</BaseButton>
 
 							<BaseButton
 								type="button"
-								class="connectbtn g-btn"
+								class="connectbtn walletconnect-btn"
 								@click="
 									data.sinUpWith('sinUpWith-walletConnect')
 								"
 							>
+								<img src="../assets/img/ic-walletconnect.svg" alt="" class="ic-image">
 								WalletConnect
 							</BaseButton>
 							<BaseButton
 								type="button"
-								class="connectbtn g-btn"
+								class="connectbtn coinbase-btn"
 								@click="
 									data.sinUpWith('sinUpWith-coinbase')
 								"
 							>
+								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
 								CoinBase
 							</BaseButton>
 							<BaseButton
 								type="button"
-								class="connectbtn g-btn"
+								class="connectbtn fortmatic-btn"
 								@click="
 									data.sinUpWith('sinUpWith-fortmatic')
 								"
 							>
+								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
 								Fortmatic
 							</BaseButton>
+
+							<div class="agree-policy">
+								<label class="label">I agree with privacy policy
+									<input type="checkbox">
+									<span class="checkmark"></span>
+								</label>
+							</div>
+
+							<BaseButton type="button" class="login-btn"
+								>Sign up</BaseButton
+							>
+
+							<div class="signup-box">
+								<div class="signup-box-wrap">
+									<div class="notamember" >{{$t('login.popup.already-have-account')}}</div>
+									<div
+										class="signup-msg"
+										@click="goSignUpAgreement"
+									>
+										{{$t('login.popup.login')}}
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -103,20 +130,127 @@ export default {
 }
 
 .form {
-	@include FLEXV(flex-start,center);
+	@include FLEXV(flex-start, center);
 	width: 100%;
-	height: gREm(450);
+	height: auto;
 	.closebtn {
-		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
-		width: gREm(40);
-		height: gREm(40);
-		margin-top: gREm(-51);
-		margin-bottom: gREm(-18);
+		@include SetBgImage(url('../assets/img/close-popup.svg'));
+		width: gREm(18);
+		height: gREm(18);
 		cursor: pointer;
 		@include OnOverTransition();
+		position: absolute;
+		top: gREm(27);
+		right: gREm(29);
+	}
+
+	.signup-box {
+		margin-top: gREm(16);
+		margin-bottom: gREm(50);
+		width: 100%;
+		max-width: gREm(324);
+		text-align: left;
+		.signup-box-wrap {
+			width: 100%;
+			height: auto;
+			@include FLEX(flex-start,center);
+
+			.notamember {
+				width: auto;
+				@include Set-Font($AppFont, gREm(14), gREm(22), #6a6a6a);
+			}
+
+			.signup-msg {
+				width: auto;
+				margin-left: gREm(7);
+				cursor: pointer;
+				@include Set-Font($AppFont, gREm(14), gREm(22), #6C38EF, 500);
+				&:hover {
+					text-decoration-line: underline;
+				}
+			}
+
+		}
+	}
+
+	.login-btn {
+		width: 100%;
+		max-width: gREm(324);
+		padding: gREm(17) 0;
+		height: auto;
+		background: linear-gradient(85.48deg, #9f52ff 0%, #3504ff 99.18%);
+		border-radius: 10px;
+		font-family: $AppFont;
+		font-size: gREm(14);
+		line-height: gREm(22);
+		font-weight: 700;
+		text-align: center;
+	}
+
+	.agree-policy {
+		margin-top: gREm(17);
+		margin-bottom: gREm(24);
+		width: 100%;
+		max-width: gREm(324);
+		display: flex;
+		align-items: center;
+
+		.label {
+			display: block;
+			position: relative;
+			cursor: pointer;
+			padding-left: gREm(30);
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			@include Set-Font($AppFont, gREm(14), gREm(22), #0d0c22);
+
+			input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+				height: 0;
+				width: 0;
+			}
+
+			.checkmark {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: gREm(22);
+				width: gREm(22);
+				border-radius: gREm(5);
+				border: 1px solid #000;
+
+				&::after {
+					content: '';
+					position: absolute;
+					display: none;
+					left: gREm(8);
+					top: gREm(4);
+					width: gREm(4);
+					height: gREm(9);
+					border: solid white;
+					border-width: 0 gREm(2) gREm(2) 0;
+					-webkit-transform: rotate(45deg);
+					-ms-transform: rotate(45deg);
+					transform: rotate(45deg);
+				}
+			}
+		}
+
+		input:checked ~ .checkmark {
+			background-color: #6C38EF;
+			border: none;
+		}
+
+		input:checked ~ .checkmark:after {
+			display: block;
+		}
 	}
 	.welcome {
-		height: gREm(18);
+		height: auto;
 		width: 100%;
 		margin-top: gREm(50);
 		text-align: center;
@@ -125,19 +259,27 @@ export default {
 	.popup-title {
 		height: gREm(29);
 		width: 100%;
-		margin-top: gREm(8);
+		margin-bottom: gREm(12);
 		text-align: center;
-		@include Set-Font($AppFont, gREm(24), gREm(24), #0d0c22, 600);
+		@include Set-Font($AppFont, gREm(28), gREm(38), #181721, 600);
 		white-space: break-spaces;
 		height: auto;
 	}
 	.connectbtn {
-		margin-top: gREm(30);
-		width: gREm(300);
-		height: gREm(60);
-		border-radius: 6px;
-		@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
+		padding-left: gREm(75);
+		margin-top: gREm(10);
+		width: gREm(324);
+		height: gREm(64);
+		@include Set-Font($AppFont, gREm(18), gREm(26), none);
 		@include OnOverTransition();
+		border-radius: gREm(6);
+
+		& .ic-image {
+			margin-right: gREm(15);
+		}
+		&:hover {
+			transform: translateY(-2px);
+		}
 	}
 }
 
@@ -147,6 +289,7 @@ export default {
 			padding: 0 gREm(20);
 			.modal-container {
 				width: 100%;
+				
 			}
 		}
 	}
