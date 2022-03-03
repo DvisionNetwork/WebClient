@@ -40,7 +40,7 @@
 								<span class="line"></span>
 							</div>
 							<div class="login-input">
-								<input v-model="idLogin" type="text" placeholder="id" />
+								<input v-model="idLogin" type="text" placeholder="Please enter ID..." />
 							</div>
 							<div class="login-pwd">
 								<input v-model="passwordLogin" :type="passwordType" placeholder="***********" />
