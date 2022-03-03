@@ -8,6 +8,7 @@
 	<Login
 		appear
 		v-if="isShowLoginPopup"
+		:setProviderWalletCon="setProviderWalletCon"
 	/>
 
 	<Event
@@ -34,6 +35,7 @@
 		v-if="isShowStakingModal.isShowModal"
 		:data = isShowStakingModal
 		:onStakingSuccess="isShowStakingModal.onStakingSuccess"
+		:setProviderWalletCon="setProviderWalletCon"
 	/>
 	<PopupSuccessModal
 		appear
@@ -185,7 +187,9 @@ class myPlugin extends ScrollbarPlugin {
 		};
 	}
 }
-const { ethereum } = window
+const { ethereum } = window;
+
+import WalletConnectProvider from "@walletconnect/web3-provider";
 export default {
 	components: {
 		Scrollbar,
@@ -201,6 +205,11 @@ export default {
 		PopupConfirmModal,
 		PopupInforModal,
 		vueRecaptcha
+	},
+	data() {
+		return {
+			providerWalletCon: 'providerWalletCon',
+		}
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
@@ -381,6 +390,17 @@ export default {
 		wallet() {
 			return this.$store.state.wallet;
 		},
+		setProviderWalletCon() {
+			const providerWalletCon = new WalletConnectProvider({
+				rpc: {
+					1: "https://mainnet.mycustomnode.com",
+					3: "https://ropsten.mycustomnode.com",
+					97: "https://data-seed-prebsc-2-s2.binance.org:8545/",
+					100: "https://dai.poa.network",
+				},
+			})
+			return providerWalletCon
+		}
 	},
 	watch: {
 		isShowToast(newVal, oldVal) {
