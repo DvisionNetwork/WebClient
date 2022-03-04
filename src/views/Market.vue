@@ -1121,6 +1121,7 @@ export default {
 						width: 100%;
 						padding-right: 0;
 						height: 100%;
+						align-items: flex-start;
 
 						.search-box,
 						.switch-box,
@@ -1150,6 +1151,7 @@ export default {
 
 						.search-box {
 							width: auto;
+							margin-top: gREm(1);
 							.icon {
 								width: gREm(20);
 								height: gREm(20);
@@ -1168,6 +1170,19 @@ export default {
 						.right-menu-box {
 							flex-wrap: wrap;
 							width: 100%;
+
+							.switch-box {
+								.switch-label {
+									line-height: gREm(21);
+								}
+							}
+
+							.order-by-box {
+								width: auto;
+								.order {
+									line-height: gREm(21);
+								}
+							}
 						}
 					}
 

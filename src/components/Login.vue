@@ -543,12 +543,14 @@ export default {
 		@include Set-Font($AppFont, gREm(14), gREm(24), #0d0c22);
 	}
 	.popup-title {
-		height: gREm(29);
+		height: auto;
 		width:100%;
 		margin-top: gREm(8);
 		margin-bottom: gREm(12);
 		text-align: center;
 		@include Set-Font($AppFont, gREm(28), gREm(38), #181721, 600);
+		white-space: pre-wrap;
+		padding: 0 gREm(20);
 	}
 	.id,
 	.password {
