@@ -35,7 +35,6 @@ async checkMetamask() {
 				// console.log("BSC Network matched");
 				network = 'POL';
 			}
-			console.log('networkkkkkkk', network);
 		}
 		catch(err) {
 			console.error("Error] : " + err.message);
