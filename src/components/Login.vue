@@ -430,20 +430,23 @@ export default {
 			console.log("[Auth] login() ", data);
 
 			_U.callPost({
-				url:gConfig.login_url,
+				url: gConfig.login_url,
 				data: data,
-				callback: (resp) =>{
-					console.log("[Signup.Register] onSubmit()-> resp ", resp);
-					var rdata = resp.data;
-					if(rdata && typeof rdata == 'string')  {
-						this.mxShowToast(rdata);
-					}else if(rdata && typeof rdata == 'object' && rdata.length > 0) {
-						if(rdata[0]) {
-							var userInfo = rdata[0];
-							userInfo.oqs_no = '';
-							userInfo.wallet_addr = data.wallet_addr;
+				callback: (resp) => {
+					let rdata = resp.data;
+					if (rdata && typeof rdata == 'string') {
+						this.mxShowToast(rdata)
+					} else if (
+						rdata &&
+						typeof rdata == 'object' &&
+						rdata.length > 0
+					) {
+						if (rdata[0]) {
+							const userInfo = { ...rdata[0] };
+							userInfo.oqs_no = ''
+							// userInfo.wallet_addr = data.wallet_addr ? data.wallet_addr
 
-							var wlt= {
+							let wlt = {
 								currentAccountIdx: 0,
 								currentAccount: userInfo.wallet_addr,
 								accounts: [userInfo.wallet_addr],

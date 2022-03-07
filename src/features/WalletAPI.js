@@ -24,7 +24,6 @@ async checkMetamask() {
 		try {
 			// console.log('Wallet is installed!');
 			var chainId = await ethereum.request({method :'eth_chainId'});
-			console.log("chain Id : " + chainId);
 
 			if(chainId === addr.Network || chainId === ethaddr.Network) {
 				// console.log("ETH network matched");
@@ -36,6 +35,7 @@ async checkMetamask() {
 				// console.log("BSC Network matched");
 				network = 'POL';
 			}
+			console.log('networkkkkkkk', network);
 		}
 		catch(err) {
 			console.error("Error] : " + err.message);

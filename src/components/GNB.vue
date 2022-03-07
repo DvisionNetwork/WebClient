@@ -82,6 +82,60 @@
 								</div>
 							</transition>
 						</div>
+						<div class="info-network"
+							@click="showNetwork = !showNetwork"
+						>
+							<div class="network-icon">
+								<!-- <span>{{ network }}</span> -->
+								<span>Ethereum</span>
+							</div>
+							<transition appear name="fade">
+								<div class="network-popup" v-if="showNetwork">
+									<div class="network-wrapper">
+										<img
+											class="icon"
+											src="../assets/img/ethereum.png"
+											alt="icon"
+										/>
+										<input
+											type="radio"
+											id="etherium"
+											value="ethereum"
+											v-model="checkedNetwork"
+										/>
+										<label for="etherium">Ethereum</label>
+									</div>
+									<div class="network-wrapper">
+										<img
+											class="icon"
+											src="../assets/img/bsc.svg"
+											alt="icon"
+										/>
+										<input
+											type="radio"
+											id="bsc"
+											value="bsc"
+											v-model="checkedNetwork"
+										/>
+										<label for="bsc">BSC</label>
+									</div>
+									<div class="network-wrapper">
+										<img
+											class="icon"
+											src="../assets/img/polygon.png"
+											alt="icon"
+										/>
+										<input
+											type="radio"
+											id="polygon"
+											value="polygon"
+											v-model="checkedNetwork"
+										/>
+										<label for="polygon">Polygon</label>
+									</div>
+								</div>
+							</transition>
+						</div>
 					</template>
 
 					<template v-else>
@@ -139,6 +193,8 @@ export default {
 			isShowLangMenu: false,
 			supportMobileMenu: false,
 			isShowNavbar: false,
+			showNetwork: false,
+			checkedNetwork: 'ethereum',
 		}
 	},
 	computed: {
@@ -370,6 +426,44 @@ export default {
 					// @include OnOverTransition();
 					&:hover {
 						opacity: 1;
+					}
+				}
+			}
+
+			.info-network {
+				margin-left: gREm(16);
+				cursor: pointer;
+
+				.network-icon {
+					font-family: $AppFont;
+				}
+				.network-popup {
+					display: flex;
+					gap: gREm(30);
+					border-radius: gREm(8);
+					margin-top: gREm(16);
+					position: absolute;
+					background-color: #ffffff;
+					padding: gREm(10) gREm(20);
+					right: 0;
+				}
+
+				.network-wrapper {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+
+					.icon {
+						width: gREm(30);
+						height: gREm(30);
+						margin-bottom: gREm(8);
+					}
+
+					label {
+						color: #000000;
+						font-size: gREm(14);
+						line-height: gREm(22);
+						font-family: $AppFont;
 					}
 				}
 			}
