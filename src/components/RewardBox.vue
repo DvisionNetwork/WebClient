@@ -57,11 +57,14 @@ import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
 import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import Fortmatic from 'fortmatic'
 import {
 	toFixedDecimal,
 	BSC_RPC_ENDPOINT,
 	FORTMATIC_API_KEY,
+	INFURA_ID,
+	formatChainId
 } from '@/features/Common.js'
 var gConfig = AppConfig()
 
@@ -99,16 +102,23 @@ export default {
 		mininghashRatePerHour: String,
 		staking_address: String,
 	},
-
+	beforeMount(){
+		if(this.loginBy === 'WalletConnect') {
+			const walletconnect = window.localStorage.getItem('walletconnect')
+			let wll = JSON.parse(walletconnect)
+			const chainId = formatChainId(wll.chainId)
+			this.networkChainId = chainId
+		}
+	},
 	mounted() {
 		setInterval(() => {
-			this.getCampaignEarned()
+			// this.getCampaignEarned()
 		}, 3000)
 	},
 	watch: {
 		'poolDuration.id': {
 			handler() {
-				this.getCampaignEarned()
+				// this.getCampaignEarned()
 			},
 		},
 	},
@@ -143,8 +153,15 @@ export default {
 						fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					}
 					web3 = new Web3(fm.getProvider())
-				}
-				let contractConn = new web3.eth.Contract(abi, address_ct)
+				}	
+				else if (this.loginBy === 'WalletConnect') {
+					const provider = new WalletConnectProvider({
+						infuraId: INFURA_ID,
+					})
+					await provider.enable();
+					web3 = new Web3(provider);
+				}			
+				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
 		},

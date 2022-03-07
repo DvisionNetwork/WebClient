@@ -87,6 +87,8 @@ import {
 	MATIC_ADDRESS_1155,
 	FORTMATIC_API_KEY,
 	MATIC_RPC_ENDPOINT,
+	INFURA_ID,
+	formatChainId
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -158,7 +160,14 @@ export default {
 		}
 	},
 	beforeMount() {
-		this.getCurrentNetwork()
+		if (this.loginBy === 'WalletConnect') {
+			const walletconnect = window.localStorage.getItem('walletconnect')
+			let wll = JSON.parse(walletconnect)
+			const chainId = formatChainId(wll.chainId)
+			this.setStakingAddress(chainId)
+		} else {
+			this.getCurrentNetwork()
+		}
 	},
 	mounted() {
 		console.log('loginBy', this.loginBy)
@@ -203,7 +212,10 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			const id = this.poolDuration.id
+			console.log('networkETH', networkETH)
+			console.log('networkPOL', networkBSC)
+			console.log('networkBSC', networkPolygon)
+			console.log('chainId', chainId)
 			if (
 				chainId !== networkBSC &&
 				chainId !== networkETH &&
@@ -227,6 +239,7 @@ export default {
 				this.address721 = MATIC_ADDRESS_721
 				this.address1155 = MATIC_ADDRESS_1155
 			}
+			const id = this.poolDuration.id
 			this.getCampaignInfo(id)
 			this.onGetNftsStaked(id)
 			this.getTotalMiningHashRate(id)
@@ -266,7 +279,7 @@ export default {
 			else return false
 		},
 		async getCurrentNetwork() {
-			const chainId = await ethereum.request({
+			let chainId = await ethereum.request({
 				method: 'eth_chainId',
 			})
 			this.current_network = chainId
@@ -524,17 +537,20 @@ export default {
 						rpcUrl: this.networkRPC,
 						chainId: this.networkChainId,
 					}
-					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+					if (
+						this.networkRPC !== 'undefined' &&
+						this.networkChainId !== 'undefined'
+					) {
 						fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					}
 					web3 = new Web3(fm.getProvider())
-				}	
-				else if (this.loginBy === 'WalletConnect') {
+				} else if (this.loginBy === 'WalletConnect') {
 					const provider = new WalletConnectProvider({
-						infuraId: '27e484dcd9e3efcfd25a83a78777cdf1',
+						infuraId: INFURA_ID,
 					})
-					web3 = new Web3(provider);
-				}			
+					await provider.enable()
+					web3 = new Web3(provider)
+				}
 				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
