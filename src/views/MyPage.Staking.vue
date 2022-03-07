@@ -86,6 +86,7 @@ import {
 	MATIC_ADDRESS_721,
 	MATIC_ADDRESS_1155,
 	FORTMATIC_API_KEY,
+	MATIC_RPC_ENDPOINT,
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -128,8 +129,9 @@ export default {
 			loginBy: window.localStorage.getItem('loginBy'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: this.$store?.state?.wallet?.accounts[0],
-			current_network: '',
-
+			current_network: window.localStorage.getItem('currentNetwork'),
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			networkChainId: window.localStorage.getItem('networkChainId'),
 			pages: [1],
 			currentPage: 1,
 			timeCount: {
@@ -199,15 +201,13 @@ export default {
 	methods: {
 		setStakingAddress(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('chainId', chainId)
-			console.log('chainId networkBSC', networkBSC)
 			const id = this.poolDuration.id
 			if (
 				chainId !== networkBSC &&
 				chainId !== networkETH &&
-				chainId !== networkPoygon
+				chainId !== networkPolygon
 			) {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
@@ -221,7 +221,7 @@ export default {
 				this.chainId = ETH_CHAIN_ID
 				this.address721 = ETH_ADDRESS_721
 				this.address1155 = ETH_ADDRESS_1155
-			} else if (chainId === networkPoygon) {
+			} else if (chainId === networkPolygon) {
 				this.staking_address = MATIC_STAKING_ADDRESS
 				this.chainId = MATIC_CHAIN_ID
 				this.address721 = MATIC_ADDRESS_721
@@ -240,20 +240,18 @@ export default {
 					ABI_STAKING,
 					this.staking_address
 				)
-				const res = await contractConn.methods
-				.allowWithdrawAll()
-				.call()
-				if(res) this.allowWithdraw = tx
+				const res = await contractConn.methods.allowWithdrawAll().call()
+				if (res) this.allowWithdraw = res
 			}
 		},
 		checkNetwork() {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			if (
 				currentNetwork === networkBSC ||
-				currentNetwork === networkPoygon ||
+				currentNetwork === networkPolygon ||
 				currentNetwork === networkETH
 			) {
 				return true
@@ -453,43 +451,43 @@ export default {
 						ABI_STAKING,
 						this.staking_address
 					)
-					const data =	await contractConn.methods
+					const data = await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
-					if(data) {
+					if (data) {
 						this.poolDuration.duration = Number(data.duration)
-							let resultNumber = BigNumber.from(
-								data.rewardRate
-							).mul(data.duration)
-							this.rewardPool = Number(
-								formatEther(resultNumber)
-							).toFixed()
-							//set time countdown
-							const endValue = Number(data.timestampFinish)
-							const startValue = endValue - Number(data.duration)
-							const currValue = moment().unix()
-							if (!this.allowWithdraw) {
-								if (currValue > endValue) {
-									this.allowWithdraw = true
-								} else {
-									this.allowWithdraw = false
-								}
-							}
-							this.timeCount.startValue = startValue
-							this.timeCount.endValue = endValue
+						let resultNumber = BigNumber.from(data.rewardRate).mul(
+							data.duration
+						)
+						this.rewardPool = Number(
+							formatEther(resultNumber)
+						).toFixed()
+						//set time countdown
+						const endValue = Number(data.timestampFinish)
+						const startValue = endValue - Number(data.duration)
+						const currValue = moment().unix()
+						if (!this.allowWithdraw) {
 							if (currValue > endValue) {
-								//it's end
-								this.switchStatusCampain(1)
-							} else if (
-								startValue <= currValue &&
-								currValue <= endValue
-							) {
-								//had start
-								this.switchStatusCampain(3)
-							} else if (currValue < startValue) {
-								//not start yet
-								this.switchStatusCampain(2)
+								this.allowWithdraw = true
+							} else {
+								this.allowWithdraw = false
 							}
+						}
+						this.timeCount.startValue = startValue
+						this.timeCount.endValue = endValue
+						if (currValue > endValue) {
+							//it's end
+							this.switchStatusCampain(1)
+						} else if (
+							startValue <= currValue &&
+							currValue <= endValue
+						) {
+							//had start
+							this.switchStatusCampain(3)
+						} else if (currValue < startValue) {
+							//not start yet
+							this.switchStatusCampain(2)
+						}
 					}
 				}
 			} catch (err) {
@@ -521,7 +519,14 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
-				const fm = new Fortmatic(FORTMATIC_API_KEY)
+					let fm = new Fortmatic(FORTMATIC_API_KEY)
+					const options = {
+						rpcUrl: this.networkRPC,
+						chainId: this.networkChainId,
+					}
+					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+						fm = new Fortmatic(FORTMATIC_API_KEY, options)
+					}
 					web3 = new Web3(fm.getProvider())
 				}
 				let contractConn = new web3.eth.Contract(abi, address_ct)

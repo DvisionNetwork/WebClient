@@ -78,6 +78,8 @@ export default {
 			dvgEarned: '0 DVG',
 			harvest: true,
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			networkChainId: window.localStorage.getItem('networkChainId'),
 		}
 	},
 	props: {
@@ -99,10 +101,6 @@ export default {
 	},
 
 	mounted() {
-		if (this.statusCampain !== 1) {
-			this.getTotalStaked()
-			this.getMyStaked()
-		}
 		setInterval(() => {
 			this.getCampaignEarned()
 		}, 3000)
@@ -136,7 +134,14 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
-					const fm = new Fortmatic(FORTMATIC_API_KEY)
+					let fm = new Fortmatic(FORTMATIC_API_KEY)
+					const options = {
+						rpcUrl: this.networkRPC,
+						chainId: this.networkChainId,
+					}
+					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+						fm = new Fortmatic(FORTMATIC_API_KEY, options)
+					}
 					web3 = new Web3(fm.getProvider())
 				}
 				let contractConn = new web3.eth.Contract(abi, address_ct)

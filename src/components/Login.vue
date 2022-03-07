@@ -143,6 +143,8 @@ import {
 	FORTMATIC_API_KEY,
 	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
+	MATIC_RPC_ENDPOINT,
+	MATIC_CHAIN_ID
 } from '@/features/Common.js'
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
@@ -318,12 +320,14 @@ export default {
 		},
 		async connectFortmatic() {
 			try {
-				const customNodeOptions = {
-    			rpcUrl: 'https://bsc-dataseed.binance.org/',
-    			chainId: 56
-				}
-				const fm = new Fortmatic(FORTMATIC_API_KEY, customNodeOptions)
-				web3 = new Web3(fm.getProvider())
+				const currentNetwork = window.localStorage.getItem('currentNetwork')
+				console.log('currentNetwork',currentNetwork)
+				const options = this.networkOptions(currentNetwork)
+				console.log('options',options)
+				window.localStorage.setItem('networkRPC', options.rpcUrl)
+				window.localStorage.setItem('networkChainId', options.chainId)
+				const fm = new Fortmatic(FORTMATIC_API_KEY, options)
+				window.web3 = new Web3(fm.getProvider())
 				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
 					if(error) throw error
@@ -340,7 +344,6 @@ export default {
 					}, function(error, result) {
 						if(error) throw error
 						ref.reqLogin({ wallet_addr: from })
-						ref.mxSetNetwork('BSC');
 						window.localStorage.setItem('loginBy','Fortmatic')
 					})
 				})
@@ -396,7 +399,22 @@ export default {
 				}
 			})
 		},
-
+		networkOptions(current_network) {
+			let returnOptions = {}
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
+			switch (current_network) {
+				case networkBSC:
+					returnOptions.rpcUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+					returnOptions.chainId = BSC_CHAIN_ID
+					break
+				case networkPolygon:
+					returnOptions.rpcUrl = MATIC_RPC_ENDPOINT
+					returnOptions.chainId = MATIC_CHAIN_ID
+					break
+			}
+			return returnOptions
+		},
 		// signin() {
 		// 	console.log("[Login] ID/PW login");
 
@@ -433,7 +451,6 @@ export default {
 								updated: true,
 							}
 							this.mxSetWallet(wlt);
-							console.log('AAAAAAAAAAAAAAAAAa')
 							this.$store.dispatch('setUserInfo',userInfo);
 							this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
 							console.log('===== LOGIN OK, userInfo:', userInfo, this.$route.name);

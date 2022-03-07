@@ -447,10 +447,6 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('chainId',chainId)
-			console.log('chainId BSC',networkBSC)
-			console.log('chainId Polygon',networkPoygon)
-			console.log('chainId ETH',networkETH)
 			window.localStorage.setItem('currentNetwork', chainId)
 			if (
 				chainId !== networkBSC &&

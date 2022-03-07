@@ -157,8 +157,10 @@ export default {
 			keyword: '',
 			listShowers: [],
 			current_addr: this.$store?.state?.wallet?.accounts[0],
-			current_network: '',
+			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			networkChainId: window.localStorage.getItem('networkChainId'),
 		}
 	},
 	beforeMount() {
@@ -425,11 +427,14 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
-					const customNodeOptions = {
-						rpcUrl: 'https://bsc-dataseed.binance.org/',
-						chainId: 56,
+					let fm = new Fortmatic(FORTMATIC_API_KEY)
+					const options = {
+						rpcUrl: this.networkRPC,
+						chainId: this.networkChainId,
 					}
-					const fm = new Fortmatic(FORTMATIC_API_KEY)
+					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+						fm = new Fortmatic(FORTMATIC_API_KEY, options)
+					}
 					web3 = new Web3(fm.getProvider())
 				}
 				let contractConn = new web3.eth.Contract(abi, address_ct)
