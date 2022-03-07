@@ -125,6 +125,7 @@ var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import {
 	renderSuccessContent,
 	renderSwitchNftContent,
@@ -426,16 +427,25 @@ export default {
 		async contractConnect(abi, address_ct) {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+
 				if (this.loginBy === 'Fortmatic') {
 					let fm = new Fortmatic(FORTMATIC_API_KEY)
 					const options = {
 						rpcUrl: this.networkRPC,
 						chainId: this.networkChainId,
 					}
-					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+					if (
+						this.networkRPC !== 'undefined' &&
+						this.networkChainId !== 'undefined'
+					) {
 						fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					}
 					web3 = new Web3(fm.getProvider())
+				} else if (this.loginBy === 'WalletConnect') {
+					const provider = new WalletConnectProvider({
+						infuraId: '27e484dcd9e3efcfd25a83a78777cdf1',
+					})
+					web3 = new Web3(provider);
 				}
 				let contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
@@ -496,12 +506,17 @@ export default {
 				.catch((e) => {
 					this.hadUnderstand = false
 					this.mxCloseLoading()
-					if (e.code === 4001 || e.code === -32603) {
+					if (
+						e.code === 4001 ||
+						e.code === -32603 ||
+						e.code === -32602
+					) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_3)
 					}
 				})
+			console.log('res', res)
 			if (res) {
 				this.mxCloseLoading()
 				this.hadUnderstand = true

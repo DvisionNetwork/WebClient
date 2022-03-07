@@ -86,8 +86,7 @@
 							@click="showNetwork = !showNetwork"
 						>
 							<div class="network-icon">
-								<!-- <span>{{ network }}</span> -->
-								<span>Ethereum</span>
+								<span>{{ checkedNetwork }}</span>
 							</div>
 							<transition appear name="fade">
 								<div class="network-popup" v-if="showNetwork">
@@ -163,15 +162,9 @@
 <script>
 
 import AppConfig from '@/App.Config.js'
-import WalletLink  from 'walletlink'
-export const walletLink = new WalletLink({
-	appName: 'Division Network',
-  appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
-  darkMode: false
-})
 import WalletConnect from '@walletconnect/client'
-import { DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID , BRIDGE_WALLETCONNECT} from '@/features/Common.js'
-export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
+import { BRIDGE_WALLETCONNECT} from '@/features/Common.js'
+
 var gConfig = AppConfig();
 
 export default {
@@ -275,6 +268,21 @@ export default {
 		isShowNavbar: function () {
 			this.checkStyleOverflow();
 		},
+		checkedNetwork(){
+			console.log('checkedNetwork',this.checkedNetwork)
+			switch(this.checkedNetwork){
+				case 'bsc':
+					this.mxSetNetwork('BSC')
+					break
+				case 'polygon' :
+					this.mxSetNetwork('POL')
+					break
+				case 'ethereum':
+					this.mxSetNetwork('ETH')
+					break
+
+			}
+		}
 	},
 }
 </script>

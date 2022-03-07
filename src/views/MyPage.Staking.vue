@@ -94,7 +94,7 @@ import {
 	MSG_METAMASK_4,
 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-
+import WalletConnectProvider from '@walletconnect/web3-provider'
 import {
 	renderUnlockContent,
 	renderCampainNotYetContent,
@@ -528,8 +528,14 @@ export default {
 						fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					}
 					web3 = new Web3(fm.getProvider())
-				}
-				let contractConn = new web3.eth.Contract(abi, address_ct)
+				}	
+				else if (this.loginBy === 'WalletConnect') {
+					const provider = new WalletConnectProvider({
+						infuraId: '27e484dcd9e3efcfd25a83a78777cdf1',
+					})
+					web3 = new Web3(provider);
+				}			
+				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}
 		},

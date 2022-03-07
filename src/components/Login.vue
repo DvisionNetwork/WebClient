@@ -132,7 +132,6 @@ import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig();
 
 import sha256 from 'crypto-js/sha256';
-
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -146,16 +145,9 @@ import {
 	MATIC_RPC_ENDPOINT,
 	MATIC_CHAIN_ID
 } from '@/features/Common.js'
-import WalletLink  from 'walletlink'
+import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
-
-export const walletLink = new WalletLink({
-	appName: 'Division Network',
-  appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
-  darkMode: false
-})
-const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 
 export default {
 	mounted() {
@@ -307,6 +299,7 @@ export default {
 
 		},
 		async connectCoinbase() {
+			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
 			if (accounts) {
@@ -382,6 +375,7 @@ export default {
 				await connector.createSession()
 			} else {
 				this.reqLogin({ wallet_addr: connector._accounts[0] })
+				this.mxSetNetwork('BSC');
 				// connector.killSession()
 				return
 			}

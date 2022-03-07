@@ -79,15 +79,9 @@ import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
 import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, FORTMATIC_API_KEY } from '@/features/Common.js'
+import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
-import WalletLink  from 'walletlink'
 import Web3 from 'web3'
-export const walletLink = new WalletLink({
-	appName: 'Division Network',
-  appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
-  darkMode: false
-})
-export const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 
 export default {
 	name: "Register",
@@ -286,7 +280,8 @@ export default {
 			}
 			return rv;
 		},
-		async sinUpWithCoinbase(){
+		async sinUpWithCoinbase() {
+			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 			ether.enable().then((accounts) => {
   		if(!accounts){
 				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
