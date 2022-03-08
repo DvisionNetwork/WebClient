@@ -211,6 +211,7 @@ export default {
 
 	methods: {
 		setStakingAddress(chainId) {
+			this.current_network = chainId
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
@@ -263,7 +264,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			const currentNetwork = this.current_network
 			if (
 				currentNetwork === networkBSC ||
 				currentNetwork === networkPolygon ||
