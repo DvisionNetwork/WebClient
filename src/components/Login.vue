@@ -149,6 +149,9 @@ import {
 import WalletLink  from 'walletlink'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
+import {
+	MSG_METAMASK_1,
+} from '@/features/Messages.js'
 
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
@@ -190,7 +193,8 @@ export default {
 			},
 			passwordType: 'password',
 			idLogin: '',
-			passwordLogin: ''
+			passwordLogin: '',
+			compareAddressCondition: false
 		}
 	},
 	props: {
@@ -205,7 +209,7 @@ export default {
 				value: VALUE_LOGIN,
 				usedomain: 'false',
 			}
-			this.reqLogin(data);
+			this.reqLogin(data, true);
 		},
 		handleEyeClick() {
 			this.passwordType =
@@ -280,31 +284,49 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
-		connectMetamask() {
+		async connectMetamask(data = null) {
 			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
-			wAPI.checkMetamask().then((rv)=>{
-				if(rv != 'NONE') {
-					wAPI.Request_Account((resp) => {
-						console.log('[Login] connect() -> Request_Account : resp', resp);
-						if(resp.res_code == 200) {
-							var account = _U.getIfDefined(resp,['data','account']);
-
-							if(account) {
-								wAPI.Sign_Account(account, this.reqLogin);
-								this.mxSetNetwork(rv);
-								window.localStorage.setItem('loginBy','Metamask')
+			const network = await wAPI.checkMetamask();
+			if (network != 'NONE') {
+				wAPI.Request_Account((resp) => {
+					if (resp.res_code == 200) {
+						const account = _U.getIfDefined(resp, ['data', 'account'])
+						if (data) {
+							if (account === data.wlt.currentAccount) {
+								this.mxSetWallet(data.wlt);
+								this.$store.dispatch('setUserInfo', data.userInfo);
+								this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
+								this.closePopup();
+								if (this.$route.name == 'Signup-Page') {
+									this.$router.push({name:"Home"});
+								}
 								return;
 							}
+							this.mxShowToast(MSG_METAMASK_1);
+							return;
 						}
-						console.log("Error on get wallet url", resp);
-						this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
-					});
-				}else{
-					this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-chain-not-matched')});
-				}
-			});
-
+						wAPI.Sign_Account(account, this.reqLogin)
+						this.mxSetNetwork(network)
+						window.localStorage.setItem('loginBy', 'Metamask')
+					}
+					this.mxShowAlert({
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.metamask-request-error') +
+							'\n' +
+							resp.res_code,
+					})
+				})
+			} else {
+				this.mxShowAlert({
+					msg:
+						this.$t('signup.register.error-on-wallet-url') +
+						'\n' +
+						this.$t('popup.metamask-chain-not-matched'),
+				})
+			}
 		},
 		async connectCoinbase() {
 			const rv = await wAPI.checkMetamask()
@@ -426,13 +448,13 @@ export default {
 		// 	this.reqLogin(data);
 		// },
 
-		reqLogin(data) {
+		reqLogin(data, loginWithEmail = false) {
 			console.log("[Auth] login() ", data);
 
 			_U.callPost({
 				url: gConfig.login_url,
 				data: data,
-				callback: (resp) => {
+				callback: async (resp) => {
 					let rdata = resp.data;
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
@@ -442,24 +464,35 @@ export default {
 						rdata.length > 0
 					) {
 						if (rdata[0]) {
-							const userInfo = { ...rdata[0] };
+							const userInfo = { ...rdata[0] }
 							userInfo.oqs_no = ''
 							// userInfo.wallet_addr = data.wallet_addr ? data.wallet_addr
-
-							let wlt = {
+							const wlt = {
 								currentAccountIdx: 0,
 								currentAccount: userInfo.wallet_addr,
 								accounts: [userInfo.wallet_addr],
 								balance: 0,
 								updated: true,
 							}
-							this.mxSetWallet(wlt);
-							this.$store.dispatch('setUserInfo',userInfo);
-							this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
-							console.log('===== LOGIN OK, userInfo:', userInfo, this.$route.name);
-							this.closePopup();
-							if(this.$route.name == 'Signup-Page') {
-								this.$router.push({name:"Home"});
+							if (loginWithEmail) {
+								const data = {
+									wlt,
+									userInfo,
+								}
+								this.connectMetamask(data)
+								return
+							}
+							this.mxSetWallet(wlt)
+							this.$store.dispatch('setUserInfo', userInfo)
+							this.$cookies.set(
+								'userInfo',
+								userInfo,
+								gConfig.getUserInfoCookieExpireTime()
+							)
+							this.closePopup()
+
+							if (this.$route.name == 'Signup-Page') {
+								this.$router.push({ name: 'Home' })
 							}
 						}
 					}
