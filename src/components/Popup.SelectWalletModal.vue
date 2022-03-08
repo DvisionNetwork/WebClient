@@ -55,17 +55,6 @@
 								Fortmatic
 							</BaseButton>
 
-							<div class="agree-policy">
-								<label class="label">I agree with privacy policy
-									<input type="checkbox">
-									<span class="checkmark"></span>
-								</label>
-							</div>
-
-							<BaseButton type="button" class="login-btn"
-								>Sign up</BaseButton
-							>
-
 							<div class="signup-box">
 								<div class="signup-box-wrap">
 									<div class="notamember" >{{$t('login.popup.already-have-account')}}</div>
