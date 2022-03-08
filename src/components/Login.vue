@@ -194,7 +194,6 @@ export default {
 			passwordType: 'password',
 			idLogin: '',
 			passwordLogin: '',
-			compareAddressCondition: false
 		}
 	},
 	props: {
@@ -454,7 +453,7 @@ export default {
 			_U.callPost({
 				url: gConfig.login_url,
 				data: data,
-				callback: async (resp) => {
+				callback: (resp) => {
 					let rdata = resp.data;
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
