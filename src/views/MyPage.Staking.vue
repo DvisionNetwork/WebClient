@@ -644,6 +644,7 @@ export default {
 			this.mxShowConfirmModal(obj)
 		},
 		async onUnStakeNfts(params, unLockAll) {
+			console.log('staking_address',this.staking_address)
 			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				this.mxCloseConfirmModal()
@@ -664,7 +665,7 @@ export default {
 			await contractConn.methods
 				.withdraw(this.poolDuration.id, params)
 				.send({
-					from: (await this.getAccounts())[0],
+					from: this.current_addr,
 				})
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
