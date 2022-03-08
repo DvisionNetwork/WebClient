@@ -375,7 +375,6 @@ export default {
 				await connector.createSession()
 			} else {
 				this.reqLogin({ wallet_addr: connector._accounts[0] })
-				this.mxSetNetwork('BSC');
 				// connector.killSession()
 				return
 			}

@@ -62,9 +62,11 @@ import Fortmatic from 'fortmatic'
 import {
 	toFixedDecimal,
 	BSC_RPC_ENDPOINT,
+	ETH_RPC_ENDPOINT,
+	MATIC_RPC_ENDPOINT,
 	FORTMATIC_API_KEY,
 	INFURA_ID,
-	formatChainId
+	formatChainId,
 } from '@/features/Common.js'
 var gConfig = AppConfig()
 
@@ -102,8 +104,8 @@ export default {
 		mininghashRatePerHour: String,
 		staking_address: String,
 	},
-	beforeMount(){
-		if(this.loginBy === 'WalletConnect') {
+	beforeMount() {
+		if (this.loginBy === 'WalletConnect') {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
@@ -149,18 +151,26 @@ export default {
 						rpcUrl: this.networkRPC,
 						chainId: this.networkChainId,
 					}
-					if (this.networkRPC !== 'undefined' && this.networkChainId !== 'undefined') {
+					if (
+						this.networkRPC !== 'undefined' &&
+						this.networkChainId !== 'undefined'
+					) {
 						fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					}
 					web3 = new Web3(fm.getProvider())
-				}	
-				else if (this.loginBy === 'WalletConnect') {
+				} else if (this.loginBy === 'WalletConnect') {
 					const provider = new WalletConnectProvider({
-						infuraId: INFURA_ID,
+						rpc: {
+							1: 'https://mainnet.mycustomnode.com',
+							3: 'https://ropsten.mycustomnode.com',
+							97: BSC_RPC_ENDPOINT,
+							4: ETH_RPC_ENDPOINT,
+							80001: MATIC_RPC_ENDPOINT,
+						},
 					})
-					await provider.enable();
-					web3 = new Web3(provider);
-				}			
+					provider.enable()
+					web3 = new Web3(provider)
+				}
 				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
 			}

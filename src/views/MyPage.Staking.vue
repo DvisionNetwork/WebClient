@@ -86,9 +86,10 @@ import {
 	MATIC_ADDRESS_721,
 	MATIC_ADDRESS_1155,
 	FORTMATIC_API_KEY,
+	ETH_RPC_ENDPOINT,
 	MATIC_RPC_ENDPOINT,
 	INFURA_ID,
-	formatChainId
+	formatChainId,
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -96,7 +97,6 @@ import {
 	MSG_METAMASK_4,
 } from '@/features/Messages.js'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-import WalletConnectProvider from '@walletconnect/web3-provider'
 import {
 	renderUnlockContent,
 	renderCampainNotYetContent,
@@ -108,6 +108,8 @@ import {
 import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 import Fortmatic from 'fortmatic'
+import WalletConnectProvider from '@walletconnect/web3-provider'
+
 const { ethereum } = window
 
 export default {
@@ -467,6 +469,7 @@ export default {
 					const data = await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
+					console.log('data1', data)
 					if (data) {
 						this.poolDuration.duration = Number(data.duration)
 						let resultNumber = BigNumber.from(data.rewardRate).mul(
@@ -546,9 +549,15 @@ export default {
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === 'WalletConnect') {
 					const provider = new WalletConnectProvider({
-						infuraId: INFURA_ID,
+						rpc: {
+							1: 'https://mainnet.mycustomnode.com',
+							3: 'https://ropsten.mycustomnode.com',
+							97: BSC_RPC_ENDPOINT,
+							4: ETH_RPC_ENDPOINT,
+							80001: MATIC_RPC_ENDPOINT,
+						},
 					})
-					await provider.enable()
+					provider.enable()
 					web3 = new Web3(provider)
 				}
 				const contractConn = new web3.eth.Contract(abi, address_ct)

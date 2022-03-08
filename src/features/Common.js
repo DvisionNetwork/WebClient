@@ -18,14 +18,14 @@ export function toFixedDecimal(val, decimals = 18) {
 export function formatChainId(chanId) {
   let network = ''
   switch (chanId) {
-    case ETH_CHAIN_ID :
-      network = '0x4'
+    case ETH_CHAIN_ID : 
+      network = '0x4' //testnet
       break
-    case BSC_CHAIN_ID :
-      network = '0x13881'
+    case BSC_CHAIN_ID : 
+      network = '0x61' //testnet
       break
-    case MATIC_CHAIN_ID :
-      network = '0x61'
+    case MATIC_CHAIN_ID : 
+      network = '0x13881' //testnet
       break
   }
   return network
