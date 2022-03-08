@@ -283,15 +283,15 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
-		async connectMetamask(data = null) {
+		async connectMetamask(data = null, loginWithEmail = false) {
 			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
-			const network = await wAPI.checkMetamask();
-			if (network != 'NONE') {
+			const rv = await wAPI.checkMetamask();
+			if (rv != 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
-						if (data) {
+						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
 								this.mxSetWallet(data.wlt);
 								this.$store.dispatch('setUserInfo', data.userInfo);
@@ -305,9 +305,12 @@ export default {
 							this.mxShowToast(MSG_METAMASK_1);
 							return;
 						}
-						wAPI.Sign_Account(account, this.reqLogin)
-						this.mxSetNetwork(network)
-						window.localStorage.setItem('loginBy', 'Metamask')
+						if (account) {
+							wAPI.Sign_Account(account, this.reqLogin)
+							this.mxSetNetwork(rv)
+							window.localStorage.setItem('loginBy', 'Metamask');
+							return;
+						}
 					}
 					this.mxShowAlert({
 						msg:
@@ -478,7 +481,7 @@ export default {
 									wlt,
 									userInfo,
 								}
-								this.connectMetamask(data)
+								this.connectMetamask(data, true)
 								return
 							}
 							this.mxSetWallet(wlt)
