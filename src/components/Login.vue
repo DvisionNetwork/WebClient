@@ -303,7 +303,7 @@ export default {
 		},
 
 		async connectMetamask(data = null, loginWithEmail = false) {
-			this.checkProviderWallet(METAMASK);
+			const provider = this.checkProviderWallet(METAMASK);
 			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
@@ -319,7 +319,7 @@ export default {
 							return;
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin)
+							wAPI.Sign_Account(account, this.reqLogin, provider)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', 'Metamask');
 							return;
