@@ -143,7 +143,9 @@ import {
 	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
 	MATIC_RPC_ENDPOINT,
-	MATIC_CHAIN_ID
+	MATIC_CHAIN_ID,
+	METAMASK,
+	COINBASE
 } from '@/features/Common.js'
 import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
@@ -276,7 +278,32 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
+		checkProviderWallet(name) {
+			if (!ethereum?.providers) {
+				return
+			}
+			let provider = '';
+			switch (name) {
+				case METAMASK:
+					provider = ethereum.providers.find(
+						({ isMetaMask }) => isMetaMask
+					)
+					break
+				case COINBASE:
+					provider = ethereum.providers.find(
+						({ isCoinbaseWallet }) => isCoinbaseWallet
+					)
+					break
+			}
+
+			if (provider) {
+				ethereum.setSelectedProvider(provider);
+				return provider;
+			}
+		},
+
 		async connectMetamask(data = null, loginWithEmail = false) {
+			const provider = this.checkProviderWallet(METAMASK);
 			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
@@ -286,20 +313,13 @@ export default {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
 						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
-								this.mxSetWallet(data.wlt);
-								this.$store.dispatch('setUserInfo', data.userInfo);
-								this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
-								this.closePopup();
-								if (this.$route.name == 'Signup-Page') {
-									this.$router.push({name:"Home"});
-								}
-								return;
+								return this.handleLogicLoginWithId(data)
 							}
 							this.mxShowToast(MSG_METAMASK_1);
 							return;
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin)
+							wAPI.Sign_Account(account, this.reqLogin, provider)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', 'Metamask');
 							return;
@@ -323,18 +343,26 @@ export default {
 				})
 			}
 		},
-		async connectCoinbase() {
+		async connectCoinbase(data = null, loginWithEmail = false) {
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
+			const provider = this.checkProviderWallet(COINBASE);
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
-			if (accounts) {
-					wAPI.Sign_Account(accounts[0], this.reqLogin);
-					this.mxSetNetwork(rv);
-					window.localStorage.setItem('loginBy','Coinbase')
+				if (data && loginWithEmail) {
+					if (accounts[0] === data.wlt.currentAccount) {
+						return this.handleLogicLoginWithId(data)
+					}
+					this.mxShowToast(MSG_METAMASK_1);
+					return;
+				}
+				if (accounts) {
+					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
+					this.mxSetNetwork(rv)
+					window.localStorage.setItem('loginBy', 'Coinbase')
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
-			}
-		})
+				}
+			})
 		},
 		async connectFortmatic() {
 			try {
@@ -432,6 +460,7 @@ export default {
 				data: data,
 				callback: (resp) => {
 					let rdata = resp.data;
+					console.log('rdata', rdata);
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
 					} else if (
@@ -455,7 +484,8 @@ export default {
 									wlt,
 									userInfo,
 								}
-								this.connectMetamask(data, true)
+								// this.connectMetamask(data, true)
+								this.connectCoinbase(data, true);
 								return
 							}
 							this.mxSetWallet(wlt)
@@ -474,6 +504,16 @@ export default {
 					}
 				}
 			});
+		},
+
+		handleLogicLoginWithId(data) {
+			this.mxSetWallet(data.wlt);
+			this.$store.dispatch('setUserInfo', data.userInfo);
+			this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
+			this.closePopup();
+			if (this.$route.name == 'Signup-Page') {
+				this.$router.push({name:"Home"});
+			}
 		}
 	}
 }

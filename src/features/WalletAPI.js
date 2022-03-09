@@ -23,6 +23,7 @@ async checkMetamask() {
 		try {
 			// console.log('Wallet is installed!');
 			var chainId = await ethereum.request({method :'eth_chainId'});
+			console.log(chainId, 'chainId')
 			if(chainId === addr.Network || chainId === ethAddr.Network) {
 				// console.log("ETH network matched");
 				network = 'ETH';
@@ -47,7 +48,7 @@ async checkMetamask() {
 	return network;
 },
 
-async Sign_Account(account, callback) {
+async Sign_Account(account, callback, provider = null) {
 
 	console.log("[WalletAPI] Sign_Account ()");
 
@@ -57,6 +58,9 @@ async Sign_Account(account, callback) {
 		const from = account;
 		const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`;
 
+		if (provider) {
+			window.ethereum.setSelectedProvider(provider);
+		}
 		const sign = await ethereum.request({
 			method: 'personal_sign',
 			params: [msg, from, 'Example password'],
@@ -68,7 +72,7 @@ async Sign_Account(account, callback) {
 
 		callback(data);
 	} catch (err) {
-		console.error(err);
+		console.error(err, 'err');
 	}
 },
 
