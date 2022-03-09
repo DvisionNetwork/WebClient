@@ -507,6 +507,7 @@ export default {
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
+			console.log('this.data.staking_address',this.data.staking_address)
 			const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking

@@ -90,6 +90,7 @@ import {
 	MATIC_RPC_ENDPOINT,
 	INFURA_ID,
 	formatChainId,
+	checkProviderWallet
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -164,21 +165,22 @@ export default {
 		if (this.loginBy === 'WalletConnect') {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
-			const chainId = formatChainId(wll.chainId)
+			const chainId = formatChainId(Number(wll.chainId))
 			this.setStakingAddress(chainId)
 		}
-		else if(this.loginBy === 'Coinbase') {
+		else if(this.loginBy === 'Metamask' || this.loginBy === 'Coinbase'){
+			window.ethereum.setSelectedProvider(checkProviderWallet(this.loginBy.toUpperCase()))
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
 		}
 		else {
 			const chainId = window.localStorage.getItem('currentNetwork')
-			this.setStakingAddress(chainId)
+			const chainNetwork = formatChainId(Number(chainId))
+			this.setStakingAddress(chainNetwork)
 		}
 	},
 	mounted() {
-		console.log('loginBy', this.loginBy)
 		ethereum.on('accountsChanged', (accounts) => {
 			this.current_addr = accounts[0]
 		})
@@ -222,8 +224,8 @@ export default {
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
 			console.log('networkETH', networkETH)
-			console.log('networkPOL', networkBSC)
-			console.log('networkBSC', networkPolygon)
+			console.log('networkBSC', networkBSC)
+			console.log('networkPOL', networkPolygon)
 			console.log('chainId', chainId)
 			if (
 				chainId !== networkBSC &&
@@ -466,6 +468,8 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
+			const web3 = new Web3(Web3.givenProvider)
+			this.mxShowLoading('inf')
 			this.getAllowWithdrawAll()
 			try {
 				if (typeof window.ethereum !== 'undefined') {
@@ -476,7 +480,7 @@ export default {
 					const data = await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
-					console.log('data1', data)
+					console.log('data', data)
 					if (data) {
 						this.poolDuration.duration = Number(data.duration)
 						let resultNumber = BigNumber.from(data.rewardRate).mul(
@@ -511,9 +515,11 @@ export default {
 							//not start yet
 							this.switchStatusCampain(2)
 						}
+						this.mxCloseLoading()
 					}
 				}
 			} catch (err) {
+				this.mxCloseLoading()
 				console.log('catch', err)
 			}
 		},
@@ -540,13 +546,12 @@ export default {
 
 		async contractConnect(abi, address_ct) {
 			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
+				let web3 = new Web3(Web3.givenProvider)
 				if (this.loginBy === 'Fortmatic') {
 					const options = {
 						rpcUrl: this.networkRPC,
 						chainId: this.current_network,
 					}
-					console.log('options',options)
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === 'WalletConnect') {

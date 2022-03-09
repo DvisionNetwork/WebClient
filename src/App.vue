@@ -218,16 +218,11 @@ export default {
 	mounted() {
 		this.setCurrentNetwork()
 		if(ethereum) {
-			const loginBy = window.localStorage.getItem('loginBy')
 			ethereum.on('chainChanged', (chainId) => {
-				if(loginBy === 'Coinbase') {
-					const chainNetwork = formatChainId(Number(chainId))
-					this.checkNetwork(chainNetwork)
-				}
-				else {
-					this.checkNetwork(chainId)
-				}
-		})
+				console.log('chainId',chainId)
+				const chainNetwork = formatChainId(Number(chainId))
+				this.checkNetwork(chainNetwork)
+			})
 		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
@@ -448,14 +443,18 @@ export default {
 			scrollbar: null,
 			showRecaptcha: true,
 			isShowBtn: false,
+			connectData: 0
 		}
 	},
 
 	methods: {
 		async setCurrentNetwork() {
-			let web3 = new Web3(Web3.givenProvider)
-			const chainId = await web3.eth.net.getId();
-			window.localStorage.setItem('currentNetwork',chainId)
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			if(!currentNetwork || currentNetwork.length === 0) {
+				let web3 = new Web3(Web3.givenProvider)
+				const chainId = await web3.eth.net.getId();
+				window.localStorage.setItem('currentNetwork',formatChainId(chainId))
+			}
 		},
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network

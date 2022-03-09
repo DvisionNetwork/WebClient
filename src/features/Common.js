@@ -15,9 +15,32 @@ export function toFixedDecimal(val, decimals = 18) {
     return val;
   }
 }
-export function formatChainId(chanId) {
-  let network = ''
-  switch (chanId) {
+export function checkProviderWallet(name) {
+  if (!ethereum?.providers) {
+    return
+  }
+  let provider = '';
+  switch (name) {
+    case METAMASK:
+      provider = ethereum.providers.find(
+        ({ isMetaMask }) => isMetaMask
+      )
+      break
+    case COINBASE:
+      provider = ethereum.providers.find(
+        ({ isCoinbaseWallet }) => isCoinbaseWallet
+      )
+      break
+  }
+
+  if (provider) {
+    ethereum.setSelectedProvider(provider);
+    return provider;
+  }
+}
+export function formatChainId(chainId) {
+  let network = chainId.toString()
+  switch (chainId) {
     case ETH_CHAIN_ID :
       network = '0x4' //testnet
       break

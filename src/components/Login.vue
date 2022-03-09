@@ -153,7 +153,7 @@ import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
 } from '@/features/Messages.js'
-import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, formatChainId } from '../features/Common';
+import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, checkProviderWallet } from '../features/Common';
 
 export default {
 	mounted() {
@@ -278,33 +278,34 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
-		checkProviderWallet(name) {
-			if (!ethereum?.providers) {
-				return
-			}
-			let provider = '';
-			switch (name) {
-				case METAMASK:
-					provider = ethereum.providers.find(
-						({ isMetaMask }) => isMetaMask
-					)
-					break
-				case COINBASE:
-					provider = ethereum.providers.find(
-						({ isCoinbaseWallet }) => isCoinbaseWallet
-					)
-					break
-			}
+		// checkProviderWallet(name) {
+		// 	if (!ethereum?.providers) {
+		// 		return
+		// 	}
+		// 	let provider = '';
+		// 	switch (name) {
+		// 		case METAMASK:
+		// 			provider = ethereum.providers.find(
+		// 				({ isMetaMask }) => isMetaMask
+		// 			)
+		// 			break
+		// 		case COINBASE:
+		// 			provider = ethereum.providers.find(
+		// 				({ isCoinbaseWallet }) => isCoinbaseWallet
+		// 			)
+		// 			break
+		// 	}
 
-			if (provider) {
-				ethereum.setSelectedProvider(provider);
-				return provider;
-			}
-		},
+		// 	if (provider) {
+		// 		ethereum.setSelectedProvider(provider);
+		// 		return provider;
+		// 	}
+		// },
 
 		async connectMetamask(data = null, loginWithEmail = false) {
-			const provider = this.checkProviderWallet(METAMASK);
-			ethereum.request({ method: 'eth_requestAccounts' });
+			const provider = checkProviderWallet(METAMASK);
+			var chainId = await ethereum.request({method :'eth_chainId'});
+			// ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
 			if (rv != 'NONE') {
@@ -322,6 +323,7 @@ export default {
 							wAPI.Sign_Account(account, this.reqLogin, provider)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', 'Metamask');
+							window.localStorage.setItem('currentNetwork',chainId)
 							return;
 						}
 					}
@@ -345,8 +347,9 @@ export default {
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
-			const provider = this.checkProviderWallet(COINBASE);
+			const provider = checkProviderWallet(COINBASE);
 			const rv = await wAPI.checkMetamask()
+			var chainId = await ethereum.request({method :'eth_chainId'});
 			ether.enable().then((accounts) => {
 				if (data && loginWithEmail) {
 					if (accounts[0] === data.wlt.currentAccount) {
@@ -359,6 +362,7 @@ export default {
 					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
 					this.mxSetNetwork(rv)
 					window.localStorage.setItem('loginBy', 'Coinbase')
+					window.localStorage.setItem('currentNetwork',chainId)
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}
@@ -385,8 +389,28 @@ export default {
 						if(error) throw error
 						ref.reqLogin({ wallet_addr: from })
 						window.localStorage.setItem('loginBy','Fortmatic')
-						window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-						window.localStorage.setItem('currentNetwork', formatChainId(ETH_CHAIN_ID))
+						const currentNetwork = window.localStorage.getItem('currentNetwork')
+						if(currentNetwork && currentNetwork.length > 0) {
+							switch (currentNetwork) {
+								case '0x4':
+								case '4':
+									window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+									break
+								case '0x61':
+								case '97':
+									window.localStorage.setItem('networkRPC', BSC_RPC_ENDPOINT)
+									break
+								case '0x13881':
+								case '80001':
+								window.localStorage.setItem('networkRPC', MATIC_RPC_ENDPOINT)
+									break
+							}
+						}
+						else {
+							window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+							window.localStorage.setItem('currentNetwork', ETH_CHAIN_ID)
+						}
+					
 					})
 				})
 				// fm.user.login().then(() => {

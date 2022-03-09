@@ -172,7 +172,7 @@
 
 import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
-import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, checkProviderWallet } from '@/features/Common.js'
 import Web3 from 'web3';
 import { formatChainId } from '../features/Common';
 
@@ -198,11 +198,18 @@ export default {
 			supportMobileMenu: false,
 			isShowNavbar: false,
 			showNetwork: false,
-			checkedNetwork: 'Ethereum',
+			checkedNetwork: 'Ethereum'
 		}
 	},
 	computed: {
 		signed() {
+			this.checkCurrentNetwork()
+			const loginBy = window.localStorage.getItem('loginBy')
+			if(loginBy === 'WalletConnect') {
+				setInterval(() => {
+					this.getInterval()
+				}, 3000);
+			}
 			return this.userInfo.id ? 'on' : 'off';
 		},
 		network() {
@@ -213,7 +220,6 @@ export default {
 		}
 	},
 	mounted () {
-		this.getCurrentNetwork()
 		// console.log("======== route params", this.$route, this.$route.params);
 		this.currentPage = this.$route.params.id
 	},
@@ -240,6 +246,7 @@ export default {
 					window.location.reload()
 				}
 				else {
+					window.ethereum.setSelectedProvider(checkProviderWallet(loginBy.toUpperCase()))
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
 						params: [{ chainId: chainId }],
@@ -251,14 +258,10 @@ export default {
 				this.mxShowToast(e.message)
 			}
 		},
-		async getCurrentNetwork() {
+		async checkCurrentNetwork() {
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			try {
-				let web3 = new Web3(Web3.givenProvider)
-				const chainId = await web3.eth.net.getId();
-				console.log('chainId', chainId)
-				// const chainNetwork = window.localStorage.getItem('currentNetwork')
-				const chainNetwork = formatChainId(chainId)
-				switch (chainNetwork) {
+				switch (currentNetwork) {
 					case '0x4':
 					case '4':
 						this.checkedNetwork = 'Ethereum'
@@ -275,6 +278,24 @@ export default {
 			} catch (err) {
 				console.log('err', err)
 			}
+		},
+		getInterval() {
+			const walletConnect = window.localStorage.getItem('walletconnect')
+			const chainId = JSON.parse(walletConnect).chainId
+			switch (chainId.toString()) {
+					case '0x4':
+					case '4':
+						this.checkedNetwork = 'Ethereum'
+						break
+					case '0x61':
+					case '97':
+						this.checkedNetwork = 'BSC'
+						break
+					case '0x13881':
+					case '80001':
+						this.checkedNetwork = 'Polygon'
+						break
+				}
 		},
 		checkStyleOverflow() {
 			const content = document.getElementById('content');
@@ -317,7 +338,8 @@ export default {
 		// eslint-disable-next-line no-dupe-keys
 		logout() {
 			window.localStorage.removeItem('loginBy')
-			window.location.reload()
+			window.localStorage.removeItem('currentNetwork')
+			this.$router.push({name:"Home"});
 
 
 			const bridge = BRIDGE_WALLETCONNECT
@@ -330,8 +352,9 @@ export default {
 			this.isShowAccountMenu = false;
 			this.$store.dispatch('setUserInfo',userInfo);
 			this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
-			this.$router.push({name:"Home"});
-			window.localStorage.removeItem('currentNetwork')
+			setTimeout(() => {
+				window.location.reload()
+			}, 1000);
 		}
 
 	},
