@@ -79,7 +79,7 @@
 	</transition>
 
 	<transition	appear name="fade">
-		<div v-if="isShowToast" class="toast-box">
+		<div v-if="isShowToast && $store.state.showToast.msg" class="toast-box">
 			<div class="message-box" v-html="$store.state.showToast.msg">
 			</div>
 		</div>

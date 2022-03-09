@@ -143,7 +143,9 @@ import {
 	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
 	MATIC_RPC_ENDPOINT,
-	MATIC_CHAIN_ID
+	MATIC_CHAIN_ID,
+	METAMASK,
+	COINBASE
 } from '@/features/Common.js'
 import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
@@ -276,7 +278,32 @@ export default {
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
 
+		checkProviderWallet(name) {
+			if (!ethereum?.providers) {
+				return
+			}
+			let provider = '';
+			switch (name) {
+				case METAMASK:
+					provider = ethereum.providers.find(
+						({ isMetaMask }) => isMetaMask
+					)
+					break
+				case COINBASE:
+					provider = ethereum.providers.find(
+						({ isCoinbaseWallet }) => isCoinbaseWallet
+					)
+					break
+			}
+
+			if (provider) {
+				ethereum.setSelectedProvider(provider);
+				return provider;
+			}
+		},
+
 		async connectMetamask(data = null, loginWithEmail = false) {
+			this.checkProviderWallet(METAMASK);
 			ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
@@ -317,6 +344,8 @@ export default {
 			}
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
+			const provider = this.checkProviderWallet(COINBASE);
+			console.log('ethereum', ethereum)
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
@@ -328,7 +357,7 @@ export default {
 					return;
 				}
 				if (accounts) {
-					wAPI.Sign_Account(accounts[0], this.reqLogin)
+					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
 					this.mxSetNetwork(rv)
 					window.localStorage.setItem('loginBy', 'Coinbase')
 				} else if (error) {
@@ -432,6 +461,7 @@ export default {
 				data: data,
 				callback: (resp) => {
 					let rdata = resp.data;
+					console.log('rdata', rdata);
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
 					} else if (
