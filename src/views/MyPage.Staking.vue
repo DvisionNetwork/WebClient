@@ -135,7 +135,6 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			networkRPC: window.localStorage.getItem('networkRPC'),
-			networkChainId: window.localStorage.getItem('networkChainId'),
 			pages: [1],
 			currentPage: 1,
 			timeCount: {
@@ -167,8 +166,15 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.setStakingAddress(chainId)
-		} else {
-			this.getCurrentNetwork()
+		}
+		else if(this.loginBy === 'Coinbase') {
+			const chainId = window.localStorage.getItem('currentNetwork')
+			const chainNetwork = formatChainId(Number(chainId))
+			this.setStakingAddress(chainNetwork)
+		}
+		else {
+			const chainId = window.localStorage.getItem('currentNetwork')
+			this.setStakingAddress(chainId)
 		}
 	},
 	mounted() {
@@ -202,11 +208,11 @@ export default {
 				this.getMyStaked(campainId)
 			}
 		},
-		current_network() {
-			if (this.current_network) {
-				this.setStakingAddress(this.current_network)
-			}
-		},
+		// current_network() {
+		// 	if (this.current_network) {
+		// 		this.setStakingAddress(this.current_network)
+		// 	}
+		// },
 	},
 
 	methods: {
@@ -281,14 +287,14 @@ export default {
 				return true
 			else return false
 		},
-		async getCurrentNetwork() {
-			let chainId = await ethereum.request({
-				method: 'eth_chainId',
-			})
-			this.current_network = chainId
-			window.localStorage.setItem('currentNetwork', chainId)
-			this.setStakingAddress(chainId)
-		},
+		// async getCurrentNetwork() {
+		// 	let chainId = await ethereum.request({
+		// 		method: 'eth_chainId',
+		// 	})
+		// 	this.current_network = chainId
+		// 	window.localStorage.setItem('currentNetwork', chainId)
+		// 	this.setStakingAddress(chainId)
+		// },
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
@@ -536,17 +542,12 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
-					let fm = new Fortmatic(FORTMATIC_API_KEY)
 					const options = {
 						rpcUrl: this.networkRPC,
-						chainId: this.networkChainId,
+						chainId: this.current_network,
 					}
-					if (
-						this.networkRPC !== 'undefined' &&
-						this.networkChainId !== 'undefined'
-					) {
-						fm = new Fortmatic(FORTMATIC_API_KEY, options)
-					}
+					console.log('options',options)
+					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === 'WalletConnect') {
 					const provider = new WalletConnectProvider({
@@ -645,7 +646,6 @@ export default {
 			this.mxShowConfirmModal(obj)
 		},
 		async onUnStakeNfts(params, unLockAll) {
-			console.log('staking_address',this.staking_address)
 			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				this.mxCloseConfirmModal()

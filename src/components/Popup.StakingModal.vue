@@ -168,7 +168,6 @@ export default {
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			networkRPC: window.localStorage.getItem('networkRPC'),
-			networkChainId: window.localStorage.getItem('networkChainId'),
 		}
 	},
 	beforeMount() {
@@ -442,17 +441,12 @@ export default {
 			if (typeof window.ethereum !== 'undefined') {
 				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
 				if (this.loginBy === 'Fortmatic') {
-					let fm = new Fortmatic(FORTMATIC_API_KEY)
 					const options = {
 						rpcUrl: this.networkRPC,
-						chainId: this.networkChainId,
+						chainId: this.current_network,
 					}
-					if (
-						this.networkRPC !== 'undefined' &&
-						this.networkChainId !== 'undefined'
-					) {
-						fm = new Fortmatic(FORTMATIC_API_KEY, options)
-					}
+					console.log('options',options)
+					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === 'WalletConnect') {
 					const provider = new WalletConnectProvider({

@@ -90,47 +90,56 @@
 							</div>
 							<transition appear name="fade">
 								<div class="network-popup" v-if="showNetwork">
-									<div class="network-wrapper">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('ETH')"
+									>
 										<img
 											class="icon"
 											src="../assets/img/ethereum.png"
 											alt="icon"
 										/>
 										<input
-											type="radio"
-											id="etherium"
-											value="ethereum"
-											v-model="checkedNetwork"
+											type="checkbox"
+											id="Ethereum"
+											value="Ethereum"
+											:checked="checkedNetwork === 'Ethereum'"
 										/>
 										<label for="etherium">Ethereum</label>
 									</div>
-									<div class="network-wrapper">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('BSC')"
+									>
 										<img
 											class="icon"
 											src="../assets/img/bsc.svg"
 											alt="icon"
 										/>
 										<input
-											type="radio"
-											id="bsc"
-											value="bsc"
-											v-model="checkedNetwork"
+											type="checkbox"
+											id="BSC"
+											value="BSC"
+											:checked="checkedNetwork === 'BSC'"
 										/>
 										<label for="bsc">BSC</label>
 									</div>
-									<div class="network-wrapper">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('POL')"
+									>
 										<img
 											class="icon"
 											src="../assets/img/polygon.png"
 											alt="icon"
 										/>
 										<input
-											type="radio"
-											id="polygon"
-											value="polygon"
-											v-model="checkedNetwork"
+											type="checkbox"
+											id="Polygon"
+											value="Polygon"
+											:checked="checkedNetwork === 'Polygon'"
 										/>
-										<label for="polygon">Polygon</label>
+										<label for="Polygon">Polygon</label>
 									</div>
 								</div>
 							</transition>
@@ -163,7 +172,7 @@
 
 import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
-import { BRIDGE_WALLETCONNECT} from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT } from '@/features/Common.js'
 
 var gConfig = AppConfig();
 
@@ -187,7 +196,7 @@ export default {
 			supportMobileMenu: false,
 			isShowNavbar: false,
 			showNetwork: false,
-			checkedNetwork: 'ethereum',
+			checkedNetwork: 'Ethereum',
 		}
 	},
 	computed: {
@@ -202,10 +211,71 @@ export default {
 		}
 	},
 	mounted () {
+		this.getCurrentNetwork()
 		// console.log("======== route params", this.$route, this.$route.params);
 		this.currentPage = this.$route.params.id
 	},
 	methods: {
+		onClickItem(network) {
+			switch (network) {
+				case 'ETH':
+					this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
+					break
+				case 'BSC':
+					this.switchNetwork('0x61', 'BSC', BSC_RPC_ENDPOINT)
+					break
+				case 'POL':
+					this.switchNetwork('0x13881', 'Polygon', MATIC_RPC_ENDPOINT)
+					break
+			}
+		},
+		async switchNetwork(chainId, name, rpc) {
+			try {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if(loginBy === 'Fortmatic') {
+				window.localStorage.setItem('networkRPC', rpc)
+				window.localStorage.setItem('currentNetwork', chainId)
+				window.location.reload()
+			}
+				else {
+					await window.ethereum.request({
+						method: 'wallet_switchEthereumChain',
+						params: [{ chainId: chainId }],
+					})
+					this.checkedNetwork = name
+				}
+			} catch (e) {
+				console.log('e',e)
+				this.mxShowToast(e.message)
+			}
+		},
+		async getCurrentNetwork() {
+			try {
+				// let chainId = await ethereum.request({
+				// 	method: 'eth_chainId',
+				// })
+				const { ethereum } = window
+				console.log('ethereum', ethereum)
+				const chainId = window.localStorage.getItem('currentNetwork')
+				console.log('chain Id', chainId)
+				switch (chainId) {
+					case '0x4':
+					case '4':
+						this.checkedNetwork = 'Ethereum'
+						break
+					case '0x61':
+					case '97':
+						this.checkedNetwork = 'BSC'
+						break
+					case '0x13881':
+					case '80001':
+						this.checkedNetwork = 'Polygon'
+						break
+				}
+			} catch (err) {
+				console.log('err', err)
+			}
+		},
 		checkStyleOverflow() {
 			const content = document.getElementById('content');
 			content.style.overflowY = this.isShowNavbar ? 'hidden' : 'auto';
@@ -261,6 +331,7 @@ export default {
 			this.$store.dispatch('setUserInfo',userInfo);
 			this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
 			this.$router.push({name:"Home"});
+			window.localStorage.removeItem('currentNetwork')
 		}
 
 	},
@@ -268,21 +339,6 @@ export default {
 		isShowNavbar: function () {
 			this.checkStyleOverflow();
 		},
-		checkedNetwork(){
-			console.log('checkedNetwork',this.checkedNetwork)
-			switch(this.checkedNetwork){
-				case 'bsc':
-					this.mxSetNetwork('BSC')
-					break
-				case 'polygon' :
-					this.mxSetNetwork('POL')
-					break
-				case 'ethereum':
-					this.mxSetNetwork('ETH')
-					break
-
-			}
-		}
 	},
 }
 </script>

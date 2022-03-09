@@ -84,7 +84,7 @@ export default {
 			harvest: true,
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			networkRPC: window.localStorage.getItem('networkRPC'),
-			networkChainId: window.localStorage.getItem('networkChainId'),
+			current_network: window.localStorage.getItem('currentNetwork'),
 		}
 	},
 	props: {
@@ -109,7 +109,6 @@ export default {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
-			this.networkChainId = chainId
 		}
 	},
 	mounted() {
@@ -149,7 +148,7 @@ export default {
 					let fm = new Fortmatic(FORTMATIC_API_KEY)
 					const options = {
 						rpcUrl: this.networkRPC,
-						chainId: this.networkChainId,
+						chainId: this.current_network,
 					}
 					if (
 						this.networkRPC !== 'undefined' &&

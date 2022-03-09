@@ -12,10 +12,9 @@ return {
 /// Start
 
 async checkMetamask() {
-
 	var network = 'NONE';
 	var addr = gConfig.wlt.getAddr();
-	var ethaddr = gConfig.wlt.getEthAddr();
+	var ethAddr = gConfig.wlt.getEthAddr();
 	var bscAddr = gConfig.wlt.getBscAddr();
 	var polygonAddr = gConfig.wlt.getPolygonAddr();
 
@@ -24,8 +23,7 @@ async checkMetamask() {
 		try {
 			// console.log('Wallet is installed!');
 			var chainId = await ethereum.request({method :'eth_chainId'});
-
-			if(chainId === addr.Network || chainId === ethaddr.Network) {
+			if(chainId === addr.Network || chainId === ethAddr.Network) {
 				// console.log("ETH network matched");
 				network = 'ETH';
 			}else if(chainId === bscAddr.Network) {

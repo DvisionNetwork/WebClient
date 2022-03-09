@@ -151,6 +151,7 @@ import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
 } from '@/features/Messages.js'
+import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, formatChainId } from '../features/Common';
 
 export default {
 	mounted() {
@@ -337,13 +338,7 @@ export default {
 		},
 		async connectFortmatic() {
 			try {
-				const currentNetwork = window.localStorage.getItem('currentNetwork')
-				console.log('currentNetwork',currentNetwork)
-				const options = this.networkOptions(currentNetwork)
-				console.log('options',options)
-				window.localStorage.setItem('networkRPC', options.rpcUrl)
-				window.localStorage.setItem('networkChainId', options.chainId)
-				const fm = new Fortmatic(FORTMATIC_API_KEY, options)
+				const fm = new Fortmatic(FORTMATIC_API_KEY)
 				window.web3 = new Web3(fm.getProvider())
 				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
@@ -362,6 +357,8 @@ export default {
 						if(error) throw error
 						ref.reqLogin({ wallet_addr: from })
 						window.localStorage.setItem('loginBy','Fortmatic')
+						window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+						window.localStorage.setItem('currentNetwork', formatChainId(ETH_CHAIN_ID))
 					})
 				})
 				// fm.user.login().then(() => {
@@ -415,22 +412,6 @@ export default {
 					this.mxShowAlert({ msg: 'error' })
 				}
 			})
-		},
-		networkOptions(current_network) {
-			let returnOptions = {}
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
-			switch (current_network) {
-				case networkBSC:
-					returnOptions.rpcUrl = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
-					returnOptions.chainId = BSC_CHAIN_ID
-					break
-				case networkPolygon:
-					returnOptions.rpcUrl = MATIC_RPC_ENDPOINT
-					returnOptions.chainId = MATIC_CHAIN_ID
-					break
-			}
-			return returnOptions
 		},
 		// signin() {
 		// 	console.log("[Login] ID/PW login");

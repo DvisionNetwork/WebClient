@@ -18,13 +18,13 @@ export function toFixedDecimal(val, decimals = 18) {
 export function formatChainId(chanId) {
   let network = ''
   switch (chanId) {
-    case ETH_CHAIN_ID : 
+    case ETH_CHAIN_ID :
       network = '0x4' //testnet
       break
-    case BSC_CHAIN_ID : 
+    case BSC_CHAIN_ID :
       network = '0x61' //testnet
       break
-    case MATIC_CHAIN_ID : 
+    case MATIC_CHAIN_ID :
       network = '0x13881' //testnet
       break
   }
@@ -35,7 +35,7 @@ export function formatChainId(chanId) {
 export const BSC_STAKING_ADDRESS = '0x450505Ba81Bea37cbeD2D58FdF65868A1Dd720c5'
 export const ETH_STAKING_ADDRESS = '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc'
 export const MATIC_STAKING_ADDRESS = '0x205012ba1B41EDA6aE588864edBCBABC81DfD1cf'
-export const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-2-s2.binance.org:8545/'
+export const BSC_RPC_ENDPOINT = 'https://data-seed-prebsc-1-s1.binance.org:8545/'
 export const ETH_RPC_ENDPOINT = 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 export const MATIC_RPC_ENDPOINT = 'https://rpc-mumbai.maticvigil.com/'
 export const BSC_ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
