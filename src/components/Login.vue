@@ -346,7 +346,6 @@ export default {
 		async connectCoinbase(data = null, loginWithEmail = false) {
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
 			const provider = this.checkProviderWallet(COINBASE);
-			console.log('ethereum', ethereum)
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
 				if (data && loginWithEmail) {
