@@ -286,14 +286,7 @@ export default {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
 						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
-								this.mxSetWallet(data.wlt);
-								this.$store.dispatch('setUserInfo', data.userInfo);
-								this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
-								this.closePopup();
-								if (this.$route.name == 'Signup-Page') {
-									this.$router.push({name:"Home"});
-								}
-								return;
+								return this.handleLogicLoginWithId(data)
 							}
 							this.mxShowToast(MSG_METAMASK_1);
 							return;
@@ -323,18 +316,25 @@ export default {
 				})
 			}
 		},
-		async connectCoinbase() {
+		async connectCoinbase(data = null, loginWithEmail = false) {
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
-			if (accounts) {
-					wAPI.Sign_Account(accounts[0], this.reqLogin);
-					this.mxSetNetwork(rv);
-					window.localStorage.setItem('loginBy','Coinbase')
+				if (data && loginWithEmail) {
+					if (accounts[0] === data.wlt.currentAccount) {
+						return this.handleLogicLoginWithId(data)
+					}
+					this.mxShowToast(MSG_METAMASK_1);
+					return;
+				}
+				if (accounts) {
+					wAPI.Sign_Account(accounts[0], this.reqLogin)
+					this.mxSetNetwork(rv)
+					window.localStorage.setItem('loginBy', 'Coinbase')
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
-			}
-		})
+				}
+			})
 		},
 		async connectFortmatic() {
 			try {
@@ -455,7 +455,8 @@ export default {
 									wlt,
 									userInfo,
 								}
-								this.connectMetamask(data, true)
+								// this.connectMetamask(data, true)
+								this.connectCoinbase(data, true);
 								return
 							}
 							this.mxSetWallet(wlt)
@@ -474,6 +475,16 @@ export default {
 					}
 				}
 			});
+		},
+
+		handleLogicLoginWithId(data) {
+			this.mxSetWallet(data.wlt);
+			this.$store.dispatch('setUserInfo', data.userInfo);
+			this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
+			this.closePopup();
+			if (this.$route.name == 'Signup-Page') {
+				this.$router.push({name:"Home"});
+			}
 		}
 	}
 }
