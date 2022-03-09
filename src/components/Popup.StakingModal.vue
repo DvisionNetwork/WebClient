@@ -445,7 +445,6 @@ export default {
 						rpcUrl: this.networkRPC,
 						chainId: this.current_network,
 					}
-					console.log('options',options)
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === 'WalletConnect') {
@@ -508,7 +507,6 @@ export default {
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
-
 			const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking
@@ -518,6 +516,7 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
+					console.log('e',e)
 					this.hadUnderstand = false
 					this.mxCloseLoading()
 					if (

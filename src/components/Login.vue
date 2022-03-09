@@ -324,7 +324,7 @@ export default {
 			}
 		},
 		async connectCoinbase() {
-			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
+			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
 			const rv = await wAPI.checkMetamask()
 			ether.enable().then((accounts) => {
 			if (accounts) {

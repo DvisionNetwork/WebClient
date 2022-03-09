@@ -190,6 +190,7 @@ class myPlugin extends ScrollbarPlugin {
 const { ethereum } = window;
 import { formatChainId } from '@/features/Common.js'
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import Web3 from 'web3'
 export default {
 	components: {
 		Scrollbar,
@@ -215,6 +216,7 @@ export default {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
+		this.setCurrentNetwork()
 		if(ethereum) {
 			const loginBy = window.localStorage.getItem('loginBy')
 			ethereum.on('chainChanged', (chainId) => {
@@ -450,6 +452,11 @@ export default {
 	},
 
 	methods: {
+		async setCurrentNetwork() {
+			let web3 = new Web3(Web3.givenProvider)
+			const chainId = await web3.eth.net.getId();
+			window.localStorage.setItem('currentNetwork',chainId)
+		},
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network

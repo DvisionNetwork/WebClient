@@ -5,7 +5,8 @@ import { BSC_RPC_ENDPOINT, ETH_RPC_ENDPOINT, MATIC_RPC_ENDPOINT } from './Common
 export const walletLink = new WalletLink({
   appName: 'Division Network',
   appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
-  darkMode: false
+  darkMode: false,
+  supportedChainIds: [1, 4, 56, 97, 80001]
 })
 
 export const walletConnectProvider = new WalletConnectProvider({

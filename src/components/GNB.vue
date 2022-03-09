@@ -173,6 +173,8 @@
 import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
 import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT } from '@/features/Common.js'
+import Web3 from 'web3';
+import { formatChainId } from '../features/Common';
 
 var gConfig = AppConfig();
 
@@ -230,13 +232,13 @@ export default {
 			}
 		},
 		async switchNetwork(chainId, name, rpc) {
-			try {
 			const loginBy = window.localStorage.getItem('loginBy')
-			if(loginBy === 'Fortmatic') {
-				window.localStorage.setItem('networkRPC', rpc)
-				window.localStorage.setItem('currentNetwork', chainId)
-				window.location.reload()
-			}
+			try {
+				if(loginBy === 'Fortmatic') {
+					window.localStorage.setItem('networkRPC', rpc)
+					window.localStorage.setItem('currentNetwork', chainId)
+					window.location.reload()
+				}
 				else {
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
@@ -251,14 +253,12 @@ export default {
 		},
 		async getCurrentNetwork() {
 			try {
-				// let chainId = await ethereum.request({
-				// 	method: 'eth_chainId',
-				// })
-				const { ethereum } = window
-				console.log('ethereum', ethereum)
-				const chainId = window.localStorage.getItem('currentNetwork')
-				console.log('chain Id', chainId)
-				switch (chainId) {
+				let web3 = new Web3(Web3.givenProvider)
+				const chainId = await web3.eth.net.getId();
+				console.log('chainId', chainId)
+				// const chainNetwork = window.localStorage.getItem('currentNetwork')
+				const chainNetwork = formatChainId(chainId)
+				switch (chainNetwork) {
 					case '0x4':
 					case '4':
 						this.checkedNetwork = 'Ethereum'
