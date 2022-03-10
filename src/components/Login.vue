@@ -385,15 +385,8 @@ export default {
 						method,
 						params,
 						from
-<<<<<<< Updated upstream
 					}, (error, result) => {
 						if(error) throw error;
-=======
-					}, function(error, result) {
-						if(error) throw error
-						ref.reqLogin({ wallet_addr: from })
-						window.localStorage.setItem('loginBy',FORTMATIC)
->>>>>>> Stashed changes
 						const currentNetwork = window.localStorage.getItem('currentNetwork')
 						if(currentNetwork && currentNetwork.length > 0) {
 							window.localStorage.setItem('fortmaticNetwork', currentNetwork)
@@ -418,10 +411,7 @@ export default {
 						}
 							if (!loginWithEmail) {
 							ref.reqLogin({ wallet_addr: from })
-							window.localStorage.setItem(
-								'loginBy',
-								'Fortmatic'
-							)
+							window.localStorage.setItem('loginBy',FORTMATIC)
 						} else {
 							if (accounts[0] === data.wlt.currentAccount) {
 								return this.handleLogicLoginWithId(data)
