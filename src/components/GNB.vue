@@ -172,7 +172,10 @@
 
 import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
-import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC, FORTMATIC_API_KEY, WALLETCONNECT } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT,
+ 	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
+	FORTMATIC_API_KEY, WALLETCONNECT, checkProviderWallet,
+	COINBASE, METAMASK } from '@/features/Common.js'
 import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
 var gConfig = AppConfig();
@@ -204,7 +207,7 @@ export default {
 		signed() {
 			this.checkCurrentNetwork()
 			const loginBy = window.localStorage.getItem('loginBy')
-			if(loginBy === 'WalletConnect') {
+			if(loginBy === WALLETCONNECT) {
 				setInterval(() => {
 					this.getInterval()
 				}, 3000);
@@ -243,15 +246,24 @@ export default {
 					window.localStorage.setItem('networkRPC', rpc)
 					window.localStorage.setItem('fortmaticNetwork', chainId)
 					window.location.reload()
-				}
-				else {
-					// window.ethereum.setSelectedProvider(checkProviderWallet(loginBy.toUpperCase()))
+				} else if(loginBy === METAMASK) {
+					const provider = checkProviderWallet(METAMASK);
+					window.ethereum.setSelectedProvider(provider);
+					await window.ethereum.request({
+						method: 'wallet_switchEthereumChain',
+						params: [{ chainId: chainId }],
+					})
+					this.checkedNetwork = name
+				} else if(loginBy === COINBASE) {
+					const provider = checkProviderWallet(COINBASE);
+					window.ethereum.setSelectedProvider(provider);
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
 						params: [{ chainId: chainId }],
 					})
 					this.checkedNetwork = name
 				}
+
 			} catch (e) {
 				console.log('e',e)
 				this.mxShowToast(e.message)

@@ -66,7 +66,8 @@ import {
 	MATIC_RPC_ENDPOINT,
 	FORTMATIC_API_KEY,
 	formatChainId,
-	FORTMATIC
+	FORTMATIC,
+	WALLETCONNECT
 } from '@/features/Common.js'
 var gConfig = AppConfig()
 
@@ -105,7 +106,7 @@ export default {
 		staking_address: String,
 	},
 	beforeMount() {
-		if (this.loginBy === 'WalletConnect') {
+		if (this.loginBy === WALLETCONNECT) {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
@@ -154,7 +155,7 @@ export default {
 					}
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
-				} else if (this.loginBy === 'WalletConnect') {
+				} else if (this.loginBy === WALLETCONNECT) {
 					const provider = new WalletConnectProvider({
 						rpc: {
 							1: 'https://mainnet.mycustomnode.com',

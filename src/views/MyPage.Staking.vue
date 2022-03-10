@@ -91,7 +91,10 @@ import {
 	INFURA_ID,
 	formatChainId,
 	checkProviderWallet,
-	FORTMATIC
+	FORTMATIC,
+	COINBASE,
+	METAMASK,
+	WALLETCONNECT
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -164,14 +167,13 @@ export default {
 		}
 	},
 	beforeMount() {
-		if (this.loginBy === 'WalletConnect') {
+		if (this.loginBy === WALLETCONNECT) {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(Number(wll.chainId))
 			this.setStakingAddress(chainId)
 		}
-		else if(this.loginBy === 'Metamask' || this.loginBy === 'Coinbase') {
-			// window.ethereum.setSelectedProvider(checkProviderWallet(this.loginBy.toUpperCase()))
+		else if(this.loginBy === METAMASK || this.loginBy === COINBASE) {
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
@@ -554,7 +556,7 @@ export default {
 					}
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
-				} else if (this.loginBy === 'WalletConnect') {
+				} else if (this.loginBy === WALLETCONNECT) {
 					const provider = new WalletConnectProvider({
 						rpc: {
 							1: 'https://mainnet.mycustomnode.com',

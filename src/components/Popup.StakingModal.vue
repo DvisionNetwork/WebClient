@@ -137,6 +137,7 @@ import {
 	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
+	WALLETCONNECT
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -172,12 +173,12 @@ export default {
 		}
 	},
 	beforeMount() {
-		if (this.loginBy === 'WalletConnect') {
+		if (this.loginBy === WALLETCONNECT) {
 			const walletconnect = window.localStorage.getItem('walletconnect')
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.current_network = chainId
-		} else if(this.loginBy===FORTMATIC) {
+		} else if(this.loginBy === FORTMATIC) {
 			const fortmaticNetwork = window.localStorage.getItem('fortmaticNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
 		}
@@ -450,7 +451,7 @@ export default {
 					}
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
-				} else if (this.loginBy === 'WalletConnect') {
+				} else if (this.loginBy === WALLETCONNECT) {
 					const provider = new WalletConnectProvider({
 						rpc: {
 							1: 'https://mainnet.mycustomnode.com',

@@ -145,7 +145,11 @@ import {
 	MATIC_RPC_ENDPOINT,
 	MATIC_CHAIN_ID,
 	METAMASK,
-	COINBASE
+	COINBASE,
+	ETH_CHAIN_ID,
+	ETH_RPC_ENDPOINT,
+	checkProviderWallet,
+ FORTMATIC, WALLETCONNECT
 } from '@/features/Common.js'
 import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
@@ -153,7 +157,6 @@ import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
 } from '@/features/Messages.js'
-import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, checkProviderWallet, FORTMATIC } from '../features/Common';
 
 export default {
 	mounted() {
@@ -277,31 +280,6 @@ export default {
 			this.closePopup();
 			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
 		},
-
-		// checkProviderWallet(name) {
-		// 	if (!ethereum?.providers) {
-		// 		return
-		// 	}
-		// 	let provider = '';
-		// 	switch (name) {
-		// 		case METAMASK:
-		// 			provider = ethereum.providers.find(
-		// 				({ isMetaMask }) => isMetaMask
-		// 			)
-		// 			break
-		// 		case COINBASE:
-		// 			provider = ethereum.providers.find(
-		// 				({ isCoinbaseWallet }) => isCoinbaseWallet
-		// 			)
-		// 			break
-		// 	}
-
-		// 	if (provider) {
-		// 		ethereum.setSelectedProvider(provider);
-		// 		return provider;
-		// 	}
-		// },
-
 		async connectMetamask(data = null, loginWithEmail = false) {
 			const provider = checkProviderWallet(METAMASK);
 			// const chainId = await window.ethereum.request({method :'eth_chainId'});
@@ -322,7 +300,7 @@ export default {
 						if (account) {
 							wAPI.Sign_Account(account, this.reqLogin, provider)
 							this.mxSetNetwork(rv)
-							window.localStorage.setItem('loginBy', 'Metamask');
+							window.localStorage.setItem('loginBy', METAMASK);
 							// window.localStorage.setItem('currentNetwork',chainId)
 							return;
 						}
@@ -362,7 +340,7 @@ export default {
 				if (accounts) {
 					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
 					this.mxSetNetwork(rv)
-					window.localStorage.setItem('loginBy', 'Coinbase')
+					window.localStorage.setItem('loginBy', COINBASE)
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}
@@ -474,7 +452,7 @@ export default {
 				}
 				if (accounts) {
 					this.reqLogin({ wallet_addr: accounts[0] })
-					window.localStorage.setItem('loginBy','WalletConnect')
+					window.localStorage.setItem('loginBy',WALLETCONNECT)
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}
