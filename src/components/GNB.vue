@@ -246,7 +246,7 @@ export default {
 					window.location.reload()
 				}
 				else {
-					window.ethereum.setSelectedProvider(checkProviderWallet(loginBy.toUpperCase()))
+					// window.ethereum.setSelectedProvider(checkProviderWallet(loginBy.toUpperCase()))
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
 						params: [{ chainId: chainId }],
