@@ -172,10 +172,9 @@
 
 import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
-import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, checkProviderWallet } from '@/features/Common.js'
+import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT, BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC, FORTMATIC_API_KEY, WALLETCONNECT } from '@/features/Common.js'
+import Fortmatic from 'fortmatic';
 import Web3 from 'web3';
-import { formatChainId } from '../features/Common';
-
 var gConfig = AppConfig();
 
 export default {
@@ -198,7 +197,7 @@ export default {
 			supportMobileMenu: false,
 			isShowNavbar: false,
 			showNetwork: false,
-			checkedNetwork: 'Ethereum'
+			checkedNetwork: 'Ethereum',
 		}
 	},
 	computed: {
@@ -240,9 +239,9 @@ export default {
 		async switchNetwork(chainId, name, rpc) {
 			const loginBy = window.localStorage.getItem('loginBy')
 			try {
-				if(loginBy === 'Fortmatic') {
+				if(loginBy === FORTMATIC) {
 					window.localStorage.setItem('networkRPC', rpc)
-					window.localStorage.setItem('currentNetwork', chainId)
+					window.localStorage.setItem('fortmaticNetwork', chainId)
 					window.location.reload()
 				}
 				else {
@@ -259,7 +258,11 @@ export default {
 			}
 		},
 		async checkCurrentNetwork() {
-			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			let currentNetwork = window.localStorage.getItem('currentNetwork')
+			const loginBy = window.localStorage.getItem('loginBy')
+			if(loginBy === FORTMATIC) {
+				currentNetwork = window.localStorage.getItem('fortmaticNetwork')
+			}
 			try {
 				switch (currentNetwork) {
 					case '0x4':
@@ -304,11 +307,6 @@ export default {
 		showNavbar() {
 			this.isShowNavbar = !this.isShowNavbar;
 		},
-		logout() {
-			this.isShowNavbar = false
-			this.$store.dispatch('logout')
-			this.mxSetWallet({});
-		},
 		showLanguage() {
 			this.isShowNavbar = false
 			console.log('show Language')
@@ -337,16 +335,13 @@ export default {
 		
 		// eslint-disable-next-line no-dupe-keys
 		logout() {
-			window.localStorage.removeItem('loginBy')
-			window.localStorage.removeItem('currentNetwork')
+			this.clearWallet()
+			// window.localStorage.removeItem('loginBy')
+			// window.localStorage.removeItem('currentNetwork')
+			window.localStorage.clear()
+			this.$store.dispatch('logout')
+			this.mxSetWallet({});
 			this.$router.push({name:"Home"});
-
-
-			const bridge = BRIDGE_WALLETCONNECT
-			const connector = new WalletConnect({
-				bridge
-			})
-			connector.killSession()
 			var userInfo = {}
 			this.isShowNavbar = false
 			this.isShowAccountMenu = false;
@@ -355,8 +350,28 @@ export default {
 			setTimeout(() => {
 				window.location.reload()
 			}, 1000);
+		},
+		clearWallet() {
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch(loginBy) {
+				case FORTMATIC :
+					const options = {
+						rpcUrl: window.localStorage.getItem('networkRPC'),
+						chainId: window.localStorage.getItem('fortmaticNetwork'),
+					}
+					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
+					window.web3 = new Web3(fm.getProvider())
+					fm.user.logout()
+					break
+				case WALLETCONNECT :
+					const bridge = BRIDGE_WALLETCONNECT
+					const connector = new WalletConnect({
+						bridge
+					})
+					connector.killSession()
+					break
+			}
 		}
-
 	},
 	watch: {
 		isShowNavbar: function () {

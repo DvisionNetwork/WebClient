@@ -449,11 +449,13 @@ export default {
 
 	methods: {
 		async setCurrentNetwork() {
-			const currentNetwork = window.localStorage.getItem('currentNetwork')
-			if(!currentNetwork || currentNetwork.length === 0) {
-				let web3 = new Web3(Web3.givenProvider)
-				const chainId = await web3.eth.net.getId();
-				window.localStorage.setItem('currentNetwork',formatChainId(chainId))
+			if(ethereum) {
+				const currentNetwork = window.localStorage.getItem('currentNetwork')
+				if(!currentNetwork || currentNetwork.length === 0) {
+					let web3 = new Web3(Web3.givenProvider)
+					const chainId = await web3.eth.net.getId();
+					window.localStorage.setItem('currentNetwork',formatChainId(chainId))
+				}
 			}
 		},
 		checkNetwork(chainId) {
@@ -551,6 +553,7 @@ export default {
 						this.mxCloseLoading();
 					});
 				}else{
+					// this.mxShowToast('MetaMask is not installed!')
 					this.mxCloseLoading();
 				}
 			});

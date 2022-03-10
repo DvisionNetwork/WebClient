@@ -153,7 +153,7 @@ import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
 } from '@/features/Messages.js'
-import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, checkProviderWallet } from '../features/Common';
+import { ETH_CHAIN_ID, ETH_RPC_ENDPOINT, checkProviderWallet, FORTMATIC } from '../features/Common';
 
 export default {
 	mounted() {
@@ -371,12 +371,12 @@ export default {
 		async connectFortmatic(data, loginWithEmail = false) {
 			try {
 				const fm = new Fortmatic(FORTMATIC_API_KEY)
-				window.web3 = new Web3(fm.getProvider())
+				let web3 = new Web3(fm.getProvider())
 				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
 					if(error) throw error
 					const from = accounts[0]
-					const msgToShow = 'Welcome to Dvision World, please sign this message for the user verification. Then you can use market and connect to dvision world after verification.';
+					const msgToShow = 'Welcome to Dvision World.';
 					const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`
 					const params = [msg, from]
 					const method = 'personal_sign'
@@ -385,10 +385,18 @@ export default {
 						method,
 						params,
 						from
+<<<<<<< Updated upstream
 					}, (error, result) => {
 						if(error) throw error;
+=======
+					}, function(error, result) {
+						if(error) throw error
+						ref.reqLogin({ wallet_addr: from })
+						window.localStorage.setItem('loginBy',FORTMATIC)
+>>>>>>> Stashed changes
 						const currentNetwork = window.localStorage.getItem('currentNetwork')
 						if(currentNetwork && currentNetwork.length > 0) {
+							window.localStorage.setItem('fortmaticNetwork', currentNetwork)
 							switch (currentNetwork) {
 								case '0x4':
 								case '4':
@@ -406,7 +414,7 @@ export default {
 						}
 						else {
 							window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-							window.localStorage.setItem('currentNetwork', ETH_CHAIN_ID)
+							window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
 						}
 							if (!loginWithEmail) {
 							ref.reqLogin({ wallet_addr: from })

@@ -90,7 +90,8 @@ import {
 	MATIC_RPC_ENDPOINT,
 	INFURA_ID,
 	formatChainId,
-	checkProviderWallet
+	checkProviderWallet,
+	FORTMATIC
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -135,6 +136,7 @@ export default {
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
+			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork'),
 			networkRPC: window.localStorage.getItem('networkRPC'),
 			pages: [1],
 			currentPage: 1,
@@ -174,6 +176,11 @@ export default {
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
 		}
+		else if(this.loginBy === FORTMATIC) {
+			const chainId = window.localStorage.getItem('fortmaticNetwork')
+			const chainNetwork = formatChainId(Number(chainId))
+			this.setStakingAddress(chainNetwork)
+		}
 		else {
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
@@ -181,12 +188,11 @@ export default {
 		}
 	},
 	mounted() {
-		ethereum.on('accountsChanged', (accounts) => {
-			this.current_addr = accounts[0]
-		})
-		// this.onGetNftsStaked(1)
-		// this.getCampaignInfo(1)
-		// this.getMyStaked(1)
+		if(ethereum) {
+			ethereum.on('accountsChanged', (accounts) => {
+				this.current_addr = accounts[0]
+			})
+		}
 	},
 	watch: {
 		'poolDuration.id': {
@@ -259,13 +265,17 @@ export default {
 			this.getMyStaked(id)
 		},
 		async getAllowWithdrawAll() {
-			if (typeof window.ethereum !== 'undefined') {
+			try {
 				const contractConn = await this.contractConnect(
 					ABI_STAKING,
 					this.staking_address
 				)
 				const res = await contractConn.methods.allowWithdrawAll().call()
+				console.log('resss',res)
 				if (res) this.allowWithdraw = res
+			}
+			catch(err) {
+				console.log('err',err)
 			}
 		},
 		checkNetwork() {
@@ -289,14 +299,6 @@ export default {
 				return true
 			else return false
 		},
-		// async getCurrentNetwork() {
-		// 	let chainId = await ethereum.request({
-		// 		method: 'eth_chainId',
-		// 	})
-		// 	this.current_network = chainId
-		// 	window.localStorage.setItem('currentNetwork', chainId)
-		// 	this.setStakingAddress(chainId)
-		// },
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
@@ -468,11 +470,9 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
-			const web3 = new Web3(Web3.givenProvider)
 			this.mxShowLoading('inf')
 			this.getAllowWithdrawAll()
 			try {
-				if (typeof window.ethereum !== 'undefined') {
 					const contractConn = await this.contractConnect(
 						ABI_STAKING,
 						this.staking_address
@@ -517,7 +517,7 @@ export default {
 						}
 						this.mxCloseLoading()
 					}
-				}
+				
 			} catch (err) {
 				this.mxCloseLoading()
 				console.log('catch', err)
@@ -545,12 +545,12 @@ export default {
 		},
 
 		async contractConnect(abi, address_ct) {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider)
-				if (this.loginBy === 'Fortmatic') {
+			try {
+				let web3
+				if (this.loginBy === FORTMATIC) {
 					const options = {
 						rpcUrl: this.networkRPC,
-						chainId: this.current_network,
+						chainId: this.fortmaticNetwork,
 					}
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
@@ -567,8 +567,12 @@ export default {
 					provider.enable()
 					web3 = new Web3(provider)
 				}
+				else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
+			}
+			catch(err) {
+				console.log('err', err)
 			}
 		},
 		async onGetHashRate(is_ERC1155, nft_id, idx) {

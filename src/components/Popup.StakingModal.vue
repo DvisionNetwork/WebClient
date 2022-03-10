@@ -135,7 +135,7 @@ import {
 	ETH_RPC_ENDPOINT,
 	MATIC_RPC_ENDPOINT,
 	FORTMATIC_API_KEY,
-	INFURA_ID,
+	FORTMATIC,
 	formatChainId,
 } from '@/features/Common.js'
 import {
@@ -168,6 +168,7 @@ export default {
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			networkRPC: window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	beforeMount() {
@@ -176,14 +177,21 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.current_network = chainId
-		} else {
-			this.getCurrentNetwork()
+		} else if(this.loginBy===FORTMATIC) {
+			const fortmaticNetwork = window.localStorage.getItem('fortmaticNetwork')
+			this.current_network = formatChainId(fortmaticNetwork)
+		}
+		else {
+			const fortmaticNetwork = window.localStorage.getItem('currentNetwork')
+			this.current_network = formatChainId(fortmaticNetwork)
 		}
 	},
 	mounted() {
-		ethereum.on('accountsChanged', (accounts) => {
-			this.current_addr = accounts[0]
+		if(ethereum) {
+			ethereum.on('accountsChanged', (accounts) => {
+				this.current_addr = accounts[0]
 		})
+		}
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
 	},
@@ -223,6 +231,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
+			console.log('chainId',chainId)
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -238,12 +247,6 @@ export default {
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
-		},
-		async getCurrentNetwork() {
-			const chainId = await ethereum.request({
-				method: 'eth_chainId',
-			})
-			this.current_network = chainId
 		},
 		onEnableStakeButton() {
 			if (!this.hadUnderstand) return false
@@ -438,12 +441,12 @@ export default {
 		},
 
 		async contractConnect(abi, address_ct) {
-			if (typeof window.ethereum !== 'undefined') {
-				let web3 = new Web3(Web3.givenProvider || BSC_RPC_ENDPOINT)
-				if (this.loginBy === 'Fortmatic') {
+			try {
+				let web3
+				if (this.loginBy === FORTMATIC) {
 					const options = {
 						rpcUrl: this.networkRPC,
-						chainId: this.current_network,
+						chainId: this.fortmaticNetwork,
 					}
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
@@ -460,8 +463,12 @@ export default {
 					provider.enable()
 					web3 = new Web3(provider)
 				}
+				else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
+			}
+			catch(err) {
+				console.log('err', err)
 			}
 		},
 

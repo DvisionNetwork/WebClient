@@ -42,12 +42,15 @@ export function formatChainId(chainId) {
   let network = chainId.toString()
   switch (chainId) {
     case ETH_CHAIN_ID :
+    case ETH_CHAIN_ID.toString() :
       network = '0x4' //testnet
       break
     case BSC_CHAIN_ID :
+    case BSC_CHAIN_ID.toString() :
       network = '0x61' //testnet
       break
     case MATIC_CHAIN_ID :
+    case MATIC_CHAIN_ID.toString() :
       network = '0x13881' //testnet
       break
   }
@@ -75,3 +78,5 @@ export const FORTMATIC_API_KEY = 'pk_test_EE86F66A6FFF9D3B'
 export const VALUE_LOGIN = '7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5';
 export const METAMASK = 'METAMASK';
 export const COINBASE = 'COINBASE';
+export const FORTMATIC = 'FORTMATIC';
+export const WALLETCONNECT = 'WALLETCONNECT';
