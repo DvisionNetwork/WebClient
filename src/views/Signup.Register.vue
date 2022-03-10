@@ -228,8 +228,6 @@ export default {
 			this.submitData = this.getSubmitValues();
 			var data = this.submitData;
 
-			console.log(data, 'submitData');
-
 			_U.callPost({
 				url:gConfig.join_url,
 				data: data,
