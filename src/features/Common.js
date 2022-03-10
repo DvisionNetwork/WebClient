@@ -16,25 +16,25 @@ export function toFixedDecimal(val, decimals = 18) {
   }
 }
 export function checkProviderWallet(name) {
-  if (!ethereum?.providers) {
+  if (!window.ethereum?.providers) {
     return
   }
   let provider = '';
   switch (name) {
     case METAMASK:
-      provider = ethereum.providers.find(
+      provider = window.ethereum.providers.find(
         ({ isMetaMask }) => isMetaMask
       )
       break
     case COINBASE:
-      provider = ethereum.providers.find(
+      provider = window.ethereum.providers.find(
         ({ isCoinbaseWallet }) => isCoinbaseWallet
       )
       break
   }
 
   if (provider) {
-    ethereum.setSelectedProvider(provider);
+    window.ethereum.setSelectedProvider(provider);
     return provider;
   }
 }
