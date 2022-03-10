@@ -368,7 +368,7 @@ export default {
 				}
 			})
 		},
-		async connectFortmatic() {
+		async connectFortmatic(data, loginWithEmail = false) {
 			try {
 				const fm = new Fortmatic(FORTMATIC_API_KEY)
 				window.web3 = new Web3(fm.getProvider())
@@ -385,10 +385,8 @@ export default {
 						method,
 						params,
 						from
-					}, function(error, result) {
-						if(error) throw error
-						ref.reqLogin({ wallet_addr: from })
-						window.localStorage.setItem('loginBy','Fortmatic')
+					}, (error, result) => {
+						if(error) throw error;
 						const currentNetwork = window.localStorage.getItem('currentNetwork')
 						if(currentNetwork && currentNetwork.length > 0) {
 							switch (currentNetwork) {
@@ -410,7 +408,19 @@ export default {
 							window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
 							window.localStorage.setItem('currentNetwork', ETH_CHAIN_ID)
 						}
-					
+							if (!loginWithEmail) {
+							ref.reqLogin({ wallet_addr: from })
+							window.localStorage.setItem(
+								'loginBy',
+								'Fortmatic'
+							)
+						} else {
+							if (accounts[0] === data.wlt.currentAccount) {
+								return this.handleLogicLoginWithId(data)
+							}
+							this.mxShowToast(MSG_METAMASK_1);
+							return;
+						}
 					})
 				})
 				// fm.user.login().then(() => {
@@ -425,7 +435,7 @@ export default {
 				console.log('catch',err)
 			}
 		},
-		async connectWalletConnect() {
+		async connectWalletConnect(data, loginWithEmail = false) {
 
 			// this.setProviderWalletCon.on("accountsChanged", (accounts) => {
 			// 	if (accounts) {
@@ -457,6 +467,13 @@ export default {
 				const { accounts } = JSON.parse(
 					JSON.stringify(payload.params[0])
 				)
+				if (data && loginWithEmail) {
+					if (accounts[0] === data.wlt.currentAccount) {
+						return this.handleLogicLoginWithId(data)
+					}
+					this.mxShowToast(MSG_METAMASK_1);
+					return;
+				}
 				if (accounts) {
 					this.reqLogin({ wallet_addr: accounts[0] })
 					window.localStorage.setItem('loginBy','WalletConnect')
@@ -484,7 +501,6 @@ export default {
 				data: data,
 				callback: (resp) => {
 					let rdata = resp.data;
-					console.log('rdata', rdata);
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
 					} else if (
@@ -508,8 +524,23 @@ export default {
 									wlt,
 									userInfo,
 								}
-								// this.connectMetamask(data, true)
-								this.connectCoinbase(data, true);
+								switch (rdata[0].wallet) {
+									case '1':
+										this.connectMetamask(data, true);
+										break;
+									case '2':
+										this.connectCoinbase(data, true);
+										break;
+									case '3':
+										this.connectWalletConnect();
+										break;
+									case '4':
+										this.connectFortmatic(data, true);
+										break;
+									default:
+										this.mxShowToast('Invalid wallet');
+										break;
+								}
 								return
 							}
 							this.mxSetWallet(wlt)

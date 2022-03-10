@@ -78,7 +78,15 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import { BRIDGE_WALLETCONNECT, DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID, FORTMATIC_API_KEY } from '@/features/Common.js'
+import {
+	BRIDGE_WALLETCONNECT,
+	DEFAULT_ETH_JSONRPC_URL,
+	BSC_CHAIN_ID,
+	FORTMATIC_API_KEY,
+	checkProviderWallet,
+	METAMASK,
+	COINBASE,
+} from '@/features/Common.js'
 import { walletLink } from '@/features/Connectors.js'
 import Fortmatic from 'fortmatic'
 import Web3 from 'web3'
@@ -201,6 +209,7 @@ export default {
             options: [],   // option name
             isActive: false,
 
+			selectedWallet: -1, 
 		}
 	},
 	computed: {
@@ -218,6 +227,8 @@ export default {
 
 			this.submitData = this.getSubmitValues();
 			var data = this.submitData;
+
+			console.log(data, 'submitData');
 
 			_U.callPost({
 				url:gConfig.join_url,
@@ -252,6 +263,7 @@ export default {
 				position: '',
 				recommendedreferrer: this.fieldset.idInfo.referral.value,
 				wallet_addr: this.walletAddr,
+				wallet: this.selectedWallet,
 			}
 			return rv;
 		},
@@ -281,6 +293,7 @@ export default {
 			return rv;
 		},
 		async sinUpWithCoinbase() {
+			checkProviderWallet(COINBASE);
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
 			ether.enable().then((accounts) => {
   		if(!accounts){
@@ -289,7 +302,8 @@ export default {
 			else {
 				this.walletAddr = accounts[0]
 				this.fieldset.walletInfo.walletAddress.value = accounts[0]
-				this.fieldset.walletInfo.walletAddress.checked = true
+				this.fieldset.walletInfo.walletAddress.checked = true;
+				this.selectedWallet = '2';
 			}
 			})
 		},
@@ -302,6 +316,7 @@ export default {
 					this.walletAddr = accounts[0]
 					this.fieldset.walletInfo.walletAddress.value = accounts[0]
 					this.fieldset.walletInfo.walletAddress.checked = true
+					this.selectedWallet = '4';
 					}
 				});
 			});
@@ -331,6 +346,7 @@ export default {
 					this.walletAddr = accounts
 					this.fieldset.walletInfo.walletAddress.value = accounts
 					this.fieldset.walletInfo.walletAddress.checked = true
+					this.selectedWallet = '3';
 					return
 				} else if (error) {
 					this.mxShowAlert({
@@ -346,6 +362,7 @@ export default {
 		},
 
 		sinUpWithMetamask() {
+			checkProviderWallet(METAMASK);
 			ethereum.request({ method: 'eth_requestAccounts' });
 			wAPI.checkMetamask().then((rv) => {
 				if (rv != 'NONE') {
@@ -363,6 +380,7 @@ export default {
 								this.walletAddr = account
 								this.fieldset.walletInfo.walletAddress.value = account
 								this.fieldset.walletInfo.walletAddress.checked = true
+								this.selectedWallet = '1';
 								return
 							}
 						}
