@@ -304,7 +304,7 @@ export default {
 
 		async connectMetamask(data = null, loginWithEmail = false) {
 			const provider = checkProviderWallet(METAMASK);
-			var chainId = await ethereum.request({method :'eth_chainId'});
+			const chainId = await window.ethereum.request({method :'eth_chainId'});
 			// ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
@@ -348,8 +348,10 @@ export default {
 		async connectCoinbase(data = null, loginWithEmail = false) {
 			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
 			const provider = checkProviderWallet(COINBASE);
-			const rv = await wAPI.checkMetamask()
-			var chainId = await ethereum.request({method :'eth_chainId'});
+			const rv = await wAPI.checkMetamask(provider);
+			console.log(window.ethereum, 'asddd');
+			// window.ethereum.selectedProvider = provider;
+			window.ethereum.setSelectedProvider(provider);
 			ether.enable().then((accounts) => {
 				if (data && loginWithEmail) {
 					if (accounts[0] === data.wlt.currentAccount) {
@@ -362,7 +364,7 @@ export default {
 					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
 					this.mxSetNetwork(rv)
 					window.localStorage.setItem('loginBy', 'Coinbase')
-					window.localStorage.setItem('currentNetwork',chainId)
+					console.log(chainId, 'chainId');
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
 				}

@@ -4,6 +4,7 @@ var lv_signer = null;
 
 import AppConfig from '@/App.Config.js'
 import { chain } from 'lodash';
+import { checkProviderWallet } from '../features/Common';
 var gConfig = AppConfig();
 
 
@@ -11,7 +12,9 @@ export default function walletAPI() {
 return {
 /// Start
 
-async checkMetamask() {
+
+
+async checkMetamask(provider = null) {
 	var network = 'NONE';
 	var addr = gConfig.wlt.getAddr();
 	var ethAddr = gConfig.wlt.getEthAddr();
@@ -22,8 +25,12 @@ async checkMetamask() {
 		// console.log('[WalletAPI] checkMetamask() Wallet is installed!');
 		try {
 			// console.log('Wallet is installed!');
-			var chainId = await ethereum.request({method :'eth_chainId'});
-			console.log(chainId, 'chainId')
+			// if (provider && window.ethereum.providers) {
+			// 	console.log('in if');
+			// 	window.ethereum.selectedProvider = provider;
+			// }
+			const chainId = await window.ethereum.request({method :'eth_chainId'});
+			window.localStorage.setItem('currentNetwork',chainId)
 			if(chainId === addr.Network || chainId === ethAddr.Network) {
 				// console.log("ETH network matched");
 				network = 'ETH';
@@ -58,7 +65,7 @@ async Sign_Account(account, callback, provider = null) {
 		const from = account;
 		const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`;
 
-		if (provider) {
+		if (provider && window.ethereum.providers) {
 			window.ethereum.setSelectedProvider(provider);
 		}
 		const sign = await ethereum.request({
