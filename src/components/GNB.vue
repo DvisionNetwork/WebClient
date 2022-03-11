@@ -247,16 +247,9 @@ export default {
 					window.localStorage.setItem('networkRPC', rpc)
 					window.localStorage.setItem('fortmaticNetwork', chainId)
 					window.location.reload()
-				} else if(loginBy === METAMASK) {
-					const provider = checkProviderWallet(METAMASK);
-					window.ethereum.setSelectedProvider(provider);
-					await window.ethereum.request({
-						method: 'wallet_switchEthereumChain',
-						params: [{ chainId: chainId }],
-					})
-					this.checkedNetwork = name
-				} else if(loginBy === COINBASE) {
-					const provider = checkProviderWallet(COINBASE);
+				} else if(loginBy === METAMASK || loginBy === COINBASE) {
+					const provider = checkProviderWallet(loginBy);
+					console.log('provider',provider)
 					window.ethereum.setSelectedProvider(provider);
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',

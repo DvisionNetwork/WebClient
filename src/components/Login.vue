@@ -324,7 +324,7 @@ export default {
 			}
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
-			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, ETH_CHAIN_ID)
+			const ether = walletLink.makeWeb3Provider()
 			const provider = checkProviderWallet(COINBASE);
 			const rv = await wAPI.checkMetamask(provider);
 			// window.ethereum.selectedProvider = provider;
