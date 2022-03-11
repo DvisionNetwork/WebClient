@@ -82,13 +82,11 @@ import {
 	BRIDGE_WALLETCONNECT,
 	DEFAULT_ETH_JSONRPC_URL,
 	BSC_CHAIN_ID,
-	FORTMATIC_API_KEY,
 	checkProviderWallet,
 	METAMASK,
 	COINBASE,
 } from '@/features/Common.js'
-import { walletLink } from '@/features/Connectors.js'
-import Fortmatic from 'fortmatic'
+import { coinbaseProvider, fortmaticProvider } from '@/features/Connectors.js'
 import Web3 from 'web3'
 
 export default {
@@ -292,8 +290,7 @@ export default {
 		},
 		async sinUpWithCoinbase() {
 			checkProviderWallet(COINBASE);
-			const ether = walletLink.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, BSC_CHAIN_ID)
-			ether.enable().then((accounts) => {
+			coinbaseProvider.enable().then((accounts) => {
   		if(!accounts){
 				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
 			}
@@ -306,9 +303,8 @@ export default {
 			})
 		},
 		async sinUpWithFortmatic() {
-			const fm = new Fortmatic(FORTMATIC_API_KEY)
-			window.web3 = new Web3(fm.getProvider())
-			fm.user.login().then(() => {
+			let web3 = new Web3(fortmaticProvider.getProvider())
+			fortmaticProvider.user.login().then(() => {
   		web3.eth.getAccounts().then((accounts) => {
 				if(accounts) {
 					this.walletAddr = accounts[0]

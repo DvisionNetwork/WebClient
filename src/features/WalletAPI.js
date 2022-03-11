@@ -30,6 +30,7 @@ async checkMetamask(provider = null) {
 			// 	window.ethereum.selectedProvider = provider;
 			// }
 			const chainId = await window.ethereum.request({method :'eth_chainId'});
+			
 			window.localStorage.setItem('currentNetwork',chainId)
 			if(chainId === addr.Network || chainId === ethAddr.Network) {
 				// console.log("ETH network matched");
@@ -48,6 +49,7 @@ async checkMetamask(provider = null) {
 			return network;
 		}
 	} else {
+		window.open('https://metamask.io/download/', '_blank');
 		console.error('[WalletAPI] checkMetamask() MetaMask is not installed!');
 	}
 

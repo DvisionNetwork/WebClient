@@ -174,10 +174,10 @@ import AppConfig from '@/App.Config.js'
 import WalletConnect from '@walletconnect/client'
 import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT,
  	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
-	FORTMATIC_API_KEY, WALLETCONNECT, checkProviderWallet,
+	WALLETCONNECT, checkProviderWallet,
 	COINBASE, METAMASK } from '@/features/Common.js'
-import Fortmatic from 'fortmatic';
-import Web3 from 'web3';
+import { fortmaticProvider } from '@/features/Connectors.js'
+
 var gConfig = AppConfig();
 
 export default {
@@ -250,7 +250,6 @@ export default {
 				} else if(loginBy === METAMASK || loginBy === COINBASE) {
 					const provider = checkProviderWallet(loginBy);
 					console.log('provider',provider)
-					window.ethereum.setSelectedProvider(provider);
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
 						params: [{ chainId: chainId }],
@@ -350,10 +349,7 @@ export default {
 		// eslint-disable-next-line no-dupe-keys
 		logout() {
 			this.clearWallet()
-			// window.localStorage.removeItem('loginBy')
-			// window.localStorage.removeItem('currentNetwork')
-			window.localStorage.clear()
-			this.$store.dispatch('logout')
+			window.localStorage.clear();
 			this.mxSetWallet({});
 			this.$router.push({name:"Home"});
 			var userInfo = {}
@@ -361,21 +357,17 @@ export default {
 			this.isShowAccountMenu = false;
 			this.$store.dispatch('setUserInfo',userInfo);
 			this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
+			this.$store.dispatch('logout')
+		
 			setTimeout(() => {
 				window.location.reload()
 			}, 1000);
 		},
 		clearWallet() {
-			const loginBy = window.localStorage.getItem('loginBy')
+			const loginBy = window.localStorage.getItem('loginBy');
 			switch(loginBy) {
 				case FORTMATIC :
-					const options = {
-						rpcUrl: window.localStorage.getItem('networkRPC'),
-						chainId: window.localStorage.getItem('fortmaticNetwork'),
-					}
-					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
-					window.web3 = new Web3(fm.getProvider())
-					fm.user.logout()
+					fortmaticProvider.user.logout()
 					break
 				case WALLETCONNECT :
 					const bridge = BRIDGE_WALLETCONNECT

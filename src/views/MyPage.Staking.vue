@@ -174,8 +174,7 @@ export default {
 			this.setStakingAddress(chainId)
 		}
 		else if(this.loginBy === METAMASK || this.loginBy === COINBASE) {
-			const provider = checkProviderWallet(this.loginBy);
-			window.ethereum.setSelectedProvider(provider);
+			checkProviderWallet(this.loginBy);
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)

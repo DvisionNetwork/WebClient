@@ -1,6 +1,7 @@
 import WalletLink from "walletlink"
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { BSC_RPC_ENDPOINT, ETH_RPC_ENDPOINT, MATIC_RPC_ENDPOINT } from './Common'
+import { BSC_RPC_ENDPOINT, ETH_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC_API_KEY } from './Common'
+import Fortmatic from 'fortmatic'
 
 export const walletLink = new WalletLink({
   appName: 'Division Network',
@@ -8,7 +9,8 @@ export const walletLink = new WalletLink({
   darkMode: false,
   supportedChainIds: [1, 4, 56, 97, 80001]
 })
-
+export const coinbaseProvider = walletLink.makeWeb3Provider()
+export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY)
 export const walletConnectProvider = new WalletConnectProvider({
   rpc: {
     1: 'https://mainnet.mycustomnode.com',

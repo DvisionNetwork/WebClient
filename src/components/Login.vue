@@ -151,8 +151,7 @@ import {
 	checkProviderWallet,
  FORTMATIC, WALLETCONNECT
 } from '@/features/Common.js'
-import { walletLink } from '@/features/Connectors.js'
-import Fortmatic from 'fortmatic'
+import { coinbaseProvider, fortmaticProvider } from '@/features/Connectors.js'
 import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
@@ -282,11 +281,9 @@ export default {
 		},
 		async connectMetamask(data = null, loginWithEmail = false) {
 			const provider = checkProviderWallet(METAMASK);
-			// const chainId = await window.ethereum.request({method :'eth_chainId'});
-			// ethereum.request({ method: 'eth_requestAccounts' });
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask();
-			if (rv != 'NONE') {
+			if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
@@ -324,32 +321,39 @@ export default {
 			}
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
-			const ether = walletLink.makeWeb3Provider()
+			
 			const provider = checkProviderWallet(COINBASE);
-			const rv = await wAPI.checkMetamask(provider);
-			// window.ethereum.selectedProvider = provider;
-			window.ethereum.setSelectedProvider(provider);
-			ether.enable().then((accounts) => {
-				if (data && loginWithEmail) {
-					if (accounts[0] === data.wlt.currentAccount) {
-						return this.handleLogicLoginWithId(data, COINBASE)
+			console.log("[Login] connect coinbase account");
+			coinbaseProvider.enable().then(async (accounts) => {
+				const rv = await wAPI.checkMetamask();
+				if(rv !=='NONE') {
+					if (data && loginWithEmail) {
+						if (accounts[0] === data.wlt.currentAccount) {
+							return this.handleLogicLoginWithId(data, COINBASE)
+						}
+						this.mxShowToast(MSG_METAMASK_1);
+						return;
 					}
-					this.mxShowToast(MSG_METAMASK_1);
-					return;
-				}
-				if (accounts) {
-					wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
-					this.mxSetNetwork(rv)
-					window.localStorage.setItem('loginBy', COINBASE)
-				} else if (error) {
-					this.mxShowAlert({ msg: 'error' })
+					if (accounts) {
+						wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
+						this.mxSetNetwork(rv)
+						window.localStorage.setItem('loginBy', COINBASE)
+					} else if (error) {
+						this.mxShowAlert({ msg: 'error' })
+					}
+				} else {
+					this.mxShowAlert({
+					msg:
+						this.$t('signup.register.error-on-wallet-url') +
+						'\n' +
+						this.$t('popup.coinbase-chain-not-matched'),
+					})
 				}
 			})
 		},
 		async connectFortmatic(data, loginWithEmail = false) {
 			try {
-				const fm = new Fortmatic(FORTMATIC_API_KEY)
-				let web3 = new Web3(fm.getProvider())
+				let web3 = new Web3(fortmaticProvider.getProvider())
 				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
 					if(error) throw error
@@ -402,13 +406,6 @@ export default {
 						}
 					})
 				})
-				// fm.user.login().then(() => {
-  			// web3.eth.getAccounts().then((accounts) => {
-				// 	if(accounts) {
-				// 			this.reqLogin({ wallet_addr: accounts[0] })
-				// 		}
-				// 	});
-				// });
 			}
 			catch(err){
 				console.log('catch',err)
