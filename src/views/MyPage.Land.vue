@@ -257,6 +257,8 @@ export default {
 		},
 
 		approveBiance() {
+			this.mxShowLoading('inf');
+			
 			bscBridge.setApproveAll((resp) => {
 
 				if(resp.res_code == 200) {
@@ -288,7 +290,10 @@ export default {
 						var index = _U.getIfDefined(resp,['data','index']);
 						console.log("index : ", index)
 						if(index == this.binanceNftBalance - 1) {
+							this.mxCloseLoading();
 							var timeOut = setTimeout(()=>{
+								this.mxShowLoading('inf');
+
 								this.mxShowAlert({
 									msg:this.$t('mypage.land.alert-binance-lock') + this.tokenIdToLock,
 									btn:this.$t('mypage.land.alert-claim-btn'),
@@ -307,6 +312,7 @@ export default {
 				if(resp.res_code == 200) {
 					console.log("success on lock Binance NFT.");
 					this.mxShowToast(this.$t('mypage.land.alert-lock-success'));
+					this.mxCloseLoading();
 				}
 			});
 		},
