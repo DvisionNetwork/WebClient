@@ -391,7 +391,7 @@ export default {
 							window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
 						}
 							if (!loginWithEmail) {
-							ref.reqLogin({ wallet_addr: from })
+							ref.reqLogin({ wallet_addr: from, wallet : 4 })
 							window.localStorage.setItem('loginBy',FORTMATIC)
 						} else {
 							if (accounts[0] === data.wlt.currentAccount) {
