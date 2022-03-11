@@ -292,7 +292,7 @@ export default {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
 						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
-								return this.handleLogicLoginWithId(data)
+								return this.handleLogicLoginWithId(data, METAMASK)
 							}
 							this.mxShowToast(MSG_METAMASK_1);
 							return;
@@ -332,7 +332,7 @@ export default {
 			ether.enable().then((accounts) => {
 				if (data && loginWithEmail) {
 					if (accounts[0] === data.wlt.currentAccount) {
-						return this.handleLogicLoginWithId(data)
+						return this.handleLogicLoginWithId(data, COINBASE)
 					}
 					this.mxShowToast(MSG_METAMASK_1);
 					return;
@@ -395,7 +395,7 @@ export default {
 							window.localStorage.setItem('loginBy',FORTMATIC)
 						} else {
 							if (accounts[0] === data.wlt.currentAccount) {
-								return this.handleLogicLoginWithId(data)
+								return this.handleLogicLoginWithId(data, FORTMATIC)
 							}
 							this.mxShowToast(MSG_METAMASK_1);
 							return;
@@ -448,7 +448,7 @@ export default {
 				)
 				if (data && loginWithEmail) {
 					if (accounts[0] === data.wlt.currentAccount) {
-						return this.handleLogicLoginWithId(data)
+						return this.handleLogicLoginWithId(data, WALLETCONNECT)
 					}
 					this.mxShowToast(MSG_METAMASK_1);
 					return;
@@ -540,10 +540,11 @@ export default {
 			});
 		},
 
-		handleLogicLoginWithId(data) {
+		handleLogicLoginWithId(data, site) {
 			this.mxSetWallet(data.wlt);
 			this.$store.dispatch('setUserInfo', data.userInfo);
 			this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
+			window.localStorage.setItem('loginBy', site)
 			this.closePopup();
 			if (this.$route.name == 'Signup-Page') {
 				this.$router.push({name:"Home"});
