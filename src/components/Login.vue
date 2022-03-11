@@ -381,6 +381,9 @@ export default {
 								case '80001':
 								window.localStorage.setItem('networkRPC', MATIC_RPC_ENDPOINT)
 									break
+								default :
+								window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+								window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
 							}
 						}
 						else {

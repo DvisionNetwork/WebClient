@@ -201,6 +201,7 @@ export default {
 			isShowNavbar: false,
 			showNetwork: false,
 			checkedNetwork: 'Ethereum',
+			chainId : 0
 		}
 	},
 	computed: {
@@ -275,6 +276,11 @@ export default {
 			if(loginBy === FORTMATIC) {
 				currentNetwork = window.localStorage.getItem('fortmaticNetwork')
 			}
+			if(loginBy === WALLETCONNECT) {
+				const walletConnect = window.localStorage.getItem('walletconnect')
+				this.chainId = JSON.parse(walletConnect).chainId
+				currentNetwork = this.chainId.toString()
+			}
 			try {
 				switch (currentNetwork) {
 					case '0x4':
@@ -297,7 +303,8 @@ export default {
 		getInterval() {
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
-			switch (chainId.toString()) {
+			if(chainId !== this.chainId) {
+				switch (chainId.toString()) {
 					case '0x4':
 					case '4':
 						this.checkedNetwork = 'Ethereum'
@@ -311,6 +318,8 @@ export default {
 						this.checkedNetwork = 'Polygon'
 						break
 				}
+				window.location.reload()
+			}
 		},
 		checkStyleOverflow() {
 			const content = document.getElementById('content');
