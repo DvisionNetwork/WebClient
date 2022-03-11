@@ -200,6 +200,14 @@
 			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World."
 		}
 	},
+	"mypage": {
+		"land": {
+			"alert-biance-nft": "You have Dvision Land NFT withdrawed from Binance Market. Balance : ",
+			"alert-claim-btn": "Claim",
+			"alert-binance-lock": "You should claim to lock & transfer binance NFT ID : ",
+			"alert-lock-success": "Lock & transfer NFT success. Please check land list you owned"
+		}
+	},
 	"market": {
 		"title": "Dvision Marketplace",
 		"title-desc": "Search and purchase NFT ITEMS from Dvision World creators <br> with your DVIs and incorporate them into your SPACE.",
