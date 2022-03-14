@@ -24,29 +24,32 @@ async checkMetamask(provider = null) {
 	if (typeof window.ethereum !== 'undefined') {
 		// console.log('[WalletAPI] checkMetamask() Wallet is installed!');
 		try {
-			// console.log('Wallet is installed!');
-			// if (provider && window.ethereum.providers) {
-			// 	console.log('in if');
-			// 	window.ethereum.selectedProvider = provider;
-			// }
-			const chainId = await window.ethereum.request({method :'eth_chainId'});
-			
-			window.localStorage.setItem('currentNetwork',chainId)
-			if(chainId === addr.Network || chainId === ethAddr.Network) {
-				// console.log("ETH network matched");
-				network = 'ETH';
-			}else if(chainId === bscAddr.Network) {
-				// console.log("BSC Network matched");
-				network = 'BSC';
-			}else if(chainId === polygonAddr.Network) {
-				// console.log("BSC Network matched");
-				network = 'POL';
+			const prov = provider
+				? provider
+				: checkProviderWallet(window.localStorage.getItem('loginBy'))
+			if (prov && window.ethereum.providers) {
+				// ethereum.selectedProvider = prov
+				window.ethereum.setSelectedProvider(prov);
 			}
-		}
-		catch(err) {
-			console.error("Error] : " + err.message);
-			gConfig.setNetwork(network);
-			return network;
+			const chainId = await window.ethereum.request({
+				method: 'eth_chainId',
+			})
+
+			window.localStorage.setItem('currentNetwork', chainId)
+			if (chainId === addr.Network || chainId === ethAddr.Network) {
+				// console.log("ETH network matched");
+				network = 'ETH'
+			} else if (chainId === bscAddr.Network) {
+				// console.log("BSC Network matched");
+				network = 'BSC'
+			} else if (chainId === polygonAddr.Network) {
+				// console.log("BSC Network matched");
+				network = 'POL'
+			}
+		} catch (err) {
+			console.error('Error] : ' + err.message)
+			gConfig.setNetwork(network)
+			return network
 		}
 	} else {
 		window.open('https://metamask.io/download/', '_blank');

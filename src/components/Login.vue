@@ -31,7 +31,7 @@
 								Coinbase
 							</BaseButton>
 							<BaseButton type="button" class="connectbtn fortmatic-btn" @click="connectFortmatic">
-								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
+								<img src="../assets/img/fortmatic.svg" alt="" class="ic-image">
 								Fortmatic
 							</BaseButton>
 							<div class="or">
@@ -282,7 +282,7 @@ export default {
 		async connectMetamask(data = null, loginWithEmail = false) {
 			const provider = checkProviderWallet(METAMASK);
 			console.log("[Login] connect metamask account");
-			const rv = await wAPI.checkMetamask();
+			const rv = await wAPI.checkMetamask(provider);
 			if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
@@ -295,7 +295,7 @@ export default {
 							return;
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin, provider, 0)
+							wAPI.Sign_Account(account, this.reqLogin, provider, 1)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', METAMASK);
 							// window.localStorage.setItem('currentNetwork',chainId)

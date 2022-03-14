@@ -468,7 +468,7 @@ export default {
 				chainId !== networkPoygon &&
 				chainId !== networkETH
 			) this.mxShowToast(MSG_METAMASK_2)
-			else window.location.reload()
+			else location.reload(true)
 		},
 		historyBack(e) {
 			// if(e.keyCode == 8) {
