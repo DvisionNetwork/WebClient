@@ -114,13 +114,13 @@ export default {
 	},
 	mounted() {
 		setInterval(() => {
-			// this.getCampaignEarned()
+			this.getCampaignEarned()
 		}, 3000)
 	},
 	watch: {
 		'poolDuration.id': {
 			handler() {
-				// this.getCampaignEarned()
+				this.getCampaignEarned()
 			},
 		},
 	},

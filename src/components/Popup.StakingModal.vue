@@ -59,7 +59,7 @@
 							:id="item.id"
 							:key="item.id"
 							:nftId="Number(item.nft_id)"
-							:imageUrl="item.image_url"
+							:imageUrl="item.imageUrl"
 							:isActive="getActive(Number(item.nft_id))"
 							:onConfirmQuantity1155="
 								(quantity, nftId) =>
@@ -137,7 +137,7 @@ import {
 	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
-	WALLETCONNECT
+	WALLETCONNECT,
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -169,7 +169,7 @@ export default {
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			networkRPC: window.localStorage.getItem('networkRPC'),
-			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	beforeMount() {
@@ -178,20 +178,21 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.current_network = chainId
-		} else if(this.loginBy === FORTMATIC) {
-			const fortmaticNetwork = window.localStorage.getItem('fortmaticNetwork')
+		} else if (this.loginBy === FORTMATIC) {
+			const fortmaticNetwork =
+				window.localStorage.getItem('fortmaticNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
-		}
-		else {
-			const fortmaticNetwork = window.localStorage.getItem('currentNetwork')
+		} else {
+			const fortmaticNetwork =
+				window.localStorage.getItem('currentNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
 		}
 	},
 	mounted() {
-		if(ethereum) {
+		if (ethereum) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
-		})
+			})
 		}
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
@@ -232,7 +233,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('chainId',chainId)
+			console.log('chainId', chainId)
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -463,12 +464,10 @@ export default {
 					})
 					provider.enable()
 					web3 = new Web3(provider)
-				}
-				else web3 = new Web3(Web3.givenProvider)
+				} else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)
 				return contractConn
-			}
-			catch(err) {
+			} catch (err) {
 				console.log('err', err)
 			}
 		},
@@ -515,7 +514,7 @@ export default {
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
-			console.log('this.data.staking_address',this.data.staking_address)
+			console.log('this.data.staking_address', this.data.staking_address)
 			const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking
@@ -525,7 +524,7 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					console.log('e',e)
+					console.log('e', e)
 					this.hadUnderstand = false
 					this.mxCloseLoading()
 					if (
@@ -546,46 +545,56 @@ export default {
 		},
 
 		async onStakeNft() {
-			if (!this.checkAddress(this.current_addr)) {
-				this.mxShowToast(MSG_METAMASK_1)
-				return
-			}
-			if (!this.checkNetwork(this.current_network)) {
-				this.mxShowToast(MSG_METAMASK_2)
-				return
-			}
-			this.mxShowLoading('inf')
-			const contractConn = await this.contractConnect(
-				ABI_STAKING,
-				this.data.staking_address // address Staking
-			)
+			try {
+				if (!this.checkAddress(this.current_addr)) {
+					this.mxShowToast(MSG_METAMASK_1)
+					return
+				}
+				if (!this.checkNetwork(this.current_network)) {
+					this.mxShowToast(MSG_METAMASK_2)
+					return
+				}
+				// this.mxShowLoading('inf')
+				const contractConn = await this.contractConnect(
+					ABI_STAKING,
+					this.data.staking_address // address Staking
+				)
+			
+				let params = {
+					erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
+					erc1155TokenIds: this.isErc1155
+						? this.listNfts1155Check
+						: [],
+					erc1155Amounts: this.isErc1155
+						? this.listNfts1155Quantity
+						: [],
+				}
 
-			let params = {
-				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
-				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
-				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
-			}
-
-			params = JSON.parse(JSON.stringify(params))
-
-			const res = await contractConn.methods
-				.deposit(this.data.duration.id, params)
-				.send({
-					from: this.current_addr,
-				})
-				.catch((e) => {
-					console.log('onStakeNft e', e)
+				params = JSON.parse(JSON.stringify(params))
+					console.log('this.data.duration.id',this.data.duration.id)
+					console.log('params',params)
+				const res = await contractConn.methods
+					.deposit(this.data.duration.id, params)
+					.send({
+						from: this.current_addr,
+					})
+					.catch((e) => {
+						console.log('onStakeNft e', e)
+						this.mxCloseLoading()
+						if (e.code === 4001 || e.code === -32603) {
+							this.mxShowToast(e.message)
+						} else {
+							this.mxShowToast(MSG_METAMASK_3)
+						}
+					})
+					console.log('res',res)
+				if (res) {
 					this.mxCloseLoading()
-					if (e.code === 4001 || e.code === -32603) {
-						this.mxShowToast(e.message)
-					} else {
-						this.mxShowToast(MSG_METAMASK_3)
-					}
-				})
-			if (res) {
-				this.mxCloseLoading()
-				this.showSuccess()
-				this.onStakingSuccess()
+					this.showSuccess()
+					this.onStakingSuccess()
+				}
+			} catch (e) {
+				console.log('err', e)
 			}
 		},
 	},

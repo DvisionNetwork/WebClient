@@ -35,7 +35,7 @@
 					:id="item.id"
 					:key="item.id"
 					:nftId="Number(item.nft_id)"
-					:imageUrl="item.image_url"
+					:imageUrl="item.imageUrl"
 					:isErc1155="item.is_ERC1155 === 1 ? true : false"
 					:isUnstake="true"
 					:onCheckItem="
@@ -267,20 +267,20 @@ export default {
 			this.getTotalStaked(id)
 			this.getMyStaked(id)
 		},
-		async getAllowWithdrawAll() {
-			try {
-				const contractConn = await this.contractConnect(
-					ABI_STAKING,
-					this.staking_address
-				)
-				const res = await contractConn.methods.allowWithdrawAll().call()
-				console.log('resss',res)
-				if (res) this.allowWithdraw = res
-			}
-			catch(err) {
-				console.log('err',err)
-			}
-		},
+		// async getAllowWithdrawAll() {
+		// 	try {
+		// 		const contractConn = await this.contractConnect(
+		// 			ABI_STAKING,
+		// 			this.staking_address
+		// 		)
+		// 		const res = await contractConn.methods.allowWithdrawAll().call()
+		// 		this.allowWithdraw = res
+		// 		console.log('getAllowWithdrawAll', res)
+		// 	}
+		// 	catch(err) {
+		// 		console.log('err',err)
+		// 	}
+		// },
 		checkNetwork() {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
@@ -474,12 +474,14 @@ export default {
 
 		async getCampaignInfo(campainId) {
 			this.mxShowLoading('inf')
-			this.getAllowWithdrawAll()
+			// this.getAllowWithdrawAll()
 			try {
 					const contractConn = await this.contractConnect(
 						ABI_STAKING,
 						this.staking_address
 					)
+					const isAllow = await contractConn.methods.allowWithdrawAll().call()
+					
 					const data = await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
@@ -496,12 +498,18 @@ export default {
 						const endValue = Number(data.timestampFinish)
 						const startValue = endValue - Number(data.duration)
 						const currValue = moment().unix()
-						if (!this.allowWithdraw) {
+						const compare = currValue > endValue?true:false
+						console.log('compare',compare)
+						console.log('isAllow',isAllow)
+						if (!isAllow) {
 							if (currValue > endValue) {
 								this.allowWithdraw = true
 							} else {
 								this.allowWithdraw = false
 							}
+						}
+						else {
+							this.allowWithdraw = true
 						}
 						this.timeCount.startValue = startValue
 						this.timeCount.endValue = endValue
@@ -539,6 +547,7 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
+				console.log('response.data',response.data)
 				response.data.map((item, idx) => {
 					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
 				})
