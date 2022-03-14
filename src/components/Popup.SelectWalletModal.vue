@@ -51,7 +51,7 @@
 									data.sinUpWith('sinUpWith-fortmatic')
 								"
 							>
-								<img src="../assets/img/fortmatic.svg" alt="" class="ic-image">
+								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
 								Fortmatic
 							</BaseButton>
 

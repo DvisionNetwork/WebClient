@@ -139,7 +139,6 @@ import {
 	formatChainId,
 	WALLETCONNECT
 } from '@/features/Common.js'
-import { fortmaticProvider } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
@@ -148,6 +147,11 @@ import {
 import LandCard from '@/components/LandCard.vue'
 import Fortmatic from 'fortmatic'
 const { ethereum } = window
+const fortmaticOptions = {
+	rpcUrl: window.localStorage.getItem('networkRPC'),
+	chainId: window.localStorage.getItem('fortmaticNetwork'),
+}
+const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY, fortmaticOptions)
 
 export default {
 	components: {
@@ -169,8 +173,6 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			networkRPC: window.localStorage.getItem('networkRPC'),
-			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	beforeMount() {
@@ -446,14 +448,7 @@ export default {
 			try {
 				let web3
 				if (this.loginBy === FORTMATIC) {
-					const options = {
-						rpcUrl: this.networkRPC,
-						chainId: this.fortmaticNetwork,
-					}
-					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
-					// console.log('fm',fm)
-					console.log('fortmaticProvider',fortmaticProvider)
-					web3 = new Web3(fm.getProvider())
+					web3 = new Web3(fortmaticProvider.getProvider())
 				} else if (this.loginBy === WALLETCONNECT) {
 					const provider = new WalletConnectProvider({
 						rpc: {
@@ -490,6 +485,9 @@ export default {
 				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
 				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
 			)
+			console.log('this.data.staking_address',this.data.staking_address)
+			console.log('this.current_addr',this.current_addr)
+			console.log('this.data.address1155',this.data.address1155)
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
@@ -570,7 +568,9 @@ export default {
 			}
 
 			params = JSON.parse(JSON.stringify(params))
-
+			console.log('params',params)
+			console.log('this.data.duration.id',this.data.duration.id)
+			console.log('this.current_addr',this.current_addr)
 			const res = await contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
