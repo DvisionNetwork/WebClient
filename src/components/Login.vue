@@ -295,7 +295,7 @@ export default {
 							return;
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin, provider, 0)
+							wAPI.Sign_Account(account, this.reqLogin, provider, 1)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', METAMASK);
 							// window.localStorage.setItem('currentNetwork',chainId)
