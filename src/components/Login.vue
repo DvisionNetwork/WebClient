@@ -295,7 +295,7 @@ export default {
 							return;
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin, provider)
+							wAPI.Sign_Account(account, this.reqLogin, provider, 0)
 							this.mxSetNetwork(rv)
 							window.localStorage.setItem('loginBy', METAMASK);
 							// window.localStorage.setItem('currentNetwork',chainId)
@@ -335,7 +335,7 @@ export default {
 						return;
 					}
 					if (accounts) {
-						wAPI.Sign_Account(accounts[0], this.reqLogin, provider)
+						wAPI.Sign_Account(accounts[0], this.reqLogin, provider, 2)
 						this.mxSetNetwork(rv)
 						window.localStorage.setItem('loginBy', COINBASE)
 					} else if (error) {
@@ -451,7 +451,11 @@ export default {
 					return;
 				}
 				if (accounts) {
-					this.reqLogin({ wallet_addr: accounts[0] })
+					const data = {
+						wallet_addr: accounts[0],
+						wallet: 3,
+					}
+					this.reqLogin(data);
 					window.localStorage.setItem('loginBy',WALLETCONNECT)
 				} else if (error) {
 					this.mxShowAlert({ msg: 'error' })
