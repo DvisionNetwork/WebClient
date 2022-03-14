@@ -57,7 +57,7 @@ async checkMetamask(provider = null) {
 	return network;
 },
 
-async Sign_Account(account, callback, provider = null) {
+async Sign_Account(account, callback, provider = null, wallet) {
 
 	console.log("[WalletAPI] Sign_Account ()");
 
@@ -76,7 +76,8 @@ async Sign_Account(account, callback, provider = null) {
 		});
 
 		var data = {
-			wallet_addr: account
+			wallet_addr: account,
+			wallet,
 		}
 
 		callback(data);
