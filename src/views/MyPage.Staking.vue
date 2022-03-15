@@ -94,7 +94,8 @@ import {
 	FORTMATIC,
 	COINBASE,
 	METAMASK,
-	WALLETCONNECT
+	WALLETCONNECT,
+	DENIED_TRANSACTION
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -702,7 +703,7 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					if (e.code === 4001) {
+					if (e.code === 4001 || e.message === DENIED_TRANSACTION) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)

@@ -3,7 +3,10 @@
 		<div>
 			<div class="name">{{ name }}</div>
 			<div class="point" v-if="statusCampain === 1 && !hadHarvest">0</div>
-			<div class="point" v-else>{{ data }}</div>
+			<div class="point" v-else>
+				<div class="number" :title="number">{{ number }}</div>
+				<div class="unit">{{ unit }}</div>
+			</div>
 		</div>
 		<div
 			class="harvest"
@@ -29,6 +32,8 @@ export default {
 	data() {
 		return {
 			isActive: false,
+			number: 0,
+			unit: 'DVG',
 		}
 	},
 	watch: {
@@ -37,6 +42,9 @@ export default {
 				const harvest = Number(
 					this.data.substring(0, this.data.length - 4)
 				)
+				const dataSplit = this.data.split(' ');
+				this.unit = dataSplit[dataSplit.length - 1];
+				this.number = dataSplit[0];
 				if (harvest > 0) {
 					this.isActive = true
 				}
@@ -86,6 +94,15 @@ export default {
 		font-weight: 400;
 		line-height: gREm(25);
 		color: #ffffff;
+		display: flex;
+		gap: gREm(6);
+
+		.number {
+			max-width: 8ch;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 	}
 	.harvest {
 		background: #5f5f5f;

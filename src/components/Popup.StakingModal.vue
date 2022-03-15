@@ -137,7 +137,8 @@ import {
 	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
-	WALLETCONNECT
+	WALLETCONNECT,
+	DENIED_TRANSACTION
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -146,6 +147,7 @@ import {
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 import Fortmatic from 'fortmatic'
+
 const { ethereum } = window
 const fortmaticOptions = {
 	rpcUrl: window.localStorage.getItem('networkRPC'),
@@ -555,7 +557,7 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
-			// this.mxShowLoading('inf')
+			this.mxShowLoading('inf')
 			const contractConn = await this.contractConnect(
 				ABI_STAKING,
 				this.data.staking_address // address Staking
@@ -577,9 +579,8 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					console.log('onStakeNft e', e)
 					this.mxCloseLoading()
-					if (e.code === 4001 || e.code === -32603) {
+					if (e.code === 4001 || e.code === -32603 || e.message === DENIED_TRANSACTION) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_3)

@@ -80,3 +80,4 @@ export const METAMASK = 'METAMASK';
 export const COINBASE = 'COINBASE';
 export const FORTMATIC = 'FORTMATIC';
 export const WALLETCONNECT = 'WALLETCONNECT';
+export const DENIED_TRANSACTION = 'User rejected the transaction';
