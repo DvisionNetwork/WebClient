@@ -433,7 +433,11 @@ export default {
 				// create new session
 				await connector.createSession()
 			} else {
-				this.reqLogin({ wallet_addr: connector._accounts[0] })
+				const data = {
+					wallet_addr: connector._accounts[0],
+					wallet: 3,
+				}
+				this.reqLogin(data)
 				// connector.killSession()
 				return
 			}

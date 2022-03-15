@@ -4,8 +4,11 @@
 			<div class="name">{{ name }}</div>
 			<div class="point" v-if="statusCampain === 1 && !hadHarvest">0</div>
 			<div class="point" v-else>
-				<div class="number" :title="number">{{ number }}</div>
-				<div class="unit">{{ unit }}</div>
+				<div class="wrapper" v-if="hasUnit">
+					<div class="number" :title="number">{{ number }}</div>
+					<div class="unit">{{ unit }}</div>
+				</div>
+				<div v-else>{{ data }}</div>
 			</div>
 		</div>
 		<div
@@ -28,12 +31,13 @@ export default {
 		hadHarvest: Boolean,
 		data: String,
 		statusCampain: Number,
+		hasUnit: Boolean,
 	},
 	data() {
 		return {
 			isActive: false,
 			number: 0,
-			unit: 'DVG',
+			unit: '',
 		}
 	},
 	watch: {
@@ -43,8 +47,10 @@ export default {
 					this.data.substring(0, this.data.length - 4)
 				)
 				const dataSplit = this.data.split(' ');
-				this.unit = dataSplit[dataSplit.length - 1];
-				this.number = dataSplit[0];
+				if (dataSplit) {
+					this.unit = dataSplit[dataSplit.length - 1];
+					this.number = dataSplit[0];
+				}
 				if (harvest > 0) {
 					this.isActive = true
 				}
@@ -94,15 +100,24 @@ export default {
 		font-weight: 400;
 		line-height: gREm(25);
 		color: #ffffff;
-		display: flex;
-		gap: gREm(6);
 
-		.number {
-			max-width: 8ch;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+		.wrapper {
+			display: flex;
+			gap: gREm(5);
+			
+			.number,
+			.unit {
+				display: inline-block;
+			}
+
+			.number {
+				max-width: 8ch;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 		}
+
 	}
 	.harvest {
 		background: #5f5f5f;

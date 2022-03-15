@@ -20,6 +20,7 @@
 				:hadHarvest="harvest"
 				:data="dvgEarned"
 				:statusCampain="statusCampain"
+				:hasUnit="true"
 			/>
 			<RewardBoxItem
 				name="Total Staked LANDs"
@@ -45,6 +46,7 @@
 				name="10 Hash Rate/24H to get"
 				:data="mininghashRatePerHour"
 				:statusCampain="statusCampain"
+				:hasUnit="true"
 			/>
 		</div>
 	</div>
