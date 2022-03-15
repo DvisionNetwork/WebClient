@@ -72,6 +72,13 @@ import {
 	WALLETCONNECT
 } from '@/features/Common.js'
 var gConfig = AppConfig()
+const wcProvider = new WalletConnectProvider({
+	rpc: {
+		97: BSC_RPC_ENDPOINT,
+		4: ETH_RPC_ENDPOINT,
+		80001: MATIC_RPC_ENDPOINT,
+	},
+})
 
 export default {
 	name: 'RewardBox',
@@ -105,7 +112,7 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
-		staking_address: String,
+		staking_address: String
 	},
 	beforeMount() {
 		if (this.loginBy === WALLETCONNECT) {
@@ -158,17 +165,8 @@ export default {
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === WALLETCONNECT) {
-					const provider = new WalletConnectProvider({
-						rpc: {
-							1: 'https://mainnet.mycustomnode.com',
-							3: 'https://ropsten.mycustomnode.com',
-							97: BSC_RPC_ENDPOINT,
-							4: ETH_RPC_ENDPOINT,
-							80001: MATIC_RPC_ENDPOINT,
-						},
-					})
-					provider.enable()
-					web3 = new Web3(provider)
+					wcProvider.enable()
+					web3 = new Web3(wcProvider)
 				}
 				else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)

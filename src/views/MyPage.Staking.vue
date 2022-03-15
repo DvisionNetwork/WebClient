@@ -115,7 +115,15 @@ import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 import Fortmatic from 'fortmatic'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-
+const wcProvider = new WalletConnectProvider({
+	rpc: {
+		1: 'https://mainnet.mycustomnode.com',
+		3: 'https://ropsten.mycustomnode.com',
+		97: BSC_RPC_ENDPOINT,
+		4: ETH_RPC_ENDPOINT,
+		80001: MATIC_RPC_ENDPOINT,
+	},
+})
 const { ethereum } = window
 
 export default {
@@ -268,20 +276,6 @@ export default {
 			this.getTotalStaked(id)
 			this.getMyStaked(id)
 		},
-		// async getAllowWithdrawAll() {
-		// 	try {
-		// 		const contractConn = await this.contractConnect(
-		// 			ABI_STAKING,
-		// 			this.staking_address
-		// 		)
-		// 		const res = await contractConn.methods.allowWithdrawAll().call()
-		// 		this.allowWithdraw = res
-		// 		console.log('getAllowWithdrawAll', res)
-		// 	}
-		// 	catch(err) {
-		// 		console.log('err',err)
-		// 	}
-		// },
 		checkNetwork() {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
@@ -475,7 +469,6 @@ export default {
 
 		async getCampaignInfo(campainId) {
 			this.mxShowLoading('inf')
-			// this.getAllowWithdrawAll()
 			try {
 					const contractConn = await this.contractConnect(
 						ABI_STAKING,
@@ -568,17 +561,8 @@ export default {
 					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
 					web3 = new Web3(fm.getProvider())
 				} else if (this.loginBy === WALLETCONNECT) {
-					const provider = new WalletConnectProvider({
-						rpc: {
-							1: 'https://mainnet.mycustomnode.com',
-							3: 'https://ropsten.mycustomnode.com',
-							97: BSC_RPC_ENDPOINT,
-							4: ETH_RPC_ENDPOINT,
-							80001: MATIC_RPC_ENDPOINT,
-						},
-					})
-					provider.enable()
-					web3 = new Web3(provider)
+					wcProvider.enable()
+					web3 = new Web3(wcProvider)
 				}
 				else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)

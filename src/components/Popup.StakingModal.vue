@@ -125,7 +125,7 @@ var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-import WalletConnectProvider from '@walletconnect/web3-provider'
+import { walletConnectProvider } from '@/features/Connectors.js'
 import {
 	renderSuccessContent,
 	renderSwitchNftContent,
@@ -154,7 +154,7 @@ const fortmaticOptions = {
 	chainId: window.localStorage.getItem('fortmaticNetwork'),
 }
 const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY, fortmaticOptions)
-
+const formaticWeb3 = new Web3(fortmaticProvider.getProvider())
 export default {
 	components: {
 		LandCard,
@@ -450,19 +450,10 @@ export default {
 			try {
 				let web3
 				if (this.loginBy === FORTMATIC) {
-					web3 = new Web3(fortmaticProvider.getProvider())
+					web3 = formaticWeb3
 				} else if (this.loginBy === WALLETCONNECT) {
-					const provider = new WalletConnectProvider({
-						rpc: {
-							1: 'https://mainnet.mycustomnode.com',
-							3: 'https://ropsten.mycustomnode.com',
-							97: BSC_RPC_ENDPOINT,
-							4: ETH_RPC_ENDPOINT,
-							80001: MATIC_RPC_ENDPOINT,
-						},
-					})
-					provider.enable()
-					web3 = new Web3(provider)
+					// walletConnectProvider.enable()
+					web3 = new Web3(walletConnectProvider)
 				}
 				else web3 = new Web3(Web3.givenProvider)
 				const contractConn = new web3.eth.Contract(abi, address_ct)

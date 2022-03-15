@@ -151,7 +151,7 @@ import {
 	checkProviderWallet,
  FORTMATIC, WALLETCONNECT
 } from '@/features/Common.js'
-import { coinbaseProvider, fortmaticProvider } from '@/features/Connectors.js'
+import { coinbaseProvider, fortmaticProvider, walletConnectProvider, walletConnectConnector } from '@/features/Connectors.js'
 import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
@@ -412,23 +412,7 @@ export default {
 			}
 		},
 		async connectWalletConnect(data, loginWithEmail = false) {
-
-			// this.setProviderWalletCon.on("accountsChanged", (accounts) => {
-			// 	if (accounts) {
-			// 		this.reqLogin({ wallet_addr: accounts[0] })
-			// 		window.localStorage.setItem('loginBy','WalletConnect')
-			// 	} else {
-			// 		this.mxShowAlert({ msg: 'error' })
-			// 	}
-			// });
-
-			// await this.setProviderWalletCon.enable()
-
-			const bridge = BRIDGE_WALLETCONNECT
-			const connector = new WalletConnect({
-				bridge,
-				qrcodeModal: QRCodeModal,
-			})
+			const connector = walletConnectConnector
 			if (!connector.connected) {
 				// create new session
 				await connector.createSession()

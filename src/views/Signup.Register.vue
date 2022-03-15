@@ -74,10 +74,10 @@ import WalletAPI from '@/features/WalletAPI.js'
 import sha256 from 'crypto-js/sha256'
 
 var wAPI = new WalletAPI()
-
+import { Bitski, LOGIN_HINT_SIGNUP  } from 'bitski';
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
-
+const bitski = new Bitski('CLIENT_ID_CANH', 'https://www.google.com/')
 import {
 	BRIDGE_WALLETCONNECT,
 	DEFAULT_ETH_JSONRPC_URL,
@@ -315,6 +315,15 @@ export default {
 				});
 			});
 		},
+		async sinUpWithBitski() {
+			const provider = bitski.getProvider();
+			const web3 = new Web3(provider);
+			bitski.signIn({ login_hint : LOGIN_HINT_SIGNUP  }).then(() =>{
+					console.log('SignIn')
+			}).catch((error) =>{
+				console.log('error',error)
+			})
+		},
 		async sinUpWithwalletConnect() {
 			const bridge = BRIDGE_WALLETCONNECT
 			const connector = new WalletConnect({
@@ -412,6 +421,9 @@ export default {
 					break
 				case 'sinUpWith-fortmatic' :
 					this.sinUpWithFortmatic()
+					break
+				case 'sinUpWith-bitski' :
+					this.sinUpWithBitski()
 					break
 			}
 			console.log(value)

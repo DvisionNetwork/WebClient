@@ -54,7 +54,16 @@
 								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
 								Fortmatic
 							</BaseButton>
-
+							<BaseButton
+								type="button"
+								class="connectbtn fortmatic-btn"
+								@click="
+									data.sinUpWith('sinUpWith-bitski')
+								"
+							>
+								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
+								Bitski
+							</BaseButton>
 							<div class="signup-box">
 								<div class="signup-box-wrap">
 									<div class="notamember" >{{$t('login.popup.already-have-account')}}</div>
