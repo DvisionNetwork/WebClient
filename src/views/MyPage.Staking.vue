@@ -114,6 +114,7 @@ import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 import Fortmatic from 'fortmatic'
 import WalletConnectProvider from '@walletconnect/web3-provider'
+import { DENIED_TRANSACTION } from '../features/Common'
 
 const { ethereum } = window
 
@@ -702,7 +703,7 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					if (e.code === 4001) {
+					if (e.code === 4001 || e.message === DENIED_TRANSACTION) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)
