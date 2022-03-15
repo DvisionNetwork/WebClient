@@ -94,7 +94,8 @@ import {
 	FORTMATIC,
 	COINBASE,
 	METAMASK,
-	WALLETCONNECT
+	WALLETCONNECT,
+	DENIED_TRANSACTION
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -114,7 +115,6 @@ import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 import Fortmatic from 'fortmatic'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { DENIED_TRANSACTION } from '../features/Common'
 
 const { ethereum } = window
 

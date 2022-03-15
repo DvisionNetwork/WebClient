@@ -137,7 +137,8 @@ import {
 	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
-	WALLETCONNECT
+	WALLETCONNECT,
+	DENIED_TRANSACTION
 } from '@/features/Common.js'
 import {
 	MSG_METAMASK_1,
@@ -146,7 +147,7 @@ import {
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 import Fortmatic from 'fortmatic'
-import { DENIED_TRANSACTION } from '../features/Common'
+
 const { ethereum } = window
 const fortmaticOptions = {
 	rpcUrl: window.localStorage.getItem('networkRPC'),
