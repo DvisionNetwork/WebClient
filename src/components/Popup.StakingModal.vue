@@ -140,6 +140,7 @@ import {
 	WALLETCONNECT,
 	DENIED_TRANSACTION
 } from '@/features/Common.js'
+import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
@@ -175,6 +176,9 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			networkRPC : window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork')
+			
 		}
 	},
 	beforeMount() {
@@ -275,11 +279,7 @@ export default {
 					nft.imageUrl = response.data.image
 					nft.description = response.data.description
 				}
-				//Call SC
-				const contractConn = await this.contractConnect(
-					ABI_STAKING,
-					this.data.staking_address
-				)
+				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
@@ -474,13 +474,9 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = await this.contractConnect(
-				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
-				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
-			)
-			console.log('this.data.staking_address',this.data.staking_address)
-			console.log('this.current_addr',this.current_addr)
-			console.log('this.data.address1155',this.data.address1155)
+			const abi = this.isErc1155 ? ABI_1155 : ABI_721
+			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
+			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
@@ -505,11 +501,13 @@ export default {
 		},
 
 		async onApprovedForAll() {
-			const contractConn = await this.contractConnect(
-				this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
-				this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
-			)
-			console.log('this.data.staking_address',this.data.staking_address)
+			// const contractConn = await this.contractConnect(
+			// 	this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
+			// 	this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
+			// )
+			const abi = this.isErc1155 ? ABI_1155 : ABI_721
+			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
+			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
 			const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking
@@ -549,11 +547,7 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = await this.contractConnect(
-				ABI_STAKING,
-				this.data.staking_address // address Staking
-			)
-
+			const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
 			let params = {
 				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
 				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],

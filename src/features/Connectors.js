@@ -1,9 +1,19 @@
 import WalletLink from "walletlink"
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { BSC_RPC_ENDPOINT, ETH_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC_API_KEY, BRIDGE_WALLETCONNECT } from './Common'
+import {
+  BSC_RPC_ENDPOINT,
+  ETH_RPC_ENDPOINT,
+  MATIC_RPC_ENDPOINT,
+  FORTMATIC_API_KEY,
+  BRIDGE_WALLETCONNECT,
+  BITSKI_CLIENT_ID,
+  FORTMATIC,
+  WALLETCONNECT,
+  BITSKI
+} from './Common'
 import Fortmatic from 'fortmatic'
-import QRCodeModal from '@walletconnect/qrcode-modal'
-import WalletConnect from '@walletconnect/client'
+import { Bitski } from 'bitski'
+import Web3 from 'web3'
 
 export const walletLink = new WalletLink({
   appName: 'Division Network',
@@ -16,8 +26,6 @@ export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY)
 
 const bridge = BRIDGE_WALLETCONNECT
 export const walletConnectProvider = new WalletConnectProvider({
-  bridge,
-  qrcodeModal: QRCodeModal,
   rpc: {
     1: 'https://mainnet.mycustomnode.com',
     3: 'https://ropsten.mycustomnode.com',
@@ -26,7 +34,32 @@ export const walletConnectProvider = new WalletConnectProvider({
     80001: MATIC_RPC_ENDPOINT
   },
 })
-export const walletConnectConnector = new WalletConnect({
-  bridge,
-  qrcodeModal: QRCodeModal,
-})
+export const bitski = new Bitski(BITSKI_CLIENT_ID, `${window.location.origin}/callback.html`)
+
+
+export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
+  let web3
+  const networkOptions = {
+    rpcUrl: network,
+    chainId: chainId
+  }
+  switch (loginBy) {
+    case FORTMATIC:
+      const fm = new Fortmatic(FORTMATIC_API_KEY, networkOptions)
+      web3 = new Web3(fm.getProvider())
+      break;
+    case WALLETCONNECT:
+      walletConnectProvider.enable()
+      web3 = new Web3(walletConnectProvider)
+      break;
+    case BITSKI:
+      const bitskiProvider = bitski.getProvider({ network: networkOptions });
+      web3 = new Web3(bitskiProvider)
+      break;
+    default: //Metamask | coinbase 
+      web3 = new Web3(Web3.givenProvider)
+      break;
+  }
+  const contractConn = new web3.eth.Contract(abi, address_ct)
+  return contractConn
+}

@@ -114,6 +114,13 @@ textarea:focus, input:focus{
 	background: #6851FF1A;
 	color: #6851FF;
 }
+.bitski-btn{
+	@include FLEX(left,center);
+	cursor: pointer;
+	border: 2px solid #f951ff;
+	background: #ff51e81a;
+	color: #f951ff;
+}
 .text {
 	// font-family: App-Regular, "Noto Sans KR", sans-serif;
 	display: inline-flex;

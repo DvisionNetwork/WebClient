@@ -95,8 +95,10 @@ import {
 	COINBASE,
 	METAMASK,
 	WALLETCONNECT,
+	BITSKI,
 	DENIED_TRANSACTION
 } from '@/features/Common.js'
+import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
@@ -188,7 +190,7 @@ export default {
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
 		}
-		else if(this.loginBy === FORTMATIC) {
+		else if(this.loginBy === FORTMATIC || this.loginBy === BITSKI) {
 			const chainId = window.localStorage.getItem('fortmaticNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
@@ -424,10 +426,7 @@ export default {
 		},
 		async getTotalMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				const contractConn = await this.contractConnect(
-					ABI_STAKING,
-					this.staking_address
-				)
+				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 				await contractConn.methods
 					.totalCampaignHashrate(campainId)
 					.call()
@@ -445,10 +444,7 @@ export default {
 		},
 		async getMyMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				const contractConn = await this.contractConnect(
-					ABI_STAKING,
-					this.staking_address
-				)
+				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 				await contractConn.methods
 					.userInfo(campainId, this.wallet_addr)
 					.call()
@@ -470,12 +466,8 @@ export default {
 		async getCampaignInfo(campainId) {
 			this.mxShowLoading('inf')
 			try {
-					const contractConn = await this.contractConnect(
-						ABI_STAKING,
-						this.staking_address
-					)
+					const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 					const isAllow = await contractConn.methods.allowWithdrawAll().call()
-					
 					const data = await contractConn.methods
 						.campaignInfo(campainId)
 						.call()
@@ -550,28 +542,35 @@ export default {
 			}
 		},
 
-		async contractConnect(abi, address_ct) {
-			try {
-				let web3
-				if (this.loginBy === FORTMATIC) {
-					const options = {
-						rpcUrl: this.networkRPC,
-						chainId: this.fortmaticNetwork,
-					}
-					const fm = new Fortmatic(FORTMATIC_API_KEY, options)
-					web3 = new Web3(fm.getProvider())
-				} else if (this.loginBy === WALLETCONNECT) {
-					wcProvider.enable()
-					web3 = new Web3(wcProvider)
-				}
-				else web3 = new Web3(Web3.givenProvider)
-				const contractConn = new web3.eth.Contract(abi, address_ct)
-				return contractConn
-			}
-			catch(err) {
-				console.log('err', err)
-			}
-		},
+		// async contractConnect(abi, address_ct) {
+		// 	try {
+		// 		let web3
+		// 		if (this.loginBy === FORTMATIC) {
+		// 			const options = {
+		// 				rpcUrl: this.networkRPC,
+		// 				chainId: this.fortmaticNetwork,
+		// 			}
+		// 			const fm = new Fortmatic(FORTMATIC_API_KEY, options)
+		// 			web3 = new Web3(fm.getProvider())
+		// 		} else if (this.loginBy === WALLETCONNECT) {
+		// 			wcProvider.enable()
+		// 			web3 = new Web3(wcProvider)
+		// 		} else if(this.loginBy ===BITSKI) {
+		// 			const network = {
+  	// 				rpcUrl: BSC_RPC_ENDPOINT,
+  	// 				chainId: 97
+		// 			}
+		// 			const bitskiProvider = bitski.getProvider({ network: network });
+		// 			web3 = new Web3(bitskiProvider)
+		// 		}
+		// 		else web3 = new Web3(Web3.givenProvider)
+		// 		const contractConn = new web3.eth.Contract(abi, address_ct)
+		// 		return contractConn
+		// 	}
+		// 	catch(err) {
+		// 		console.log('err', err)
+		// 	}
+		// },
 		async onGetHashRate(is_ERC1155, nft_id, idx) {
 			try {
 				const nft = this.listNftsStake[idx]
@@ -585,11 +584,7 @@ export default {
 					nft.imageUrl = response.data.image
 					nft.description = response.data.description
 				}
-				//Call SC
-				const contractConn = await this.contractConnect(
-					ABI_STAKING,
-					this.staking_address
-				)
+				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
@@ -662,11 +657,7 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = await this.contractConnect(
-				ABI_STAKING,
-				this.staking_address // address Staking
-			)
-
+			const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 			console.log('params', params)
 
 			await contractConn.methods

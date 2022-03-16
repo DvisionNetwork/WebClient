@@ -56,12 +56,12 @@
 							</BaseButton>
 							<BaseButton
 								type="button"
-								class="connectbtn fortmatic-btn"
+								class="connectbtn bitski-btn"
 								@click="
 									data.sinUpWith('sinUpWith-bitski')
 								"
 							>
-								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
+								<img src="../assets/img/ic-bitski.png" alt="" class="ic-image">
 								Bitski
 							</BaseButton>
 							<div class="signup-box">
@@ -275,6 +275,8 @@ export default {
 
 		& .ic-image {
 			margin-right: gREm(15);
+			max-width: 28px;
+			max-height: 28px;
 		}
 		&:hover {
 			transform: translateY(-2px);

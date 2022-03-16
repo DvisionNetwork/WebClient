@@ -74,19 +74,15 @@ import WalletAPI from '@/features/WalletAPI.js'
 import sha256 from 'crypto-js/sha256'
 
 var wAPI = new WalletAPI()
-import { Bitski, LOGIN_HINT_SIGNUP  } from 'bitski';
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
-const bitski = new Bitski('CLIENT_ID_CANH', 'https://www.google.com/')
+
 import {
-	BRIDGE_WALLETCONNECT,
-	DEFAULT_ETH_JSONRPC_URL,
-	BSC_CHAIN_ID,
 	checkProviderWallet,
 	METAMASK,
-	COINBASE,
+	COINBASE
 } from '@/features/Common.js'
-import { coinbaseProvider, fortmaticProvider } from '@/features/Connectors.js'
+import { coinbaseProvider, fortmaticProvider, walletConnectProvider, bitski } from '@/features/Connectors.js'
 import Web3 from 'web3'
 
 export default {
@@ -315,43 +311,27 @@ export default {
 				});
 			});
 		},
-		async sinUpWithBitski() {
-			const provider = bitski.getProvider();
-			const web3 = new Web3(provider);
-			bitski.signIn({ login_hint : LOGIN_HINT_SIGNUP  }).then(() =>{
-					console.log('SignIn')
-			}).catch((error) =>{
-				console.log('error',error)
-			})
+		async sinUpWithBitski() { 
+			const res =	await bitski.signIn()
+			if(res) {
+				res.accounts[0]
+				this.walletAddr = res.accounts[0]
+				this.fieldset.walletInfo.walletAddress.value = res.accounts[0]
+				this.fieldset.walletInfo.walletAddress.checked = true
+				this.selectedWallet = '5';
+			}
 		},
 		async sinUpWithwalletConnect() {
-			const bridge = BRIDGE_WALLETCONNECT
-			const connector = new WalletConnect({
-				bridge,
-				qrcodeModal: QRCodeModal,
-			})
-			if (!connector.connected) {
-				// create new session
-				await connector.createSession()
-			} else {
-				this.walletAddr = connector._accounts[0]
-				this.fieldset.walletInfo.walletAddress.value = connector._accounts[0]
-				this.fieldset.walletInfo.walletAddress.checked = true
-				// connector.killSession()
-			}
-
-			connector.on('connect', (error, payload) => {
-				console.log(payload, error)
-				const { accounts } = JSON.parse(
-					JSON.stringify(payload.params[0])
-				)
-				if (accounts) {
-					this.walletAddr = accounts
-					this.fieldset.walletInfo.walletAddress.value = accounts
+			await walletConnectProvider.enable()
+			const web3 = new Web3(walletConnectProvider)
+			const accounts = await web3.eth.getAccounts();
+			if (accounts) {
+					this.walletAddr = accounts[0]
+					this.fieldset.walletInfo.walletAddress.value = accounts[0]
 					this.fieldset.walletInfo.walletAddress.checked = true
 					this.selectedWallet = '3';
 					return
-				} else if (error) {
+				} else {
 					this.mxShowAlert({
 						msg:
 							this.$t('signup.register.error-on-wallet-url') +
@@ -359,9 +339,44 @@ export default {
 							this.$t('popup.metamask-request-error') +
 							'\n'
 					})
-					throw error
 				}
-			})
+			// const bridge = BRIDGE_WALLETCONNECT
+			// const connector = new WalletConnect({
+			// 	bridge,
+			// 	qrcodeModal: QRCodeModal,
+			// })
+			// if (!connector.connected) {
+			// 	// create new session
+			// 	await connector.createSession()
+			// } else {
+			// 	this.walletAddr = connector._accounts[0]
+			// 	this.fieldset.walletInfo.walletAddress.value = connector._accounts[0]
+			// 	this.fieldset.walletInfo.walletAddress.checked = true
+			// 	// connector.killSession()
+			// }
+
+			// connector.on('connect', (error, payload) => {
+			// 	console.log(payload, error)
+			// 	const { accounts } = JSON.parse(
+			// 		JSON.stringify(payload.params[0])
+			// 	)
+			// 	if (accounts) {
+			// 		this.walletAddr = accounts
+			// 		this.fieldset.walletInfo.walletAddress.value = accounts
+			// 		this.fieldset.walletInfo.walletAddress.checked = true
+			// 		this.selectedWallet = '3';
+			// 		return
+			// 	} else if (error) {
+			// 		this.mxShowAlert({
+			// 			msg:
+			// 				this.$t('signup.register.error-on-wallet-url') +
+			// 				'\n' +
+			// 				this.$t('popup.metamask-request-error') +
+			// 				'\n'
+			// 		})
+			// 		throw error
+			// 	}
+			// })
 		},
 
 		sinUpWithMetamask() {

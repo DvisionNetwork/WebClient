@@ -175,8 +175,8 @@ import WalletConnect from '@walletconnect/client'
 import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT,
  	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
 	WALLETCONNECT, checkProviderWallet,
-	COINBASE, METAMASK } from '@/features/Common.js'
-import { fortmaticProvider } from '@/features/Connectors.js'
+	COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
+import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
 
 var gConfig = AppConfig();
 
@@ -370,12 +370,15 @@ export default {
 					fortmaticProvider.user.logout()
 					break
 				case WALLETCONNECT :
-					const bridge = BRIDGE_WALLETCONNECT
-					const connector = new WalletConnect({
-						bridge
-					})
-					connector.killSession()
+					walletConnectProvider.on("disconnect", (code, reason) => {});
+					// const bridge = BRIDGE_WALLETCONNECT
+					// const connector = new WalletConnect({
+					// 	bridge
+					// })
+					// connector.killSession()
 					break
+				case BITSKI :
+					bitski.signOut()
 			}
 		}
 	},

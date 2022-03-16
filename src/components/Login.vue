@@ -34,6 +34,10 @@
 								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
 								Fortmatic
 							</BaseButton>
+							<BaseButton type="button" class="connectbtn bitski-btn" @click="connectBitski">
+								<img src="../assets/img/ic-bitski.png" alt="" class="ic-image">
+								Bitski
+							</BaseButton>
 							<div class="or">
 								<span class="line"></span>
 								<span class="text">or</span>
@@ -149,9 +153,9 @@ import {
 	ETH_CHAIN_ID,
 	ETH_RPC_ENDPOINT,
 	checkProviderWallet,
- FORTMATIC, WALLETCONNECT
+ FORTMATIC, WALLETCONNECT, BITSKI
 } from '@/features/Common.js'
-import { coinbaseProvider, fortmaticProvider, walletConnectProvider, walletConnectConnector } from '@/features/Connectors.js'
+import { coinbaseProvider, fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
 import Web3 from 'web3'
 import {
 	MSG_METAMASK_1,
@@ -351,6 +355,14 @@ export default {
 				}
 			})
 		},
+		async connectBitski() {
+			const res = await bitski.signIn()
+			if(res) {
+				this.reqLogin({ wallet_addr: res.accounts[0], wallet : 5 })
+				window.localStorage.setItem('loginBy',BITSKI)
+				this.setlocalStorage()
+			}
+		},
 		async connectFortmatic(data, loginWithEmail = false) {
 			try {
 				let web3 = new Web3(fortmaticProvider.getProvider())
@@ -369,32 +381,8 @@ export default {
 						from
 					}, (error, result) => {
 						if(error) throw error;
-						const currentNetwork = window.localStorage.getItem('currentNetwork')
-						if(currentNetwork && currentNetwork.length > 0) {
-							window.localStorage.setItem('fortmaticNetwork', currentNetwork)
-							switch (currentNetwork) {
-								case '0x4':
-								case '4':
-									window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-									break
-								case '0x61':
-								case '97':
-									window.localStorage.setItem('networkRPC', BSC_RPC_ENDPOINT)
-									break
-								case '0x13881':
-								case '80001':
-								window.localStorage.setItem('networkRPC', MATIC_RPC_ENDPOINT)
-									break
-								default :
-								window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-								window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
-							}
-						}
-						else {
-							window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-							window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
-						}
-							if (!loginWithEmail) {
+						this.setlocalStorage()
+						if (!loginWithEmail) {
 							ref.reqLogin({ wallet_addr: from, wallet : 4 })
 							window.localStorage.setItem('loginBy',FORTMATIC)
 						} else {
@@ -412,43 +400,62 @@ export default {
 			}
 		},
 		async connectWalletConnect(data, loginWithEmail = false) {
-			const connector = walletConnectConnector
-			if (!connector.connected) {
-				// create new session
-				await connector.createSession()
-			} else {
+			await walletConnectProvider.enable()
+			const web3 = new Web3(walletConnectProvider)
+			const accounts = await web3.eth.getAccounts();
+			if (data && loginWithEmail) {
+				if (accounts[0] === data.wlt.currentAccount) {
+					return this.handleLogicLoginWithId(data, WALLETCONNECT)
+				}
+				this.mxShowToast(MSG_METAMASK_1);
+				return;
+			} else if (accounts) {
 				const data = {
-					wallet_addr: connector._accounts[0],
+					wallet_addr: accounts[0],
 					wallet: 3,
 				}
-				this.reqLogin(data)
-				// connector.killSession()
-				return
+				this.reqLogin(data);
+				window.localStorage.setItem('loginBy',WALLETCONNECT)
+			} else {
+				this.mxShowAlert({ msg: 'error' })
 			}
+			// const connector = walletConnectConnector
+			// if (!connector.connected) {
+			// 	// create new session
+			// 	await connector.createSession()
+			// } else {
+			// 	const data = {
+			// 		wallet_addr: connector._accounts[0],
+			// 		wallet: 3,
+			// 	}
+			// 	this.reqLogin(data)
+			// 	// connector.killSession()
+			// 	return
+			// }
 
-			connector.on('connect', (error, payload) => {
-				console.log(payload, error)
-				const { accounts } = JSON.parse(
-					JSON.stringify(payload.params[0])
-				)
-				if (data && loginWithEmail) {
-					if (accounts[0] === data.wlt.currentAccount) {
-						return this.handleLogicLoginWithId(data, WALLETCONNECT)
-					}
-					this.mxShowToast(MSG_METAMASK_1);
-					return;
-				}
-				if (accounts) {
-					const data = {
-						wallet_addr: accounts[0],
-						wallet: 3,
-					}
-					this.reqLogin(data);
-					window.localStorage.setItem('loginBy',WALLETCONNECT)
-				} else if (error) {
-					this.mxShowAlert({ msg: 'error' })
-				}
-			})
+			// connector.on('connect', (error, payload) => {
+			// 	console.log(payload, error)
+			// 	const { accounts } = JSON.parse(
+			// 		JSON.stringify(payload.params[0])
+			// 	)
+			// 	if (data && loginWithEmail) {
+			// 		if (accounts[0] === data.wlt.currentAccount) {
+			// 			return this.handleLogicLoginWithId(data, WALLETCONNECT)
+			// 		}
+			// 		this.mxShowToast(MSG_METAMASK_1);
+			// 		return;
+			// 	}
+			// 	if (accounts) {
+			// 		const data = {
+			// 			wallet_addr: accounts[0],
+			// 			wallet: 3,
+			// 		}
+			// 		this.reqLogin(data);
+			// 		window.localStorage.setItem('loginBy',WALLETCONNECT)
+			// 	} else if (error) {
+			// 		this.mxShowAlert({ msg: 'error' })
+			// 	}
+			// })
 		},
 		// signin() {
 		// 	console.log("[Login] ID/PW login");
@@ -460,7 +467,33 @@ export default {
 
 		// 	this.reqLogin(data);
 		// },
-
+		setlocalStorage() {
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			if(currentNetwork && currentNetwork.length > 0) {
+				window.localStorage.setItem('fortmaticNetwork', currentNetwork)
+				switch (currentNetwork) {
+					case '0x4':
+					case '4':
+						window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+						break
+					case '0x61':
+					case '97':
+						window.localStorage.setItem('networkRPC', BSC_RPC_ENDPOINT)
+						break
+					case '0x13881':
+					case '80001':
+					window.localStorage.setItem('networkRPC', MATIC_RPC_ENDPOINT)
+						break
+					default :
+					window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+					window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
+				}
+			}
+			else {
+				window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+				window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
+			}
+		},
 		reqLogin(data, loginWithEmail = false) {
 			console.log("[Auth] login() ", data);
 
@@ -829,6 +862,8 @@ export default {
 		@include OnOverTransition();
 		& .ic-image{
 			margin-right: gREm(15);
+			max-width: 28px;
+			max-height: 28px;
 		}
 		&:hover{
 			transform: translateY(-2px);
