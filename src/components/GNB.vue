@@ -243,9 +243,10 @@ export default {
 		async switchNetwork(chainId, name, rpc) {
 			const loginBy = window.localStorage.getItem('loginBy')
 			try {
-				if(loginBy === FORTMATIC) {
+				if(loginBy === FORTMATIC || loginBy === BITSKI) {
 					window.localStorage.setItem('networkRPC', rpc)
 					window.localStorage.setItem('fortmaticNetwork', chainId)
+					window.localStorage.setItem('currentNetwork', chainId)
 					window.location.reload()
 				} else if(loginBy === METAMASK || loginBy === COINBASE) {
 					const provider = checkProviderWallet(loginBy);

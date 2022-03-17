@@ -125,20 +125,17 @@ var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
-import { walletConnectProvider } from '@/features/Connectors.js'
 import {
 	renderSuccessContent,
 	renderSwitchNftContent,
 } from '@/data/RenderContent.js'
 import {
-	BSC_RPC_ENDPOINT,
-	ETH_RPC_ENDPOINT,
-	MATIC_RPC_ENDPOINT,
 	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
 	WALLETCONNECT,
-	DENIED_TRANSACTION
+	DENIED_TRANSACTION,
+	checkErrorMessage
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
@@ -445,25 +442,6 @@ export default {
 				return []
 			}
 		},
-
-		async contractConnect(abi, address_ct) {
-			try {
-				let web3
-				if (this.loginBy === FORTMATIC) {
-					web3 = formaticWeb3
-				} else if (this.loginBy === WALLETCONNECT) {
-					// walletConnectProvider.enable()
-					web3 = new Web3(walletConnectProvider)
-				}
-				else web3 = new Web3(Web3.givenProvider)
-				const contractConn = new web3.eth.Contract(abi, address_ct)
-				return contractConn
-			}
-			catch(err) {
-				console.log('err', err)
-			}
-		},
-
 		async checkStatusNft() {
 			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
@@ -501,10 +479,6 @@ export default {
 		},
 
 		async onApprovedForAll() {
-			// const contractConn = await this.contractConnect(
-			// 	this.isErc1155 ? ABI_1155 : ABI_721, // abi collection
-			// 	this.isErc1155 ? this.data.address1155 : this.data.address721 // address collection
-			// )
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
 			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
 			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
@@ -517,20 +491,10 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					console.log('e',e)
 					this.hadUnderstand = false
 					this.mxCloseLoading()
-					if (
-						e.code === 4001 ||
-						e.code === -32603 ||
-						e.code === -32602
-					) {
-						this.mxShowToast(e.message)
-					} else {
-						this.mxShowToast(MSG_METAMASK_3)
-					}
+					this.mxShowToast(checkErrorMessage(e))
 				})
-			console.log('res', res)
 			if (res) {
 				this.mxCloseLoading()
 				this.hadUnderstand = true

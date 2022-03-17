@@ -1,3 +1,4 @@
+import { MSG_METAMASK_3 } from './Messages'
 export const INFURA_ID = '14ff3a7ed1484486aac3e5573bcae20d'
 export const DEFAULT_ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${INFURA_ID}`
 export const BITSKI_CLIENT_ID = 'c6149992-4352-4476-a176-582ddb14bad5'
@@ -13,6 +14,15 @@ export function toFixedDecimal(val, decimals = 18) {
     }
   } else {
     return val;
+  }
+}
+export function checkErrorMessage(error) {
+  const errCodes = [4001, -32603, -32602, 3001]
+  if(errCodes.includes(error.code)) {
+    return error.message
+  }
+  else {
+    return MSG_METAMASK_3
   }
 }
 export function checkProviderWallet(name) {
