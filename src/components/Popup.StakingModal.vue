@@ -491,6 +491,7 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
+					console.log('error',e)
 					this.hadUnderstand = false
 					this.mxCloseLoading()
 					this.mxShowToast(checkErrorMessage(e))

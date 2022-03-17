@@ -122,6 +122,7 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 		}
+		this.contractCnn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 	},
 	mounted() {
 		setInterval(() => {
@@ -138,8 +139,8 @@ export default {
 	methods: {
 		async getCampaignEarned() {
 			try {
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
-				const data = await contractConn.methods
+				//const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
+				const data = await this.contractCnn.methods
 					.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
 					.call()
 				if (data) {

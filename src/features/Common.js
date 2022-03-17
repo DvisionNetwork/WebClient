@@ -66,6 +66,21 @@ export function formatChainId(chainId) {
   }
   return network
 }
+export function fromHexToChainId(network) {
+  let chainId = network
+  switch (network) {
+    case '0x4' :
+      chainId = 4 //testnet
+      break
+    case  '0x61' :
+      chainId = 97 //testnet
+      break
+    case '0x13881' :
+      chainId = 80001 //testnet
+      break
+  }
+  return Number(chainId)
+}
 
 
 export const BSC_STAKING_ADDRESS = '0x450505Ba81Bea37cbeD2D58FdF65868A1Dd720c5'

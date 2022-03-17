@@ -9,7 +9,8 @@ import {
   BITSKI_CLIENT_ID,
   FORTMATIC,
   WALLETCONNECT,
-  BITSKI
+  BITSKI,
+  fromHexToChainId
 } from './Common'
 import Fortmatic from 'fortmatic'
 import { Bitski } from 'bitski'
@@ -39,7 +40,7 @@ export const bitski = new Bitski(BITSKI_CLIENT_ID, `${window.location.origin}/ca
 
 export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
   let web3
-  const networkOptions = {
+  let networkOptions = {
     rpcUrl: network,
     chainId: chainId
   }
@@ -53,6 +54,7 @@ export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
       web3 = new Web3(walletConnectProvider)
       break;
     case BITSKI:
+      networkOptions.chainId = fromHexToChainId(chainId)
       const bitskiProvider = bitski.getProvider({ network: networkOptions });
       web3 = new Web3(bitskiProvider)
       break;
