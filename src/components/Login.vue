@@ -287,7 +287,16 @@ export default {
 			const provider = checkProviderWallet(METAMASK);
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask(provider);
-			if (rv !== 'NONE') {
+			if(rv === 'NO-METAMASK') {
+				window.open('https://metamask.io/download/', '_blank');
+				this.mxShowAlert({
+				msg:
+					this.$t('signup.register.error-on-wallet-url') +
+					'\n' +
+					this.$t('popup.metamask-chain-not-matched'),
+				})
+			}
+			else if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
 						const account = _U.getIfDefined(resp, ['data', 'account'])
@@ -358,6 +367,8 @@ export default {
 		async connectBitski() {
 			const res = await bitski.signIn()
 			if(res) {
+				const provider = bitski.getProvider();
+				window.web3 = new Web3(provider);
 				this.reqLogin({ wallet_addr: res.accounts[0], wallet : 5 })
 				window.localStorage.setItem('loginBy',BITSKI)
 				this.setlocalStorage()

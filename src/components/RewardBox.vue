@@ -154,35 +154,6 @@ export default {
 				console.log('err',err)
 			}
 		},
-		// async contractConnect(abi, address_ct) {
-		// 	try {
-		// 		let web3
-		// 		if (this.loginBy === FORTMATIC) {
-		// 			const options = {
-		// 				rpcUrl: this.networkRPC,
-		// 				chainId: this.fortmaticNetwork,
-		// 			}
-		// 			const fm = new Fortmatic(FORTMATIC_API_KEY, options)
-		// 			web3 = new Web3(fm.getProvider())
-		// 		} else if (this.loginBy === WALLETCONNECT) {
-		// 			wcProvider.enable()
-		// 			web3 = new Web3(wcProvider)
-		// 		} else if(this.loginBy === BITSKI) {
-		// 			const network = {
-  	// 				rpcUrl: BSC_RPC_ENDPOINT,
-  	// 				chainId: 97
-		// 			}
-		// 			const bitskiProvider = bitski.getProvider({ network: network });
-		// 			web3 = new Web3(bitskiProvider)
-		// 		}
-		// 		else web3 = new Web3(Web3.givenProvider)
-		// 		const contractConn = new web3.eth.Contract(abi, address_ct)
-		// 		return contractConn
-		// 	}
-		// 	catch(err) {
-		// 		console.log('err', err)
-		// 	}
-		// },
 	},
 }
 </script>

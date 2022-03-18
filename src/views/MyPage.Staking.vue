@@ -464,8 +464,8 @@ export default {
 		},
 
 		async getCampaignInfo(campainId) {
-			this.mxShowLoading('inf')
 			try {
+				this.mxShowLoading()
 					const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 					const isAllow = await contractConn.methods.allowWithdrawAll().call()
 					const data = await contractConn.methods
@@ -512,9 +512,8 @@ export default {
 							//not start yet
 							this.switchStatusCampain(2)
 						}
-						this.mxCloseLoading()
 					}
-				
+				this.mxCloseLoading()
 			} catch (err) {
 				this.mxCloseLoading()
 				console.log('catch', err)

@@ -314,7 +314,6 @@ export default {
 		async sinUpWithBitski() { 
 			const res =	await bitski.signIn()
 			if(res) {
-				res.accounts[0]
 				this.walletAddr = res.accounts[0]
 				this.fieldset.walletInfo.walletAddress.value = res.accounts[0]
 				this.fieldset.walletInfo.walletAddress.checked = true

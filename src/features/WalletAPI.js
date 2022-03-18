@@ -52,9 +52,8 @@ async checkMetamask(provider = null) {
 			return network
 		}
 	} else {
-		window.open('https://metamask.io/download/', '_blank');
 		console.error('[WalletAPI] checkMetamask() MetaMask is not installed!');
-		return 'ETH'
+		return 'NO-METAMASK'
 	}
 
 	gConfig.setNetwork(network);
