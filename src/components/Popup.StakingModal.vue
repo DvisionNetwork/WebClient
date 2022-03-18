@@ -490,6 +490,9 @@ export default {
 				.send({
 					from: this.current_addr,
 				})
+				.then((tx) => {
+					console.log(tx);
+				})
 				.catch((e) => {
 					console.log('error',e)
 					this.hadUnderstand = false
