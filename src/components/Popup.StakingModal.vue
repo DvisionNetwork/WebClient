@@ -144,15 +144,7 @@ import {
 	MSG_METAMASK_3,
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
-import Fortmatic from 'fortmatic'
-
 const { ethereum } = window
-const fortmaticOptions = {
-	rpcUrl: window.localStorage.getItem('networkRPC'),
-	chainId: window.localStorage.getItem('fortmaticNetwork'),
-}
-const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY, fortmaticOptions)
-const formaticWeb3 = new Web3(fortmaticProvider.getProvider())
 export default {
 	components: {
 		LandCard,
@@ -493,8 +485,8 @@ export default {
 				.then((tx) => {
 					console.log(tx);
 				})
-				.catch((e) => {
-					console.log('error',e)
+				.catch((error) => {
+					console.log('error',error.code)
 					this.hadUnderstand = false
 					this.mxCloseLoading()
 					this.mxShowToast(checkErrorMessage(e))

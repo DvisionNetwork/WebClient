@@ -24,8 +24,6 @@ export const walletLink = new WalletLink({
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
 export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY)
-
-const bridge = BRIDGE_WALLETCONNECT
 export const walletConnectProvider = new WalletConnectProvider({
   rpc: {
     1: 'https://mainnet.mycustomnode.com',
