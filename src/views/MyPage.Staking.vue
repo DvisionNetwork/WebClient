@@ -459,8 +459,7 @@ export default {
 		getMiningHashRatePerHour(duration, totalMiningHashRate) {
 			const mininghashRatePerHour =
 				((10 * Number(this.rewardPool)) /
-					(Number(totalMiningHashRate) * (duration / 86400))) |
-				0
+					(Number(totalMiningHashRate) * (duration / 86400)))
 			this.mininghashRatePerHour = `${mininghashRatePerHour} DVG`
 		},
 
