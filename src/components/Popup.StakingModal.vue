@@ -452,7 +452,7 @@ export default {
 				)
 				.call()
 				.catch((e) => {
-					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
 						this.mxShowToast(USER_DECLINED)
 					}
 					else {
@@ -486,8 +486,8 @@ export default {
 					this.hadUnderstand = true
 				}
 			}
-			catch(error) {
-				if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+			catch(e) {
+				if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
 					this.mxShowToast(USER_DECLINED)
 				}
 				else {
@@ -523,7 +523,7 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
 						this.mxShowToast(USER_DECLINED)
 					}
 					else {
