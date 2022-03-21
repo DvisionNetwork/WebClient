@@ -363,6 +363,7 @@ export default {
 				const provider = bitski.getProvider();
 				window.ethereum.setSelectedProvider(provider);
 				window.web3 = new Web3(provider);
+				this.setlocalStorage()
 				if (data && loginWithEmail) {
 					if (res.accounts[0] === data.wlt.currentAccount) {
 						return this.handleLogicLoginWithId(data, BITSKI)
@@ -372,7 +373,6 @@ export default {
 				}
 				this.reqLogin({ wallet_addr: res.accounts[0], wallet: 5 })
 				window.localStorage.setItem('loginBy', BITSKI)
-				this.setlocalStorage()
 			}
 		},
 		async connectFortmatic(data, loginWithEmail = false) {
