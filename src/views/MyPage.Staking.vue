@@ -96,7 +96,8 @@ import {
 	METAMASK,
 	WALLETCONNECT,
 	BITSKI,
-	DENIED_TRANSACTION
+	DENIED_TRANSACTION,
+	USER_DECLINED
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
@@ -540,36 +541,6 @@ export default {
 				this.listNftsStake = []
 			}
 		},
-
-		// async contractConnect(abi, address_ct) {
-		// 	try {
-		// 		let web3
-		// 		if (this.loginBy === FORTMATIC) {
-		// 			const options = {
-		// 				rpcUrl: this.networkRPC,
-		// 				chainId: this.fortmaticNetwork,
-		// 			}
-		// 			const fm = new Fortmatic(FORTMATIC_API_KEY, options)
-		// 			web3 = new Web3(fm.getProvider())
-		// 		} else if (this.loginBy === WALLETCONNECT) {
-		// 			wcProvider.enable()
-		// 			web3 = new Web3(wcProvider)
-		// 		} else if(this.loginBy ===BITSKI) {
-		// 			const network = {
-  	// 				rpcUrl: BSC_RPC_ENDPOINT,
-  	// 				chainId: 97
-		// 			}
-		// 			const bitskiProvider = bitski.getProvider({ network: network });
-		// 			web3 = new Web3(bitskiProvider)
-		// 		}
-		// 		else web3 = new Web3(Web3.givenProvider)
-		// 		const contractConn = new web3.eth.Contract(abi, address_ct)
-		// 		return contractConn
-		// 	}
-		// 	catch(err) {
-		// 		console.log('err', err)
-		// 	}
-		// },
 		async onGetHashRate(is_ERC1155, nft_id, idx) {
 			try {
 				const nft = this.listNftsStake[idx]
@@ -677,7 +648,10 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					if (e.code === 4001 || e.message === DENIED_TRANSACTION) {
+					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+						this.mxShowToast(USER_DECLINED)
+					}
+					else if (e.code === 4001 || e.message === DENIED_TRANSACTION) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)

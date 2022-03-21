@@ -17,8 +17,8 @@ export function toFixedDecimal(val, decimals = 18) {
   }
 }
 export function checkErrorMessage(error) {
-  const errCodes = [4001, -32603, -32602, 3001]
-  if(errCodes.includes(error.code)) {
+  const errCodes = [4001, -32603, -32602, 3001, DENIED_TRANSACTION]
+  if(errCodes.includes(error.code) || errCodes.includes(error.message)) {
     return error.message
   }
   else {
@@ -107,3 +107,4 @@ export const FORTMATIC = 'FORTMATIC';
 export const WALLETCONNECT = 'WALLETCONNECT';
 export const BITSKI = 'BITSKI';
 export const DENIED_TRANSACTION = 'User rejected the transaction';
+export const USER_DECLINED = 'The user has declined this request'

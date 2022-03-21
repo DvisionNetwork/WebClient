@@ -130,18 +130,16 @@ import {
 	renderSwitchNftContent,
 } from '@/data/RenderContent.js'
 import {
-	FORTMATIC_API_KEY,
 	FORTMATIC,
 	formatChainId,
 	WALLETCONNECT,
-	DENIED_TRANSACTION,
-	checkErrorMessage
+	checkErrorMessage,
+	USER_DECLINED
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
-	MSG_METAMASK_3,
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
@@ -454,13 +452,14 @@ export default {
 				)
 				.call()
 				.catch((e) => {
-					this.mxCloseLoading()
-					this.hadUnderstand = false
-					if (e.code === 4001 || e.code === -32603) {
-						this.mxShowToast(e.message)
-					} else {
-						this.mxShowToast(MSG_METAMASK_3)
+					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+						this.mxShowToast(USER_DECLINED)
 					}
+					else {
+						this.mxShowToast(checkErrorMessage(e))
+					}
+					this.hadUnderstand = false
+					this.mxCloseLoading()
 				})
 			if (res === true) {
 				this.hadUnderstand = true
@@ -474,7 +473,8 @@ export default {
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
 			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
 			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
-			const res = await contractConn.methods
+			try {
+				const res = await contractConn.methods
 				.setApprovalForAll(
 					this.data.staking_address, // address Staking
 					true
@@ -482,18 +482,21 @@ export default {
 				.send({
 					from: this.current_addr,
 				})
-				.then((tx) => {
-					console.log(tx);
-				})
-				.catch((error) => {
-					console.log('error',error.code)
-					this.hadUnderstand = false
-					this.mxCloseLoading()
+				if (res) {
+					this.hadUnderstand = true
+				}
+			}
+			catch(error) {
+				if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+					this.mxShowToast(USER_DECLINED)
+				}
+				else {
 					this.mxShowToast(checkErrorMessage(e))
-				})
-			if (res) {
+				}
+				this.hadUnderstand = false
+			}
+			finally {
 				this.mxCloseLoading()
-				this.hadUnderstand = true
 			}
 		},
 
@@ -513,23 +516,20 @@ export default {
 				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
 				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
 			}
-
 			params = JSON.parse(JSON.stringify(params))
-			console.log('params',params)
-			console.log('this.data.duration.id',this.data.duration.id)
-			console.log('this.current_addr',this.current_addr)
 			const res = await contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					this.mxCloseLoading()
-					if (e.code === 4001 || e.code === -32603 || e.message === DENIED_TRANSACTION) {
-						this.mxShowToast(e.message)
-					} else {
-						this.mxShowToast(MSG_METAMASK_3)
+					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+						this.mxShowToast(USER_DECLINED)
 					}
+					else {
+						this.mxShowToast(checkErrorMessage(e))
+					}
+					this.mxCloseLoading()
 				})
 			if (res) {
 				this.mxCloseLoading()
