@@ -289,12 +289,6 @@ export default {
 			const rv = await wAPI.checkMetamask(provider);
 			if(rv === 'NO-METAMASK') {
 				window.open('https://metamask.io/download/', '_blank');
-				this.mxShowAlert({
-				msg:
-					this.$t('signup.register.error-on-wallet-url') +
-					'\n' +
-					this.$t('popup.metamask-chain-not-matched'),
-				})
 			}
 			else if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
@@ -334,7 +328,6 @@ export default {
 			}
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
-			
 			const provider = checkProviderWallet(COINBASE);
 			console.log("[Login] connect coinbase account");
 			coinbaseProvider.enable().then(async (accounts) => {
@@ -368,6 +361,7 @@ export default {
 			const res = await bitski.signIn()
 			if (res) {
 				const provider = bitski.getProvider();
+				window.ethereum.setSelectedProvider(provider);
 				window.web3 = new Web3(provider);
 				if (data && loginWithEmail) {
 					if (res.accounts[0] === data.wlt.currentAccount) {

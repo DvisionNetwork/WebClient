@@ -383,12 +383,6 @@ export default {
 			wAPI.checkMetamask().then((rv) => {
 			if(rv === 'NO-METAMASK') {
 				window.open('https://metamask.io/download/', '_blank');
-				this.mxShowAlert({
-				msg:
-					this.$t('signup.register.error-on-wallet-url') +
-					'\n' +
-					this.$t('popup.metamask-chain-not-matched'),
-				})
 			}
 			else	if (rv != 'NONE') {
 					wAPI.Request_Account((resp) => {

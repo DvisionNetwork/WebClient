@@ -188,7 +188,7 @@ class myPlugin extends ScrollbarPlugin {
 	}
 }
 const { ethereum } = window;
-import { formatChainId } from '@/features/Common.js'
+import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
 export default {
@@ -220,8 +220,11 @@ export default {
 		if(ethereum) {
 			ethereum.on('chainChanged', (chainId) => {
 				console.log('chainId',chainId)
-				const chainNetwork = formatChainId(Number(chainId))
-				this.checkNetwork(chainNetwork)
+				const loginBy = window.localStorage.getItem('loginBy')
+				if(loginBy === METAMASK || loginBy === COINBASE) {
+					const chainNetwork = formatChainId(Number(chainId))
+					this.checkNetwork(chainNetwork)
+				}
 			})
 		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
