@@ -364,13 +364,20 @@ export default {
 				}
 			})
 		},
-		async connectBitski() {
+		async connectBitski(data = null, loginWithEmail = false) {
 			const res = await bitski.signIn()
-			if(res) {
+			if (res) {
 				const provider = bitski.getProvider();
 				window.web3 = new Web3(provider);
-				this.reqLogin({ wallet_addr: res.accounts[0], wallet : 5 })
-				window.localStorage.setItem('loginBy',BITSKI)
+				if (data && loginWithEmail) {
+					if (res.accounts[0] === data.wlt.currentAccount) {
+						return this.handleLogicLoginWithId(data, BITSKI)
+					}
+					this.mxShowToast(MSG_METAMASK_1);
+					return;
+				}
+				this.reqLogin({ wallet_addr: res.accounts[0], wallet: 5 })
+				window.localStorage.setItem('loginBy', BITSKI)
 				this.setlocalStorage()
 			}
 		},
@@ -426,7 +433,7 @@ export default {
 					wallet: 3,
 				}
 				this.reqLogin(data);
-				window.localStorage.setItem('loginBy',WALLETCONNECT)
+				window.localStorage.setItem('loginBy', WALLETCONNECT)
 			} else {
 				this.mxShowAlert({ msg: 'error' })
 			}
@@ -544,10 +551,13 @@ export default {
 										this.connectCoinbase(data, true);
 										break;
 									case '3':
-										this.connectWalletConnect();
+										this.connectWalletConnect(data, true);
 										break;
 									case '4':
 										this.connectFortmatic(data, true);
+										break;
+									case '5':
+										this.connectBitski(data, true);
 										break;
 									default:
 										this.mxShowToast('Invalid wallet');
