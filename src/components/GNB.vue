@@ -383,8 +383,9 @@ export default {
 					// })
 					// connector.killSession()
 					break
-				case BITSKI :
+				case BITSKI:
 					bitski.signOut()
+					break;
 			}
 		}
 	},

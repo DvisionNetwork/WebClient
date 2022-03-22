@@ -217,15 +217,8 @@ export default {
 	},
 	mounted() {
 		this.setCurrentNetwork()
-		if(ethereum) {
-			ethereum.on('chainChanged', (chainId) => {
-				console.log('chainId',chainId)
-				const loginBy = window.localStorage.getItem('loginBy')
-				if(loginBy === METAMASK || loginBy === COINBASE) {
-					const chainNetwork = formatChainId(Number(chainId))
-					this.checkNetwork(chainNetwork)
-				}
-			})
+		if (ethereum) {
+			ethereum.on('chainChanged', this.handleChainChanged)
 		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
@@ -335,6 +328,11 @@ export default {
 			return;
 		}
 		// this.scrollTop();
+	},
+	onUnmounted() {
+		if (ethereum) {
+			ethereum.removeListener('chainChanged', this.handleChainChanged)
+		}
 	},
 	computed: {
 		isShowAlert() {
@@ -471,7 +469,9 @@ export default {
 				chainId !== networkPoygon &&
 				chainId !== networkETH
 			) this.mxShowToast(MSG_METAMASK_2)
-			else location.reload(true)
+			else {
+				window.location.reload()
+			}
 		},
 		historyBack(e) {
 			// if(e.keyCode == 8) {
@@ -726,6 +726,13 @@ export default {
 		},
 		unLoadEvent(e) {
 			this.$cookies.set('userInfo', this.$store.state.userInfo, gConfig.getUserInfoCookieExpireTime());
+		},
+		handleChainChanged(chainId) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK || loginBy === COINBASE) {
+				const chainNetwork = formatChainId(Number(chainId))
+				this.checkNetwork(chainNetwork)
+			}
 		}
 	},
 }
