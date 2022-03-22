@@ -233,6 +233,7 @@ export default {
 				this.mxShowToast('Please change network on extension or mobile app, thank you.')
 				return;
 			}
+			console.log('on click item');
 			switch (network) {
 				case 'ETH':
 					this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
@@ -247,6 +248,7 @@ export default {
 		},
 		async switchNetwork(chainId, name, rpc) {
 			const loginBy = window.localStorage.getItem('loginBy')
+			console.log('in switch')
 			try {
 				if(loginBy === FORTMATIC || loginBy === BITSKI) {
 					window.localStorage.setItem('networkRPC', rpc)
@@ -299,6 +301,7 @@ export default {
 			}
 		},
 		getInterval() {
+			console.log('in get interval')
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
 			if(chainId !== this.chainId) {
@@ -383,8 +386,9 @@ export default {
 					// })
 					// connector.killSession()
 					break
-				case BITSKI :
+				case BITSKI:
 					bitski.signOut()
+					break;
 			}
 		}
 	},
