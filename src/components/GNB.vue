@@ -255,12 +255,14 @@ export default {
 					window.location.reload()
 				} else if(loginBy === METAMASK || loginBy === COINBASE) {
 					const provider = checkProviderWallet(loginBy);
-					console.log('provider',provider)
 					await window.ethereum.request({
 						method: 'wallet_switchEthereumChain',
 						params: [{ chainId: chainId }],
 					})
 					this.checkedNetwork = name
+				}
+				else if(loginBy === WALLETCONNECT) {
+					this.mxShowToast('Please change network on extension or mobile app, thank you')
 				}
 
 			} catch (e) {
@@ -302,7 +304,6 @@ export default {
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
 			if(chainId !== this.chainId) {
-				this.mxShowToast('Please change network on extension or mobile app, thank you')
 				switch (chainId.toString()) {
 					case '0x4':
 					case '4':

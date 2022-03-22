@@ -379,9 +379,9 @@ export default {
 		},
 
 		sinUpWithMetamask() {
-			checkProviderWallet(METAMASK);
+			const provider = checkProviderWallet(METAMASK);
 			wAPI.checkMetamask().then((rv) => {
-			if(rv === 'NO-METAMASK') {
+			if(rv === 'NO-METAMASK' || !provider) {
 				window.open('https://metamask.io/download/', '_blank');
 			}
 			else	if (rv != 'NONE') {
