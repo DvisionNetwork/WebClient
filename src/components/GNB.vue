@@ -171,12 +171,12 @@
 <script>
 
 import AppConfig from '@/App.Config.js'
-import WalletConnect from '@walletconnect/client'
-import { BRIDGE_WALLETCONNECT, ETH_RPC_ENDPOINT,
+import { ETH_RPC_ENDPOINT,
  	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
 	WALLETCONNECT, checkProviderWallet,
 	COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
 import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
+import { MSG_METAMASK_2 } from '@/features/Messages.js'
 
 var gConfig = AppConfig();
 
@@ -308,17 +308,22 @@ export default {
 					case '0x4':
 					case '4':
 						this.checkedNetwork = 'Ethereum'
+						window.location.reload()
 						break
 					case '0x61':
 					case '97':
 						this.checkedNetwork = 'BSC'
+						window.location.reload()
 						break
 					case '0x13881':
 					case '80001':
 						this.checkedNetwork = 'Polygon'
+						window.location.reload()
 						break
+					default :
+					this.mxShowToast(MSG_METAMASK_2)
+					break
 				}
-				window.location.reload()
 			}
 		},
 		checkStyleOverflow() {
