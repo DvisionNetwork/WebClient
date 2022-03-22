@@ -540,26 +540,29 @@ export default {
 			}
 		},
 		initWallet() {
-			this.mxShowLoading();
-			wAPI.checkMetamask().then((rv)=>{
-				if(rv != 'NONE') {
-					wAPI.Request_Account((resp) => {
-						// console.log('[App.vue] initWallet() -> Request_Account : resp', resp);
-						if(resp.res_code == 200) {
-							// console.log('[App.vue] initWallet() 2 -> Request_Account : resp', resp.data.account);
-							var account = _U.getIfDefined(resp,['data','account']);
-							// this.callWalletAddressList(account);
-						}else{
-							// console.log("Error on get wallet url", resp);
-							this.mxShowToast(_U.getIfDefined(resp,['data','message']));
-						}
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK) {
+				this.mxShowLoading();
+				wAPI.checkMetamask().then((rv)=>{
+					if(rv != 'NONE') {
+						wAPI.Request_Account((resp) => {
+							// console.log('[App.vue] initWallet() -> Request_Account : resp', resp);
+							if(resp.res_code == 200) {
+								// console.log('[App.vue] initWallet() 2 -> Request_Account : resp', resp.data.account);
+								var account = _U.getIfDefined(resp,['data','account']);
+								// this.callWalletAddressList(account);
+							}else{
+								// console.log("Error on get wallet url", resp);
+								this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+							}
+							this.mxCloseLoading();
+						});
+					}else{
+						// this.mxShowToast('MetaMask is not installed!')
 						this.mxCloseLoading();
-					});
-				}else{
-					// this.mxShowToast('MetaMask is not installed!')
-					this.mxCloseLoading();
-				}
-			});
+					}
+				});
+			}
 		},
 		// callWalletAddressList(currWltAddr) { // current wallet address == account of wallet
 

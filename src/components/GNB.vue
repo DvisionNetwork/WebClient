@@ -228,6 +228,11 @@ export default {
 	},
 	methods: {
 		onClickItem(network) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === COINBASE) {
+				this.mxShowToast('Please change network on extension or mobile app, thank you.')
+				return;
+			}
 			switch (network) {
 				case 'ETH':
 					this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
