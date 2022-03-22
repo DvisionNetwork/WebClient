@@ -287,7 +287,7 @@ export default {
 			const provider = checkProviderWallet(METAMASK);
 			console.log("[Login] connect metamask account");
 			const rv = await wAPI.checkMetamask(provider);
-			if(rv === 'NO-METAMASK') {
+			if(rv === 'NO-METAMASK' || !provider) {
 				window.open('https://metamask.io/download/', '_blank');
 			}
 			else if (rv !== 'NONE') {

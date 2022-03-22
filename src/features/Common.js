@@ -26,7 +26,6 @@ export function checkErrorMessage(error) {
   }
 }
 export function checkProviderWallet(name) {
-  console.log('in check');
   if (!window.ethereum?.providers) {
     return
   }
