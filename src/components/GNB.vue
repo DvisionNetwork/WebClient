@@ -367,7 +367,7 @@ export default {
 		
 			setTimeout(() => {
 				window.location.reload()
-			}, 1000);
+			}, 200);
 		},
 		clearWallet() {
 			const loginBy = window.localStorage.getItem('loginBy');
