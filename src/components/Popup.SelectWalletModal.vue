@@ -69,7 +69,7 @@
 									<div class="notamember" >{{$t('login.popup.already-have-account')}}</div>
 									<div
 										class="signup-msg"
-										@click="goSignUpAgreement"
+										@click="login"
 									>
 										{{$t('login.popup.login')}}
 									</div>
@@ -93,6 +93,11 @@ export default {
 	methods: {
 		closePopup() {
 			this.$store.dispatch('showSelectWalletPopup', false)
+		},
+		login() {
+			this.isShowNavbar = false
+			this.$store.dispatch('showSelectWalletPopup', false)
+			this.$store.dispatch('showLoginPopup',true);
 		},
 	},
 }
