@@ -756,6 +756,7 @@ export default {
 		width:100%;
 		height: auto;
 		margin-bottom: gREm(32);
+		overflow-x: auto;
 		.label {
 			// width: gREm(109+50);
 			width: auto;
