@@ -964,6 +964,7 @@ export default {
 					.login-input,
 					.login-pwd {
 						width: 100%;
+						font-family: $AppFont;
 						
 						input {
 							width: 100%;
@@ -972,6 +973,12 @@ export default {
 					.connectbtn {
 						width: 100%;
 						max-width: gREm(324);
+						font-family: $AppFont;
+					}
+					.or {
+						span {
+							font-family: $AppFont;
+						}
 					}
 				}
 			}
