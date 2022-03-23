@@ -955,6 +955,25 @@ export default {
 			.modal-container {
 				width: 100%;
 				max-width: 90vw;
+				padding: 0 gREm(20);
+				max-height: 95vh;
+				overflow-y: auto;
+
+				.form {
+					.or,
+					.login-input,
+					.login-pwd {
+						width: 100%;
+						
+						input {
+							width: 100%;
+						}
+					}
+					.connectbtn {
+						width: 100%;
+						max-width: gREm(324);
+					}
+				}
 			}
 		}
 	}
