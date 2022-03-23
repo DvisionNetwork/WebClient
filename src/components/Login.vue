@@ -48,7 +48,8 @@
 							</div>
 							<div class="login-pwd">
 								<input v-model="passwordLogin" :type="passwordType" placeholder="***********" />
-								<img class="img-eye" src="../assets/img/ic-eye.svg" alt="eye" @click="handleEyeClick()">
+								<img v-if="passwordType === 'password'" class="img-eye" src="../assets/img/ic-eye.svg" alt="eye" @click="handleEyeClick()">
+								<img class="img-eye" v-else src="../assets/img/eye-close.svg" @click="handleEyeClick()" alt="eye-close">
 							</div>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
@@ -195,6 +196,7 @@ export default {
 			passwordType: 'password',
 			idLogin: '',
 			passwordLogin: '',
+			isClose: false,
 		}
 	},
 	props: {

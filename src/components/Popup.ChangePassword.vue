@@ -215,13 +215,15 @@ export default {
 	}
 
 	.closebtn {
-		@include SetBgImage(url('../assets/img/ic-closed-popup.svg'));
-		width : gREm(40);
-		height: gREm(40);
-		margin-top:gREm(-51);
-		margin-bottom :gREm(10);
+		@include SetBgImage(url('../assets/img/close-popup.svg'));
+		width: gREm(18);
+		height: gREm(18);
 		cursor: pointer;
 		@include OnOverTransition();
+		position: absolute;
+		top: gREm(27);
+		right: gREm(29);
+		z-index: 10;
 	}
 
    .title {
@@ -275,5 +277,36 @@ export default {
 .modal-leave-active .modal-container {
 	-webkit-transform: scale(1.1);
 	transform: scale(1.1);
+}
+
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				width: 90vw;
+				height: auto;
+
+				.form {
+					padding: 0 gREm(32);
+
+					.field-set-box {
+						margin-top: gREm(26);
+					}
+
+					.title {
+						text-align: left;
+						font-size: gREm(22);
+						margin-top: gREm(24);
+					}
+
+					.submit-btn {
+						margin-bottom: gREm(40);
+						margin-top: gREm(32);
+					}
+				}
+			}
+		}
+	}
+
 }
 </style>
