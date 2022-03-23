@@ -294,8 +294,16 @@ export default {
 		.modal-wrapper {
 			padding: 0 gREm(20);
 			.modal-container {
-				width: 100%;
-				
+				width: 90vw;
+				padding: 0 gREm(20);
+
+				.form {
+
+					.connectbtn {
+						width: 100%;
+						max-width: gREm(324);
+					}
+				}
 			}
 		}
 	}
