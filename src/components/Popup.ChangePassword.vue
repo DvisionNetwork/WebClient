@@ -222,7 +222,7 @@ export default {
 		@include OnOverTransition();
 		position: absolute;
 		top: gREm(27);
-		right: gREm(29);
+		right: 0;
 		z-index: 10;
 	}
 

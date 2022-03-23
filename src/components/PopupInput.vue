@@ -998,6 +998,24 @@ export default {
 		.label-box {
 			width: 100%;
 			margin-bottom: gREm(8);
+
+			.icon {
+
+			&[active='on'] {
+				.icon-popup-box {
+					.content-wrap {
+						width: 50vw;
+						height: auto;
+						.content {
+							white-space: pre-wrap;
+							padding: gREm(10) gREm(20);
+							line-height: gREm(20);
+							text-align: left;
+						}
+					}
+				}
+			}
+		}
 		}
 
 		.field-box-wrap {
