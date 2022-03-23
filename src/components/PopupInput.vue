@@ -751,7 +751,7 @@ export default {
 			}
 		}
 	}
-	@include media-max($media_small) { // 768
+@include media-max($media_small) { // 768
 	.field-set[popup-style="signup-register"] {
 		width:100%;
 		height: auto;
@@ -880,6 +880,136 @@ export default {
 				}
 			}
 		}
-	}}
+	}
+	.field-set[popup-style="popup-edit-profile"] {
+		flex-direction: column;
+		height: auto;
+		margin-bottom: gREm(16);
+
+		.label-box {
+			margin-bottom: gREm(8);
+		}
+
+		.field-box-wrap {
+			width: 100%;
+			height: auto;
+
+			.field-box {
+				padding-left: 0;
+				width: 100%;
+				height: auto;
+				// flex-direction: column;
+
+				.field {
+					width: 100%;
+					margin-left: 0;
+					flex: 1;
+				}
+
+				.field-right {
+					padding-left: 0;
+					// position: static;
+					// width: 100%;
+					// justify-content: flex-start;
+				}
+
+				.cc-wrapper {
+					width: 100%;
+					flex: 1;
+					position: static;
+					display: block;
+
+					.cc-custom {
+						.cc-name {
+							padding-left: 0;
+							width: 100%;
+							height: auto;
+						}
+					}
+
+				}
+			}
+		}
+
+		&:first-child {
+			flex-direction: row;
+
+			.field-box-wrap {
+
+				.field {
+					color: #A0A0A0;
+					font-size: gREm(14);
+					text-align: left;	
+					height: auto;
+				}
+			}
+		}
+
+		&:nth-child(2) {
+			.field-box-wrap {
+
+			.field-box {
+				flex-direction: column;
+				
+				.field {
+					border-bottom: 1px solid #dedede;
+				}
+
+				.field-right {
+					padding-left: 0;
+					position: static;
+					width: 100%;
+					justify-content: flex-start;
+
+					.field-button {
+						margin-left: 0;
+						margin-top: gREm(8);
+					}
+				}
+
+				.cc-wrapper {
+					width: 100%;
+					flex: 1;
+					position: static;
+					display: block;
+
+					.cc-custom {
+						.cc-name {
+							padding-left: 0;
+							width: 100%;
+						}
+					}
+
+				}
+			}
+
+			.h-bar {
+				display: none;
+			}
+		}
+		}
+	}
+
+	.field-set[popup-style="popup-changepwd"] {
+		flex-direction: column;
+		height: auto;
+		margin-bottom: gREm(16);
+
+		.label-box {
+			width: 100%;
+			margin-bottom: gREm(8);
+		}
+
+		.field-box-wrap {
+			width: 100%;
+
+			.field-box {
+				width: 100%;
+				padding-left: 0;
+			}
+		}
+	}
+	}
+
 
 </style>
