@@ -12,6 +12,68 @@
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
 					<a @click="isShowNavbar=false" class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
+					<div class="info-network-mobile"
+							@click="showNetwork = !showNetwork"
+						>
+							<div class="network-icon">
+								<span>{{ checkedNetwork }}</span>
+							</div>
+							<transition appear name="fade">
+								<div class="network-popup" v-if="showNetwork">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('ETH')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/ethereum.png"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Ethereum"
+											value="Ethereum"
+											:checked="checkedNetwork === 'Ethereum'"
+										/>
+										<label for="etherium">Ethereum</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('BSC')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/bsc.svg"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="BSC"
+											value="BSC"
+											:checked="checkedNetwork === 'BSC'"
+										/>
+										<label for="bsc">BSC</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('POL')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/polygon.png"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Polygon"
+											value="Polygon"
+											:checked="checkedNetwork === 'Polygon'"
+										/>
+										<label for="Polygon">Polygon</label>
+									</div>
+								</div>
+							</transition>
+					</div>
 					<!-- <router-link class="menu" :active="(currentPage=='Help' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Help'}"> {{$t("gnb.help")}} </router-link> -->
 					<div :class="isShowNavbar?'menu-btns-mobile':'hidden'">
 						<div class="dvs-nav-item">
@@ -459,6 +521,10 @@ export default {
 			.menus {
 				@include FLEX(flex-start,center);
 				@include Transition($tsTime);
+
+				.info-network-mobile {
+					display: none;
+				}
 				.menu {
 					@include FLEX(flex-start,center);
 					@include Transition($tsTime);
@@ -714,6 +780,7 @@ export default {
 			.menu-box .menus .menu {
 				margin-right: gRH(40);
 			}
+
 			.menu-btns {
 				.menus {
 					margin-left: gRH(30);
@@ -861,6 +928,24 @@ export default {
 					height: 100vh;
 					background: #181721;
 					padding: 40px 20px;
+
+					.info-network-mobile {
+						display: block;
+						font-size: gREm(13);
+						font-family: $AppFont;
+						margin-bottom: gREm(32);
+
+						.network-wrapper {
+							margin: gREm(8) 0;
+							display: flex;
+							align-items: center;
+							gap: gREm(8);
+							.icon {
+								width: gREm(20);
+								height: gREm(20);
+							}
+						}
+					}
 					& .menu {
 						text-transform: uppercase;
 						margin-bottom: gREm(32);
