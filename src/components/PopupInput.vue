@@ -885,7 +885,6 @@ export default {
 		flex-direction: column;
 		height: auto;
 		margin-bottom: gREm(16);
-		overflow-x: auto;
 
 		.label-box {
 			margin-bottom: gREm(8);
@@ -899,7 +898,6 @@ export default {
 				padding-left: 0;
 				width: 100%;
 				height: auto;
-				overflow-x: auto;
 				// flex-direction: column;
 
 				.field {
