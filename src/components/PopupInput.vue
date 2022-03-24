@@ -908,6 +908,7 @@ export default {
 
 				.field-right {
 					padding-left: 0;
+					padding-right: 0;
 					// position: static;
 					// width: 100%;
 					// justify-content: flex-start;
@@ -937,7 +938,7 @@ export default {
 			.field-box-wrap {
 
 				.field {
-					color: #A0A0A0;
+					color: #17141a;
 					font-size: gREm(14);
 					text-align: left;	
 					height: auto;
