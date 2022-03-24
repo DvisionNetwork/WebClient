@@ -66,7 +66,7 @@
 			</div>
 
 			<div v-if="hasNextItem()" class="view-more-box" @click="getNextItem()">
-				<span class="view-more-btn" @click="clickMore()">{{$t("home.view-more")}}</span>
+				<span class="view-more-btn remove-highlight" @click="clickMore()">{{$t("home.view-more")}}</span>
 			</div>
 
 		</div>
