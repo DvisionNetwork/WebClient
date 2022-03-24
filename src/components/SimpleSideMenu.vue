@@ -6,7 +6,7 @@
 		:active="getOnOff(idx_1)"
 		:menu-name="menu_1.mapId"
 	>
-		<div class="menu-1" menu-level="1" :index="(idx_1)"
+		<div class="menu-1 remove-highlight" menu-level="1" :index="(idx_1)"
 			@click="onMenuClick(idx_1)"
 		>
 			<div class="title">{{menu_1.name}}</div>
