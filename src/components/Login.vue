@@ -968,12 +968,14 @@ export default {
 						
 						input {
 							width: 100%;
+							font-family: $AppFont;
 						}
 					}
 					.connectbtn {
 						width: 100%;
 						max-width: gREm(324);
 						font-family: $AppFont;
+						font-size: gREm(18);
 					}
 					.or {
 						span {
