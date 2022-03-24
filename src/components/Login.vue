@@ -95,9 +95,9 @@
 									<div class="remember">{{$t('login.popup.remember-me')}}</div>
 								</div> -->
 								<div class="forgot-msg" >
-									<span class="text forgot-id" @click="goFindId">{{$t('login.popup.forgot') +' '+ $t('login.popup.label-id')}}</span>
+									<span class="text forgot-id remove-highlight" @click="goFindId">{{$t('login.popup.forgot') +' '+ $t('login.popup.label-id')}}</span>
 									<span class="text forgot-slash">{{' / '}}</span>
-									<span class="text forgot-pwd" @click="goFindPwd">{{$t('login.popup.label-pwd') +'?'}}</span>
+									<span class="text forgot-pwd remove-highlight" @click="goFindPwd">{{$t('login.popup.label-pwd') +'?'}}</span>
 								</div>
 							</div>
 
