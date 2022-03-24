@@ -630,6 +630,7 @@ export default {
 					color: #A0A0A0;
 					font-size: gREm(14);
 					line-height: gREm(22);
+					font-family: $AppFont;
 				}
 				& .line{
 					width: gREm(147);
@@ -656,6 +657,7 @@ export default {
 			border-radius: 10px;
 			font-size: gREm(14);
 			line-height: gREm(22);
+			font-family: $AppFont;
 		}
 	}
 	.login-pwd{
@@ -669,6 +671,7 @@ export default {
 			border-radius: 10px;
 			font-size: gREm(14);
 			line-height: gREm(22);
+			font-family: $AppFont;
 		}
 		& .img-eye {
 			position: absolute;
@@ -874,6 +877,8 @@ export default {
 		width: gREm(324);
 		height: gREm(64);
 		border-radius: 6px;
+		font-family: $AppFont;
+		font-size: gREm(18);
 		// @include Set-Font($AppFont, gREm(18), gREm(22), unset);
 		@include OnOverTransition();
 		& .ic-image{

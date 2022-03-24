@@ -7,12 +7,12 @@
 			<div class="menu-box">
 				<router-link class="logo remove-highlight" :to="{ params: {lang:'en'}, name:'Home'}"></router-link>
 				<div class="menus">
-					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Market' || currentPage=='Market-Detail' || currentPage=='Market-Page' || currentPage=='Market-Detail-Index' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Market'}"> {{$t("gnb.market_place")}} </router-link>
-					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
-					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
-					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Market' || currentPage=='Market-Detail' || currentPage=='Market-Page' || currentPage=='Market-Detail-Index' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Market'}"> {{$t("gnb.market_place")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
 					<a @click="isShowNavbar=false" class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
-					<div class="info-network-mobile"
+					<div v-if="signed=='on'" class="info-network-mobile"
 							@click="showNetwork = !showNetwork"
 						>
 							<div class="network-icon">
@@ -932,6 +932,7 @@ export default {
 					height: 100vh;
 					background: #181721;
 					padding: 40px 20px;
+					overflow-y: auto;
 
 					.info-network-mobile {
 						display: block;
