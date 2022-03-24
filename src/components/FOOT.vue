@@ -3,7 +3,7 @@
 		<div class="h-bar"></div>
 		<div class="foot-box">
 			<div class="left-box">
-				<router-link class="logo" :to="{ name:'Home'}" :theme="theme ? theme: 'black'" ></router-link>
+				<router-link class="logo remove-highlight" :to="{ name:'Home'}" :theme="theme ? theme: 'black'" ></router-link>
 				<div class="icon-box">
 					<a class='a-link' :class="icon.title"  v-for="(icon,idx) in icons" :key="idx" target='_blank' :href="icon.link">
 						<span></span>

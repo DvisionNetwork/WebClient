@@ -12,7 +12,7 @@
 					@input="onSearchBoxChange($event)"
 				>
 			</div>
-			<div class="right-menu-box">
+			<div class="right-menu-box remove-highlight">
 
 				<div v-if="tab_page=='land-list'" class="switch-box">
 					<div class="switch-label">For Sale</div>

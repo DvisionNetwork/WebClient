@@ -6,7 +6,7 @@
 					<div class="image">
 						<div class="component">{{getCapitalChar(userInfo.name)}}</div>
 					</div>
-					<div class="edit-profile-btn" @click="onClickEditProfile()">Edit Profile</div>
+					<div class="edit-profile-btn remove-highlight" @click="onClickEditProfile()">Edit Profile</div>
 				</div>
 				<div class="info-box">
 
@@ -18,7 +18,7 @@
 						<div class="user-referral">Referral ID</div>
 						<div class="referral-box">
 							<div id="referral" class="referral">{{userInfo.myreferrer}}</div>
-							<div class="copy-referral-btn"
+							<div class="copy-referral-btn remove-highlight"
 								@click="onClickCopyReferral"
 							>
 								Copy

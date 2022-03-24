@@ -5,7 +5,7 @@
 		<div class="gnb-box-bg"></div>
 		<div class="gnb-box" :class="isShowNavbar ? 'active' : ''">
 			<div class="menu-box">
-				<router-link class="logo" :to="{ params: {lang:'en'}, name:'Home'}"></router-link>
+				<router-link class="logo remove-highlight" :to="{ params: {lang:'en'}, name:'Home'}"></router-link>
 				<div class="menus">
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Market' || currentPage=='Market-Detail' || currentPage=='Market-Page' || currentPage=='Market-Detail-Index' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Market'}"> {{$t("gnb.market_place")}} </router-link>
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
@@ -96,7 +96,7 @@
 							<button class="btn g-btn" :class="{'no-login-btn': signed != 'on'}" @click="startNow">{{$t("gnb.start_now")}}</button>
 						</div>
 						<div class="dvs-nav-item">
-							<div class="menu text" @click="isShowLangMenu=!isShowLangMenu">
+							<div class="menu text remove-highlight" @click="isShowLangMenu=!isShowLangMenu">
 								<span class="lang-text">{{ $t("gnb.language")}}</span>
 								<transition appear name="fade">
 									<div v-if="isShowLangMenu" class="user-menu-popup-wrap lang">
@@ -909,6 +909,10 @@ export default {
 				.logo {
 					width: gREm(126);
 					height: gREm(46);
+
+					&:focus {
+						outline: none !important;
+					}
 				}
 				.menus{
 					display: none;
