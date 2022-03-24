@@ -22,7 +22,7 @@
 			:menu-name="menu_2.name"
 			:is-selected="getSelected(idx_1, idx_2) ? 'on': 'off'"
 		>
-			<div class="menu-2" menu-level="2" :index="(idx_2)"
+			<div class="menu-2 remove-highlight" menu-level="2" :index="(idx_2)"
 				@click="onMenuClick(idx_1, idx_2)"
 				:menu-type="getType(menu_2)"
 			>

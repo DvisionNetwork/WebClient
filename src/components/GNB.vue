@@ -90,8 +90,8 @@
 								<div class="user-menu mypage" @click="goMyPage()">{{$t('gnb.mypage')}}</div>
 							</div>
 							<div v-else class="dvs-no-user">
-								<span class="menu text" @click="login">{{ $t("gnb.login")}}</span>
-								<router-link @click="isShowNavbar=false" class="menu text signup" :active="(currentPage=='Signup' || currentPage=='Signup-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Signup'}"> {{$t("gnb.signup")}} </router-link>
+								<span class="menu text remove-highlight" @click="login">{{ $t("gnb.login")}}</span>
+								<router-link @click="isShowNavbar=false" class="menu text signup remove-highlight" :active="(currentPage=='Signup' || currentPage=='Signup-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Signup'}"> {{$t("gnb.signup")}} </router-link>
 							</div>
 							<button class="btn g-btn" :class="{'no-login-btn': signed != 'on'}" @click="startNow">{{$t("gnb.start_now")}}</button>
 						</div>
@@ -929,10 +929,11 @@ export default {
 					bottom: 0;
 					right: 0;
 					width: 100vw;
-					height: 100vh;
+					height: auto;
 					background: #181721;
 					padding: 40px 20px;
 					overflow-y: auto;
+					overflow-x: hidden;
 
 					.info-network-mobile {
 						display: block;
