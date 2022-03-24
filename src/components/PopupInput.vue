@@ -908,6 +908,7 @@ export default {
 
 				.field-right {
 					padding-left: 0;
+					padding-right: 0;
 					// position: static;
 					// width: 100%;
 					// justify-content: flex-start;
