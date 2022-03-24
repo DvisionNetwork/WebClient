@@ -12,7 +12,7 @@
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
 					<router-link @click="isShowNavbar=false" class="menu" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
 					<a @click="isShowNavbar=false" class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
-					<div class="info-network-mobile"
+					<div v-if="signed=='on'" class="info-network-mobile"
 							@click="showNetwork = !showNetwork"
 						>
 							<div class="network-icon">
@@ -932,6 +932,7 @@ export default {
 					height: 100vh;
 					background: #181721;
 					padding: 40px 20px;
+					overflow-y: auto;
 
 					.info-network-mobile {
 						display: block;
