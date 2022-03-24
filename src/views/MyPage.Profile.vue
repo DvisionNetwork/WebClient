@@ -253,6 +253,7 @@ export default {
 						width: auto;
 						height: gREm(22);
 						@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
+						overflow-x: auto;
 					}
 					.user-email{
 						width: gREm(45);
