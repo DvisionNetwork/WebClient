@@ -938,7 +938,7 @@ export default {
 			.field-box-wrap {
 
 				.field {
-					color: #A0A0A0;
+					color: #17141a;
 					font-size: gREm(14);
 					text-align: left;	
 					height: auto;
