@@ -60,7 +60,7 @@
 									>
 										<img
 											class="icon"
-											src="../assets/img/polygon.png"
+											src="../assets/img/polygon.svg"
 											alt="icon"
 										/>
 										<input
@@ -192,7 +192,7 @@
 									>
 										<img
 											class="icon"
-											src="../assets/img/polygon.png"
+											src="../assets/img/polygon.svg"
 											alt="icon"
 										/>
 										<input
