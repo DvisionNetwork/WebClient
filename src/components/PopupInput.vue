@@ -52,11 +52,11 @@
 				>
 					<input type="hidden" :name="ccode" :value="ccode"/>
 					<div class="cc-custom">
-						<div class="cc-name" >{{ccName}}</div>
+						<div class="cc-name remove-highlight" >{{ccName}}</div>
 						<transition appear name="fade">
 							<ul class="cc-list" v-show="showCCPopup">
 								<div id="cc-list-content">
-									<li  class="cc-item" v-for="code in ccodes"
+									<li  class="cc-item remove-highlight" v-for="code in ccodes"
 										:value="code.value"
 										:key="code.ccode"
 										@click="setCCValue(code)">

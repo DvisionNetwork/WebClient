@@ -929,10 +929,11 @@ export default {
 					bottom: 0;
 					right: 0;
 					width: 100vw;
-					height: 100vh;
+					height: auto;
 					background: #181721;
 					padding: 40px 20px;
 					overflow-y: auto;
+					overflow-x: hidden;
 
 					.info-network-mobile {
 						display: block;
