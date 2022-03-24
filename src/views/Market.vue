@@ -12,9 +12,9 @@
 			<div class="title-desc" v-html="getTitleDesc"></div>
 		</div>
 		<div class="content-body-wrap">
-			<div class="tabs">
+			<div class="tabs remove-highlight">
 				<div
-					class="item"
+					class="item remove-highlight"
 					v-for="(item, idx) in markets"
 					:key="idx"
 					:selected="currTabIdx == idx ? true : false"
@@ -54,7 +54,7 @@
 							/>
 						</div>
 
-						<div class="right-menu-box">
+						<div class="right-menu-box remove-highlight">
 
 							<div class="switch-box">
 								<div class="switch-label">For Sale</div>

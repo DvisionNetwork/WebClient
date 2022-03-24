@@ -5,7 +5,7 @@
 
 		<div class="content-body-wrap">
 
-			<div class="tabs">
+			<div class="tabs remove-highlight">
 				<div class="item"
 					v-for="(item, idx) in mypageList" :key="idx"
 					:selected="page==item.id ? true : false"
