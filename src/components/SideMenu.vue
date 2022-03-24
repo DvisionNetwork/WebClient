@@ -8,7 +8,7 @@
 		:is-all="menu_1.name=='all-assets' ? 'true': 'false'"
 		:all-asset-selected="isAllAssetSelected"
 	>
-		<div class="menu-1" menu-level="1" :index="(idx_1)"
+		<div class="menu-1 remove-highlight" menu-level="1" :index="(idx_1)"
 			@click="onMenuClick(idx_1)"
 			:menu-type="getType(menu_1)"
 		>
