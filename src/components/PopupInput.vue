@@ -912,6 +912,11 @@ export default {
 					// position: static;
 					// width: 100%;
 					// justify-content: flex-start;
+
+					.field-error {
+						width: auto;
+						left: unset;
+					}
 				}
 
 				.cc-wrapper {
