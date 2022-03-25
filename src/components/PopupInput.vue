@@ -733,11 +733,12 @@ export default {
 				.field-right {
 					.field-error {
 						position: absolute;
-						top: gREm(45);
-						left: gREm(-150);
-						width: gREm(252);
+						top: gREm(55);
+						left: unset;
+						// width: gREm(252);
 						text-align: center;
 						white-space: nowrap;
+						width: auto;
 					}
 				}
 			}
