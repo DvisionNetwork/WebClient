@@ -1,25 +1,33 @@
 <template>
-	<div v-if="!isMobile" class="tab-menu">
-		<div
-			class="tab"
-			:class="{ active: poolDuration.id === 1 }"
-			@click="setPoolDuration(1)"
-		>
-			30 days
+	<div v-if="!isMobile" class="tab-wrap">
+		<div class="tab-heading active">
+			Campaigns
 		</div>
-		<div
-			class="tab"
-			:class="{ active: poolDuration.id === 2 }"
-			@click="setPoolDuration(2)"
-		>
-			60 days
+		<div class="tab-menu">
+			<div
+				class="tab"
+				:class="{ active: poolDuration.id === 1 }"
+				@click="setPoolDuration(1)"
+			>
+				30-day pool
+			</div>
+			<div
+				class="tab"
+				:class="{ active: poolDuration.id === 2 }"
+				@click="setPoolDuration(2)"
+			>
+				90-day pool
+			</div>
+			<div
+				class="tab"
+				:class="{ active: poolDuration.id === 3 }"
+				@click="setPoolDuration(3)"
+			>
+				180-day pool
+			</div>
 		</div>
-		<div
-			class="tab"
-			:class="{ active: poolDuration.id === 3 }"
-			@click="setPoolDuration(3)"
-		>
-			90 days
+		<div class="tab-heading">
+			My NFTs
 		</div>
 	</div>
 	<div v-else class="select-tab">
@@ -48,15 +56,15 @@ export default {
 			listId: [
 				{
 					id: 1,
-					name: '30 days',
+					name: '30-day pool',
 				},
 				{
 					id: 2,
-					name: '60 days',
+					name: '90-day pool',
 				},
 				{
 					id: 3,
-					name: '90 days',
+					name: '180-day pool',
 				},
 			],
 		}
@@ -76,18 +84,47 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tab-menu {
+.tab-wrap {
 	width: 100%;
 	max-width: gREm(216);
 	font-family: Montserrat, sans-serif;
-	& .tab {
+	.tab-heading {
 		border-radius: gREm(10);
-		margin-bottom: gREm(9);
+		margin-bottom: gREm(4);
 		padding: gREm(11) gREm(20);
-		cursor: pointer;
-		&.active,
-		&:hover {
+		font-weight: bold;
+		&.active {
 			background: #2a2932;
+		}
+	}
+	.tab-menu {
+		width: 100%;
+		max-width: gREm(186);
+		margin-left: auto;
+		font-weight: 400;
+		& .tab {
+			border-radius: gREm(0) gREm(10) gREm(10) gREm(0);
+			margin-bottom: gREm(4);
+			padding: gREm(11) gREm(20);
+			height: 42px;
+			cursor: pointer;
+			position: relative;
+			&.active,
+			&:hover {
+				background: #2a2932;
+			}
+			&::before {
+				position: absolute;
+				content: "";
+				width: 4px;
+				height: 42px;
+				left: 0px;
+				top: 0px;
+				background: #2A2932;
+			}
+			&.active::before {
+				background: #F6583E;
+			}
 		}
 	}
 }
