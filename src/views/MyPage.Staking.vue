@@ -118,6 +118,7 @@ import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 import Fortmatic from 'fortmatic'
 import WalletConnectProvider from '@walletconnect/web3-provider'
+import { REWARD_TABLE_1 } from '../features/Common'
 const wcProvider = new WalletConnectProvider({
 	rpc: {
 		1: 'https://mainnet.mycustomnode.com',
@@ -176,6 +177,7 @@ export default {
 			chainId: 0,
 			address721: '',
 			address1155: '',
+			showReward: false
 		}
 	},
 	beforeMount() {
@@ -658,6 +660,14 @@ export default {
 
 					this.mxCloseConfirmModal()
 				})
+		},
+		showRewardTable() {
+			const obj = {
+				isShow: true,
+				day: 30,
+				info: REWARD_TABLE_1,
+			};
+			this.mxShowRewardTable(obj);
 		},
 	},
 }
