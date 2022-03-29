@@ -100,11 +100,11 @@ export default {
 	.tab-menu {
 		width: 100%;
 		max-width: gREm(186);
+		margin-bottom: gREm(4);
 		margin-left: auto;
 		font-weight: 400;
 		& .tab {
 			border-radius: gREm(0) gREm(10) gREm(10) gREm(0);
-			margin-bottom: gREm(4);
 			padding: gREm(11) gREm(20);
 			height: 42px;
 			cursor: pointer;
@@ -118,13 +118,16 @@ export default {
 				content: "";
 				width: 4px;
 				height: 42px;
-				left: 0px;
+				left: -4px;
 				top: 0px;
 				background: #2A2932;
 			}
 			&.active::before {
 				background: #F6583E;
 			}
+		}
+		& .tab + .tab {
+			margin-top: gREm(4);
 		}
 	}
 }
