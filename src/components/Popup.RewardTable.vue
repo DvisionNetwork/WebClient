@@ -86,7 +86,7 @@ export default {
 			background: #181721;
 			border-radius: gREm(10);
 			margin: 0px auto;
-			padding: gREm(32) gREm(20);
+			padding: gREm(32) gREm(28);
 			transition: all 0.3s ease;
 			font-family: Montserrat, sans-serif;
 			position: absolute;
