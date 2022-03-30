@@ -310,11 +310,15 @@ export default {
 		async switchNetwork(chainId, name, rpc) {
 			const loginBy = window.localStorage.getItem('loginBy')
 			try {
-				if(loginBy === FORTMATIC || loginBy === BITSKI) {
+				if(loginBy === BITSKI) {
 					window.localStorage.setItem('networkRPC', rpc)
 					window.localStorage.setItem('fortmaticNetwork', chainId)
 					window.localStorage.setItem('currentNetwork', chainId)
 					window.location.reload()
+				} else if(loginBy === FORTMATIC) {
+					if(name !== 'Ethereum') {
+					this.mxShowToast('Formatic only supports Ethereum network')
+					}
 				} else if(loginBy === METAMASK || loginBy === COINBASE) {
 					const provider = checkProviderWallet(loginBy);
 					await window.ethereum.request({
