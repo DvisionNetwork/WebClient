@@ -3,6 +3,7 @@
 		<StakingTab :poolDuration="poolDuration" />
 		<div class="contents">
 			<h2 class="title">Reward Pool</h2>
+			<button @click="showMyReward">My reward</button>
 			<RewardBox
 				:poolDuration="poolDuration"
 				:rewardPool="rewardPool"
@@ -669,6 +670,12 @@ export default {
 			};
 			this.mxShowRewardTable(obj);
 		},
+		showMyReward() {
+			const obj = {
+				isShow: true
+			};
+			this.mxShowMyRewardModal(obj);
+		}
 	},
 }
 </script>
