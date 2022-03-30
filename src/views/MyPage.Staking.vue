@@ -663,20 +663,6 @@ export default {
 					this.mxCloseConfirmModal()
 				})
 		},
-		showRewardTable() {
-			const obj = {
-				isShow: true,
-				day: 30,
-				info: REWARD_TABLE_1,
-			};
-			this.mxShowRewardTable(obj);
-		},
-		showMyReward() {
-			const obj = {
-				isShow: true
-			};
-			this.mxShowMyRewardModal(obj);
-		}
 	},
 }
 </script>
