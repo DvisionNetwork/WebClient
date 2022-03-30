@@ -2,8 +2,6 @@
 	<div class="my-staked-land">
 		<StakingTab :poolDuration="poolDuration" />
 		<div class="contents">
-			<h2 class="title">Reward Pool</h2>
-			<button @click="showMyReward">My reward</button>
 			<RewardBox
 				:poolDuration="poolDuration"
 				:rewardPool="rewardPool"
