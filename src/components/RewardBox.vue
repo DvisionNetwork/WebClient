@@ -50,6 +50,7 @@
 			/>
 		</div>
 	</div>
+	<button class="btn-test-popup-claimed" @click="mxShowRewardClaimed">Popup claimed test</button>
 </template>
 
 <script>
@@ -209,5 +210,13 @@ export default {
 			}
 		}
 	}
+}
+
+.btn-test-popup-claimed {
+	position: fixed;
+	top: 50%;
+	right: 5%;
+	background: blue;
+	padding: 15px;
 }
 </style>

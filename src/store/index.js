@@ -17,6 +17,7 @@ export default createStore({
 		showConfirmModal:{},
 		showInfoModal: {},
 		showRewardTable: {},
+		showRewardClaimed: false,
 		dataClickedInfoModal: null,
 		countryCodeNo: '82',
 		userInfo: {
@@ -104,6 +105,9 @@ export default createStore({
 		SHOW_REWARD_TABLE(state, value) {
 			console.log('state', state, value)
 			state.showRewardTable = value;
+		},
+		SHOW_REWARD_CLAIMED(state, value) {
+			state.showRewardClaimed = value;
 		},
 		CLICK_INFO_MODAL(state, value) {
 			state.dataClickedInfoModal = value;
@@ -257,6 +261,9 @@ export default createStore({
 		},
 		showRewardTable(context, value) {
 			context.commit('SHOW_REWARD_TABLE', value);
+		},
+		showRewardClaimed(context, value) {
+			context.commit('SHOW_REWARD_CLAIMED', value);
 		},
 		clickInfoModal(context, value) {
 			context.commit('CLICK_INFO_MODAL', value);
