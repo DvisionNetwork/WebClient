@@ -54,6 +54,18 @@
 		:data = isShowInfoModal
 	/>
 
+	<PopupRewardTable
+		appear
+		v-if="isShowRewardTable.isShow"
+		:data="isShowRewardTable"
+	></PopupRewardTable>
+
+	<PopupMyReward
+		appear
+		v-if="isShowMyReward.isShow"
+		:data="isShowMyReward"
+	></PopupMyReward>
+
 	<transition	appear name="fade">
 		<div v-if="isShowAlert" class="alert-box">
 			<div class="message-box" >
@@ -165,6 +177,8 @@ import PopupShowStakingModal from './components/Popup.StakingModal.vue'
 import PopupSuccessModal from './components/Popup.SuccessModal.vue'
 import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
 import PopupInforModal from './components/Popup.Information.vue';
+import PopupRewardTable from './components/Popup.RewardTable.vue';
+import PopupMyReward from './components/Popup.MyReward.vue';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -205,7 +219,9 @@ export default {
 		PopupSuccessModal,
 		PopupConfirmModal,
 		PopupInforModal,
-		vueRecaptcha
+		vueRecaptcha,
+		PopupRewardTable,
+		PopupMyReward,
 	},
 	data() {
 		return {
@@ -376,6 +392,12 @@ export default {
 		},
 		isShowInfoModal() {
 			return this.$store.state.showInfoModal;
+		},
+		isShowRewardTable() {
+			return this.$store.state.showRewardTable
+		},
+		isShowMyReward() {
+			return this.$store.state.showMyReward
 		},
 		theme() {
 			return (

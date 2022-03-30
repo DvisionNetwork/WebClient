@@ -143,11 +143,23 @@ var Mixin = {
 		mxCloseInfoModal() {
 			this.$store.dispatch('showInforModal', false);
 		},
+		mxShowRewardTable(obj) {
+			this.$store.dispatch('showRewardTable', obj);
+		},
+		mxCloseRewardTable() {
+			this.$store.dispatch('showRewardTable', false);
+		},
 		mxHandleClickPopup(id) {
 			this.$store.dispatch('clickInfoModal', (this.$store.state.dataClickedInfoModal === id && id === undefined) ? -1 : id);
 		},
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
+		},
+		mxShowMyRewardModal(obj) {
+			this.$store.dispatch('showMyRewardModal', obj);
+		},
+		mxCloseMyRewardModal() {
+			this.$store.dispatch('showMyRewardModal', false);
 		},
 		mxSetUserInfo(userInfo) {
 			this.$store.dispatch('setUserInfo', userInfo);

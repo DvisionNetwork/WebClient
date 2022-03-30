@@ -16,6 +16,8 @@ export default createStore({
 		showSuccessModal:{},
 		showConfirmModal:{},
 		showInfoModal: {},
+		showRewardTable: {},
+		showMyReward: {},
 		dataClickedInfoModal: null,
 		countryCodeNo: '82',
 		userInfo: {
@@ -100,13 +102,18 @@ export default createStore({
 		SHOW_INFO_MODAL(state, value) {
 			state.showInfoModal = value;
 		},
+		SHOW_REWARD_TABLE(state, value) {
+			state.showRewardTable = value;
+		},
 		CLICK_INFO_MODAL(state, value) {
 			state.dataClickedInfoModal = value;
 		},
 		SET_USER_INFO(state, value) {
 			state.userInfo = value;
 		},
-
+		SHOW_MY_REWARD(state, value) {
+			state.showMyReward = value;
+		},
 		SET_COUNTRY_CODE_NO(state, value) {
 			state.countryCodeNo = value;
 		},
@@ -250,12 +257,18 @@ export default createStore({
 		showInforModal(context, value) {
 			context.commit('SHOW_INFO_MODAL', value);
 		},
+		showRewardTable(context, value) {
+			context.commit('SHOW_REWARD_TABLE', value);
+		},
 		clickInfoModal(context, value) {
 			context.commit('CLICK_INFO_MODAL', value);
 		},
 		setUserInfo(context, value) {
 			// console.log("[STORE.actions] setUserInfo(), ", value);
 			context.commit('SET_USER_INFO',value);
+		},
+		showMyRewardModal(context, value) {
+			context.commit('SHOW_MY_REWARD', value)
 		},
 		setCountryCodeNo(context, value) {
 			// console.log("[STORE.actions] setCountryCodeNo(), ", value);

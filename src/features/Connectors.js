@@ -43,8 +43,8 @@ export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
   }
   switch (loginBy) {
     case FORTMATIC:
-      const fm = new Fortmatic(FORTMATIC_API_KEY, networkOptions)
-      web3 = new Web3(fm.getProvider())
+      // const fm = new Fortmatic(FORTMATIC_API_KEY)
+      web3 = new Web3(fortmaticProvider.getProvider())
       break;
     case WALLETCONNECT:
       walletConnectProvider.enable()
