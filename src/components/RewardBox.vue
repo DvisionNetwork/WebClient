@@ -53,8 +53,8 @@
 			</div> -->
 		</div>
 		<div>
-			<div class="reward-btn">Reward table</div>
-			<div class="reward-btn">My reward</div>
+			<div @click="showRewardTable" class="reward-btn">Reward table</div>
+			<div @click="showMyReward" class="reward-btn">My reward</div>
 		</div>
 	</div>
 </template>
@@ -77,7 +77,8 @@ import {
 	formatChainId,
 	FORTMATIC,
 	WALLETCONNECT,
-	BITSKI
+	BITSKI,
+	REWARD_TABLE_1,
 } from '@/features/Common.js'
 import { bitski, getContractConnect } from '@/features/Connectors.js'
 var gConfig = AppConfig()
@@ -160,6 +161,20 @@ export default {
 			catch(err) {
 				console.log('err',err)
 			}
+		},
+		showRewardTable() {
+			const obj = {
+				isShow: true,
+				day: 30,
+				info: REWARD_TABLE_1,
+			}
+			this.mxShowRewardTable(obj)
+		},
+		showMyReward() {
+			const obj = {
+				isShow: true,
+			}
+			this.mxShowMyRewardModal(obj)
 		},
 	},
 }
