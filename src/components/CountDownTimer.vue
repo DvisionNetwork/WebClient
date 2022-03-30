@@ -1,14 +1,14 @@
 <template>
-	<span v-if="statusCampain === 1">Campaign is not started yet.</span>
+	<span v-if="statusCampain === 1">The campaign has not started yet.</span>
 	<span v-if="statusCampain === 2"
-		>Staking campaign starts in:
-		<span class="status green"
+		>The campaign will start in:
+		<span class="status yellow"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
 		>
 	</span>
 	<span v-if="statusCampain === 3"
-		>Staking campaign ends in:
-		<span class="status red"
+		>The campaign will end in:
+		<span class="status green"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
 		>
 	</span>
@@ -126,11 +126,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.green {
-	color: #47e269;
-}
-.red {
-	color: #f6583e;
+.status {
+	font-family: Montserrat, sans-serif;
+	font-style: normal;
+	font-weight: 700;
+	font-size: gREm(20);
+	line-height: gREm(22);
+	&.green {
+		color: #47e269;
+	}
+	&.red {
+		color: #f6583e;
+	}
+	&.yellow {
+		color: #FFD041;
+	}
 }
 
 @include media-max($media_small) {
