@@ -149,12 +149,6 @@ var Mixin = {
 		mxCloseRewardTable() {
 			this.$store.dispatch('showRewardTable', false);
 		},
-		mxShowRewardClaimed() {
-			this.$store.dispatch('showRewardClaimed', true);
-		},
-		mxCloseRewardClaimed() {
-			this.$store.dispatch('showRewardClaimed', false);
-		},
 		mxHandleClickPopup(id) {
 			this.$store.dispatch('clickInfoModal', (this.$store.state.dataClickedInfoModal === id && id === undefined) ? -1 : id);
 		},

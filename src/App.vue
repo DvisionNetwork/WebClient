@@ -60,11 +60,6 @@
 		:data="isShowRewardTable"
 	></PopupRewardTable>
 
-	<PopupRewardClaimed 
-		appear
-		v-if="isShowRewardClaimed"
-	/>
-
 	<transition	appear name="fade">
 		<div v-if="isShowAlert" class="alert-box">
 			<div class="message-box" >
@@ -177,7 +172,6 @@ import PopupSuccessModal from './components/Popup.SuccessModal.vue'
 import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
 import PopupInforModal from './components/Popup.Information.vue';
 import PopupRewardTable from './components/Popup.RewardTable.vue';
-import PopupRewardClaimed from './components/Popup.RewardClaimed.vue';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -220,7 +214,6 @@ export default {
 		PopupInforModal,
 		vueRecaptcha,
 		PopupRewardTable,
-		PopupRewardClaimed
 	},
 	data() {
 		return {
@@ -394,9 +387,6 @@ export default {
 		},
 		isShowRewardTable() {
 			return this.$store.state.showRewardTable
-		},
-		isShowRewardClaimed() {
-			return this.$store.state.showRewardClaimed;
 		},
 		theme() {
 			return (

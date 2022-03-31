@@ -46,3 +46,16 @@ export function renderOnCheckItemUnStakeModalConfirmContent(name) {
 export function renderSwitchNftContent(){
   return 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND type. Proceed?'
 }
+export function renderStakingRewardsClaimed() {
+  return `
+  <p>The listed rewards/boxes have been transferred to your wallet.</p> 
+  <br />
+  <p>You can check your rewards and use them or reveal their content in the “My NFTs” section.</p>`
+}
+
+export function renderStakingAddedLandSuccess() {
+  return `
+  <p>You have staked your LAND(s) successfully. The staked LANDs will be shown under the “Staked LANDs” section.</p>
+  <br />
+  <p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can only unlock your LANDs after the campaign.</p>`
+}

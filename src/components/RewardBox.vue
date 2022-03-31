@@ -57,7 +57,7 @@
 			<div @click="showMyReward" class="reward-btn">My reward</div>
 		</div>
 	</div>
-	<button class="btn-test-popup-claimed" @click="mxShowRewardClaimed">Popup claimed test</button>
+	<button class="btn-test-popup-claimed" @click="showPopupSuccess">Popup claimed test</button>
 </template>
 
 <script>
@@ -82,6 +82,13 @@ import {
 	REWARD_TABLE_1,
 } from '@/features/Common.js'
 import { bitski, getContractConnect } from '@/features/Connectors.js'
+import { 
+	renderStakingRewardsClaimed, 
+	renderOnUnStakeNftsSuccessContent,
+	renderStakingAddedLandSuccess,
+	renderOnUnStakeAllNftsSuccessContent,
+	renderCampainNotYetContent
+} from '@/data/RenderContent.js'
 var gConfig = AppConfig()
 const wcProvider = new WalletConnectProvider({
 	rpc: {
@@ -177,6 +184,16 @@ export default {
 			}
 			this.mxShowMyRewardModal(obj)
 		},
+		showPopupSuccess() {
+			const obj = {
+				isShow: true,
+				content: renderStakingAddedLandSuccess(),
+				title: "Success",
+				buttonTxt: "OK",
+				width: "712px"
+			}
+			this.mxShowSuccessModal(obj)
+		}
 	},
 }
 </script>
