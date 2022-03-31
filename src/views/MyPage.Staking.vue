@@ -2,7 +2,9 @@
 	<div class="my-staked-land">
 		<StakingTab :poolDuration="poolDuration" />
 		<div class="contents">
-			<h2 class="title">Reward Pool</h2>
+			<h2 class="title" v-if="poolDuration.id === 1">Campaign status (30-day pool)</h2>
+			<h2 class="title" v-if="poolDuration.id === 2">Campaign status (90-day pool)</h2>
+			<h2 class="title" v-if="poolDuration.id === 3">Campaign status (180-day pool)</h2>
 			<RewardBox
 				:poolDuration="poolDuration"
 				:rewardPool="rewardPool"
@@ -661,14 +663,6 @@ export default {
 					this.mxCloseConfirmModal()
 				})
 		},
-		showRewardTable() {
-			const obj = {
-				isShow: true,
-				day: 30,
-				info: REWARD_TABLE_1,
-			};
-			this.mxShowRewardTable(obj);
-		},
 	},
 }
 </script>
@@ -692,7 +686,7 @@ export default {
 		font-family: Montserrat, sans-serif;
 		font-size: gREm(24);
 		line-height: gREm(29);
-		margin-bottom: gREm(25);
+		margin-bottom: gREm(24);
 	}
 	.staked-land {
 		display: flex;

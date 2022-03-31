@@ -161,6 +161,12 @@ var Mixin = {
 		mxGetUserInfo() {
 			return this.$store.state.userInfo;
 		},
+		mxShowMyRewardModal(obj) {
+			this.$store.dispatch('showMyRewardModal', obj);
+		},
+		mxCloseMyRewardModal() {
+			this.$store.dispatch('showMyRewardModal', false);
+		},
 		mxSetUserInfo(userInfo) {
 			this.$store.dispatch('setUserInfo', userInfo);
 		},
