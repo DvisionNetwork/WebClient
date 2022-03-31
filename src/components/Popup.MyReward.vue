@@ -28,7 +28,7 @@
 						<button
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
-							disabled
+							@click="showPopupSuccess"
 						>
 							Claim rewards
 						</button>
@@ -47,6 +47,7 @@
 
 <script>
 import MyRewardInfo from './MyReward.Info.vue'
+import { renderStakingRewardsClaimed } from '@/data/RenderContent'
 export default {
 	components: {
 		MyRewardInfo,
@@ -259,7 +260,19 @@ export default {
 		data: Object,
 	},
 	created() {},
-	methods: {},
+	methods: {
+		showPopupSuccess() {
+			const obj = {
+				isShow: true,
+				content: renderStakingRewardsClaimed(),
+				title: "Rewards have been claimed",
+				buttonTxt: "OK",
+				width: "712px"
+			}
+			this.mxCloseMyRewardModal()
+			this.mxShowSuccessModal(obj)
+		}
+	},
 }
 </script>
 
