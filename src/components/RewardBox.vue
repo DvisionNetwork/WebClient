@@ -16,41 +16,6 @@
 				<div class="status yellow" v-if="statusCampain === 2">Upcoming</div>
 				<div class="status green" v-if="statusCampain === 3">Ongoing</div>
 			</div>
-			<!-- <div class="box-content">
-				<RewardBoxItem
-					name="DVG Earned"
-					:hadHarvest="harvest"
-					:data="dvgEarned"
-					:statusCampain="statusCampain"
-					:hasUnit="true"
-				/>
-				<RewardBoxItem
-					name="Total Staked LANDs"
-					:data="totalStakedLand"
-					:statusCampain="statusCampain"
-				/>
-				<RewardBoxItem
-					name="My Staked LANDs"
-					:data="myStakedLand"
-					:statusCampain="statusCampain"
-				/>
-				<RewardBoxItem
-					name="Total Mining Hash Rate"
-					:data="totalMiningHashRate"
-					:statusCampain="statusCampain"
-				/>
-				<RewardBoxItem
-					name="My Mining Hash Rate"
-					:data="myMiningHashRate"
-					:statusCampain="statusCampain"
-				/>
-				<RewardBoxItem
-					name="10 Hash Rate/24H to get"
-					:data="mininghashRatePerHour"
-					:statusCampain="statusCampain"
-					:hasUnit="true"
-				/>
-			</div> -->
 		</div>
 		<div>
 			<div @click="showRewardTable" class="reward-btn">Reward table</div>
@@ -61,34 +26,18 @@
 
 <script>
 import RewardBoxItem from '@/components/RewardBox.Item.vue'
-import Web3 from 'web3'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
 import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
-import WalletConnectProvider from '@walletconnect/web3-provider'
-import Fortmatic from 'fortmatic'
 import {
 	toFixedDecimal,
-	BSC_RPC_ENDPOINT,
-	ETH_RPC_ENDPOINT,
-	MATIC_RPC_ENDPOINT,
-	FORTMATIC_API_KEY,
 	formatChainId,
-	FORTMATIC,
 	WALLETCONNECT,
-	BITSKI,
 	REWARD_TABLE_1,
 } from '@/features/Common.js'
-import { bitski, getContractConnect } from '@/features/Connectors.js'
+import { getContractConnect } from '@/features/Connectors.js'
 var gConfig = AppConfig()
-const wcProvider = new WalletConnectProvider({
-	rpc: {
-		97: BSC_RPC_ENDPOINT,
-		4: ETH_RPC_ENDPOINT,
-		80001: MATIC_RPC_ENDPOINT,
-	},
-})
 
 export default {
 	name: 'RewardBox',
@@ -132,36 +81,35 @@ export default {
 		}
 		this.contractCnn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 	},
-	mounted() {
-		setInterval(() => {
-			this.getCampaignEarned()
-		}, 3000)
-	},
+	// mounted() {
+	// 	setInterval(() => {
+	// 		this.getCampaignEarned()
+	// 	}, 3000)
+	// },
 	watch: {
 		'poolDuration.id': {
 			handler() {
-				this.getCampaignEarned()
+				// this.getCampaignEarned()
 			},
 		},
 	},
 	methods: {
-		async getCampaignEarned() {
-			try {
-				//const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
-				const data = await this.contractCnn.methods
-					.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
-					.call()
-				if (data) {
-					this.dvgEarned = `${toFixedDecimal(
-						formatEther(data),
-						0
-					)} DVG`
-				}
-			}
-			catch(err) {
-				console.log('err',err)
-			}
-		},
+		// async getCampaignEarned() {
+		// 	try {
+		// 		const data = await this.contractCnn.methods
+		// 			.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
+		// 			.call()
+		// 		if (data) {
+		// 			this.dvgEarned = `${toFixedDecimal(
+		// 				formatEther(data),
+		// 				0
+		// 			)} DVG`
+		// 		}
+		// 	}
+		// 	catch(err) {
+		// 		console.log('err',err)
+		// 	}
+		// },
 		showRewardTable() {
 			const obj = {
 				isShow: true,
