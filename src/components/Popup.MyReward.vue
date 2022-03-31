@@ -269,6 +269,7 @@ export default {
 				buttonTxt: "OK",
 				width: "712px"
 			}
+			this.mxCloseMyRewardModal()
 			this.mxShowSuccessModal(obj)
 		}
 	},

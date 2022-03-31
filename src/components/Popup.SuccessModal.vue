@@ -42,7 +42,7 @@ export default {
 <style lang="scss" scoped>
 .modal-mask {
 	position: absolute;
-	z-index: $Z-INDEX-MODAL-POPUP;
+	z-index: $Z-INDEX-LOGIN-POPUP;
 	// margin-top: 224px;
 	left: 0;
 	width: 100%;
