@@ -454,7 +454,7 @@ export default {
 			if( _U.isDefined(newVal,'accounts') && newVal.accounts.length > 0
 				&& _U.getIfDefined(newVal, 'updated') == true
 			) {
-				// console.log("[App.vue] watch wallet() , wallet ", newVal);
+				console.log("[App.vue] watch wallet() , wallet ", newVal);
 				this.getDviBalance();
 				this.getPolygonBalance();
 			}

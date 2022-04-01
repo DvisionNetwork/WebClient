@@ -338,7 +338,8 @@ async ContractDvi(J) {
 	var ret = null;
 	var msg = 'failed';
 
-	this.checkMetamask(J.network).then(async (rv)=>{
+	this.checkMetamask().then(async (rv)=>{
+		console.log('rv', rv);
 		if(rv!='NONE') {
 
 			try {

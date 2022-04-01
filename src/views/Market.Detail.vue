@@ -175,6 +175,8 @@ import MapLand from '@/components/MapLand.vue'
 var wAPI = new WalletAPI();
 
 import AppConfig from '@/App.Config.js'
+import { BITSKI, checkProviderWallet, COINBASE, FORTMATIC, METAMASK, WALLETCONNECT } from '../features/Common';
+import { coinbaseProvider } from '../features/Connectors';
 var gConfig = AppConfig();
 
 export default {
@@ -671,85 +673,115 @@ export default {
 			});
 		},
 
-		onClickBuy() {
+		async handleClickBuyWithCoinbaseMetamask(loginBy) {
+			wAPI.Request_Account((resp) => {
+				if (resp.res_code == 200) {
+					const walletName = loginBy === METAMASK ? 'metamask' : 'coinbase';
+					const curActiveAccount = _U.getIfDefined(resp, [
+						'data',
+						'account',
+					])
+					if (
+						curActiveAccount !=
+						this.$store.state.userInfo.wallet_addr
+					) {
+						this.mxShowAlert({
+							msg:
+								this.$t(
+									'market.detail.alert-address-not-matched'
+								) +
+								'\n' +
+								this.$store.state.userInfo.wallet_addr,
+						})
+						return
+					}
+					if (this.networkName != gConfig.getNetwork()) {
+						this.mxShowToast(
+							`Your ${walletName} is not on network item registered.\nChange your network.`
+						)
+						this.mxCloseLoading()
+						return
+					}
+					const buyer = _U.getIfDefined(this.$store.state, [
+						'userInfo',
+						'wallet_addr',
+					])
+					if (!buyer) {
+						this.mxShowToast(
+							this.$t('market.detail.alert-no-wallet-account')
+						)
+						this.mxCloseLoading()
+						return
+					}
+
+					const seller = this.marketItem.owner_id
+
+					if (buyer == seller) {
+						this.mxShowToast(
+							this.$t('market.detail.alert-same-account')
+						)
+						this.mxCloseLoading()
+						return
+					}
+
+					this.mxShowLoading('inf')
+
+					if (this.buyCount <= 0) {
+						this.mxShowToast(
+							this.$t('market.detail.alert-no-selected-count')
+						)
+						this.mxCloseLoading()
+						return
+					}
+					this.approve_data = {
+						type: 'Approval',
+						category: this.marketItem.category,
+						price: this.marketItem.price * this.buyCount,
+						fToast: this.mxShowToast,
+						network: this.networkName,
+						callback: this.onApproveDvi,
+					}
+					this.mxCloseLoading()
+					this.mxShowAlert({
+						msg: `Approve the DVI expenditure in your ${walletName} Wallet to complete the purchase.`,
+						btn: this.$t('market.detail.alert-approve-button'),
+						callback: this.onCallbackApprovePopup,
+					})
+					return
+				}
+
+				console.log("Error on get wallet url", resp);
+				this.mxShowAlert({
+					msg:
+						this.$t('signup.register.error-on-wallet-url') +
+						'\n' +
+						this.$t('popup.metamask-request-error') +
+						'\n' +
+						resp.res_code,
+				})
+			})
+		},
+		async onClickBuy() {
 
 			if(!this.wasLogin()) {
 				this.mxShowAlert({msg:this.$t('popup.login-required')});
 				return;
 			}
 
-			wAPI.checkMetamask().then((rv)=>{
-				wAPI.Request_Account((resp) => {
-					// console.log('[Login] connect() -> Request_Account : resp', resp);
-
-					if(resp.res_code == 200) {
-						var curActiveAccount = _U.getIfDefined(resp,['data','account']);
-
-						if(curActiveAccount != this.$store.state.userInfo.wallet_addr) {
-							this.mxShowAlert({msg:this.$t('market.detail.alert-address-not-matched') + '\n' + this.$store.state.userInfo.wallet_addr});
-						}else{
-							// console.log("Matched address");
-
-							console.log(this.networkName);
-							console.log(gConfig.getNetwork());
-							if(this.networkName != gConfig.getNetwork())
-							{
-								this.mxShowToast(this.$t('market.detail.alert-network-not-matched'));
-								this.mxCloseLoading();
-								return;
-							}
-
-							// TODO: Bug Fix needed
-							var buyer = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
-
-							if(buyer == undefined || buyer == null || buyer == '')
-							{
-								this.mxShowToast(this.$t('market.detail.alert-no-wallet-account'))
-								this.mxCloseLoading();
-								return;
-							}
-
-							var seller = this.marketItem.owner_id;
-
-							if(buyer == seller)
-							{
-								this.mxShowToast(this.$t('market.detail.alert-same-account'))
-								this.mxCloseLoading();
-								return;
-							}
-
-							this.mxShowLoading('inf');
-
-							if(this.buyCount <= 0) {
-								this.mxShowToast(this.$t('market.detail.alert-no-selected-count'))
-								this.mxCloseLoading();
-								return;
-							}
-
-							this.approve_data = {
-								type: 'Approval',
-								category: this.marketItem.category,
-								price: this.marketItem.price * this.buyCount,
-								fToast: this.mxShowToast,
-								network: this.networkName,
-								callback: this.onApproveDvi
-							};
-
-							this.mxCloseLoading();
-							this.mxShowAlert({
-								msg:this.$t('market.detail.alert-approve-msg'),
-								btn:this.$t('market.detail.alert-approve-button'),
-								callback: this.onCallbackApprovePopup
-							});
-						}
-
-						return;
-					}
-
-					// console.log("Error on get wallet url", resp);
-					this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
-				});
-			});
+			const network = await wAPI.checkMetamask();
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case METAMASK:
+				case COINBASE:
+					this.handleClickBuyWithCoinbaseMetamask(loginBy)
+					break
+				case FORTMATIC:
+					break
+				case WALLETCONNECT:
+					break
+				case BITSKI:
+					break
+			}
 		},
 
 		onClickBuyLand() {
@@ -918,19 +950,18 @@ export default {
 			});
 		},
 		onCallbackApprovePopup(resp) {
-			var data = this.approve_data;
+			console.log('on callback approve', resp);
+			const data = this.approve_data;
 			if(!data) {
 				return;
 			}
 			if(_U.getIfDefined(resp,'result')==true) {
 				this.mxShowLoading('inf');
 				wAPI.ContractDvi(data);
-			}else{
-				// console.log("[Market-Detail] onPrependData() approve canceled on popup.");
 			}
 		},
 		onApproveDvi(resp) {
-			// console.log('[Market-Detail] onApproveDvi(), resp:', resp);
+			console.log('[Market-Detail] onApproveDvi(), resp:', resp);
 			this.trHash = _U.getIfDefined(resp,['data','trHash']);
 			if(	_U.getIfDefined(resp,'res_code')!==200 	|| !this.trHash ) {
 				var msg = _U.getIfDefined(resp,'msg');
@@ -954,7 +985,7 @@ export default {
 			var dvLand = this.getDvLand();
 
 			if(this.tab_page == 'land-detail') {
-				var data = {
+				const data = {
 					account: buyer,
 					itemId: this.blockInfo.id,
 					ownerId: this.marketItem.owner_id,
@@ -966,7 +997,7 @@ export default {
 				console.log('[Market-Detail] onApproveDvi(), call data:', data);
 				wAPI.buyLandItem(data);
 			} else {
-				var data = {
+				const data = {
 					account: buyer,
 					itemId: this.marketItem.id,
 					ownerId: this.marketItem.owner_id,
