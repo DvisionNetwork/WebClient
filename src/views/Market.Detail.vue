@@ -254,7 +254,14 @@ import {
 	METAMASK,
 	WALLETCONNECT,
 } from '../features/Common'
-import { coinbaseProvider } from '../features/Connectors'
+import {
+	coinbaseProvider,
+	fortmaticProvider,
+	walletConnectProvider,
+	bitski,
+} from '../features/Connectors'
+import Web3 from 'web3'
+
 var gConfig = AppConfig()
 
 export default {
@@ -867,93 +874,87 @@ export default {
 			})
 		},
 
-		async handleClickBuyWithCoinbaseMetamask(loginBy) {
-			wAPI.Request_Account((resp) => {
-				if (resp.res_code == 200) {
-					const walletName =
-						loginBy === METAMASK ? 'metamask' : 'coinbase'
-					const curActiveAccount = _U.getIfDefined(resp, [
-						'data',
-						'account',
-					])
-					if (
-						curActiveAccount !=
-						this.$store.state.userInfo.wallet_addr
-					) {
-						this.mxShowAlert({
-							msg:
-								this.$t(
-									'market.detail.alert-address-not-matched'
-								) +
-								'\n' +
-								this.$store.state.userInfo.wallet_addr,
-						})
-						return
-					}
-					if (this.networkName != gConfig.getNetwork()) {
-						this.mxShowToast(
-							`Your ${walletName} is not on network item registered.\nChange your network.`
-						)
-						this.mxCloseLoading()
-						return
-					}
-					const buyer = _U.getIfDefined(this.$store.state, [
-						'userInfo',
-						'wallet_addr',
-					])
-					if (!buyer) {
-						this.mxShowToast(
-							this.$t('market.detail.alert-no-wallet-account')
-						)
-						this.mxCloseLoading()
-						return
-					}
-
-					const seller = this.marketItem.owner_id
-
-					if (buyer == seller) {
-						this.mxShowToast(
-							this.$t('market.detail.alert-same-account')
-						)
-						this.mxCloseLoading()
-						return
-					}
-
-					this.mxShowLoading('inf')
-
-					if (this.buyCount <= 0) {
-						this.mxShowToast(
-							this.$t('market.detail.alert-no-selected-count')
-						)
-						this.mxCloseLoading()
-						return
-					}
-					this.approve_data = {
-						type: 'Approval',
-						category: this.marketItem.category,
-						price: this.marketItem.price * this.buyCount,
-						fToast: this.mxShowToast,
-						network: this.networkName,
-						callback: this.onApproveDvi,
-					}
-					this.mxCloseLoading()
+		async handleClickBuy(
+			curActiveAccount,
+			loginBy,
+			provider,
+			currentNetwork
+		) {
+			if (curActiveAccount) {
+				const walletName = loginBy
+				if (
+					curActiveAccount != this.$store.state.userInfo.wallet_addr
+				) {
 					this.mxShowAlert({
-						msg: `Approve the DVI expenditure in your ${walletName} Wallet to complete the purchase.`,
-						btn: this.$t('market.detail.alert-approve-button'),
-						callback: this.onCallbackApprovePopup,
+						msg:
+							this.$t('market.detail.alert-address-not-matched') +
+							'\n' +
+							this.$store.state.userInfo.wallet_addr,
 					})
 					return
 				}
+				console.log(this.networkName, currentNetwork, 'network')
+				if (this.networkName !== currentNetwork) {
+					this.mxShowToast(
+						`Your ${walletName} is not on network item registered.\nChange your network.`
+					)
+					this.mxCloseLoading()
+					return
+				}
+				const buyer = _U.getIfDefined(this.$store.state, [
+					'userInfo',
+					'wallet_addr',
+				])
+				if (!buyer) {
+					this.mxShowToast(
+						this.$t('market.detail.alert-no-wallet-account')
+					)
+					this.mxCloseLoading()
+					return
+				}
 
-				console.log('Error on get wallet url', resp)
+				const seller = this.marketItem.owner_id
+
+				if (buyer == seller) {
+					this.mxShowToast(
+						this.$t('market.detail.alert-same-account')
+					)
+					this.mxCloseLoading()
+					return
+				}
+
+				this.mxShowLoading('inf')
+
+				if (this.buyCount <= 0) {
+					this.mxShowToast(
+						this.$t('market.detail.alert-no-selected-count')
+					)
+					this.mxCloseLoading()
+					return
+				}
+				this.approve_data = {
+					type: 'Approval',
+					category: this.marketItem.category,
+					price: this.marketItem.price * this.buyCount,
+					fToast: this.mxShowToast,
+					network: this.networkName,
+					provider,
+					callback: this.onApproveDvi,
+				}
+				this.mxCloseLoading()
 				this.mxShowAlert({
-					msg:
-						this.$t('signup.register.error-on-wallet-url') +
-						'\n' +
-						this.$t('popup.metamask-request-error') +
-						'\n' +
-						resp.res_code,
+					msg: `Approve the DVI expenditure in your ${walletName} Wallet to complete the purchase.`,
+					btn: this.$t('market.detail.alert-approve-button'),
+					callback: this.onCallbackApprovePopup,
 				})
+				return
+			}
+			this.mxShowAlert({
+				msg:
+					this.$t('signup.register.error-on-wallet-url') +
+					'\n' +
+					this.$t('popup.metamask-request-error') +
+					'\n',
 			})
 		},
 		async onClickBuy() {
@@ -962,22 +963,109 @@ export default {
 				return
 			}
 
-			const network = await wAPI.checkMetamask()
 			const loginBy = window.localStorage.getItem('loginBy')
 			switch (loginBy) {
 				case METAMASK:
 				case COINBASE:
-					this.handleClickBuyWithCoinbaseMetamask(loginBy)
+					this.handleClickBuyMetamaskCoinbase(loginBy)
 					break
 				case FORTMATIC:
+					this.handleClickBuyFortmatic()
 					break
 				case WALLETCONNECT:
+					this.handleClickBuyWalletConnect()
 					break
 				case BITSKI:
+					this.handleClickBuyBitski()
 					break
 			}
 		},
 
+		async handleClickBuyMetamaskCoinbase(loginBy) {
+			const network = await wAPI.checkMetamask()
+			wAPI.Request_Account((resp) => {
+				const curActiveAccount = _U.getIfDefined(resp, [
+					'data',
+					'account',
+				])
+				this.handleClickBuy(curActiveAccount, loginBy, null, network)
+			})
+		},
+
+		async handleClickBuyFortmatic() {
+			let web3 = new Web3(fortmaticProvider.getProvider())
+			const currentNetwork = this.renderNetworkName(
+				window.localStorage.getItem('currentNetwork')
+			)
+
+			web3.eth.getAccounts((error, accounts) => {
+				if (error) {
+					console.log(error)
+				}
+				const account = accounts[0]
+				this.handleClickBuy(
+					account,
+					FORTMATIC,
+					fortmaticProvider.getProvider(),
+					currentNetwork
+				)
+			})
+		},
+
+		renderNetworkName(chainId) {
+			console.log('chainId', chainId)
+			let network = ''
+			if (chainId) {
+				switch (chainId.toString()) {
+					case '0x4':
+					case '4':
+						network = 'Ethereum'
+						break
+					case '0x61':
+					case '97':
+						network = 'BSC'
+						break
+					case '0x13881':
+					case '80001':
+						network = 'Polygon'
+						break
+				}
+			}
+			return network
+		},
+
+		async handleClickBuyWalletConnect() {
+			await walletConnectProvider.enable()
+			const web3 = new Web3(walletConnectProvider)
+			console.log(walletConnectProvider, 'wallet connect provider')
+			const accounts = await web3.eth.getAccounts()
+			const walletConnect = window.localStorage.getItem('walletconnect')
+			const chainId = JSON.parse(walletConnect).chainId
+			const network = this.renderNetworkName(chainId)
+			this.handleClickBuy(
+				accounts[0],
+				WALLETCONNECT,
+				walletConnectProvider,
+				network
+			)
+		},
+
+		async handleClickBuyBitski() {
+			const res = await bitski.signIn()
+			const currentNetwork = this.renderNetworkName(
+				window.localStorage.getItem('currentNetwork')
+			)
+
+			if (res) {
+				const provider = bitski.getProvider()
+				this.handleClickBuy(
+					res.accounts[0],
+					BITSKI,
+					provider,
+					currentNetwork
+				)
+			}
+		},
 		onClickBuyLand() {
 			var landItem = this.mxGetLandItemDetail()
 

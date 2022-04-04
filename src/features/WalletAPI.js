@@ -3,7 +3,7 @@ var lv_signer = null
 
 import AppConfig from '@/App.Config.js'
 import { chain } from 'lodash'
-import { checkProviderWallet } from '../features/Common'
+import { checkProviderWallet, METAMASK, COINBASE } from '../features/Common'
 var gConfig = AppConfig()
 
 export default function walletAPI() {
@@ -302,7 +302,7 @@ export default function walletAPI() {
 		},
 
 		getContAddr(nft, network) {
-			var addr = gConfig.wlt.getNetworkAddr(network)
+			const addr = gConfig.wlt.getNetworkAddr(network)
 
 			var contAddr = null
 			if (nft == '721') {
@@ -310,6 +310,7 @@ export default function walletAPI() {
 			} else if (nft == '1155') {
 				contAddr = addr.Contract1155Address
 			}
+			console.log(addr, contAddr, 'address')
 			return contAddr
 		},
 		getMarketAddr(network) {
@@ -381,12 +382,13 @@ export default function walletAPI() {
 				return
 			}
 
-			if (!lv_provider) {
-				lv_provider = new ethers.providers.Web3Provider(window.ethereum)
-			}
-			if (!lv_signer) {
-				lv_signer = lv_provider.getSigner()
-			}
+			lv_provider = new ethers.providers.Web3Provider(
+				J.provider ? J.provider : window.ethereum
+			)
+
+			lv_signer = lv_provider.getSigner()
+
+			console.log(lv_provider, lv_signer, 'provider, signer')
 
 			var contract = this.getContract(J.type, J.network, J.category)
 			if (!contract) {
@@ -408,245 +410,240 @@ export default function walletAPI() {
 			var ret = null
 			var msg = 'failed'
 
-			this.checkMetamask().then(async (rv) => {
-				console.log('rv', rv)
-				if (rv != 'NONE') {
-					try {
-						if (J.type == 'Approval') {
-							J.fToast(
-								J.type +
-									' of DVI transaction is being processed.'
-							)
-						} else {
-							J.fToast(
-								J.type +
-									'-' +
-									J.category +
-									' of DVI transaction is being processed.'
-							)
-						}
-						var sendTransactionPromise = null
-						if (J.type == 'Approval') {
-							sendTransactionPromise = await contract.approve(
-								contAddr,
-								value
-							)
-						} else if (J.type == 'Trade') {
-							if (J.category == '721') {
-								if (J.tokenType == 0) {
-									console.log(
-										'[WalletAPI] ContractDvi call  contract.Trade_721eth("' +
-											J.tokenId +
-											'", ' +
-											value +
-											' );'
-									)
-									const overrides = {
-										value: value,
-									}
-									sendTransactionPromise =
-										await contract.trade721ETH(
-											J.tokenId.toString(),
-											overrides
-										) // function check
-								} else {
-									console.log(
-										'[WalletAPI] ContractDvi call  contract.Trade_721dvi("' +
-											J.tokenId +
-											'", ' +
-											value +
-											' );'
-									)
-									sendTransactionPromise =
-										await contract.Trade_721dvi(
-											J.tokenId.toString(),
-											value
-										)
-								}
-							} else if (J.category == '1155') {
+			const loginBy = window.localStorage.getItem('loginBy')
+
+			const rv =
+				loginBy !== METAMASK && loginBy !== COINBASE
+					? J.network
+					: await this.checkMetamask()
+
+			if (rv != 'NONE') {
+				try {
+					if (J.type == 'Approval') {
+						J.fToast(
+							J.type + ' of DVI transaction is being processed.'
+						)
+					} else {
+						J.fToast(
+							J.type +
+								'-' +
+								J.category +
+								' of DVI transaction is being processed.'
+						)
+					}
+					var sendTransactionPromise = null
+					if (J.type == 'Approval') {
+						sendTransactionPromise = await contract.approve(
+							contAddr,
+							value
+						)
+					} else if (J.type == 'Trade') {
+						if (J.category == '721') {
+							if (J.tokenType == 0) {
 								console.log(
-									'[WalletAPI] ContractDvi call  contract.Trade_1155dvi("' +
-										J.ownerId +
-										'", "' +
+									'[WalletAPI] ContractDvi call  contract.Trade_721eth("' +
 										J.tokenId +
 										'", ' +
 										value +
-										', ' +
-										J.amount +
+										' );'
+								)
+								const overrides = {
+									value: value,
+								}
+								sendTransactionPromise =
+									await contract.trade721ETH(
+										J.tokenId.toString(),
+										overrides
+									) // function check
+							} else {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.Trade_721dvi("' +
+										J.tokenId +
+										'", ' +
+										value +
 										' );'
 								)
 								sendTransactionPromise =
-									await contract.Trade_1155dvi(
-										J.ownerId.toString(),
+									await contract.Trade_721dvi(
 										J.tokenId.toString(),
-										value,
-										J.amount
+										value
 									)
 							}
-						} else if (J.type == 'Sell') {
-							if (J.category == '721') {
-								var marketContract = this.getMarketAddr(
-									J.network
+						} else if (J.category == '1155') {
+							console.log(
+								'[WalletAPI] ContractDvi call  contract.Trade_1155dvi("' +
+									J.ownerId +
+									'", "' +
+									J.tokenId +
+									'", ' +
+									value +
+									', ' +
+									J.amount +
+									' );'
+							)
+							sendTransactionPromise =
+								await contract.Trade_1155dvi(
+									J.ownerId.toString(),
+									J.tokenId.toString(),
+									value,
+									J.amount
 								)
+						}
+					} else if (J.type == 'Sell') {
+						if (J.category == '721') {
+							var marketContract = this.getMarketAddr(J.network)
 
-								if (J.tokenType == 0) {
-									console.log(
-										'[WalletAPI] ContractDvi call  contract.sellItem("' +
-											marketContract +
-											'", "' +
-											J.tokenId +
-											'", ' +
-											J.tokenType +
-											', ' +
-											value +
-											' );'
-									)
-									sendTransactionPromise =
-										await contract.sellItem(
-											marketContract,
-											J.tokenId.toString(),
-											value,
-											J.tokenType
-										)
-								} else {
-									console.log(
-										'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
-											marketContract +
-											'", "' +
-											J.tokenId +
-											'", ' +
-											J.tokenType +
-											', ' +
-											value +
-											' );'
-									)
-									sendTransactionPromise =
-										await contract.Sell_Item(
-											marketContract,
-											J.tokenId.toString(),
-											value,
-											J.tokenType
-										)
-								}
-							} else if (J.category == '1155') {
-								var marketContract = this.getMarketAddr(
-									J.network
+							if (J.tokenType == 0) {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.sellItem("' +
+										marketContract +
+										'", "' +
+										J.tokenId +
+										'", ' +
+										J.tokenType +
+										', ' +
+										value +
+										' );'
 								)
+								sendTransactionPromise =
+									await contract.sellItem(
+										marketContract,
+										J.tokenId.toString(),
+										value,
+										J.tokenType
+									)
+							} else {
 								console.log(
 									'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
 										marketContract +
 										'", "' +
 										J.tokenId +
 										'", ' +
-										value +
+										J.tokenType +
 										', ' +
-										J.amount +
+										value +
 										' );'
 								)
-
 								sendTransactionPromise =
 									await contract.Sell_Item(
 										marketContract,
 										J.tokenId.toString(),
 										value,
-										1,
-										J.amount
+										J.tokenType
 									)
 							}
-						}
-						if (!sendTransactionPromise) {
-							J.callback({
-								res_code: 401,
-								msg:
-									'[' +
-									J.type +
-									'-' +
-									J.category +
-									'] Unsupported type of sendTransactionPromise ',
-								data: {
-									trHash: null,
-								},
-							})
-							return
-						}
+						} else if (J.category == '1155') {
+							var marketContract = this.getMarketAddr(J.network)
+							console.log(
+								'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
+									marketContract +
+									'", "' +
+									J.tokenId +
+									'", ' +
+									value +
+									', ' +
+									J.amount +
+									' );'
+							)
 
-						var txReceipt = await sendTransactionPromise.wait()
-						if (typeof txReceipt !== 'undefined') {
-							if (txReceipt.status == 1) {
-								// console.log('[WalletAPI] ('+J.type+'-'+J.category+') txReceipt.transactionHash:',txReceipt.transactionHash);
-								// if(J.type == 'Approval') {
-								// 	J.fToast(J.type+" of DVI transaction is succeeded.");
-								// }else{
-								// 	J.fToast(J.type+"-"+J.category+" of DVI transaction is succeeded.");
-								// }
-								ret = txReceipt.transactionHash
-								msg = 'success'
-							} else {
-								if (J.type == 'Approval') {
-									msg =
-										'[' +
-										J.type +
-										'-' +
-										J.category +
-										'] is failed'
-								} else {
-									msg =
-										'[' +
-										J.type +
-										'-' +
-										J.category +
-										'] is Reverted'
-								}
-								J.fToast(msg)
-							}
-						} else {
-							msg =
+							sendTransactionPromise = await contract.Sell_Item(
+								marketContract,
+								J.tokenId.toString(),
+								value,
+								1,
+								J.amount
+							)
+						}
+					}
+					if (!sendTransactionPromise) {
+						J.callback({
+							res_code: 401,
+							msg:
 								'[' +
 								J.type +
 								'-' +
 								J.category +
-								'] Error on sendTransactionPromise() <br> with no receipt'
-							console.error(msg)
+								'] Unsupported type of sendTransactionPromise ',
+							data: {
+								trHash: null,
+							},
+						})
+						return
+					}
+
+					var txReceipt = await sendTransactionPromise.wait()
+					if (typeof txReceipt !== 'undefined') {
+						if (txReceipt.status == 1) {
+							// console.log('[WalletAPI] ('+J.type+'-'+J.category+') txReceipt.transactionHash:',txReceipt.transactionHash);
+							// if(J.type == 'Approval') {
+							// 	J.fToast(J.type+" of DVI transaction is succeeded.");
+							// }else{
+							// 	J.fToast(J.type+"-"+J.category+" of DVI transaction is succeeded.");
+							// }
+							ret = txReceipt.transactionHash
+							msg = 'success'
+						} else {
+							if (J.type == 'Approval') {
+								msg =
+									'[' +
+									J.type +
+									'-' +
+									J.category +
+									'] is failed'
+							} else {
+								msg =
+									'[' +
+									J.type +
+									'-' +
+									J.category +
+									'] is Reverted'
+							}
+							J.fToast(msg)
 						}
-					} catch (err) {
+					} else {
 						msg =
 							'[' +
 							J.type +
 							'-' +
 							J.category +
-							'] Error catched on <br> sendTransactionPromise() <br>' +
-							err.code
-						console.error(err, msg)
-						// console.log("===========================================");
-						// console.log(err);
-						// console.log("===========================================");
-						// console.log(err.code);
-						// console.log(err.data);
-						// console.log(err.message);
-						var m = err.message
-						var mm = m.substring(
-							m.indexOf('{'),
-							m.lastIndexOf('}') + 1
-						)
-						// console.log(mm);
+							'] Error on sendTransactionPromise() <br> with no receipt'
+						console.error(msg)
 					}
-				} else {
+				} catch (err) {
 					msg =
 						'[' +
 						J.type +
 						'-' +
 						J.category +
-						'] Error on checking MetaMask '
-					console.error(msg)
+						'] Error catched on <br> sendTransactionPromise() <br>' +
+						err.code
+					console.error(err, msg)
+					// console.log("===========================================");
+					// console.log(err);
+					// console.log("===========================================");
+					// console.log(err.code);
+					// console.log(err.data);
+					// console.log(err.message);
+					var m = err.message
+					var mm = m.substring(m.indexOf('{'), m.lastIndexOf('}') + 1)
+					// console.log(mm);
 				}
+			} else {
+				msg =
+					'[' +
+					J.type +
+					'-' +
+					J.category +
+					'] Error on checking MetaMask '
+				console.error(msg)
+			}
 
-				J.callback({
-					res_code: ret ? 200 : 401,
-					msg: msg,
-					data: {
-						trHash: ret,
-					},
-				})
+			J.callback({
+				res_code: ret ? 200 : 401,
+				msg: msg,
+				data: {
+					trHash: ret,
+				},
 			})
 		},
 
