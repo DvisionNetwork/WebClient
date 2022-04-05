@@ -71,45 +71,17 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
-		staking_address: String
+		// staking_address: String
 	},
-	beforeMount() {
-		if (this.loginBy === WALLETCONNECT) {
-			const walletconnect = window.localStorage.getItem('walletconnect')
-			let wll = JSON.parse(walletconnect)
-			const chainId = formatChainId(wll.chainId)
-		}
-		this.contractCnn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
-	},
-	// mounted() {
-	// 	setInterval(() => {
-	// 		this.getCampaignEarned()
-	// 	}, 3000)
+	// beforeMount() {
+	// 	if (this.loginBy === WALLETCONNECT) {
+	// 		const walletconnect = window.localStorage.getItem('walletconnect')
+	// 		let wll = JSON.parse(walletconnect)
+	// 		const chainId = formatChainId(wll.chainId)
+	// 	}
+	// 	this.contractCnn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
 	// },
-	watch: {
-		'poolDuration.id': {
-			handler() {
-				// this.getCampaignEarned()
-			},
-		},
-	},
 	methods: {
-		// async getCampaignEarned() {
-		// 	try {
-		// 		const data = await this.contractCnn.methods
-		// 			.getCampaignEarned(this.poolDuration.id, this.wallet_addr)
-		// 			.call()
-		// 		if (data) {
-		// 			this.dvgEarned = `${toFixedDecimal(
-		// 				formatEther(data),
-		// 				0
-		// 			)} DVG`
-		// 		}
-		// 	}
-		// 	catch(err) {
-		// 		console.log('err',err)
-		// 	}
-		// },
 		showRewardTable() {
 			const obj = {
 				isShow: true,

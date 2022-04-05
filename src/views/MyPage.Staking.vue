@@ -10,13 +10,7 @@
 				:rewardPool="rewardPool"
 				:statusCampain="statusCampain"
 				:switchStatusCampain="switchStatusCampain"
-				:totalStakedLand="totalStakedLand"
-				:myStakedLand="myStakedLand"
-				:totalMiningHashRate="totalMiningHashRate"
-				:myMiningHashRate="myMiningHashRate"
-				:mininghashRatePerHour="mininghashRatePerHour"
 				:timeCount="timeCount"
-				:staking_address="staking_address"
 			/>
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
@@ -61,7 +55,6 @@
 </template>
 
 <script>
-import Web3 from 'web3'
 import axios from 'axios'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
@@ -72,9 +65,8 @@ import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
-import { BigNumber, ethers } from 'ethers'
+import { BigNumber } from 'ethers'
 import {
-	BSC_RPC_ENDPOINT,
 	BSC_STAKING_ADDRESS,
 	ETH_STAKING_ADDRESS,
 	MATIC_STAKING_ADDRESS,
@@ -87,10 +79,6 @@ import {
 	ETH_ADDRESS_1155,
 	MATIC_ADDRESS_721,
 	MATIC_ADDRESS_1155,
-	FORTMATIC_API_KEY,
-	ETH_RPC_ENDPOINT,
-	MATIC_RPC_ENDPOINT,
-	INFURA_ID,
 	formatChainId,
 	checkProviderWallet,
 	FORTMATIC,
@@ -118,18 +106,6 @@ import {
 } from '@/data/RenderContent.js'
 import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
-import Fortmatic from 'fortmatic'
-import WalletConnectProvider from '@walletconnect/web3-provider'
-import { REWARD_TABLE_1 } from '../features/Common'
-const wcProvider = new WalletConnectProvider({
-	rpc: {
-		1: 'https://mainnet.mycustomnode.com',
-		3: 'https://ropsten.mycustomnode.com',
-		97: BSC_RPC_ENDPOINT,
-		4: ETH_RPC_ENDPOINT,
-		80001: MATIC_RPC_ENDPOINT,
-	},
-})
 const { ethereum } = window
 
 export default {
@@ -354,7 +330,7 @@ export default {
 			}
 			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
-			} else if (this.statusCampain !== 3) {
+			} else if (this.statusCampain !== 1) {
 				obj.title = 'Staking campaign is unavailable'
 				obj.content = renderCampainNotYetContent()
 				this.mxShowSuccessModal(obj)
@@ -504,15 +480,18 @@ export default {
 						this.timeCount.startValue = startValue
 						this.timeCount.endValue = endValue
 						if (currValue > endValue) {
+							console.log('AAAAAA');
 							//it's end
 							this.switchStatusCampain(1)
 						} else if (
 							startValue <= currValue &&
 							currValue <= endValue
 						) {
+							console.log('BBBBB');
 							//had start
 							this.switchStatusCampain(3)
 						} else if (currValue < startValue) {
+							console.log('CCCCC');
 							//not start yet
 							this.switchStatusCampain(2)
 						}
