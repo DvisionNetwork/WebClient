@@ -35,6 +35,8 @@ import {
 	formatChainId,
 	WALLETCONNECT,
 	REWARD_TABLE_1,
+	REWARD_TABLE_2,
+	REWARD_TABLE_3,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 var gConfig = AppConfig()
@@ -88,12 +90,21 @@ export default {
 				day: 30,
 				info: REWARD_TABLE_1,
 			}
-			if(this.poolDuration.id === 2) {
-				obj.day = 90
-			}
-			else if(this.poolDuration.id === 3) {
-				obj.day = 180
-			}
+			switch(this.poolDuration.id) {
+				case 1:
+					obj.day = 30
+					obj.info = REWARD_TABLE_1
+					break;
+				case 2:
+					obj.day = 90
+					obj.info = REWARD_TABLE_2
+					break;
+				case 3:
+					obj.day = 180
+					obj.info = REWARD_TABLE_3
+					break;
+				default: break;
+			}	
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
