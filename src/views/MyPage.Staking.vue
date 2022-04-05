@@ -464,9 +464,6 @@ export default {
 						const endValue = Number(data.timestampFinish)
 						const startValue = endValue - Number(data.duration)
 						const currValue = moment().unix()
-						const compare = currValue > endValue?true:false
-						console.log('compare',compare)
-						console.log('isAllow',isAllow)
 						if (!isAllow) {
 							if (currValue > endValue) {
 								this.allowWithdraw = true
@@ -480,18 +477,15 @@ export default {
 						this.timeCount.startValue = startValue
 						this.timeCount.endValue = endValue
 						if (currValue > endValue) {
-							console.log('AAAAAA');
 							//it's end
 							this.switchStatusCampain(1)
 						} else if (
 							startValue <= currValue &&
 							currValue <= endValue
 						) {
-							console.log('BBBBB');
 							//had start
 							this.switchStatusCampain(3)
 						} else if (currValue < startValue) {
-							console.log('CCCCC');
 							//not start yet
 							this.switchStatusCampain(2)
 						}
