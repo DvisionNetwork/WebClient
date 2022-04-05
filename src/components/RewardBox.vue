@@ -88,6 +88,12 @@ export default {
 				day: 30,
 				info: REWARD_TABLE_1,
 			}
+			if(this.poolDuration.id === 2) {
+				obj.day = 90
+			}
+			else if(this.poolDuration.id === 3) {
+				obj.day = 180
+			}
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
