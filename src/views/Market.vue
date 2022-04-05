@@ -93,7 +93,7 @@
 						<div class="items"
 							v-if="marketItems && marketItems.list && marketItems.list.length > 0"
 						>
-							<Product v-for="(item, idx) in marketItems.list"
+							<Product v-for="(item) in marketItems.list"
 								:key="item.id" :product="item"
 								:callFrom="'market'"
 								@click-item="onClickItem"
@@ -111,7 +111,7 @@
 									<div class="icon"></div>
 								</div>
 								<div class="page"
-									v-for="(page,idx) in pages"
+									v-for="(page) in pages"
 									:key="page"
 									:active="(currentPage == page ? 'on' : 'off')"
 									@click="onClickPage(page)"
@@ -342,24 +342,24 @@ export default {
 
 			console.log('newTab', newTab)
 
-			if(newTab == 'eth') {
+			if(newTab === 'eth') {
 				network = gConfig.wlt.getAddr().Network;
 				this.setSearchQuery(1, network);
-			} else if (newTab = 'bsc') {
+			} else if (newTab === 'bsc') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
-			} else if (newTab = 'staking') {
+			} else if (newTab === 'staking') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
 			}
 
-			if (idx == 4) {
+			if (idx < 3) {
 				this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
 			}
 
-			if(idx<=1) {
-				this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
-			}
+			// if(idx<=1) {
+			// 	this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
+			// }
 
 			return ;
 		},

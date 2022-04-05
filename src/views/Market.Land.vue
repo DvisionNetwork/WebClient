@@ -84,7 +84,7 @@
 						<div class="icon"></div>
 					</div>
 					<div class="page"
-						v-for="(page,idx) in pages"
+						v-for="(page) in pages"
 						:key="page"
 						:active="(currentPage == page ? 'on' : 'off')"
 						@click="onClickPage(page)"
