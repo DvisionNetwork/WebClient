@@ -409,7 +409,7 @@ export default function walletAPI() {
 		// J = { type:Approval/Trade, nft, price, [tokenId,] [ownerId, amount,] callback } // tokenId for trade, ownerId & amount trade-1155
 		async ContractDvi(J) {
 			console.log('[WalletAPI] =========== ContractDvi() J:', J)
-
+			const loginBy = window.localStorage.getItem('loginBy')
 			var contAddr = this.getContAddr(J.category, J.network)
 			if (!contAddr) {
 				J.callback({
@@ -436,7 +436,7 @@ export default function walletAPI() {
 				J.category,
 				loginBy === FORTMATIC
 			)
-			console.log('contract', contract)
+			console.log('contract', contract, loginBy, loginBy === FORTMATIC)
 			if (!contract) {
 				J.callback({
 					res_code: 401,
@@ -455,8 +455,6 @@ export default function walletAPI() {
 				.div(1000000)
 			var ret = null
 			var msg = 'failed'
-
-			const loginBy = window.localStorage.getItem('loginBy')
 
 			const rv =
 				loginBy !== METAMASK && loginBy !== COINBASE
@@ -544,6 +542,7 @@ export default function walletAPI() {
 									J.amount +
 									' );'
 							)
+							console.log('contract', contract)
 							sendTransactionPromise = await (loginBy ===
 							FORTMATIC
 								? contract.methods
