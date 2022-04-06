@@ -1221,6 +1221,7 @@ export default {
 				fToast: this.mxShowToast,
 				network: this.networkName,
 				provider,
+				accountAddress: this.$store.state.userInfo.wallet_addr,
 				callback: this.onTradeDvi,
 			}
 
