@@ -3,7 +3,14 @@ var lv_signer = null
 
 import AppConfig from '@/App.Config.js'
 import { chain } from 'lodash'
-import { checkProviderWallet, METAMASK, COINBASE } from '../features/Common'
+import Web3 from 'web3'
+import {
+	checkProviderWallet,
+	METAMASK,
+	COINBASE,
+	FORTMATIC,
+} from '../features/Common'
+import { getContractConnect, walletConnectProvider } from './Connectors'
 var gConfig = AppConfig()
 
 export default function walletAPI() {
@@ -166,7 +173,6 @@ export default function walletAPI() {
 				'function balanceOf(address owner) view returns (uint256)',
 				'function decimals() view returns (uint8)',
 			]
-			console.log('providerrrrr', provider)
 			lv_provider = new ethers.providers.Web3Provider(
 				provider ? provider : window.ethereum
 			)
@@ -200,7 +206,13 @@ export default function walletAPI() {
 						balance: 0,
 					})
 				}
-				console.log('result console', { account, contract, lv_provider, rv })
+				console.log('result console', {
+					account,
+					contract,
+					lv_provider,
+					rv,
+					addr,
+				})
 				if (!contract) return
 				try {
 					const ret = await contract.balanceOf(account)
@@ -222,7 +234,7 @@ export default function walletAPI() {
 						})
 					}
 				} catch (error) {
-					console.log('error', error)
+					console.log('error on dvi balance', error)
 				}
 			} else {
 				callback({
@@ -330,28 +342,46 @@ export default function walletAPI() {
 
 			return contAddr
 		},
-		getContract(type, network, nft) {
-			var addr = gConfig.wlt.getNetworkAddr(network)
+		getContract(type, network, nft, isFortmatic = false) {
+			const addr = gConfig.wlt.getNetworkAddr(network)
 
-			var contract = null
+			let contract = null
 			if (type == 'Approval') {
-				contract = new ethers.Contract(
-					addr.TokenAddress,
-					erc20_ABI,
-					lv_signer
-				)
+				contract = isFortmatic
+					? getContractConnect(
+							FORTMATIC,
+							erc20_ABI,
+							addr.TokenAddress
+					  )
+					: new ethers.Contract(
+							addr.TokenAddress,
+							erc20_ABI,
+							lv_signer
+					  )
 			} else if (type == 'Trade' && network == 'POL') {
-				contract = new ethers.Contract(
-					addr.ContractMarketAddress,
-					polmarket_ABI,
-					lv_signer
-				)
+				contract = isFortmatic
+					? getContractConnect(
+							FORTMATIC,
+							polmarket_ABI,
+							addr.ContractMarketAddress
+					  )
+					: new ethers.Contract(
+							addr.ContractMarketAddress,
+							polmarket_ABI,
+							lv_signer
+					  )
 			} else if (type == 'Trade' && network != 'POL') {
-				contract = new ethers.Contract(
-					addr.ContractMarketAddress,
-					market_ABI,
-					lv_signer
-				)
+				contract = isFortmatic
+					? getContractConnect(
+							FORTMATIC,
+							market_ABI,
+							addr.ContractMarketAddress
+					  )
+					: new ethers.Contract(
+							addr.ContractMarketAddress,
+							market_ABI,
+							lv_signer
+					  )
 			} else if (type == 'Sell' && nft == '721') {
 				if (network == 'POL') {
 					contract = new ethers.Contract(
@@ -400,7 +430,13 @@ export default function walletAPI() {
 
 			console.log(lv_provider, lv_signer, 'provider, signer')
 
-			const contract = this.getContract(J.type, J.network, J.category)
+			const contract = this.getContract(
+				J.type,
+				J.network,
+				J.category,
+				loginBy === FORTMATIC
+			)
+			console.log('contract', contract)
 			if (!contract) {
 				J.callback({
 					res_code: 401,
@@ -443,10 +479,12 @@ export default function walletAPI() {
 					}
 					var sendTransactionPromise = null
 					if (J.type == 'Approval') {
-						sendTransactionPromise = await contract.approve(
-							contAddr,
-							value
-						)
+						console.log(loginBy, 'login', contract)
+						sendTransactionPromise = await (loginBy === FORTMATIC
+							? contract.methods.approve(contAddr, value).send({
+									from: J.accountAddress,
+							  })
+							: contract.approve(contAddr, value))
 					} else if (J.type == 'Trade') {
 						if (J.category == '721') {
 							if (J.tokenType == 0) {
@@ -466,11 +504,20 @@ export default function walletAPI() {
 									lv_provider,
 									lv_signer
 								)
-								sendTransactionPromise =
-									await contract.trade721ETH(
-										J.tokenId.toString(),
-										overrides
-									) // function check
+								sendTransactionPromise = await (loginBy ===
+								FORTMATIC
+									? contract.methods
+											.trade721ETH(
+												J.tokenId.toString(),
+												overrides
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.trade721ETH(
+											J.tokenId.toString(),
+											overrides
+									  )) // function check
 							} else {
 								console.log(
 									'[WalletAPI] ContractDvi call  contract.Trade_721dvi("' +
@@ -497,13 +544,24 @@ export default function walletAPI() {
 									J.amount +
 									' );'
 							)
-							sendTransactionPromise =
-								await contract.Trade_1155dvi(
-									J.ownerId.toString(),
-									J.tokenId.toString(),
-									value,
-									J.amount
-								)
+							sendTransactionPromise = await (loginBy ===
+							FORTMATIC
+								? contract.methods
+										.Trade_1155dvi(
+											J.ownerId.toString(),
+											J.tokenId.toString(),
+											value,
+											J.amount
+										)
+										.send({
+											from: J.accountAddress,
+										})
+								: contract.Trade_1155dvi(
+										J.ownerId.toString(),
+										J.tokenId.toString(),
+										value,
+										J.amount
+								  ))
 						}
 					} else if (J.type == 'Sell') {
 						if (J.category == '721') {
@@ -586,8 +644,10 @@ export default function walletAPI() {
 						})
 						return
 					}
-
-					var txReceipt = await sendTransactionPromise.wait()
+					console.log(sendTransactionPromise, 'sendTransaction')
+					var txReceipt = await (loginBy === FORTMATIC
+						? sendTransactionPromise
+						: sendTransactionPromise.wait())
 					if (typeof txReceipt !== 'undefined') {
 						if (txReceipt.status == 1) {
 							// console.log('[WalletAPI] ('+J.type+'-'+J.category+') txReceipt.transactionHash:',txReceipt.transactionHash);

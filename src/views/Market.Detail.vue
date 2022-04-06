@@ -940,6 +940,7 @@ export default {
 					fToast: this.mxShowToast,
 					network: this.networkName,
 					provider,
+					accountAddress: curActiveAccount,
 					callback: this.onApproveDvi,
 				}
 				this.mxCloseLoading()
@@ -995,8 +996,12 @@ export default {
 
 		async handleClickBuyFortmatic() {
 			let web3 = new Web3(fortmaticProvider.getProvider())
-			const currentNetwork = this.renderNetworkName(
-				window.localStorage.getItem('currentNetwork')
+			console.log('provider', fortmaticProvider)
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			const network = renderNetworkName(
+				currentNetwork
+					? currentNetwork
+					: window.localStorage.getItem('fortmaticNetwork')
 			)
 
 			web3.eth.getAccounts((error, accounts) => {
@@ -1008,7 +1013,7 @@ export default {
 					account,
 					FORTMATIC,
 					fortmaticProvider.getProvider(),
-					currentNetwork
+					network
 				)
 			})
 		},
@@ -1031,18 +1036,16 @@ export default {
 
 		async handleClickBuyBitski() {
 			const res = await bitski.signIn()
-			const currentNetwork = this.renderNetworkName(
-				window.localStorage.getItem('currentNetwork')
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			const network = renderNetworkName(
+				currentNetwork
+					? currentNetwork
+					: window.localStorage.getItem('fortmaticNetwork')
 			)
 
 			if (res) {
 				const provider = bitski.getProvider()
-				this.handleClickBuy(
-					res.accounts[0],
-					BITSKI,
-					provider,
-					currentNetwork
-				)
+				this.handleClickBuy(res.accounts[0], BITSKI, provider, network)
 			}
 		},
 		onClickBuyLand() {
@@ -1194,7 +1197,7 @@ export default {
 			}
 		},
 		onPrependData(resp) {
-			console.log('[Market-Detail] onPrependData(), resp:', resp);
+			console.log('[Market-Detail] onPrependData(), resp:', resp)
 			var prependingId = _U.getIfDefined(resp, ['data', 'result'])
 			if (!prependingId) {
 				this.mxShowToast(

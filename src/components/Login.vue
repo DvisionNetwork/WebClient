@@ -415,8 +415,12 @@ export default {
 		async connectWalletConnect(data, loginWithEmail = false) {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
-			console.log(web3, 'web3')
 			const accounts = await web3.eth.getAccounts();
+			console.log(window.localStorage.getItem('walletconnect'));
+			const dataLocal = JSON.parse(window.localStorage.getItem('walletconnect'));
+			if (dataLocal) {
+				window.localStorage.setItem('currentNetwork', dataLocal.chainId);
+			}
 			if (data && loginWithEmail) {
 				if (accounts[0] === data.wlt.currentAccount) {
 					return this.handleLogicLoginWithId(data, WALLETCONNECT)

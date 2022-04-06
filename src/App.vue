@@ -446,7 +446,6 @@ export default {
 			if(	(_U.isDefined(newVal,'id') && !_U.isDefined(oldVal,'id')) ||
 				(_U.isDefined(newVal,'id') && _U.isDefined(oldVal,'id') && newVal.id !== oldVal.id)
 			) {
-				// console.log("[App.vue] watch userInfo() , userInfo ", this.userInfo);
 				this.initWallet();
 			}
 		},
@@ -654,14 +653,16 @@ export default {
 			if (!account) {
 				return
 			}
-			const web3 = new Web3(walletConnectProvider)
-			console.log(web3)
-			const accounts = await web3.eth.getAccounts();
 			const provider = this.getProvider();
-			console.log('provider', provider, account, accounts);
 			const loginBy = window.localStorage.getItem('loginBy')
 
 			const network = this.getNetwork(loginBy)
+			switch (loginBy) {
+				case WALLETCONNECT:
+					await walletConnectProvider.enable()
+					break
+			}
+
 			wAPI.getDviBalance(account, provider, network, (resp) => {
 				if (resp.res_code == 200) {
 					const balance = _U.getIfDefined(resp,['data','balance']);
@@ -676,11 +677,13 @@ export default {
 			})
 		},
 		getNetwork(loginBy) {
+			const currentNetwork = window.localStorage.getItem('currentNetwork');
+			console.log(window.localStorage.getItem('fortmaticNetwork'));
 			const network =
 				loginBy === METAMASK || loginBy === COINBASE
 					? null
 					: renderNetworkName(
-							window.localStorage.getItem('currentNetwork')
+							currentNetwork ? currentNetwork : window.localStorage.getItem('fortmaticNetwork')
 					  )
 			return network
 		},
