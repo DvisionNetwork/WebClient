@@ -88,6 +88,7 @@ export function renderNetworkName(chainId) {
 		switch (chainId.toString()) {
 			case '0x4':
 			case '4':
+			case '0x3':
 				network = 'ETH'
 				break
 			case '0x61':
