@@ -252,6 +252,7 @@ import {
 	COINBASE,
 	FORTMATIC,
 	METAMASK,
+	renderNetworkName,
 	WALLETCONNECT,
 } from '../features/Common'
 import {
@@ -1012,28 +1013,6 @@ export default {
 			})
 		},
 
-		renderNetworkName(chainId) {
-			console.log('chainId', chainId)
-			let network = ''
-			if (chainId) {
-				switch (chainId.toString()) {
-					case '0x4':
-					case '4':
-						network = 'Ethereum'
-						break
-					case '0x61':
-					case '97':
-						network = 'BSC'
-						break
-					case '0x13881':
-					case '80001':
-						network = 'Polygon'
-						break
-				}
-			}
-			return network
-		},
-
 		async handleClickBuyWalletConnect() {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
@@ -1041,7 +1020,7 @@ export default {
 			const accounts = await web3.eth.getAccounts()
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
-			const network = this.renderNetworkName(chainId)
+			const network = renderNetworkName(chainId)
 			this.handleClickBuy(
 				accounts[0],
 				WALLETCONNECT,
@@ -1215,7 +1194,7 @@ export default {
 			}
 		},
 		onPrependData(resp) {
-			// console.log('[Market-Detail] onPrependData(), resp:', resp);
+			console.log('[Market-Detail] onPrependData(), resp:', resp);
 			var prependingId = _U.getIfDefined(resp, ['data', 'result'])
 			if (!prependingId) {
 				this.mxShowToast(
@@ -1227,6 +1206,8 @@ export default {
 			}
 			this.prependingId = prependingId
 
+			const provider = this.getProvider()
+
 			this.trade_data = {
 				type: 'Trade',
 				category: this.marketItem.category,
@@ -1236,6 +1217,7 @@ export default {
 				ownerId: this.marketItem.owner_id,
 				fToast: this.mxShowToast,
 				network: this.networkName,
+				provider,
 				callback: this.onTradeDvi,
 			}
 
@@ -1246,12 +1228,30 @@ export default {
 				callback: this.onCallbackTradePopup,
 			})
 		},
+		getProvider() {
+			let provider = null
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case FORTMATIC:
+					provider = fortmaticProvider.getProvider()
+					break
+				case WALLETCONNECT:
+					provider = walletConnectProvider
+					break
+				case BITSKI:
+					provider = bitski.getProvider()
+					break
+			}
+			return provider
+		},
 		onBuyLandItem(resp) {
 			console.log('[Market-Detail] onBuyLandItem(), resp:', resp)
 			var result = _U.getIfDefined(resp, ['data', 'result'])
 			if (result != 'success') {
 				console.log('error')
 			}
+
+			console.log(result, 'result')
 
 			var priceWithoutComma = this.marketItem.price.replace(/,/g, '')
 
