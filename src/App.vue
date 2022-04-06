@@ -205,6 +205,8 @@ const { ethereum } = window;
 import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
+import { BITSKI, FORTMATIC, renderNetworkName, WALLETCONNECT } from './features/Common'
+import { bitski, fortmaticProvider, walletConnectProvider } from './features/Connectors'
 export default {
 	components: {
 		Scrollbar,
@@ -644,40 +646,70 @@ export default {
 		// 		}
 		// 	});
 		// },
-		getDviBalance() {
-
-			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
-			// console.log("[App.vue] getDivBalance === account,", account);
-
-			if(!account) {
-				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
-				return;
+		async getDviBalance() {
+			const account = _U.getIfDefined(this.$store.state, [
+				'userInfo',
+				'wallet_addr',
+			])
+			if (!account) {
+				return
 			}
-			wAPI.getDviBalance(account, (resp) => {
-				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
+			const web3 = new Web3(walletConnectProvider)
+			console.log(web3)
+			const accounts = await web3.eth.getAccounts();
+			const provider = this.getProvider();
+			console.log('provider', provider, account, accounts);
+			const loginBy = window.localStorage.getItem('loginBy')
 
-				if(resp.res_code == 200) {
-					var balance = _U.getIfDefined(resp,['data','balance']);
-					if(balance != null) {
-						this.mxSetWalletBalance(balance);
-						return;
+			const network = this.getNetwork(loginBy)
+			wAPI.getDviBalance(account, provider, network, (resp) => {
+				if (resp.res_code == 200) {
+					const balance = _U.getIfDefined(resp,['data','balance']);
+					if (balance != null) {
+						this.mxSetWalletBalance(balance)
+						return
 					}
 				}
 				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
-				this.mxSetWalletBalance(0);
+				this.mxSetWalletBalance(0)
 				// console.log("Error on get balance url", resp)
-			});
-
+			})
+		},
+		getNetwork(loginBy) {
+			const network =
+				loginBy === METAMASK || loginBy === COINBASE
+					? null
+					: renderNetworkName(
+							window.localStorage.getItem('currentNetwork')
+					  )
+			return network
 		},
 
+		getProvider() {
+			let provider = null
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case FORTMATIC:
+					provider = fortmaticProvider.getProvider()
+					break
+				case WALLETCONNECT:
+					provider = walletConnectProvider
+					break
+				case BITSKI:
+					provider = bitski.getProvider()
+					break
+			}
+			return provider
+		},
 		getPolygonBalance() {
+			const network = this.getNetwork(window.localStorage.getItem('loginBy'));
 			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
 
 			if(!account) {
 				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
 				return;
 			}
-			wAPI.getPolygonBalance(account, (resp) => {
+			wAPI.getPolygonBalance(account, network, (resp) => {
 				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
 
 				if(resp.res_code == 200) {

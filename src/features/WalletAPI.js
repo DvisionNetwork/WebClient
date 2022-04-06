@@ -161,45 +161,49 @@ export default function walletAPI() {
 			}, 10)
 		},
 
-		async getDviBalance(account, callback) {
+		async getDviBalance(account, provider = null, network, callback) {
 			const abi = [
 				'function balanceOf(address owner) view returns (uint256)',
 				'function decimals() view returns (uint8)',
 			]
+			console.log('providerrrrr', provider)
+			lv_provider = new ethers.providers.Web3Provider(
+				provider ? provider : window.ethereum
+			)
+			const loginBy = window.localStorage.getItem('loginBy')
+			const rv =
+				loginBy !== METAMASK && loginBy !== COINBASE
+					? network
+					: await this.checkMetamask()
+			if (rv != 'NONE') {
+				var contract = null
+				var addr
 
-			if (!lv_provider) {
-				lv_provider = new ethers.providers.Web3Provider(window.ethereum)
-			}
+				if (rv == 'ETH') {
+					addr = gConfig.wlt.getAddr()
+				} else if (rv == 'BSC') {
+					addr = gConfig.wlt.getBscAddr()
+				} else {
+					return
+				}
 
-			this.checkMetamask().then(async (rv) => {
-				if (rv != 'NONE') {
-					var contract = null
-					var addr
-
-					if (rv == 'ETH') {
-						addr = gConfig.wlt.getAddr()
-					} else if (rv == 'BSC') {
-						addr = gConfig.wlt.getBscAddr()
-					} else {
-						return
-					}
-
-					try {
-						contract = new ethers.Contract(
-							addr.TokenAddress,
-							abi,
-							lv_provider
-						)
-					} catch (err) {
-						callback({
-							res_code: 401,
-							message: 'Create Contract',
-							balance: 0,
-						})
-					}
-					if (!contract) return
-
-					var ret = await contract.balanceOf(account)
+				try {
+					contract = new ethers.Contract(
+						addr.TokenAddress,
+						abi,
+						lv_provider
+					)
+				} catch (err) {
+					callback({
+						res_code: 401,
+						message: 'Create Contract',
+						balance: 0,
+					})
+				}
+				console.log('result console', { account, contract, lv_provider, rv })
+				if (!contract) return
+				try {
+					const ret = await contract.balanceOf(account)
 					if (ret !== null) {
 						var decimal = await contract.decimals()
 						var balance = (ret / 10 ** decimal).toString()
@@ -217,48 +221,54 @@ export default function walletAPI() {
 							balance: 0,
 						})
 					}
-				} else {
-					callback({
-						res_code: 402,
-						message: 'Error on checking MetaMask',
-						balance: 0,
-					})
+				} catch (error) {
+					console.log('error', error)
 				}
-			})
+			} else {
+				callback({
+					res_code: 402,
+					message: 'Error on checking MetaMask',
+					balance: 0,
+				})
+			}
 		},
 
-		async getPolygonBalance(account, callback) {
-			var decimals = ethers.BigNumber.from(18)
+		async getPolygonBalance(account, network, callback) {
+			const decimals = ethers.BigNumber.from(18)
 
-			this.checkMetamask().then(async (rv) => {
-				if (rv != 'NONE') {
-					try {
-						var ret = await ethereum.request({
-							method: 'eth_getBalance',
-							params: [account, 'latest'],
-						})
-						var balance = (ret / 10 ** decimals).toString()
+			const loginBy = window.localStorage.getItem('loginBy')
+			const rv =
+				loginBy !== METAMASK && loginBy !== COINBASE
+					? network
+					: await this.checkMetamask()
 
-						callback({
-							res_code: 200,
-							message: 'Success on get Polygon Balance',
-							data: { balance: balance },
-						})
-					} catch (err) {
-						callback({
-							res_code: 401,
-							message: 'Error on getting Polygon Balance',
-							balance: 0,
-						})
-					}
-				} else {
+			if (rv != 'NONE') {
+				try {
+					var ret = await ethereum.request({
+						method: 'eth_getBalance',
+						params: [account, 'latest'],
+					})
+					var balance = (ret / 10 ** decimals).toString()
+
 					callback({
-						res_code: 402,
-						message: 'Error on checking MetaMask',
+						res_code: 200,
+						message: 'Success on get Polygon Balance',
+						data: { balance: balance },
+					})
+				} catch (err) {
+					callback({
+						res_code: 401,
+						message: 'Error on getting Polygon Balance',
 						balance: 0,
 					})
 				}
-			})
+			} else {
+				callback({
+					res_code: 402,
+					message: 'Error on checking MetaMask',
+					balance: 0,
+				})
+			}
 		},
 
 		// J = { account, itemId, ownerId, amount, price, callback} // account : accountEth
@@ -390,7 +400,7 @@ export default function walletAPI() {
 
 			console.log(lv_provider, lv_signer, 'provider, signer')
 
-			var contract = this.getContract(J.type, J.network, J.category)
+			const contract = this.getContract(J.type, J.network, J.category)
 			if (!contract) {
 				J.callback({
 					res_code: 401,
@@ -450,6 +460,12 @@ export default function walletAPI() {
 								const overrides = {
 									value: value,
 								}
+								console.log(
+									'contract',
+									contract,
+									lv_provider,
+									lv_signer
+								)
 								sendTransactionPromise =
 									await contract.trade721ETH(
 										J.tokenId.toString(),

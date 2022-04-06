@@ -415,6 +415,7 @@ export default {
 		async connectWalletConnect(data, loginWithEmail = false) {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
+			console.log(web3, 'web3')
 			const accounts = await web3.eth.getAccounts();
 			if (data && loginWithEmail) {
 				if (accounts[0] === data.wlt.currentAccount) {
