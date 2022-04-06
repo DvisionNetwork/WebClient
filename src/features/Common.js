@@ -81,6 +81,28 @@ export function fromHexToChainId(network) {
 	return Number(chainId)
 }
 
+export function renderNetworkName(chainId) {
+	console.log('chainId', chainId)
+	let network = ''
+	if (chainId) {
+		switch (chainId.toString()) {
+			case '0x4':
+			case '4':
+				network = 'ETH'
+				break
+			case '0x61':
+			case '97':
+				network = 'BSC'
+				break
+			case '0x13881':
+			case '80001':
+				network = 'POL'
+				break
+		}
+	}
+	return network
+}
+
 export const BSC_STAKING_ADDRESS = '0x450505Ba81Bea37cbeD2D58FdF65868A1Dd720c5'
 export const ETH_STAKING_ADDRESS = '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc'
 export const MATIC_STAKING_ADDRESS =

@@ -47,11 +47,8 @@ export default {
 	props: {
 
 	},
-	mounted () {
-		console.log("[Home.vue] mounted(), route : ", this.$route);
-
-
-		this.callNews();
+	mounted() {
+		this.callNews()
 
 	},
 	data() {
@@ -227,7 +224,6 @@ export default {
 	},
 	methods: {
 		startDVW() {
-			console.log("==== startDVW ===");
 			// this.mxShowToast(this.$t('popup.app-construction-alert'));
 			this.mainVisual.dvw_started  = !this.mainVisual.dvw_started
 			this.mxGameStart();
@@ -255,11 +251,9 @@ export default {
 				url:gConfig.news_get_list,
 				data: data,
 				callback: (resp) =>{
-					console.log("[Home] callNews()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var total = _U.getIfDefined(resp,['data','total']);
 					if(!rows && rows.length > 0) {
-						console.log("[Home] callNews()-> resp mxSetHome ================ ", rows);
 						this.mxSetHomeNews({total:0, page:0, cpp: 0, list:[]});	 // 빈 뉴스
 						return;
 					}
