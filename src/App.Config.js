@@ -85,8 +85,8 @@ export default function AppConfig() {
 				Contract721Address :       "0x2a70B138c694E35E40f34c6404039F39AB39b119",
 				Contract1155Address :      "0x91E9d6Ea945eaDE3f6E2239532E09eC62AfdE25B",
 				ContractMarketAddress :    "0x50DF1a0Fd28337C06EB5E547825ED58d1ae04f53",
-				// Mainnet: "0x1", Testnet: "0x3"
-				Network : "0x3"
+				// Mainnet: "0x1", Testnet: "0x4"
+				Network : "0x4"
 			},
 			addrProd: {
 				// token contract for rel
