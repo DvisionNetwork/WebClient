@@ -81,10 +81,10 @@ export default function AppConfig() {
 		wlt : {
 			/* -----------------  Ethereum Network ----------------- */
 			addrDev: {
-				TokenAddress :             "0x000f62331d4bBA5622E854dEB882cd635fF7E031",
-				Contract721Address :       "0x250fd9192CCbBCF458b6402ec8512c1b8F3fB0bd",
-				Contract1155Address :      "0x4640F5F179A536b470fF554B874af96398257e74",
-				ContractMarketAddress :    "0x48e39178b72A0cb5e215A32aEA0F8465E9E8E844",
+				TokenAddress :             "0x9403F1E9b6AE54423924B571c65Eb1F8cb316080",
+				Contract721Address :       "0x2a70B138c694E35E40f34c6404039F39AB39b119",
+				Contract1155Address :      "0x91E9d6Ea945eaDE3f6E2239532E09eC62AfdE25B",
+				ContractMarketAddress :    "0x50DF1a0Fd28337C06EB5E547825ED58d1ae04f53",
 				// Mainnet: "0x1", Testnet: "0x3"
 				Network : "0x3"
 			},

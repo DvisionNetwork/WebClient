@@ -74,7 +74,7 @@ export default {
 				{name:'Profile', id:'profile'},
 				{name:'Inventory', id:'inventory'},
 				{name:'Land', id:'land'},
-				{name: 'Staking (LAND) ', id:'staking'},
+				//{name: 'Staking (LAND) ', id:'staking'},
 			],
 			currTabIdx: 'profile',
 		}
