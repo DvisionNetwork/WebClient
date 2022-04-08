@@ -1789,6 +1789,70 @@ export default {
 					}
 					@include SetBgImage(url('../assets/img/market/certi_land_tokyo_04_premium.png'));
 				}
+
+				&[map_id="berlin"] {
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_04_premium.png'));
+						}
+					}
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_berlin_04_premium.png'));
+						}
+					}
+					@include SetBgImage(url('../assets/img/market/certi_land_berlin_04_premium.png'));
+				}
+
+				&[map_id="saopaulo"] {
+					&[premium="FALSE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_01.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_02.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_03.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_04_premium.png'));
+						}
+					}
+					&[premium="TRUE"]{
+						&[type="1x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_01_premium.png'));
+						}
+						&[type="2x1"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_02_premium.png'));
+						}
+						&[type="2x2"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_03_premium.png'));
+						}
+						&[type="3x3"] {
+							@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_04_premium.png'));
+						}
+					}
+					@include SetBgImage(url('../assets/img/market/certi_land_saopaulo_04_premium.png'));
+				}
 			}
 			.buy-box{
 				margin-top: gREm(50);
