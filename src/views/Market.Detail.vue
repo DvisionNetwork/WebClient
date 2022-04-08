@@ -293,7 +293,7 @@ export default {
 	},
 	mounted() {
 		// console.log("[Market-Detail.vue] mounted(), route : ", this.$route, this.tab_page, this.mapId, this.blockId);
-
+		console.log('this.mapId', this.mapId)
 		if (this.tab_page == 'land-detail') {
 			var landItems = this.mxGetLandItems()
 			console.log('@@ landItems === ', landItems)
@@ -480,6 +480,7 @@ export default {
 	},
 	methods: {
 		getDvLand() {
+			console.log('get dv land', this.mapId)
 			return this.mxGetLandMap(this.mapId)
 		},
 
@@ -645,125 +646,31 @@ export default {
 				if (this.buyCount < 0) this.buyCount = 0
 			}
 		},
+		redirectWallet(isSell = false, isLand) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case METAMASK:
+				case COINBASE:
+					this.handleClickMetamaskCoinbase(loginBy, isSell, isLand)
+					break
+				case FORTMATIC:
+					this.handleClickFortmatic(isSell, isLand)
+					break
+				case WALLETCONNECT:
+					this.handleClickWalletConnect(isSell, isLand)
+					break
+				case BITSKI:
+					this.handleClickBitski(isSell, isLand)
+					break
+			}
+		},
 
 		onClickSell() {
 			if (!this.wasLogin()) {
 				this.mxShowAlert({ msg: this.$t('popup.login-required') })
 				return
 			}
-
-			wAPI.checkMetamask().then((rv) => {
-				wAPI.Request_Account((resp) => {
-					// console.log('[Login] connect() -> Request_Account : resp', resp);
-
-					if (resp.res_code == 200) {
-						var curActiveAccount = _U.getIfDefined(resp, [
-							'data',
-							'account',
-						])
-
-						if (
-							curActiveAccount !=
-							this.$store.state.userInfo.wallet_addr
-						) {
-							this.mxShowAlert({
-								msg:
-									this.$t(
-										'market.detail.alert-address-not-matched'
-									) +
-									'\n' +
-									this.$store.state.userInfo.wallet_addr,
-							})
-						} else {
-							// console.log("Matched address");
-
-							console.log(this.networkName)
-							console.log(gConfig.getNetwork())
-							if (this.networkName != gConfig.getNetwork()) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-network-not-matched'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							if (this.sellPrice <= 0) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-sell-amount-invalid'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							// TODO: Bug Fix needed
-							var currentAccount = _U.getIfDefined(
-								this.$store.state,
-								['userInfo', 'wallet_addr']
-							)
-
-							if (
-								currentAccount == undefined ||
-								currentAccount == null ||
-								currentAccount == ''
-							) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-no-wallet-account'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							this.mxShowLoading('inf')
-
-							if (this.buyCount <= 0) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-no-selected-count'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							this.trade_data = {
-								type: 'Sell',
-								category: this.marketItem.category,
-								price: this.sellPrice,
-								tokenId: this.marketItem.token_id,
-								amount: this.buyCount,
-								fToast: this.mxShowToast,
-								network: this.networkName,
-								callback: this.onSellItem,
-							}
-
-							this.mxCloseLoading()
-							this.mxShowAlert({
-								msg: this.$t('market.detail.alert-sell-msg'),
-								btn: this.$t('market.detail.alert-sell-button'),
-								callback: this.onCallbackSellPopup,
-							})
-						}
-
-						return
-					}
-
-					// console.log("Error on get wallet url", resp);
-					this.mxShowAlert({
-						msg:
-							this.$t('signup.register.error-on-wallet-url') +
-							'\n' +
-							this.$t('popup.metamask-request-error') +
-							'\n' +
-							resp.res_code,
-					})
-				})
-			})
+			this.redirectWallet(true, false)
 		},
 
 		onClickSellLand() {
@@ -772,114 +679,104 @@ export default {
 				return
 			}
 
-			wAPI.checkMetamask().then((rv) => {
-				wAPI.Request_Account((resp) => {
-					// console.log('[Login] connect() -> Request_Account : resp', resp);
+			this.redirectWallet(true, true)
+		},
 
-					if (resp.res_code == 200) {
-						var curActiveAccount = _U.getIfDefined(resp, [
-							'data',
-							'account',
-						])
-
-						if (
-							curActiveAccount !=
-							this.$store.state.userInfo.wallet_addr
-						) {
-							this.mxShowAlert({
-								msg:
-									this.$t(
-										'market.detail.alert-address-not-matched'
-									) +
-									'\n' +
-									this.$store.state.userInfo.wallet_addr,
-							})
-						} else {
-							var networkName = this.getDvLand().network
-
-							if (gConfig.getNetwork() != networkName) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-network-not-matched'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							if (this.sellPrice <= 0) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-sell-amount-invalid'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							// TODO: Bug Fix needed
-							var currentAccount = _U.getIfDefined(
-								this.$store.state,
-								['userInfo', 'wallet_addr']
-							)
-
-							if (
-								currentAccount == undefined ||
-								currentAccount == null ||
-								currentAccount == ''
-							) {
-								this.mxShowToast(
-									this.$t(
-										'market.detail.alert-no-wallet-account'
-									)
-								)
-								this.mxCloseLoading()
-								return
-							}
-
-							this.mxShowLoading('inf')
-							var tokenType = this.marketItem.tokentype
-
-							this.trade_data = {
-								type: 'Sell',
-								category: '721',
-								price: this.sellPrice,
-								tokenId: this.marketItem.token_id,
-								tokenType: tokenType,
-								fToast: this.mxShowToast,
-								network: networkName,
-								callback: this.onSellLand,
-							}
-
-							this.mxCloseLoading()
-							this.mxShowAlert({
-								msg: this.$t('market.detail.alert-sell-msg'),
-								btn: this.$t('market.detail.alert-sell-button'),
-								callback: this.onCallbackSellPopup,
-							})
-						}
-
-						return
-					}
-
-					// console.log("Error on get wallet url", resp);
-					this.mxShowAlert({
-						msg:
-							this.$t('signup.register.error-on-wallet-url') +
-							'\n' +
-							this.$t('popup.metamask-request-error') +
-							'\n' +
-							resp.res_code,
-					})
+		async handleClickSell(
+			curActiveAccount,
+			loginBy,
+			provider,
+			currentNetwork,
+			isLand
+		) {
+			const walletName = loginBy
+			if (curActiveAccount != this.$store.state.userInfo.wallet_addr) {
+				this.mxShowAlert({
+					msg:
+						`Current active ${walletName} account is not your wallet address.` +
+						'\n' +
+						this.$store.state.userInfo.wallet_addr,
 				})
-			})
+			} else {
+				const networkName = isLand
+					? this.getDvLand().network
+					: this.networkName
+				if (networkName !== currentNetwork) {
+					this.mxShowToast(
+						`Your ${walletName} in not on network item registered.\nChange your network.`
+					)
+					this.mxCloseLoading()
+					return
+				}
+
+				if (this.sellPrice <= 0) {
+					this.mxShowToast(
+						this.$t('market.detail.alert-sell-amount-invalid')
+					)
+					this.mxCloseLoading()
+					return
+				}
+
+				const currentAccount = _U.getIfDefined(this.$store.state, [
+					'userInfo',
+					'wallet_addr',
+				])
+
+				if (!currentAccount) {
+					this.mxShowToast(`Invalid ${walletName} wallet account`)
+					this.mxCloseLoading()
+					return
+				}
+
+				this.mxShowLoading('inf')
+
+				if (this.buyCount <= 0 && !isLand) {
+					this.mxShowToast(
+						this.$t('market.detail.alert-no-selected-count')
+					)
+					this.mxCloseLoading()
+					return
+				}
+
+				this.trade_data = {
+					type: 'Sell',
+					category: isLand ? '721' : this.marketItem.category,
+					price: this.sellPrice,
+					tokenId: this.marketItem.token_id,
+					amount: this.buyCount,
+					fToast: this.mxShowToast,
+					network: networkName,
+					provider,
+					accountAddress: curActiveAccount,
+					callback: isLand ? this.onSellLand : this.onSellItem,
+				}
+
+				const objClone = { ...this.trade_data }
+				if (isLand) {
+					const tokenType = this.marketItem.tokentype
+					delete objClone.amount
+					objClone.tokenType = tokenType
+				}
+
+				this.trade_data = { ...objClone }
+
+				this.mxCloseLoading()
+				this.mxShowAlert({
+					msg: this.$t('market.detail.alert-sell-msg'),
+					btn: this.$t('market.detail.alert-sell-button'),
+					callback: this.onCallbackSellPopup,
+				})
+			}
+
+			return
 		},
 
 		async handleClickBuy(
 			curActiveAccount,
 			loginBy,
 			provider,
-			currentNetwork
+			currentNetwork,
+			isLand
 		) {
 			if (curActiveAccount) {
 				const walletName = loginBy
@@ -894,8 +791,10 @@ export default {
 					})
 					return
 				}
-				console.log(this.networkName, currentNetwork, 'network')
-				if (this.networkName !== currentNetwork) {
+				const networkName = isLand
+					? this.getDvLand().network
+					: this.networkName
+				if (networkName !== currentNetwork) {
 					this.mxShowToast(
 						`Your ${walletName} is not on network item registered.\nChange your network.`
 					)
@@ -926,23 +825,58 @@ export default {
 
 				this.mxShowLoading('inf')
 
-				if (this.buyCount <= 0) {
+				if (this.buyCount <= 0 && !isLand) {
 					this.mxShowToast(
 						this.$t('market.detail.alert-no-selected-count')
 					)
 					this.mxCloseLoading()
 					return
 				}
-				this.approve_data = {
-					type: 'Approval',
-					category: this.marketItem.category,
-					price: this.marketItem.price * this.buyCount,
-					fToast: this.mxShowToast,
-					network: this.networkName,
-					provider,
-					accountAddress: curActiveAccount,
-					callback: this.onApproveDvi,
+
+				if (isLand) {
+					const tokenType = this.marketItem.tokentype
+					const priceWithoutComma = this.marketItem.price.replace(
+						/,/g,
+						''
+					)
+					console.log(tokenType, 'tokenType')
+					if (+tokenType === 0) {
+						const data = {
+							account: buyer,
+							itemId: this.blockInfo.id,
+							ownerId: this.marketItem.owner_id,
+							land_code: this.getDvLand().n,
+							price: this.marketItem.price,
+							network: this.marketItem.network,
+							callback: this.onBuyLandItem,
+						}
+						this.mxCloseLoading()
+						wAPI.buyLandItem(data)
+					} else if (+tokenType === 1) {
+						this.approve_data = {
+							type: 'Approval',
+							category: '721',
+							price: priceWithoutComma,
+							fToast: this.mxShowToast,
+							network: networkName,
+							provider,
+							accountAddress: curActiveAccount,
+							callback: this.onApproveDvi,
+						}
+					}
+				} else {
+					this.approve_data = {
+						type: 'Approval',
+						category: this.marketItem.category,
+						price: this.marketItem.price * this.buyCount,
+						fToast: this.mxShowToast,
+						network: this.networkName,
+						provider,
+						accountAddress: curActiveAccount,
+						callback: this.onApproveDvi,
+					}
 				}
+				console.log('outtt', this.approve_data)
 				this.mxCloseLoading()
 				this.mxShowAlert({
 					msg: `Approve the DVI expenditure in your ${walletName} Wallet to complete the purchase.`,
@@ -965,36 +899,35 @@ export default {
 				return
 			}
 
-			const loginBy = window.localStorage.getItem('loginBy')
-			switch (loginBy) {
-				case METAMASK:
-				case COINBASE:
-					this.handleClickBuyMetamaskCoinbase(loginBy)
-					break
-				case FORTMATIC:
-					this.handleClickBuyFortmatic()
-					break
-				case WALLETCONNECT:
-					this.handleClickBuyWalletConnect()
-					break
-				case BITSKI:
-					this.handleClickBuyBitski()
-					break
-			}
+			this.redirectWallet(false, false)
 		},
 
-		async handleClickBuyMetamaskCoinbase(loginBy) {
+		async handleClickMetamaskCoinbase(loginBy, isSell, isLand) {
 			const network = await wAPI.checkMetamask()
 			wAPI.Request_Account((resp) => {
 				const curActiveAccount = _U.getIfDefined(resp, [
 					'data',
 					'account',
 				])
-				this.handleClickBuy(curActiveAccount, loginBy, null, network)
+				isSell
+					? this.handleClickSell(
+							curActiveAccount,
+							loginBy,
+							null,
+							network,
+							isLand
+					  )
+					: this.handleClickBuy(
+							curActiveAccount,
+							loginBy,
+							null,
+							network,
+							isLand
+					  )
 			})
 		},
 
-		async handleClickBuyFortmatic() {
+		async handleClickFortmatic(isSell, isLand) {
 			let web3 = new Web3(fortmaticProvider.getProvider())
 			console.log('provider', fortmaticProvider)
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
@@ -1009,32 +942,49 @@ export default {
 					console.log(error)
 				}
 				const account = accounts[0]
-				this.handleClickBuy(
-					account,
-					FORTMATIC,
-					fortmaticProvider.getProvider(),
-					network
-				)
+				isSell
+					? this.handleClickSell(
+							account,
+							FORTMATIC,
+							fortmaticProvider.getProvider(),
+							network,
+							isLand
+					  )
+					: this.handleClickBuy(
+							account,
+							FORTMATIC,
+							fortmaticProvider.getProvider(),
+							network,
+							isLand
+					  )
 			})
 		},
 
-		async handleClickBuyWalletConnect() {
+		async handleClickWalletConnect(isSell, isLand) {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
-			console.log(walletConnectProvider, 'wallet connect provider')
 			const accounts = await web3.eth.getAccounts()
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
 			const network = renderNetworkName(chainId)
-			this.handleClickBuy(
-				accounts[0],
-				WALLETCONNECT,
-				walletConnectProvider,
-				network
-			)
+			isSell
+				? this.handleClickSell(
+						accounts[0],
+						WALLETCONNECT,
+						walletConnectProvider,
+						network,
+						isLand
+				  )
+				: this.handleClickBuy(
+						accounts[0],
+						WALLETCONNECT,
+						walletConnectProvider,
+						network,
+						isLand
+				  )
 		},
 
-		async handleClickBuyBitski() {
+		async handleClickBitski(isSell, isLand) {
 			const res = await bitski.signIn()
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			const network = renderNetworkName(
@@ -1045,14 +995,28 @@ export default {
 
 			if (res) {
 				const provider = bitski.getProvider()
-				this.handleClickBuy(res.accounts[0], BITSKI, provider, network)
+				isSell
+					? this.handleClickSell(
+							res.accounts[0],
+							BITSKI,
+							provider,
+							network,
+							isLand
+					  )
+					: this.handleClickBuy(
+							res.accounts[0],
+							BITSKI,
+							provider,
+							network,
+							isLand
+					  )
 			}
 		},
 		onClickBuyLand() {
-			var landItem = this.mxGetLandItemDetail()
+			const landItem = this.mxGetLandItemDetail()
 
 			if (this.buyType == '2') {
-				var url = landItem.extern_url
+				const url = landItem.extern_url
 				window.open(url, '_blank')
 			}
 
@@ -1062,138 +1026,7 @@ export default {
 					return
 				}
 
-				wAPI.checkMetamask().then((rv) => {
-					wAPI.Request_Account((resp) => {
-						// console.log('[Login] connect() -> Request_Account : resp', resp);
-
-						if (resp.res_code == 200) {
-							var curActiveAccount = _U.getIfDefined(resp, [
-								'data',
-								'account',
-							])
-
-							if (
-								curActiveAccount !=
-								this.$store.state.userInfo.wallet_addr
-							) {
-								this.mxShowAlert({
-									msg:
-										this.$t(
-											'market.detail.alert-address-not-matched'
-										) +
-										'\n' +
-										this.$store.state.userInfo.wallet_addr,
-								})
-							} else {
-								// console.log("Matched address");
-
-								var networkName = this.getDvLand().network
-
-								if (gConfig.getNetwork() != networkName) {
-									this.mxShowToast(
-										this.$t(
-											'market.detail.alert-network-not-matched'
-										)
-									)
-									this.mxCloseLoading()
-									return
-								}
-
-								// TODO: Bug Fix needed
-								var buyer = _U.getIfDefined(this.$store.state, [
-									'userInfo',
-									'wallet_addr',
-								])
-
-								if (
-									buyer == undefined ||
-									buyer == null ||
-									buyer == ''
-								) {
-									this.mxShowToast(
-										this.$t(
-											'market.detail.alert-no-wallet-account'
-										)
-									)
-									this.mxCloseLoading()
-									return
-								}
-
-								var seller = this.marketItem.owner_id
-
-								if (buyer == seller) {
-									this.mxShowToast(
-										this.$t(
-											'market.detail.alert-same-account'
-										)
-									)
-									this.mxCloseLoading()
-									return
-								}
-
-								this.mxShowLoading('inf')
-
-								var priceWithoutComma =
-									this.marketItem.price.replace(/,/g, '')
-
-								var tokenType = this.marketItem.tokentype
-
-								if (tokenType == 0) {
-									var data = {
-										account: buyer,
-										itemId: this.blockInfo.id,
-										ownerId: this.marketItem.owner_id,
-										land_code: this.getDvLand().n,
-										price: this.marketItem.price,
-										network: this.marketItem.network,
-										callback: this.onBuyLandItem,
-									}
-									this.mxCloseLoading()
-									wAPI.buyLandItem(data)
-								} else if (tokenType == 1) {
-									this.approve_data = {
-										type: 'Approval',
-										category: '721',
-										price: priceWithoutComma,
-										fToast: this.mxShowToast,
-										network: networkName,
-										callback: this.onApproveDvi,
-									}
-
-									this.mxCloseLoading()
-									this.mxShowAlert({
-										msg: this.$t(
-											'market.detail.alert-approve-msg'
-										),
-										btn: this.$t(
-											'market.detail.alert-approve-button'
-										),
-										callback: this.onCallbackApprovePopup,
-									})
-								} else {
-									this.mxCloseLoading()
-									this.mxShowAlert({
-										msg: this.$t(
-											'market.detail.alert-invalid-token-type'
-										),
-									})
-								}
-							}
-
-							return
-						}
-
-						// console.log("Error on get wallet url", resp);
-						this.mxShowAlert({
-							msg:
-								this.$t('signup.register.error-on-wallet-url') +
-								'\n' +
-								this.$t('popup.metamask-request-error') +
-								'\n' +
-								resp.res_code,
-						})
-					})
-				})
+				this.redirectWallet(false, true)
 			}
 		},
 		onPrependData(resp) {
@@ -1261,6 +1094,8 @@ export default {
 
 			var networkName = this.getDvLand().network
 
+			const provider = this.getProvider()
+
 			this.trade_data = {
 				type: 'Trade',
 				category: '721',
@@ -1271,6 +1106,8 @@ export default {
 				ownerId: this.marketItem.owner_id,
 				fToast: this.mxShowToast,
 				network: networkName,
+				provider,
+				accountAddress: this.$store.state.userInfo.wallet_addr,
 				callback: this.onTradeDvi,
 			}
 
@@ -1285,6 +1122,7 @@ export default {
 		onCallbackApprovePopup(resp) {
 			console.log('on callback approve', resp)
 			const data = this.approve_data
+			console.log('data', data)
 			if (!data) {
 				return
 			}
@@ -1359,7 +1197,7 @@ export default {
 			}
 		},
 		onTradeDvi(resp) {
-			// console.log('[Market-Detail] onTradeDvi(), resp:', resp);
+			console.log('[Market-Detail] onTradeDvi(), resp:', resp)
 			this.trHash = _U.getIfDefined(resp, ['data', 'trHash'])
 			if (
 				_U.getIfDefined(resp, 'res_code') !== 200 ||
