@@ -210,7 +210,7 @@ export default {
 	// },
 
 	beforeMount () {
-		console.log("[Market.vue] && beforeMount(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && beforeMount(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 		var m = this.mxGetMarketItem();
 		if(this.$route.name=='Market-Detail' && !_U.isDefined(m,'id')) {
 			this.$router.replace({name:"Market"});
@@ -218,7 +218,7 @@ export default {
 		}
 	},
 	mounted () {
-		console.log("[Market.vue] && mounted(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && mounted(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 		if(this.$route.name!=='Market-Detail' && this.$route.name!=='Market-Detail-Index') {
 			this.setSearchQuery(1);
 			this.callMarketItems(this.searchQuery);
@@ -227,10 +227,10 @@ export default {
 		this.listenToWindowClickEvent();
 	},
 	beforeUpdate () {
-		console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 	},
 	updated() {
-		console.log("[Market.vue] updated(), route : ", this.$route)
+		// console.log("[Market.vue] updated(), route : ", this.$route)
 	},
 	data () {
 		return {
@@ -276,6 +276,7 @@ export default {
 	},
 	computed: {
 		mapId() {
+			console.log('this.itemId', this.itemId)
 			return this.itemId;
 		},
 		blockId() {

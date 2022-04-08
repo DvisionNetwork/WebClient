@@ -324,6 +324,7 @@ export default function walletAPI() {
 		},
 
 		getContAddr(nft, network) {
+			console.log('network', network)
 			const addr = gConfig.wlt.getNetworkAddr(network)
 
 			var contAddr = null
@@ -332,7 +333,7 @@ export default function walletAPI() {
 			} else if (nft == '1155') {
 				contAddr = addr.Contract1155Address
 			}
-			console.log(addr, contAddr, 'address')
+			console.log(addr, contAddr, 'address123')
 			return contAddr
 		},
 		getMarketAddr(network) {
@@ -410,7 +411,7 @@ export default function walletAPI() {
 		async ContractDvi(J) {
 			console.log('[WalletAPI] =========== ContractDvi() J:', J)
 			const loginBy = window.localStorage.getItem('loginBy')
-			var contAddr = this.getContAddr(J.category, J.network)
+			const contAddr = this.getContAddr(J.category, J.network)
 			if (!contAddr) {
 				J.callback({
 					res_code: 401,
@@ -448,13 +449,13 @@ export default function walletAPI() {
 				return
 			}
 
-			var decimals = ethers.BigNumber.from(18)
-			var vAmout = ethers.BigNumber.from(parseInt(J.price * 1000000))
-			var value = vAmout
+			const decimals = ethers.BigNumber.from(18)
+			const vAmout = ethers.BigNumber.from(parseInt(J.price * 1000000))
+			const value = vAmout
 				.mul(ethers.BigNumber.from(10).pow(decimals))
 				.div(1000000)
-			var ret = null
-			var msg = 'failed'
+			let ret = null
+			let msg = 'failed'
 
 			const rv =
 				loginBy !== METAMASK && loginBy !== COINBASE
@@ -463,19 +464,12 @@ export default function walletAPI() {
 
 			if (rv != 'NONE') {
 				try {
-					if (J.type == 'Approval') {
-						J.fToast(
-							J.type + ' of DVI transaction is being processed.'
-						)
-					} else {
-						J.fToast(
-							J.type +
-								'-' +
-								J.category +
-								' of DVI transaction is being processed.'
-						)
-					}
-					var sendTransactionPromise = null
+					J.fToast(
+						`${J.type} ${
+							J.type !== 'Approval' ? `- ${J.category}` : ''
+						} of DVI transaction is being processed.`
+					)
+					let sendTransactionPromise = null
 					if (J.type == 'Approval') {
 						console.log(loginBy, 'login', contract)
 						sendTransactionPromise = await (loginBy === FORTMATIC
@@ -564,7 +558,7 @@ export default function walletAPI() {
 						}
 					} else if (J.type == 'Sell') {
 						if (J.category == '721') {
-							var marketContract = this.getMarketAddr(J.network)
+							const marketContract = this.getMarketAddr(J.network)
 
 							if (J.tokenType == 0) {
 								console.log(
@@ -578,13 +572,24 @@ export default function walletAPI() {
 										value +
 										' );'
 								)
-								sendTransactionPromise =
-									await contract.sellItem(
-										marketContract,
-										J.tokenId.toString(),
-										value,
-										J.tokenType
-									)
+								sendTransactionPromise = await (loginBy ===
+								FORTMATIC
+									? contract.methods
+											.sellItem(
+												marketContract,
+												J.tokenId.toString(),
+												value,
+												J.tokenType
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.sellItem(
+											marketContract,
+											J.tokenId.toString(),
+											value,
+											J.tokenType
+									  ))
 							} else {
 								console.log(
 									'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
@@ -606,7 +611,7 @@ export default function walletAPI() {
 									)
 							}
 						} else if (J.category == '1155') {
-							var marketContract = this.getMarketAddr(J.network)
+							const marketContract = this.getMarketAddr(J.network)
 							console.log(
 								'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
 									marketContract +
@@ -619,13 +624,26 @@ export default function walletAPI() {
 									' );'
 							)
 
-							sendTransactionPromise = await contract.Sell_Item(
-								marketContract,
-								J.tokenId.toString(),
-								value,
-								1,
-								J.amount
-							)
+							sendTransactionPromise = await (loginBy ===
+							FORTMATIC
+								? contract.methods
+										.Sell_Item(
+											marketContract,
+											J.tokenId.toString(),
+											value,
+											1,
+											J.amount
+										)
+										.send({
+											from: J.accountAddress,
+										})
+								: contract.Sell_Item(
+										marketContract,
+										J.tokenId.toString(),
+										value,
+										1,
+										J.amount
+								  ))
 						}
 					}
 					if (!sendTransactionPromise) {
@@ -644,7 +662,7 @@ export default function walletAPI() {
 						return
 					}
 					console.log(sendTransactionPromise, 'sendTransaction')
-					var txReceipt = await (loginBy === FORTMATIC
+					const txReceipt = await (loginBy === FORTMATIC
 						? sendTransactionPromise
 						: sendTransactionPromise.wait())
 					if (typeof txReceipt !== 'undefined') {
