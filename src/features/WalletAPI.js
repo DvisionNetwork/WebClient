@@ -422,9 +422,9 @@ export default function walletAPI() {
 					contract =
 						loginBy === FORTMATIC || loginBy === BITSKI
 							? (contract = getContractConnect(
-									addr.Contract721Address,
+									loginBy,
 									pol721_ABI,
-									lv_signer,
+									addr.Contract721Address,
 									networkRPC,
 									currentNetwork
 							  ))
@@ -437,9 +437,9 @@ export default function walletAPI() {
 					contract =
 						loginBy === FORTMATIC || loginBy === BITSKI
 							? (contract = getContractConnect(
-									addr.Contract721Address,
+									loginBy,
 									erc721_ABI,
-									lv_signer,
+									addr.Contract721Address,
 									networkRPC,
 									currentNetwork
 							  ))
@@ -453,9 +453,9 @@ export default function walletAPI() {
 				contract =
 					loginBy === FORTMATIC || loginBy === BITSKI
 						? (contract = getContractConnect(
-								addr.Contract1155Address,
+								loginBy,
 								erc1155_ABI,
-								lv_signer,
+								addr.Contract1155Address,
 								networkRPC,
 								currentNetwork
 						  ))
@@ -561,9 +561,7 @@ export default function walletAPI() {
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
-											.trade721ETH(
-												J.tokenId.toString(),
-											)
+											.trade721ETH(J.tokenId.toString())
 											.send({
 												from: J.accountAddress,
 												value: overrides.value,
@@ -673,13 +671,25 @@ export default function walletAPI() {
 										value +
 										' );'
 								)
-								sendTransactionPromise =
-									await contract.Sell_Item(
-										marketContract,
-										J.tokenId.toString(),
-										value,
-										J.tokenType
-									)
+								console.log('contract', contract)
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.Sell_Item(
+												marketContract,
+												J.tokenId.toString(),
+												value,
+												J.tokenType
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.Sell_Item(
+											marketContract,
+											J.tokenId.toString(),
+											value,
+											J.tokenType
+									  ))
 							}
 						} else if (J.category == '1155') {
 							const marketContract = this.getMarketAddr(J.network)
@@ -695,8 +705,10 @@ export default function walletAPI() {
 									' );'
 							)
 
+							console.log('contract 1155', contract)
+
 							sendTransactionPromise = await (loginBy ===
-							FORTMATIC
+								FORTMATIC || loginBy === BITSKI
 								? contract.methods
 										.Sell_Item(
 											marketContract,
