@@ -22,7 +22,7 @@ export const walletLink = new WalletLink({
   supportedChainIds: [1, 4, 56, 97, 80001]
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
-export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY, 'ropsten')
+export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY)
 export const walletConnectProvider = new WalletConnectProvider({
   rpc: {
     1: 'https://mainnet.mycustomnode.com',
