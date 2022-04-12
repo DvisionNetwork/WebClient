@@ -472,12 +472,10 @@ export default {
 	},
 
 	methods: {
-		async setCurrentNetwork() {
+			async setCurrentNetwork() {
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			const loginBy = window.localStorage.getItem('loginBy')
-			console.log('ethereum', ethereum);
 			if (ethereum && (loginBy === METAMASK || loginBy === COINBASE)) {
-				const currentNetwork =
-					window.localStorage.getItem('currentNetwork')
 				if (!currentNetwork || currentNetwork.length === 0) {
 					let web3 = new Web3(Web3.givenProvider)
 					const chainId = await web3.eth.net.getId()
@@ -488,10 +486,12 @@ export default {
 				}
 				return
 			}
-			window.localStorage.setItem(
-				'currentNetwork',
-				gConfig.wlt.getEthAddr().Network
-			)
+			if (!currentNetwork) {
+				window.localStorage.setItem(
+					'currentNetwork',
+					gConfig.wlt.getEthAddr().Network
+				)
+			}
 		},
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
