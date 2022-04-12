@@ -631,7 +631,7 @@ export default function walletAPI() {
 
 							if (J.tokenType == 0) {
 								console.log(
-									'[WalletAPI] ContractDvi call  contract.sellItem("' +
+									'[WalletAPI] ContractDvi call  contract.sellItem721 token 0("' +
 										marketContract +
 										'", "' +
 										J.tokenId +
@@ -661,7 +661,7 @@ export default function walletAPI() {
 									  ))
 							} else {
 								console.log(
-									'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
+									'[WalletAPI] ContractDvi call  contract.Sell_Item 721 token !== 0("' +
 										marketContract +
 										'", "' +
 										J.tokenId +
@@ -672,6 +672,9 @@ export default function walletAPI() {
 										' );'
 								)
 								console.log('contract', contract)
+								const tokenType = J.tokenType
+									? J.tokenType
+									: '0'
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
@@ -679,7 +682,7 @@ export default function walletAPI() {
 												marketContract,
 												J.tokenId.toString(),
 												value,
-												J.tokenType
+												tokenType
 											)
 											.send({
 												from: J.accountAddress,
