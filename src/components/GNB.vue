@@ -351,6 +351,7 @@ export default {
 				this.chainId = JSON.parse(walletConnect).chainId
 				currentNetwork = this.chainId.toString()
 			}
+			console.log('currentNetwork', currentNetwork)
 			try {
 				switch (currentNetwork) {
 					case '0x4':
