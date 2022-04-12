@@ -16,7 +16,7 @@
 							@click="showNetwork = !showNetwork"
 						>
 							<div class="network-icon">
-								<span>{{ checkedNetwork }}</span>
+								<span id="network-name">{{ checkedNetwork }}</span>
 							</div>
 							<transition appear name="fade">
 								<div class="network-popup" v-if="showNetwork">
@@ -40,6 +40,7 @@
 									<div
 										class="network-wrapper"
 										@click="onClickItem('BSC')"
+										v-if="loginBy !== 'BITSKI'"
 									>
 										<img
 											class="icon"
@@ -148,7 +149,7 @@
 							@click="showNetwork = !showNetwork"
 						>
 							<div class="network-icon">
-								<span>{{ checkedNetwork }}</span>
+								<span id="network-name">{{ checkedNetwork }}</span>
 							</div>
 							<transition appear name="fade">
 								<div class="network-popup" v-if="showNetwork">
@@ -172,6 +173,7 @@
 									<div
 										class="network-wrapper"
 										@click="onClickItem('BSC')"
+										v-if="loginBy !== 'BITSKI'"
 									>
 										<img
 											class="icon"
@@ -263,14 +265,15 @@ export default {
 			isShowNavbar: false,
 			showNetwork: false,
 			checkedNetwork: 'Ethereum',
-			chainId : 0
+			chainId: 0,
+			loginBy: null,
 		}
 	},
 	computed: {
 		signed() {
 			this.checkCurrentNetwork()
 			const loginBy = window.localStorage.getItem('loginBy')
-			if(loginBy === WALLETCONNECT) {
+			if (loginBy === WALLETCONNECT) {
 				setInterval(() => {
 					this.getInterval()
 				}, 3000);
@@ -287,6 +290,7 @@ export default {
 	mounted () {
 		// console.log("======== route params", this.$route, this.$route.params);
 		this.currentPage = this.$route.params.id
+		this.handlePopupNetwork()
 	},
 	methods: {
 		onClickItem(network) {
@@ -460,12 +464,22 @@ export default {
 					bitski.signOut()
 					break;
 			}
-		}
+		},
+		handlePopupNetwork() {
+			window.onclick = (e) => {
+				if (e.target.id !== 'network-name') {
+					this.showNetwork = false
+				}
+			}
+		},
 	},
 	watch: {
 		isShowNavbar: function () {
 			this.checkStyleOverflow();
 		},
+		signed: function () {
+			this.loginBy = window.localStorage.getItem('loginBy')
+		}
 	},
 }
 </script>
