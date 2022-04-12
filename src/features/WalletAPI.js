@@ -563,10 +563,10 @@ export default function walletAPI() {
 									? contract.methods
 											.trade721ETH(
 												J.tokenId.toString(),
-												overrides
 											)
 											.send({
 												from: J.accountAddress,
+												value: overrides.value,
 											})
 									: contract.trade721ETH(
 											J.tokenId.toString(),
