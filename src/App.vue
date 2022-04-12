@@ -473,14 +473,25 @@ export default {
 
 	methods: {
 		async setCurrentNetwork() {
-			if(ethereum) {
-				const currentNetwork = window.localStorage.getItem('currentNetwork')
-				if(!currentNetwork || currentNetwork.length === 0) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			console.log('ethereum', ethereum);
+			if (ethereum && (loginBy === METAMASK || loginBy === COINBASE)) {
+				const currentNetwork =
+					window.localStorage.getItem('currentNetwork')
+				if (!currentNetwork || currentNetwork.length === 0) {
 					let web3 = new Web3(Web3.givenProvider)
-					const chainId = await web3.eth.net.getId();
-					window.localStorage.setItem('currentNetwork',formatChainId(chainId))
+					const chainId = await web3.eth.net.getId()
+					window.localStorage.setItem(
+						'currentNetwork',
+						formatChainId(chainId)
+					)
 				}
+				return
 			}
+			window.localStorage.setItem(
+				'currentNetwork',
+				gConfig.wlt.getEthAddr().Network
+			)
 		},
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
