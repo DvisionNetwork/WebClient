@@ -474,6 +474,7 @@ export default {
 	methods: {
 		async setCurrentNetwork() {
 			const loginBy = window.localStorage.getItem('loginBy')
+			console.log('ethereum', ethereum);
 			if (ethereum && (loginBy === METAMASK || loginBy === COINBASE)) {
 				const currentNetwork =
 					window.localStorage.getItem('currentNetwork')
