@@ -419,24 +419,51 @@ export default function walletAPI() {
 				}
 			} else if (type == 'Sell' && nft == '721') {
 				if (network == 'POL') {
-					contract = new ethers.Contract(
-						addr.Contract721Address,
-						pol721_ABI,
-						lv_signer
-					)
+					contract =
+						loginBy === FORTMATIC || loginBy === BITSKI
+							? (contract = getContractConnect(
+									addr.Contract721Address,
+									pol721_ABI,
+									lv_signer,
+									networkRPC,
+									currentNetwork
+							  ))
+							: new ethers.Contract(
+									addr.Contract721Address,
+									pol721_ABI,
+									lv_signer
+							  )
 				} else {
-					contract = new ethers.Contract(
-						addr.Contract721Address,
-						erc721_ABI,
-						lv_signer
-					)
+					contract =
+						loginBy === FORTMATIC || loginBy === BITSKI
+							? (contract = getContractConnect(
+									addr.Contract721Address,
+									erc721_ABI,
+									lv_signer,
+									networkRPC,
+									currentNetwork
+							  ))
+							: new ethers.Contract(
+									addr.Contract721Address,
+									erc721_ABI,
+									lv_signer
+							  )
 				}
 			} else if (type == 'Sell' && nft == '1155') {
-				contract = new ethers.Contract(
-					addr.Contract1155Address,
-					erc1155_ABI,
-					lv_signer
-				)
+				contract =
+					loginBy === FORTMATIC || loginBy === BITSKI
+						? (contract = getContractConnect(
+								addr.Contract1155Address,
+								erc1155_ABI,
+								lv_signer,
+								networkRPC,
+								currentNetwork
+						  ))
+						: new ethers.Contract(
+								addr.Contract1155Address,
+								erc1155_ABI,
+								lv_signer
+						  )
 			}
 			return contract
 		},
@@ -471,7 +498,6 @@ export default function walletAPI() {
 				J.category,
 				loginBy
 			)
-			console.log('contract', contract, loginBy, loginBy === FORTMATIC)
 			if (!contract) {
 				J.callback({
 					res_code: 401,
@@ -505,11 +531,12 @@ export default function walletAPI() {
 					)
 					let sendTransactionPromise = null
 					if (J.type == 'Approval') {
-						console.log(loginBy, 'login', contract)
+						console.log('account', J.accountAddress)
 						sendTransactionPromise = await (loginBy === FORTMATIC ||
 						loginBy === BITSKI
 							? contract.methods.approve(contAddr, value).send({
 									from: J.accountAddress,
+									chain: 'rinkedby',
 							  })
 							: contract.approve(contAddr, value))
 					} else if (J.type == 'Trade') {
@@ -553,11 +580,20 @@ export default function walletAPI() {
 										value +
 										' );'
 								)
-								sendTransactionPromise =
-									await contract.Trade_721dvi(
-										J.tokenId.toString(),
-										value
-									)
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.Trade_721dvi(
+												J.tokenId.toString(),
+												value
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.Trade_721dvi(
+											J.tokenId.toString(),
+											value
+									  ))
 							}
 						} else if (J.category == '1155') {
 							console.log(

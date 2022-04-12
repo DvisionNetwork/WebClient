@@ -488,6 +488,7 @@ export default {
 			if (this.marketItem.owner_id && this.userInfo.wallet_addr) {
 				var curWallet = this.userInfo.wallet_addr.toLowerCase()
 				var ownerId = this.marketItem.owner_id.toLowerCase()
+				console.log({curWallet, ownerId}, 'test')
 
 				return ownerId == curWallet
 			}
