@@ -587,6 +587,7 @@ export default function walletAPI() {
 											)
 											.send({
 												from: J.accountAddress,
+												gas: 6000000,
 											})
 									: contract.Trade_721dvi(
 											J.tokenId.toString(),
@@ -671,10 +672,9 @@ export default function walletAPI() {
 										value +
 										' );'
 								)
-								console.log('contract', contract)
 								const tokenType = J.tokenType
 									? J.tokenType
-									: '0'
+									: '1'
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
@@ -691,7 +691,7 @@ export default function walletAPI() {
 											marketContract,
 											J.tokenId.toString(),
 											value,
-											J.tokenType
+											tokenType
 									  ))
 							}
 						} else if (J.category == '1155') {
