@@ -47,11 +47,8 @@ export default {
 	props: {
 
 	},
-	mounted () {
-		console.log("[Home.vue] mounted(), route : ", this.$route);
-
-
-		this.callNews();
+	mounted() {
+		this.callNews()
 
 	},
 	data() {
@@ -63,23 +60,37 @@ export default {
 			mainVisual: {
 				titleHtml: this.$t('home.main-visual.title'),
 				noticeHtml: this.$t('home.main-visual.notice'),
-				msgHtml: this.$t('home.main-visual.desc'),
+				msgHtml: this.$t(
+					this.checkMobile()
+						? 'home.main-visual.desc-mobile'
+						: 'home.main-visual.desc'
+				),
 				dvw_started: false,
 			},
 			cards: [
 				{
 					title: this.$t('home.meta-space.title'),
-					description: this.$t('home.meta-space.desc'),
+					description: this.$t(`home.meta-space.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'meta-space'
 				},
 				{
 					title: this.$t('home.meta-city.title'),
-					description: this.$t('home.meta-city.desc'),
+					description: this.$t(
+						`home.meta-city.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'meta-city'
 				},
 				{
 					title: this.$t('home.nft-market.title'),
-					description: this.$t('home.nft-market.desc'),
+					description: this.$t(`home.nft-market.desc${
+							this.checkMobile ? '-mobile' : ''
+						}`
+					),
 					imgType: 'nft-market'
 				},
 			],
@@ -213,7 +224,6 @@ export default {
 	},
 	methods: {
 		startDVW() {
-			console.log("==== startDVW ===");
 			// this.mxShowToast(this.$t('popup.app-construction-alert'));
 			this.mainVisual.dvw_started  = !this.mainVisual.dvw_started
 			this.mxGameStart();
@@ -241,11 +251,9 @@ export default {
 				url:gConfig.news_get_list,
 				data: data,
 				callback: (resp) =>{
-					console.log("[Home] callNews()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var total = _U.getIfDefined(resp,['data','total']);
 					if(!rows && rows.length > 0) {
-						console.log("[Home] callNews()-> resp mxSetHome ================ ", rows);
 						this.mxSetHomeNews({total:0, page:0, cpp: 0, list:[]});	 // 빈 뉴스
 						return;
 					}
@@ -269,7 +277,7 @@ export default {
 	background-color: #201360;
 
 	max-width:100vw;
-	overflow-x:hidden;
+	overflow:hidden;
 
 	min-height: calc(100vh - 176px); // Foot 176px
 
@@ -432,17 +440,22 @@ export default {
 	height: gREm(720);
 
 	.msg-box {
+		padding: 0 gREm(20);
+		width: 100%;
+
 		.notice {
-			@include Set-Font($AppFont, gREm(16), 1.22, #ee4705, 600);
+			@include Set-Font($AppFont, gREm(14), 1.375, #777682, 200);
+			white-space: pre-line;
+			margin-bottom: gREm(20);
 		}
 		.title {
 			width: 100%;
 			@include Set-Font($AppFont, gREm(32), 1.31, #ffffff, 600);
 		}
 		.message {
-			margin-top: gREm(14);
-			width: 90vw;
 			@include Set-Font($AppFont, gREm(16), 1.39, #f6f4ff);
+			margin-top: gREm(16);
+			white-space: pre-line;
 		}
 
 		.button {

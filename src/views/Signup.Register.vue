@@ -63,21 +63,27 @@
 </template>
 
 <script>
-
+import WalletConnect from '@walletconnect/client'
+import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+var gConfig = AppConfig()
 
 import PopupInput from '@/components/PopupInput.vue'
 import WalletAPI from '@/features/WalletAPI.js'
 
-import sha256 from 'crypto-js/sha256';
+import sha256 from 'crypto-js/sha256'
 
-var wAPI = new WalletAPI();
-
+var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes();
+var CCodes = new CountryCodes()
 
+import {
+	checkProviderWallet,
+	METAMASK,
+	COINBASE
+} from '@/features/Common.js'
+import { coinbaseProvider, fortmaticProvider, walletConnectProvider, bitski } from '@/features/Connectors.js'
+import Web3 from 'web3'
 
 export default {
 	name: "Register",
@@ -197,16 +203,16 @@ export default {
             options: [],   // option name
             isActive: false,
 
+			selectedWallet: -1, 
 		}
 	},
 	computed: {
 	},
 	methods : {
-		onCancel () {
+		onCancel() {
 			this.$router.go(-1);
 		},
-		onSubmit () {
-
+		onSubmit() {
 			var chFS = this.checkFieldSet();
 			if(chFS.result==false) {
 				this.mxShowToast(this.$t('signup.register.error-form-join')+chFS.message);
@@ -249,71 +255,221 @@ export default {
 				position: '',
 				recommendedreferrer: this.fieldset.idInfo.referral.value,
 				wallet_addr: this.walletAddr,
+				wallet: this.selectedWallet,
 			}
 			return rv;
 		},
-		checkFieldSet() {
 
+		checkFieldSet() {
 			var rv = {
 				result: true,
-				message: ''
-			};
+				message: '',
+			}
 
-			for(var infoName in this.fieldset) {
-				console.log("=== info: ", infoName)
-				for(var itemName in this.fieldset[infoName]) {
+			for (var infoName in this.fieldset) {
+				console.log('=== info: ', infoName)
+				for (var itemName in this.fieldset[infoName]) {
 					var item = this.fieldset[infoName][itemName]
-					console.log("=== === item: ", item)
-					if(itemName == 'referral') { // optional field
+					console.log('=== === item: ', item)
+					if (itemName == 'referral') {
+						// optional field
 						item.checked = true;
 					}
-					if(item.checked==false) {
+					if (item.checked == false) {
 						rv.result = false;
-						rv.message = '<br>('+item.placeholder+')';
-						break;
+						rv.message = '<br>(' + item.placeholder + ')'
+						break
 					}
 				}
 			}
 			return rv;
 		},
+		async sinUpWithCoinbase() {
+			checkProviderWallet(COINBASE);
+			coinbaseProvider.enable().then((accounts) => {
+  		if(!accounts){
+				window.open('https://www.coinbase.com/signin?return_to=%2Fdashboard', '_blank')
+			}
+			else {
+				this.walletAddr = accounts[0]
+				this.fieldset.walletInfo.walletAddress.value = accounts[0]
+				this.fieldset.walletInfo.walletAddress.checked = true;
+				this.selectedWallet = '2';
+			}
+			})
+		},
+		async sinUpWithFortmatic() {
+			let web3 = new Web3(fortmaticProvider.getProvider())
+			fortmaticProvider.user.login().then(() => {
+  		web3.eth.getAccounts().then((accounts) => {
+				if(accounts) {
+					this.walletAddr = accounts[0]
+					this.fieldset.walletInfo.walletAddress.value = accounts[0]
+					this.fieldset.walletInfo.walletAddress.checked = true
+					this.selectedWallet = '4';
+					}
+				});
+			});
+		},
+		async sinUpWithBitski() { 
+			const res =	await bitski.signIn()
+			if(res) {
+				this.walletAddr = res.accounts[0]
+				this.fieldset.walletInfo.walletAddress.value = res.accounts[0]
+				this.fieldset.walletInfo.walletAddress.checked = true
+				this.selectedWallet = '5';
+			}
+		},
+		async sinUpWithwalletConnect() {
+			await walletConnectProvider.enable()
+			const web3 = new Web3(walletConnectProvider)
+			const accounts = await web3.eth.getAccounts();
+			if (accounts) {
+					this.walletAddr = accounts[0]
+					this.fieldset.walletInfo.walletAddress.value = accounts[0]
+					this.fieldset.walletInfo.walletAddress.checked = true
+					this.selectedWallet = '3';
+					return
+				} else {
+					this.mxShowAlert({
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.metamask-request-error') +
+							'\n'
+					})
+				}
+			// const bridge = BRIDGE_WALLETCONNECT
+			// const connector = new WalletConnect({
+			// 	bridge,
+			// 	qrcodeModal: QRCodeModal,
+			// })
+			// if (!connector.connected) {
+			// 	// create new session
+			// 	await connector.createSession()
+			// } else {
+			// 	this.walletAddr = connector._accounts[0]
+			// 	this.fieldset.walletInfo.walletAddress.value = connector._accounts[0]
+			// 	this.fieldset.walletInfo.walletAddress.checked = true
+			// 	// connector.killSession()
+			// }
+
+			// connector.on('connect', (error, payload) => {
+			// 	console.log(payload, error)
+			// 	const { accounts } = JSON.parse(
+			// 		JSON.stringify(payload.params[0])
+			// 	)
+			// 	if (accounts) {
+			// 		this.walletAddr = accounts
+			// 		this.fieldset.walletInfo.walletAddress.value = accounts
+			// 		this.fieldset.walletInfo.walletAddress.checked = true
+			// 		this.selectedWallet = '3';
+			// 		return
+			// 	} else if (error) {
+			// 		this.mxShowAlert({
+			// 			msg:
+			// 				this.$t('signup.register.error-on-wallet-url') +
+			// 				'\n' +
+			// 				this.$t('popup.metamask-request-error') +
+			// 				'\n'
+			// 		})
+			// 		throw error
+			// 	}
+			// })
+		},
+
+		sinUpWithMetamask() {
+			const provider = checkProviderWallet(METAMASK);
+			wAPI.checkMetamask().then((rv) => {
+			if(rv === 'NO-METAMASK') {
+				window.open('https://metamask.io/download/', '_blank');
+			}
+			else	if (rv != 'NONE') {
+					wAPI.Request_Account((resp) => {
+						console.log(
+							'[Signup.Register] onBtnClick() -> Request_Account : resp',
+							resp
+						)
+						if (resp.res_code == 200) {
+							var account = _U.getIfDefined(resp, [
+								'data',
+								'account',
+							])
+							if (account) {
+								this.walletAddr = account
+								this.fieldset.walletInfo.walletAddress.value = account
+								this.fieldset.walletInfo.walletAddress.checked = true
+								this.selectedWallet = '1';
+								return
+							}
+						}
+						console.log('Error on get wallet url', resp)
+						this.mxShowAlert({
+							msg:
+								this.$t('signup.register.error-on-wallet-url') +
+								'\n' +
+								this.$t('popup.metamask-request-error') +
+								'\n' +
+								resp.res_code,
+						})
+					})
+				} else {
+					this.mxShowAlert({
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.metamask-chain-not-matched'),
+					})
+				}
+			})
+		},
+
+		sinUpWith(value) {
+			this.mxCloseSelectWalletModal()
+			switch (value) {
+				case 'sinUpWith-Metamask':
+					this.sinUpWithMetamask()
+					break
+				case 'sinUpWith-walletConnect':
+					this.sinUpWithwalletConnect()
+					break
+				case 'sinUpWith-coinbase' :
+					this.sinUpWithCoinbase()
+					break
+				case 'sinUpWith-fortmatic' :
+					this.sinUpWithFortmatic()
+					break
+				case 'sinUpWith-bitski' :
+					this.sinUpWithBitski()
+					break
+			}
+			console.log(value)
+		},
+
 		onBtnClick(fieldName, val) {
-			console.log("==== field name =", fieldName, val);
-			switch(fieldName) {
+			console.log('==== field name =====', fieldName, val)
+			const objSelectWalletPopup = {
+				isShow: true,
+				sinUpWith: (value) => this.sinUpWith(value),
+			}
+			switch (fieldName) {
 				case 'id':
-					this.callCheckId(val);
-					break;
+					this.callCheckId(val)
+					break
 
 				case 'email':
-					this.callEmail(val);
-					break;
+					this.callEmail(val)
+					break
 
 				case 'wallet-address':
-					console.log("==== wAPI==", wAPI);
+					console.log('==== wAPI ====', wAPI)
 
-					wAPI.checkMetamask().then((rv)=>{
-						if(rv!='NONE') {
-							wAPI.Request_Account((resp) => {
-								console.log('[Signup.Register] onBtnClick() -> Request_Account : resp', resp);
-								if(resp.res_code == 200) {
-									var account = _U.getIfDefined(resp,['data','account']);
-									if(account) {
-										this.walletAddr = account;
-										this.fieldset.walletInfo.walletAddress.value = account;
-										this.fieldset.walletInfo.walletAddress.checked=true;
-										return;
-									}
-								}
-								console.log("Error on get wallet url", resp);
-								this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-request-error') + '\n' + resp.res_code});
-							});
-						}else{
-							this.mxShowAlert({msg:this.$t('signup.register.error-on-wallet-url') + '\n' + this.$t('popup.metamask-chain-not-matched')});
-						}
-					});
-
-					break;
+					this.$store.dispatch(
+						'showSelectWalletPopup',
+						objSelectWalletPopup
+					)
+					break
 			}
-
 		},
 		// callAddWalletAddress() {
 		// 	var data = {
@@ -335,64 +491,61 @@ export default {
 		// 			}
 		// 		}
 		// 	});
-		// },
+		// },|
 		callCheckId(val) {
-
-			var data = {'account' : val};
-			console.log("[Signup.Register] callCheckId()-> req ", data);
+			var data = { account: val }
+			console.log('[Signup.Register] callCheckId()-> req ', data)
 
 			_U.callPost({
-				url:gConfig.check_account,
+				url: gConfig.check_account,
 				data: data,
-				callback: (resp) =>{
-					if(_U.getIfDefined(resp,'data')==false) {
-						this.mxShowToast(this.$t('signup.register.id-usable'));
-						this.fieldset.idInfo.id.checked=true;
-						this.fieldset.idInfo.id.errorMsg='';
-					}else{
-						this.mxShowToast(this.$t('signup.register.id-duplicated'));
+				callback: (resp) => {
+					if (_U.getIfDefined(resp, 'data') == false) {
+						this.mxShowToast(this.$t('signup.register.id-usable'))
+						this.fieldset.idInfo.id.checked = true
+						this.fieldset.idInfo.id.errorMsg = ''
+					} else{
+						this.mxShowToast(
+							this.$t('signup.register.id-duplicated')
+						)
 					}
 				}
 			});
 
 		},
 		callTest() {
-
 			// var a = sha256('my message').toString()
 			var data = {
-				page : 0,
-				count : 10,
-				sort : 0,
-				network : "0x02",
-				category_1 : 0,
-				category_2 : 0,
-				filter : '',
+				page: 0,
+				count: 10,
+				sort: 0,
+				network: '0x02',
+				category_1: 0,
+				category_2: 0,
+				filter: '',
 			};
 
 			_U.callPost({
-				url:gConfig.market_url,
+				url: gConfig.market_url,
 				data: data,
-				callback: (resp) =>{
-					console.log("[Signup.Register] Test()-> resp ", resp);
-				}
-			});
-
+				callback: (resp) => {
+					console.log('[Signup.Register] Test()-> resp ', resp)
+				},
+			})
 		},
 
-		toggleOptionList(){
-			this.isActive = !this.isActive;
-        },
+		toggleOptionList() {
+			this.isActive = !this.isActive
+		},
 
-		setValue(code){
-			this.isActive = false; // close
-			this.value = code.value;
+		setValue(code) {
+			this.isActive = false // close
+			this.value = code.value
 			this.title = code.name+' ('+code.mcode+')'
-			console.log("select-click:", code);
-		}
-
-	}
+			console.log('select-click:', code)
+		},
+	},
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -484,5 +637,44 @@ export default {
 		}
 	}
 
+}
+
+@include media-max($media_small) { // 768
+	.Register {
+		.title-box {
+			height: 100%;
+			margin-bottom: gREm(32);
+		}
+		.register-box {
+			.frm_signup {
+				.field-set {
+					flex-direction: column;
+				}
+
+				.wallet-info {
+					margin-top: 0;
+
+					.title,
+					.title-desc {
+						white-space: pre-wrap;
+					}
+
+					.title-desc {
+						font-size: gREm(16);
+						line-height: gREm(24);
+
+						span {
+							color: red;
+						}
+					}
+				}
+			}
+		}
+
+		.button-box {
+			width: 100%;
+			margin-top: gREm(16);
+		}
+	}
 }
 </style>

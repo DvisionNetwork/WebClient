@@ -6,7 +6,7 @@
 					<div class="image">
 						<div class="component">{{getCapitalChar(userInfo.name)}}</div>
 					</div>
-					<div class="edit-profile-btn" @click="onClickEditProfile()">Edit Profile</div>
+					<div class="edit-profile-btn remove-highlight" @click="onClickEditProfile()">Edit Profile</div>
 				</div>
 				<div class="info-box">
 
@@ -18,7 +18,7 @@
 						<div class="user-referral">Referral ID</div>
 						<div class="referral-box">
 							<div id="referral" class="referral">{{userInfo.myreferrer}}</div>
-							<div class="copy-referral-btn"
+							<div class="copy-referral-btn remove-highlight"
 								@click="onClickCopyReferral"
 							>
 								Copy
@@ -253,6 +253,7 @@ export default {
 						width: auto;
 						height: gREm(22);
 						@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
+						overflow-x: auto;
 					}
 					.user-email{
 						width: gREm(45);
@@ -396,6 +397,74 @@ export default {
 
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@include media-max($media_small) {
+	.Profile {
+		.content-box-wrap {
+			.content-box {
+				margin-top: gREm(40);
+				flex-direction: column;
+				align-items: center;
+				width: 100%;
+
+				.info-box {
+					margin-left: 0;
+					padding: 0 gREm(20);
+					width: 100%;
+
+					.user-box {
+						.user-email,
+						.user-referral {
+							margin-top: gREm(24);
+						}
+					}
+
+					.DVI-box {
+						margin-top: gREm(60);
+					}
+
+					.wallet-box-wrap {
+						.wallet-code-box {
+							.code-bg {
+								.code-box {
+									.code {
+										width: 100%;
+										max-width: 100%;
+										overflow-x: auto;
+										padding: gREm(16) gREm(30);
+										@include Set-Font(
+											$AppFont,
+											gREm(16),
+											gREm(24),
+											rgba(255, 255, 255, 0.4),
+											200
+										);
+										height: 100%;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				.profile-image-box {
+					.edit-profile-btn {
+						@include Set-Font(
+							$AppFont,
+							gREm(14),
+							gREm(22),
+							#ffffff,
+							200
+						);
+						width: 100%;
+						padding: gREm(20) 0;
+						opacity: 0.7;
 					}
 				}
 			}

@@ -7,10 +7,18 @@ export default createStore({
 		showLoading: false,
 		showGameStartLoading: false,
 		showLoginPopup: false,
+		showSelectWalletPopup: {},
 		showEventPopup: false,
 		showAddWallet: false,
 		showChangePasswordPopup: false,
 		showEditProfile: false,
+		showStakingModal:{},
+		showSuccessModal:{},
+		showConfirmModal:{},
+		showInfoModal: {},
+		showRewardTable: {},
+		showMyReward: {},
+		dataClickedInfoModal: null,
 		countryCodeNo: '82',
 		userInfo: {
 			"id": "",
@@ -67,6 +75,9 @@ export default createStore({
 		SHOW_LOGIN_POPUP(state, value) {
 			state.showLoginPopup = value;
 		},
+		SHOW_SELECT_WALLET_POPUP(state, value) {
+			state.showSelectWalletPopup = value;
+		},
 		SHOW_EVENT_POPUP(state, value) {
 			state.showEventPopup = value;
 		},
@@ -79,11 +90,30 @@ export default createStore({
 		SHOW_EDIT_PROFILE(state, value) {
 			state.showEditProfile = value;
 		},
-
+		SHOW_STAKING_MODAL(state, value) {
+			state.showStakingModal = value;
+		},
+		SHOW_SUCCESS_MODAL(state, value) {
+			state.showSuccessModal = value;
+		},
+		SHOW_CONFIRM_MODAL(state, value) {
+			state.showConfirmModal = value;
+		},
+		SHOW_INFO_MODAL(state, value) {
+			state.showInfoModal = value;
+		},
+		SHOW_REWARD_TABLE(state, value) {
+			state.showRewardTable = value;
+		},
+		CLICK_INFO_MODAL(state, value) {
+			state.dataClickedInfoModal = value;
+		},
 		SET_USER_INFO(state, value) {
 			state.userInfo = value;
 		},
-
+		SHOW_MY_REWARD(state, value) {
+			state.showMyReward = value;
+		},
 		SET_COUNTRY_CODE_NO(state, value) {
 			state.countryCodeNo = value;
 		},
@@ -189,6 +219,10 @@ export default createStore({
 			// console.log("[STORE.actions] showLoginPopup(), ", value);
 			context.commit('SHOW_LOGIN_POPUP',value);
 		},
+		showSelectWalletPopup(context, value) {
+			// console.log("[STORE.actions] showSelectWalletPopup(), ", value);
+			context.commit('SHOW_SELECT_WALLET_POPUP', value)
+		},
 		showEventPopup(context, value) {
 			// console.log("[STORE.actions] showEventPopup(), ", value);
 			context.commit('SHOW_EVENT_POPUP',value);
@@ -208,10 +242,33 @@ export default createStore({
 			// console.log("[STORE.actions] showEditProfile(), ", value);
 			context.commit('SHOW_EDIT_PROFILE',value);
 		},
-
+		showStakingModal(context, value) {
+			// console.log("[STORE.actions] showStakingModal(), ", value);
+			context.commit('SHOW_STAKING_MODAL',value);
+		},
+		showSuccessModal(context, value) {
+			// console.log("[STORE.actions] showSuccessModal(), ", value);
+			context.commit('SHOW_SUCCESS_MODAL',value);
+		},
+		showConfirmModal(context, value) {
+			// console.log("[STORE.actions] showConfirmModal(), ", value);
+			context.commit('SHOW_CONFIRM_MODAL',value);
+		},
+		showInforModal(context, value) {
+			context.commit('SHOW_INFO_MODAL', value);
+		},
+		showRewardTable(context, value) {
+			context.commit('SHOW_REWARD_TABLE', value);
+		},
+		clickInfoModal(context, value) {
+			context.commit('CLICK_INFO_MODAL', value);
+		},
 		setUserInfo(context, value) {
 			// console.log("[STORE.actions] setUserInfo(), ", value);
 			context.commit('SET_USER_INFO',value);
+		},
+		showMyRewardModal(context, value) {
+			context.commit('SHOW_MY_REWARD', value)
 		},
 		setCountryCodeNo(context, value) {
 			// console.log("[STORE.actions] setCountryCodeNo(), ", value);

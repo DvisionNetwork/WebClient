@@ -1,18 +1,18 @@
 <template>
 
 	<div class="side-menu">
-		<SimpleSideMenu :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
+		<SimpleSideMenu v-if="!isMobile" :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
 	</div>
 	<div class="contents">
 		<div class="content-menu-box">
 			<div class="search-box">
-				<div class="icon"></div>
-				<input class="text-input"
+				<div id="iconSearch" class="icon" @click="handleClickOnMobile"></div>
+				<input id="searchInput" class="text-input"
 					placeholder="Search..."
 					@input="onSearchBoxChange($event)"
 				>
 			</div>
-			<div class="right-menu-box">
+			<div class="right-menu-box remove-highlight">
 
 				<div v-if="tab_page=='land-list'" class="switch-box">
 					<div class="switch-label">For Sale</div>
@@ -84,7 +84,7 @@
 						<div class="icon"></div>
 					</div>
 					<div class="page"
-						v-for="(page,idx) in pages"
+						v-for="(page) in pages"
 						:key="page"
 						:active="(currentPage == page ? 'on' : 'off')"
 						@click="onClickPage(page)"
@@ -129,6 +129,7 @@ export default {
 			type: String,
 			default: 'land-map',
 		},
+		isMobile: Boolean,
 	},
 
 	// beforeRouteEnter (to, from, next) {
@@ -290,6 +291,10 @@ export default {
 		landItems(newVal, oldVal) {
 			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
 			this.setPages();
+		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu(this.$store.state.dataClickedInfoModal);
+			this.mxCloseInfoModal();
 		},
 	},
 	methods : {
@@ -588,7 +593,16 @@ export default {
 				}
 			},1000)
 		},
-
+		handleClickOnMobile(event) {
+			if (this.isMobile) {
+				const searchBox = event.target.offsetParent;
+				const contentMenuBox = searchBox.offsetParent;
+				searchBox.style.width = '100%';
+				searchBox.children[0].style.width = '22px';
+				searchBox.children[1].style.display = 'block';
+				contentMenuBox.style.flexDirection = 'column';
+			}
+		},
 	}
 }
 </script>
@@ -905,5 +919,105 @@ export default {
 @include media-max($media_medium) { // 1024
 .contents  {
 }}
+
+@include media-max($media_small) { // 768
+	.land-box {
+		.contents {
+			padding-left: 0;
+
+			.content-menu-box {
+				width: 100%;
+				height: 100%;
+				align-items: flex-start;
+
+				.search-box {
+					width: auto;
+					margin-bottom: gREm(16);
+
+					.icon {
+						width: gREm(20);
+						height: gREm(20);
+					}
+					.text-input {
+						display: none;
+					}
+				}
+
+				.search-box,
+				.switch-box,
+				.order-by-box {
+					padding: 0 gREm(16);
+					border-right: 1px solid #2E2C3E;
+				}
+
+				.right-menu-box {
+					width: 100%;
+					flex-wrap: wrap;
+
+					.switch-box,
+					.order-by-box {
+						height: 100%;
+						margin-bottom: gREm(16);
+					}
+
+					.content-type-box {
+						margin-bottom: gREm(16);
+					}
+
+					.order-popup-box-wrap {
+						left: unset;
+					}
+
+					.switch-box {
+						width: auto;
+					}
+				}
+			}
+
+			.canvas-box {
+				width: 100%;
+				height: 50vh;
+				margin-bottom: 0;
+				border: 2px solid #77777E;
+				border-radius: gREm(8);
+
+				#cv-land {
+					border-radius: gREm(8);
+				}
+			}
+
+			.item-box {
+				width: 100%;
+				margin: 0 0 gREm(15) 0;
+
+				.items {
+					justify-content: center;
+
+					.item-card {
+						width: 100%;
+						margin: 1.125rem 0;
+					}
+				}
+
+				.page-box {
+					margin-top: gREm(40);
+					padding: 0;
+
+					.page-wrap {
+						width: 100%;
+						.page {
+							font-size: gREm(16);
+							line-height: gREm(24);
+
+							&[active="on"] {
+								padding: gREm(10) gREm(19);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 </style>

@@ -27,12 +27,15 @@
 			"forgot": "Forgot",
 			"btn-login": "LOGIN",
 			"btn-connect": "Connect Metamask",
-			"not-a-member": "Not a member?",
-			"sign-up": "Sign up"
+			"not-a-member": "Don’t have an account?",
+			"sign-up": "Sign up",
+			"already-have-account": "You already have an account?",
+			"login": "Login"
 		}
 	},
 	"popup": {
 		"metamask-chain-not-matched": "Dvision supports ETH/BSC/POL now.\nCheck metamask is on ETH/BSC/POL mainnet",
+		"coinbase-chain-not-matched": "Dvision supports ETH/BSC/POL now.\nCheck coinbase is on ETH/BSC/POL mainnet",
 		"metamask-request-error": "Error on request metamask account. Error Code : ",
 		"login-required" : "You need to login to use this service.",
 		"wallet-list-not-found": "The registered wallet list wasn’t found",
@@ -117,7 +120,7 @@
 			"error-mobile-number": "Does not meet phone number requirements or need to phone number verification.",
 			"error-on-wallet-url": "Failed to import the wallet address",
 			"icon-id-popup":"only lowercase letters, numbers, <br>or special symbols allowed",
-			"icon-pwd-popup":"Passwords must be 6 to 26 characters and <br>include english letters, numbers, and <br>special characters&#40;&#36;&#64;&#33;&#37;&#42;&#35;&#63;&#38;&#41;."
+			"icon-pwd-popup":"Passwords must be 6 to 26 characters and include lowercase letters, numbers, and special characters&#40;&#36;&#64;&#33;&#37;&#42;&#35;&#63;&#38;&#41;."
 		},
 		"confirm": {
 			"title": "Account has successfully been created!",
@@ -183,21 +186,25 @@
 		"view-more" : "VIEW MORE",
 		"news-title" : "Press release",
 		"main-visual" : {
-			"notice":"<span> This site is optimized for the pc version. <br> Please access the PC version to use all functions.<span>",
+			"notice":"This site is optimized for the pc version. <br> Please access the PC version to use all functions.",
 			"title":"<span> Welcome to <br> Dvision Network<span>",
-			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>"
+			"desc": "<span>Create, Trade and Play in the blockchain based <br> NFT metaverse owned by players.</span>",
+			"desc-mobile": "<span>Create, Trade and Play in the blockchain <br> based NFT metaverse owned by players.</span>"
 		},
 		"meta-space" : {
 			"title":"Meta-Space",
-			"desc": "Acquire your own virtual space inside of the Dvision World. <br>All of your wildest dreams and boldest imaginations can <br>be realized in your tailored virtual space."
+			"desc": "Acquire your own virtual space inside of the Dvision World. <br>All of your wildest dreams and boldest imaginations can <br>be realized in your tailored virtual space.",
+			"desc-mobile": "Acquire your own virtual space inside of the Dvision World. All of your wildest dreams and boldest imaginations can be realized in your tailored virtual space."
 		},
 		"meta-city" : {
 			"title":"Meta-City",
-			"desc": "Meta-City is the wider collection of multiple Meta-Spaces. <br>Various pieces of content are provided inside of the Meta- <br>City. In the Dvision World, Meta-City can be owned by <br>anyone who purchases the NFT Land."
+			"desc": "Meta-City is the wider collection of multiple Meta-Spaces. <br>Various pieces of content are provided inside of the Meta- <br>City. In the Dvision World, Meta-City can be owned by <br>anyone who purchases the NFT Land.",
+			"desc-mobile": "Meta-City is the wider collection of multiple Meta-Spaces. Various pieces of content are provided inside of the Meta-City. In the Dvision World, Meta-City can be owned by anyone who purchases the NFT Land."
 		},
 		"nft-market" : {
 			"title":"NFT Market",
-			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World."
+			"desc": "NFT Market is the primary place, where you can trade NFT <br>items inside of the Dvision World. <br>Create and sell your own designed items, that are <br>protected by the ERC-721 or ERC-1155 standards, inside of <br>the Dvision World.",
+			"desc-mobile": "NFT Market is the primary place, where you can trade NFT items inside of the Dvision World. Create and sell your own designed items, that are protected by the ERC-721 or ERC-1155 standards, inside of the Dvision World."
 		}
 	},
 	"mypage": {
@@ -211,6 +218,7 @@
 	"market": {
 		"title": "Dvision Marketplace",
 		"title-desc": "Search and purchase NFT ITEMS from Dvision World creators <br> with your DVIs and incorporate them into your SPACE.",
+		"title-desc-mobile": "Search and purchase NFT ITEMS from Dvision World creators with your DVIs and incorporate them into your SPACE.",
 		"search": {
 			"content":"Not found for this search.",
 			"sale": {

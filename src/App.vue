@@ -1,8 +1,14 @@
 <template>
+	<SelectWalletModal
+		appear
+		v-if="isShowSelectWalletPopup.isShow"
+		:data="isShowSelectWalletPopup"
+	/>
 
 	<Login
 		appear
 		v-if="isShowLoginPopup"
+		:setProviderWalletCon="setProviderWalletCon"
 	/>
 
 	<Event
@@ -24,7 +30,41 @@
 		appear
 		v-if="isShowEditProfile"
 	/>
+		<PopupShowStakingModal
+		appear
+		v-if="isShowStakingModal.isShowModal"
+		:data = isShowStakingModal
+		:onStakingSuccess="isShowStakingModal.onStakingSuccess"
+		:setProviderWalletCon="setProviderWalletCon"
+	/>
+	<PopupSuccessModal
+		appear
+		v-if="isShowSuccessModal.isShow"
+		:data = isShowSuccessModal
+	/>
+		<PopupConfirmModal
+		appear
+		v-if="isShowConfirmModal.isShow"
+		:data = isShowConfirmModal
+	/>
 
+		<PopupInforModal
+		appear
+		v-if="isShowInfoModal.isShow"
+		:data = isShowInfoModal
+	/>
+
+	<PopupRewardTable
+		appear
+		v-if="isShowRewardTable.isShow"
+		:data="isShowRewardTable"
+	></PopupRewardTable>
+
+	<PopupMyReward
+		appear
+		v-if="isShowMyReward.isShow"
+		:data="isShowMyReward"
+	></PopupMyReward>
 
 	<transition	appear name="fade">
 		<div v-if="isShowAlert" class="alert-box">
@@ -51,7 +91,7 @@
 	</transition>
 
 	<transition	appear name="fade">
-		<div v-if="isShowToast" class="toast-box">
+		<div v-if="isShowToast && $store.state.showToast.msg" class="toast-box">
 			<div class="message-box" v-html="$store.state.showToast.msg">
 			</div>
 		</div>
@@ -85,7 +125,15 @@
 	</transition>
 
 		<div id="content">
-			<GNB v-if="!checkMobile()"
+			<!-- <GNB v-if="!checkMobile()"
+				appear
+				@change-locale="changeLocale"
+				@click="showLogin"
+				:theme="theme"
+				:userInfo="userInfo"
+				:wallet="wallet"
+			/> -->
+			<GNB
 				appear
 				@change-locale="changeLocale"
 				@click="showLogin"
@@ -120,11 +168,17 @@ var gConfig = AppConfig();
 
 import GNB from './components/GNB.vue'
 import Login from './components/Login.vue'
+import SelectWalletModal from './components/Popup.SelectWalletModal.vue'
 import Event from './components/Event.vue'
 import PopupAddWallet from './components/Popup.AddWallet.vue'
 import PopupChangePassword from './components/Popup.ChangePassword.vue'
 import PopupEditProfile from './components/Popup.EditProfile.vue'
-
+import PopupShowStakingModal from './components/Popup.StakingModal.vue'
+import PopupSuccessModal from './components/Popup.SuccessModal.vue'
+import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
+import PopupInforModal from './components/Popup.Information.vue';
+import PopupRewardTable from './components/Popup.RewardTable.vue';
+import PopupMyReward from './components/Popup.MyReward.vue';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -134,7 +188,7 @@ var CCodes = new CountryCodes();
 import DVILand from '@/data/Market.LandInfo.js'
 
 import vueRecaptcha from 'vue3-recaptcha2';
-
+import { MSG_METAMASK_2 } from '@/features/Messages.js'
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/plugin.md
 class myPlugin extends ScrollbarPlugin {
 	static pluginName = 'myPlugin';
@@ -147,28 +201,48 @@ class myPlugin extends ScrollbarPlugin {
 		};
 	}
 }
-
+const { ethereum } = window;
+import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Web3 from 'web3'
+import { BITSKI, FORTMATIC, renderNetworkName, WALLETCONNECT } from './features/Common'
+import { bitski, fortmaticProvider, walletConnectProvider } from './features/Connectors'
 export default {
 	components: {
 		Scrollbar,
 		GNB,
 		Login,
+		SelectWalletModal,
 		Event,
 		PopupAddWallet,
 		PopupChangePassword,
 		PopupEditProfile,
-		vueRecaptcha
+		PopupShowStakingModal,
+		PopupSuccessModal,
+		PopupConfirmModal,
+		PopupInforModal,
+		vueRecaptcha,
+		PopupRewardTable,
+		PopupMyReward,
+	},
+	data() {
+		return {
+			providerWalletCon: 'providerWalletCon',
+		}
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
-
+		this.setCurrentNetwork()
+		if (ethereum) {
+			ethereum.on('chainChanged', this.handleChainChanged)
+		}
 		if(!Scrollbar.has(_U.Q('#content'))) {
-			Scrollbar.use(myPlugin);
-			this.scrollbar = Scrollbar.init(_U.Q('#content'));
-			this.scrollbar.track.xAxis.element.remove();
-			window['gMainScrollbar'] = this.scrollbar;
+			// Scrollbar.use(myPlugin);
+			// this.scrollbar = Scrollbar.init(_U.Q('#content'));
+			// this.scrollbar.track.xAxis.element.remove();
+			// window['gMainScrollbar'] = this.scrollbar;
 		}
 
 		if (window.orientation !== undefined) {
@@ -271,7 +345,12 @@ export default {
 		if(this.$route.params.routerReplace == 'true') { // MapLand.vue : onClick_Map() ->Market-Detail-Index
 			return;
 		}
-		this.scrollTop();
+		// this.scrollTop();
+	},
+	onUnmounted() {
+		if (ethereum) {
+			ethereum.removeListener('chainChanged', this.handleChainChanged)
+		}
 	},
 	computed: {
 		isShowAlert() {
@@ -289,6 +368,9 @@ export default {
 		isShowLoginPopup() {
 			return this.$store.state.showLoginPopup;
 		},
+		isShowSelectWalletPopup() {
+			return this.$store.state.showSelectWalletPopup;
+		},
 		isShowEventPopup() {
 			return this.$store.state.showEventPopup;
 		},
@@ -301,7 +383,24 @@ export default {
 		isShowEditProfile() {
 			return this.$store.state.showEditProfile;
 		},
-
+		isShowStakingModal() {
+			return this.$store.state.showStakingModal;
+		},
+		isShowSuccessModal() {
+			return this.$store.state.showSuccessModal;
+		},
+		isShowConfirmModal() {
+			return this.$store.state.showConfirmModal;
+		},
+		isShowInfoModal() {
+			return this.$store.state.showInfoModal;
+		},
+		isShowRewardTable() {
+			return this.$store.state.showRewardTable
+		},
+		isShowMyReward() {
+			return this.$store.state.showMyReward
+		},
 		theme() {
 			return (
 				this.$route.name == 'Home' ||
@@ -320,6 +419,17 @@ export default {
 		wallet() {
 			return this.$store.state.wallet;
 		},
+		setProviderWalletCon() {
+			const providerWalletCon = new WalletConnectProvider({
+				rpc: {
+					1: "https://mainnet.mycustomnode.com",
+					3: "https://ropsten.mycustomnode.com",
+					97: "https://data-seed-prebsc-2-s2.binance.org:8545/",
+					100: "https://dai.poa.network",
+				},
+			})
+			return providerWalletCon
+		}
 	},
 	watch: {
 		isShowToast(newVal, oldVal) {
@@ -336,7 +446,6 @@ export default {
 			if(	(_U.isDefined(newVal,'id') && !_U.isDefined(oldVal,'id')) ||
 				(_U.isDefined(newVal,'id') && _U.isDefined(oldVal,'id') && newVal.id !== oldVal.id)
 			) {
-				// console.log("[App.vue] watch userInfo() , userInfo ", this.userInfo);
 				this.initWallet();
 			}
 		},
@@ -346,7 +455,7 @@ export default {
 			if( _U.isDefined(newVal,'accounts') && newVal.accounts.length > 0
 				&& _U.getIfDefined(newVal, 'updated') == true
 			) {
-				// console.log("[App.vue] watch wallet() , wallet ", newVal);
+				console.log("[App.vue] watch wallet() , wallet ", newVal);
 				this.getDviBalance();
 				this.getPolygonBalance();
 			}
@@ -358,11 +467,46 @@ export default {
 			scrollbar: null,
 			showRecaptcha: true,
 			isShowBtn: false,
+			connectData: 0
 		}
 	},
 
 	methods: {
-
+			async setCurrentNetwork() {
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (ethereum && (loginBy === METAMASK || loginBy === COINBASE)) {
+				if (!currentNetwork || currentNetwork.length === 0) {
+					let web3 = new Web3(Web3.givenProvider)
+					const chainId = await web3.eth.net.getId()
+					window.localStorage.setItem(
+						'currentNetwork',
+						formatChainId(chainId)
+					)
+				}
+				return
+			}
+			if (!currentNetwork) {
+				window.localStorage.setItem(
+					'currentNetwork',
+					gConfig.wlt.getEthAddr().Network
+				)
+			}
+		},
+		checkNetwork(chainId) {
+			const networkBSC = gConfig.wlt.getBscAddr().Network
+			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
+			const networkETH = gConfig.wlt.getEthAddr().Network
+			window.localStorage.setItem('currentNetwork', chainId)
+			if (
+				chainId !== networkBSC &&
+				chainId !== networkPoygon &&
+				chainId !== networkETH
+			) this.mxShowToast(MSG_METAMASK_2)
+			else {
+				window.location.reload()
+			}
+		},
 		historyBack(e) {
 			// if(e.keyCode == 8) {
 			// 	console.log("===================== history Back...", e.keyCode);
@@ -430,25 +574,29 @@ export default {
 			}
 		},
 		initWallet() {
-			this.mxShowLoading();
-			wAPI.checkMetamask().then((rv)=>{
-				if(rv != 'NONE') {
-					wAPI.Request_Account((resp) => {
-						// console.log('[App.vue] initWallet() -> Request_Account : resp', resp);
-						if(resp.res_code == 200) {
-							// console.log('[App.vue] initWallet() 2 -> Request_Account : resp', resp.data.account);
-							var account = _U.getIfDefined(resp,['data','account']);
-							// this.callWalletAddressList(account);
-						}else{
-							// console.log("Error on get wallet url", resp);
-							this.mxShowToast(_U.getIfDefined(resp,['data','message']));
-						}
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK) {
+				this.mxShowLoading();
+				wAPI.checkMetamask().then((rv)=>{
+					if(rv != 'NONE') {
+						wAPI.Request_Account((resp) => {
+							// console.log('[App.vue] initWallet() -> Request_Account : resp', resp);
+							if(resp.res_code == 200) {
+								// console.log('[App.vue] initWallet() 2 -> Request_Account : resp', resp.data.account);
+								var account = _U.getIfDefined(resp,['data','account']);
+								// this.callWalletAddressList(account);
+							}else{
+								// console.log("Error on get wallet url", resp);
+								this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+							}
+							this.mxCloseLoading();
+						});
+					}else{
+						// this.mxShowToast('MetaMask is not installed!')
 						this.mxCloseLoading();
-					});
-				}else{
-					this.mxCloseLoading();
-				}
-			});
+					}
+				});
+			}
 		},
 		// callWalletAddressList(currWltAddr) { // current wallet address == account of wallet
 
@@ -508,40 +656,74 @@ export default {
 		// 		}
 		// 	});
 		// },
-		getDviBalance() {
-
-			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
-			// console.log("[App.vue] getDivBalance === account,", account);
-
-			if(!account) {
-				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
-				return;
+		async getDviBalance() {
+			const account = _U.getIfDefined(this.$store.state, [
+				'userInfo',
+				'wallet_addr',
+			])
+			if (!account) {
+				return
 			}
-			wAPI.getDviBalance(account, (resp) => {
-				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
+			const provider = this.getProvider();
+			const loginBy = window.localStorage.getItem('loginBy')
 
-				if(resp.res_code == 200) {
-					var balance = _U.getIfDefined(resp,['data','balance']);
-					if(balance != null) {
-						this.mxSetWalletBalance(balance);
-						return;
+			const network = this.getNetwork(loginBy)
+			switch (loginBy) {
+				case WALLETCONNECT:
+					await walletConnectProvider.enable()
+					break
+			}
+
+			wAPI.getDviBalance(account, provider, network, (resp) => {
+				if (resp.res_code == 200) {
+					const balance = _U.getIfDefined(resp,['data','balance']);
+					if (balance != null) {
+						this.mxSetWalletBalance(balance)
+						return
 					}
 				}
 				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
-				this.mxSetWalletBalance(0);
+				this.mxSetWalletBalance(0)
 				// console.log("Error on get balance url", resp)
-			});
-
+			})
+		},
+		getNetwork(loginBy) {
+			const currentNetwork = window.localStorage.getItem('currentNetwork');
+			console.log(window.localStorage.getItem('fortmaticNetwork'));
+			const network =
+				loginBy === METAMASK || loginBy === COINBASE
+					? null
+					: renderNetworkName(
+							currentNetwork ? currentNetwork : window.localStorage.getItem('fortmaticNetwork')
+					  )
+			return network
 		},
 
+		getProvider() {
+			let provider = null
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case FORTMATIC:
+					provider = fortmaticProvider.getProvider()
+					break
+				case WALLETCONNECT:
+					provider = walletConnectProvider
+					break
+				case BITSKI:
+					provider = bitski.getProvider()
+					break
+			}
+			return provider
+		},
 		getPolygonBalance() {
+			const network = this.getNetwork(window.localStorage.getItem('loginBy'));
 			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
 
 			if(!account) {
 				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
 				return;
 			}
-			wAPI.getPolygonBalance(account, (resp) => {
+			wAPI.getPolygonBalance(account, network, (resp) => {
 				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
 
 				if(resp.res_code == 200) {
@@ -612,6 +794,13 @@ export default {
 		},
 		unLoadEvent(e) {
 			this.$cookies.set('userInfo', this.$store.state.userInfo, gConfig.getUserInfoCookieExpireTime());
+		},
+		handleChainChanged(chainId) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK || loginBy === COINBASE) {
+				const chainNetwork = formatChainId(Number(chainId))
+				this.checkNetwork(chainNetwork)
+			}
 		}
 	},
 }
@@ -833,6 +1022,7 @@ body {
     display: block;
     width: 100vw;
     height: 100vh;
+		overflow-y: auto;
 }
 .top-btn{
 	position: fixed;
@@ -843,5 +1033,16 @@ body {
 	// @include FLEX(flex-end,flex-end);
 	@include SetBgImage(url('./assets/img/home/btn-page-up-n.svg'));
 	z-index: $Z-INDEX-GO-TOP-BTN;
+}
+
+@include media-max($media_small) { // 768
+	.toast-box {
+		.message-box {
+			width: 100%;
+			max-width: 90vw;
+			white-space: pre-wrap;
+			padding: gREm(20);
+		}
+	}
 }
 </style>

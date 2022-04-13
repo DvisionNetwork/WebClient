@@ -52,11 +52,11 @@
 				>
 					<input type="hidden" :name="ccode" :value="ccode"/>
 					<div class="cc-custom">
-						<div class="cc-name" >{{ccName}}</div>
+						<div class="cc-name remove-highlight" >{{ccName}}</div>
 						<transition appear name="fade">
 							<ul class="cc-list" v-show="showCCPopup">
 								<div id="cc-list-content">
-									<li  class="cc-item" v-for="code in ccodes"
+									<li  class="cc-item remove-highlight" v-for="code in ccodes"
 										:value="code.value"
 										:key="code.ccode"
 										@click="setCCValue(code)">
@@ -402,6 +402,7 @@ export default {
 								@include FLEX(center, center);
 								text-align: center;
 								@include Set-Font($AppFont, gREm(12), gREm(16), #6c38ef,300);
+								white-space: pre-wrap;
 							}
 						}
 					}
@@ -750,30 +751,88 @@ export default {
 			}
 		}
 	}
-	@include media-max($media_small) { // 768
+@include media-max($media_small) { // 768
 	.field-set[popup-style="signup-register"] {
 		width:100%;
 		height: auto;
+		margin-bottom: gREm(32);
+		overflow-x: auto;
 		.label {
 			// width: gREm(109+50);
 			width: auto;
 			height: gREm(30);
-			@include Set-Font($AppFont, gREm(15), gREm(30), #1d1f2a,300);
+			@include Set-Font($AppFont, gREm(16), gREm(30), #1d1f2a,300);
+		}
+		.icon {
+
+			&[active='on'] {
+				.icon-popup-box {
+					.content-wrap {
+						width: 50vw;
+						height: auto;
+						.content {
+							white-space: pre-wrap;
+							padding: gREm(10) gREm(20);
+							line-height: gREm(20);
+							text-align: left;
+						}
+					}
+				}
+			}
 		}
 		.field-box-wrap {
-			width: gREm(300);
-			height: gREm(30 + 11 + 2);
+			width: 100%;
+			height: auto;
+			gap: gREm(12);
 			.field-box {
-				@include FLEX(space-between, center);
-				width: gREm(300);
+				// @include FLEX(space-between, center);
+				width: 100%;
 				height: gREm(30);
-				padding-left: gREm(20);
+				padding-left: 0;
+				display: block;
+				height: auto;
 				.field {
-					width: gREm(550);
+					width: 100%;
+					border-bottom: 1px solid #dedede;
+					font-size: gREm(14);
+					padding: gREm(16);
+					height: auto;
+
+					&:focus {
+						border-bottom: 2px solid #6c38ef;
+					}
 				}
 				.field::placeholder {
-					color: transparent;
+					color: #A0A0A0;
 				}
+
+				.field-right {
+					position: static;
+					height: auto;
+					padding: 0;
+					flex-direction: column;
+					align-items: flex-start;
+					margin-top: gREm(12);
+
+					.field-button {
+						margin-left: 0;
+						padding: gREm(12) gREm(30);
+						height: auto;
+						font-size: gREm(16);
+						line-height: gREm(24);
+						margin-top: gREm(12);
+					}
+
+					.field-error {
+						width: 100%;
+					}
+				}
+			}
+
+			.h-bar {
+				position: absolute;
+				top: 50%;
+				display: none;
 			}
 		}
 	}
@@ -821,6 +880,160 @@ export default {
 				}
 			}
 		}
-	}}
+	}
+	.field-set[popup-style="popup-edit-profile"] {
+		flex-direction: column;
+		height: auto;
+		margin-bottom: gREm(16);
+
+		.label-box {
+			margin-bottom: gREm(8);
+		}
+
+		.field-box-wrap {
+			width: 100%;
+			height: auto;
+
+			.field-box {
+				padding-left: 0;
+				width: 100%;
+				height: auto;
+				// flex-direction: column;
+
+				.field {
+					width: 100%;
+					margin-left: 0;
+					flex: 1;
+				}
+
+				.field-right {
+					padding-left: 0;
+					padding-right: 0;
+					// position: static;
+					// width: 100%;
+					// justify-content: flex-start;
+
+					.field-error {
+						width: auto;
+						left: unset;
+					}
+				}
+
+				.cc-wrapper {
+					width: 100%;
+					flex: 1;
+					position: static;
+					display: block;
+
+					.cc-custom {
+						.cc-name {
+							padding-left: 0;
+							width: 100%;
+							height: auto;
+						}
+					}
+
+				}
+			}
+		}
+
+		&:first-child {
+			flex-direction: row;
+
+			.field-box-wrap {
+
+				.field {
+					color: #17141a;
+					font-size: gREm(14);
+					text-align: left;	
+					height: auto;
+				}
+			}
+		}
+
+		&:nth-child(2) {
+			.field-box-wrap {
+
+			.field-box {
+				flex-direction: column;
+				
+				.field {
+					border-bottom: 1px solid #dedede;
+				}
+
+				.field-right {
+					padding-left: 0;
+					position: static;
+					width: 100%;
+					justify-content: flex-start;
+
+					.field-button {
+						margin-left: 0;
+						margin-top: gREm(8);
+					}
+				}
+
+				.cc-wrapper {
+					width: 100%;
+					flex: 1;
+					position: static;
+					display: block;
+
+					.cc-custom {
+						.cc-name {
+							padding-left: 0;
+							width: 100%;
+						}
+					}
+
+				}
+			}
+
+			.h-bar {
+				display: none;
+			}
+		}
+		}
+	}
+
+	.field-set[popup-style="popup-changepwd"] {
+		flex-direction: column;
+		height: auto;
+		margin-bottom: gREm(16);
+
+		.label-box {
+			width: 100%;
+			margin-bottom: gREm(8);
+
+			.icon {
+
+			&[active='on'] {
+				.icon-popup-box {
+					.content-wrap {
+						width: 50vw;
+						height: auto;
+						.content {
+							white-space: pre-wrap;
+							padding: gREm(10) gREm(20);
+							line-height: gREm(20);
+							text-align: left;
+						}
+					}
+				}
+			}
+		}
+		}
+
+		.field-box-wrap {
+			width: 100%;
+
+			.field-box {
+				width: 100%;
+				padding-left: 0;
+			}
+		}
+	}
+	}
+
 
 </style>

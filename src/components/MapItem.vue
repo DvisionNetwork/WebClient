@@ -306,4 +306,53 @@ export default {
 		}
 	}
 }
+
+@include media-max($media_small) {
+	.item-card {
+		height: auto;
+
+		.cv-land {
+			height: auto;
+			min-height: gREm(280);
+		}
+
+		.desc-box {
+			margin-top: gREm(21);
+			height: auto;
+	
+			.desc-name {
+				height: auto;
+				line-height: gREm(24);
+				padding: 0;
+			}
+		}
+		.map-block-info-box {
+			margin-top: gREm(15);
+			margin-bottom: gREm(28);
+			height: auto;
+
+			.pos-box {
+				height: auto;
+				padding: gREm(4) gREm(10);
+
+				.pos {
+					font-size: gREm(16);
+					margin: 0;
+					margin-left: gREm(6);
+					line-height: gREm(24);
+					height: auto;
+				}
+
+				.icon {
+					margin-top: 0;
+				}
+			}
+
+			.pos-size {
+				font-size: gREm(14);
+				line-height: gREm(22);
+			}
+		}
+	}
+}
 </style>

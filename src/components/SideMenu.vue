@@ -8,7 +8,7 @@
 		:is-all="menu_1.name=='all-assets' ? 'true': 'false'"
 		:all-asset-selected="isAllAssetSelected"
 	>
-		<div class="menu-1" menu-level="1" :index="(idx_1)"
+		<div class="menu-1 remove-highlight" menu-level="1" :index="(idx_1)"
 			@click="onMenuClick(idx_1)"
 			:menu-type="getType(menu_1)"
 		>
@@ -22,7 +22,7 @@
 			:menu-name="menu_2.name"
 			:is-selected="getSelected(idx_1, idx_2) ? 'on': 'off'"
 		>
-			<div class="menu-2" menu-level="2" :index="(idx_2)"
+			<div class="menu-2 remove-highlight" menu-level="2" :index="(idx_2)"
 				@click="onMenuClick(idx_1, idx_2)"
 				:menu-type="getType(menu_2)"
 			>
@@ -59,6 +59,7 @@ export default {
 	name: 'SideMenu',
 	props: {
 		sideMenu: Object,
+		isMobile: Boolean,
 	},
 	data() {
 		return {
@@ -78,8 +79,7 @@ export default {
 			return true;
 		}
 	},
-	mounted() {
-	},
+	mounted() {},
 	methods: {
 		isActive(o) {
 			if(_U.getIfDefined(o,'active')==true) return true;
@@ -506,4 +506,74 @@ export default {
 // 		}
 // 	}
 // }
+
+@include media-max($media_small) {
+	// 768
+	.sub-menu-1 {
+		.menu-1 {
+			height: auto;
+			.title {
+				font-size: gREm(16);
+				font-weight: 700;
+				padding: 0;
+			}
+
+			&:hover {
+				background-color: unset;
+				.title {
+					color: #ffd041;
+				}
+			}
+		}
+
+		.sub-menu-2 {
+			.menu-2 {
+				padding: 0;
+				.title {
+					font-size: gREm(16);
+					font-weight: 700;
+				}
+				&:hover {
+					background-color: unset;
+					.title {
+						color: #ffd041;
+					}
+				}
+			}
+
+			.sub-menu-3 {
+				padding-left: 0;
+				.menu-3 {
+					padding-left: 0;
+				}
+			}
+			&:after {
+				background-color: #ffffff;
+				opacity: 0.2;
+				margin: gREm(24) 0;
+			}
+
+			&[is-selected="on"] {
+				.menu-2 {
+					background-color: unset;
+					.title {
+						color: #ffd041;
+					}
+				}
+			}
+		}
+
+		&[active='on'][menu-name='all-assets'][all-asset-selected='on'] {
+			.menu-1 {
+				background-color: unset;
+			}
+		}
+
+		&:after {
+			background-color: #ffffff;
+			opacity: 0.2;
+			margin: gREm(24) 0;
+		}
+	}
+}
 </style>

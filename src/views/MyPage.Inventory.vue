@@ -2,7 +2,11 @@
 	<div class="Inventory">
 		<div class="content-box">
 			<div class="side-menu">
-				<SideMenu :sideMenu="assetMenu"  @selection-changed="onChangeSideMenu"/>
+				<SideMenu
+					v-if="!isMobile"
+					:sideMenu="assetMenu"
+					@selection-changed="onChangeSideMenu"
+				/>
 			</div>
 			<div class="contents">
 				<div class="item-box">
@@ -44,6 +48,11 @@
 				</div>
 			</div>
 		</div>
+		<div class="filter" v-if="isMobile">
+			<div class="img-wrapper">
+				<img src="../assets/img/Filter.svg" alt="filter" @click="openInfoModal">
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -77,6 +86,7 @@ export default {
 			this.setMyItemQuery(1);
 			this.callMyItems(this.myItemQuery);
 		}
+		this.isMobile = this.checkMobile();
 	},
 	beforeUpdate () {
 		console.log("[Inventory.vue] beforeUpdate(), route : ", this.$route);
@@ -106,6 +116,7 @@ export default {
 			category_1: 0,
 			category_2: 0,
 			filters: '',
+			isMobile: false,
 		}
 	},
 	computed: {
@@ -124,7 +135,11 @@ export default {
 		},
 		myItemQuery(newVal, oldVal) {
 			this.callMyItems(newVal);
-		}
+		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu();
+			this.mxCloseInfoModal();
+		},
 	},
 	methods : {
 
@@ -320,7 +335,19 @@ export default {
 					this.mxCloseLoading();
 				}
 			});
-		}
+		},
+		checkMobile() {
+			return window.matchMedia('(max-width: 768px)').matches;
+		},
+		openInfoModal() {
+			const obj = {
+				title: 'Filter',
+				component: SideMenu,
+				dataComponent: this.assetMenu,
+				isShow: true,
+			}
+			this.mxShowInfoModal(obj);
+		},
 	}
 }
 
@@ -527,4 +554,24 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) { // 768
+	.Inventory {
+		.filter {
+			width: 100%;
+			height: gREm(80);
+	
+			.img-wrapper {
+				position: absolute;
+				z-index: 11;
+				background: #2A2932;
+				border-radius: 50%;
+				right: gREm(20);
+				padding: gREm(22);
+				bottom: -100%;
+				box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.28);
+			}
+		}
+	}
+}
 </style>

@@ -1,22 +1,119 @@
 <template>
-	<div class="GNB" :theme="theme ? theme: 'black'" :signed="signed">
+	<div class="GNB" :theme="theme ? theme: 'black'" :signed="signed" :class="isShowNavbar?'shadow':''">
+		<img src="../assets/img/btn-menu-2.svg" v-if="!isShowNavbar" class="button-nav" @click="showNavbar" />
+		<img src="../assets/img/btn-menu-close.svg" v-else class="button-nav" @click="showNavbar" />
 		<div class="gnb-box-bg"></div>
-		<div class="gnb-box">
+		<div class="gnb-box" :class="isShowNavbar ? 'active' : ''">
 			<div class="menu-box">
-				<router-link class="logo" :to="{ params: {lang:'en'}, name:'Home'}"></router-link>
+				<router-link class="logo remove-highlight" :to="{ params: {lang:'en'}, name:'Home'}"></router-link>
 				<div class="menus">
-					<router-link class="menu" :active="(currentPage=='Market' || currentPage=='Market-Detail' || currentPage=='Market-Page' || currentPage=='Market-Detail-Index' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Market'}"> {{$t("gnb.market_place")}} </router-link>
-					<router-link class="menu" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
-					<router-link class="menu" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
-					<router-link class="menu" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
-					<a class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Market' || currentPage=='Market-Detail' || currentPage=='Market-Page' || currentPage=='Market-Detail-Index' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Market'}"> {{$t("gnb.market_place")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Studio' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Studio'}"> {{$t("gnb.studio")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='Guide-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Guide'}"> {{$t("gnb.guide")}} </router-link>
+					<router-link @click="isShowNavbar=false" class="menu remove-highlight" :active="(currentPage=='News-Page' || currentPage=='News-Detail' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'News'}"> {{$t("gnb.news")}} </router-link>
+					<a @click="isShowNavbar=false" class="menu" href="https://dvision-bridge.multibaas.app/" target="_blank">{{$t("gnb.bridge")}}</a>
+					<div v-if="signed=='on'" class="info-network-mobile"
+							@click="showNetwork = !showNetwork"
+						>
+							<div class="network-icon">
+								<span id="network-name">{{ checkedNetwork }}</span>
+							</div>
+							<transition appear name="fade">
+								<div class="network-popup" v-if="showNetwork">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('ETH')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/ethereum.png"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Ethereum"
+											value="Ethereum"
+											:checked="checkedNetwork === 'Ethereum'"
+										/>
+										<label for="etherium">Ethereum</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('BSC')"
+										v-if="loginBy !== 'BITSKI'"
+									>
+										<img
+											class="icon"
+											src="../assets/img/bsc.svg"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="BSC"
+											value="BSC"
+											:checked="checkedNetwork === 'BSC'"
+										/>
+										<label for="bsc">BSC</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('POL')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/polygon.svg"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Polygon"
+											value="Polygon"
+											:checked="checkedNetwork === 'Polygon'"
+										/>
+										<label for="Polygon">Polygon</label>
+									</div>
+								</div>
+							</transition>
+					</div>
 					<!-- <router-link class="menu" :active="(currentPage=='Help' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Help'}"> {{$t("gnb.help")}} </router-link> -->
+					<div :class="isShowNavbar?'menu-btns-mobile':'hidden'">
+						<div class="dvs-nav-item">
+							<div class="dvg-coin">
+								<img src="../assets/img/ic-dvi-market.svg" alt="">
+								{{addComma(wallet.balance)}}
+							</div>
+						</div>
+							<div class="dvs-nav-item" > 
+							<div class="dvs-user" v-if="signed=='on'">
+								<div class="uinfo-icon">
+									<span class="cap-text">{{ getCapitalChar(userInfo.name) }}</span>
+								</div>
+								<div class="user-menu mypage" @click="goMyPage()">{{$t('gnb.mypage')}}</div>
+							</div>
+							<div v-else class="dvs-no-user">
+								<span class="menu text remove-highlight" @click="login">{{ $t("gnb.login")}}</span>
+								<router-link @click="isShowNavbar=false" class="menu text signup remove-highlight" :active="(currentPage=='Signup' || currentPage=='Signup-Page' ? 'on' : 'off')" :to="{ params: {lang:'en'}, name:'Signup'}"> {{$t("gnb.signup")}} </router-link>
+							</div>
+							<button class="btn g-btn" :class="{'no-login-btn': signed != 'on'}" @click="startNow">{{$t("gnb.start_now")}}</button>
+						</div>
+						<div class="dvs-nav-item">
+							<div class="menu text remove-highlight" @click="isShowLangMenu=!isShowLangMenu">
+								<span class="lang-text">{{ $t("gnb.language")}}</span>
+								<transition appear name="fade">
+									<div v-if="isShowLangMenu" class="user-menu-popup-wrap lang">
+											<div class="list-lang">
+												<div @click_xx="$emit('change-locale', { lang: 'en' })">{{$t('gnb.language-en')}}</div>
+											</div>
+									</div>
+								</transition>
+							</div>
+							<div v-if="signed=='on'" class="user-menu logout" @click="logout()">{{$t('gnb.logout')}}</div>
+						</div>
+					</div>
 				</div>
 			</div>
-
 			<div class="menu-btns">
 				<div class="menus">
-
 					<div class="menu text" @mouseover="isShowLangMenu=true" @mouseleave="isShowLangMenu=false">
 						<span class="lang-text">{{ $t("gnb.language")}}</span>
 						<transition appear name="fade">
@@ -48,6 +145,69 @@
 								</div>
 							</transition>
 						</div>
+						<div class="info-network"
+							@click="showNetwork = !showNetwork"
+						>
+							<div class="network-icon">
+								<span id="network-name">{{ checkedNetwork }}</span>
+							</div>
+							<transition appear name="fade">
+								<div class="network-popup" v-if="showNetwork">
+									<div
+										class="network-wrapper"
+										@click="onClickItem('ETH')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/ethereum.png"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Ethereum"
+											value="Ethereum"
+											:checked="checkedNetwork === 'Ethereum'"
+										/>
+										<label for="etherium">Ethereum</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('BSC')"
+										v-if="loginBy !== 'BITSKI'"
+									>
+										<img
+											class="icon"
+											src="../assets/img/bsc.svg"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="BSC"
+											value="BSC"
+											:checked="checkedNetwork === 'BSC'"
+										/>
+										<label for="bsc">BSC</label>
+									</div>
+									<div
+										class="network-wrapper"
+										@click="onClickItem('POL')"
+									>
+										<img
+											class="icon"
+											src="../assets/img/polygon.svg"
+											alt="icon"
+										/>
+										<input
+											type="checkbox"
+											id="Polygon"
+											value="Polygon"
+											:checked="checkedNetwork === 'Polygon'"
+										/>
+										<label for="Polygon">Polygon</label>
+									</div>
+								</div>
+							</transition>
+						</div>
 					</template>
 
 					<template v-else>
@@ -75,6 +235,13 @@
 <script>
 
 import AppConfig from '@/App.Config.js'
+import { ETH_RPC_ENDPOINT,
+ 	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
+	WALLETCONNECT, checkProviderWallet,
+	COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
+import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
+import { MSG_METAMASK_2 } from '@/features/Messages.js'
+
 var gConfig = AppConfig();
 
 export default {
@@ -95,10 +262,22 @@ export default {
 			isShowAccountMenu: false,
 			isShowLangMenu: false,
 			supportMobileMenu: false,
+			isShowNavbar: false,
+			showNetwork: false,
+			checkedNetwork: 'Ethereum',
+			chainId: 0,
+			loginBy: null,
 		}
 	},
 	computed: {
 		signed() {
+			this.checkCurrentNetwork()
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === WALLETCONNECT) {
+				setInterval(() => {
+					this.getInterval()
+				}, 3000);
+			}
 			return this.userInfo.id ? 'on' : 'off';
 		},
 		network() {
@@ -111,21 +290,132 @@ export default {
 	mounted () {
 		// console.log("======== route params", this.$route, this.$route.params);
 		this.currentPage = this.$route.params.id
+		this.handlePopupNetwork()
 	},
 	methods: {
-		logout() {
-			this.$store.dispatch('logout')
+		onClickItem(network) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === COINBASE) {
+				this.mxShowToast('Please change network on extension or mobile app, thank you.')
+				return;
+			}
+			switch (network) {
+				case 'ETH':
+					this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
+					break
+				case 'BSC':
+					this.switchNetwork('0x61', 'BSC', BSC_RPC_ENDPOINT)
+					break
+				case 'POL':
+					this.switchNetwork('0x13881', 'Polygon', MATIC_RPC_ENDPOINT)
+					break
+			}
+		},
+		async switchNetwork(chainId, name, rpc) {
+			const loginBy = window.localStorage.getItem('loginBy')
+			try {
+				if(loginBy === BITSKI) {
+					window.localStorage.setItem('networkRPC', rpc)
+					window.localStorage.setItem('fortmaticNetwork', chainId)
+					window.localStorage.setItem('currentNetwork', chainId)
+					window.location.reload()
+				} else if(loginBy === FORTMATIC) {
+					if(name !== 'Ethereum') {
+					this.mxShowToast('Formatic only supports Ethereum network')
+					}
+				} else if(loginBy === METAMASK || loginBy === COINBASE) {
+					const provider = checkProviderWallet(loginBy);
+					await window.ethereum.request({
+						method: 'wallet_switchEthereumChain',
+						params: [{ chainId: chainId }],
+					})
+					this.checkedNetwork = name
+				}
+				else if(loginBy === WALLETCONNECT) {
+					this.mxShowToast('Please change network on extension or mobile app, thank you')
+				}
+
+			} catch (e) {
+				console.log('e',e)
+				this.mxShowToast(e.message)
+			}
+		},
+		async checkCurrentNetwork() {
+			let currentNetwork = window.localStorage.getItem('currentNetwork')
+			const loginBy = window.localStorage.getItem('loginBy')
+			if(loginBy === FORTMATIC) {
+				currentNetwork = window.localStorage.getItem('fortmaticNetwork')
+			}
+			if(loginBy === WALLETCONNECT) {
+				const walletConnect = window.localStorage.getItem('walletconnect')
+				this.chainId = JSON.parse(walletConnect).chainId
+				currentNetwork = this.chainId.toString()
+			}
+			try {
+				switch (currentNetwork) {
+					case '0x4':
+					case '4':
+						this.checkedNetwork = 'Ethereum'
+						break
+					case '0x61':
+					case '97':
+						this.checkedNetwork = 'BSC'
+						break
+					case '0x13881':
+					case '80001':
+						this.checkedNetwork = 'Polygon'
+						break
+				}
+			} catch (err) {
+				console.log('err', err)
+			}
+		},
+		getInterval() {
+			const walletConnect = window.localStorage.getItem('walletconnect')
+			const chainId = JSON.parse(walletConnect).chainId
+			if(chainId !== this.chainId) {
+				switch (chainId.toString()) {
+					case '0x4':
+					case '4':
+						this.checkedNetwork = 'Ethereum'
+						window.location.reload()
+						break
+					case '0x61':
+					case '97':
+						this.checkedNetwork = 'BSC'
+						window.location.reload()
+						break
+					case '0x13881':
+					case '80001':
+						this.checkedNetwork = 'Polygon'
+						window.location.reload()
+						break
+					default :
+					this.mxShowToast(MSG_METAMASK_2)
+					break
+				}
+			}
+		},
+		checkStyleOverflow() {
+			const content = document.getElementById('content');
+			content.style.overflowY = this.isShowNavbar ? 'hidden' : 'auto';
+		},
+		showNavbar() {
+			this.isShowNavbar = !this.isShowNavbar;
 		},
 		showLanguage() {
+			this.isShowNavbar = false
 			console.log('show Language')
 		},
 		login() {
+			this.isShowNavbar = false
 			this.$store.dispatch('showLoginPopup',true);
 			console.log('show Auth')
 		},
 		startNow() {
 			//this.mxShowToast(this.$t('popup.app-construction-alert'));
 			this.mxGameStart();
+			this.isShowNavbar = false
 		},
 		showMobileMenu() {
 			console.log('showMobileMenu()');
@@ -136,15 +426,60 @@ export default {
 		goMyPage() {
 			this.isShowAccountMenu = false;
 			this.$router.push({name:"MyPage"});
+			this.isShowNavbar = false
 		},
+		
+		// eslint-disable-next-line no-dupe-keys
 		logout() {
-			var userInfo = {};
+			this.clearWallet()
+			window.localStorage.clear();
+			this.mxSetWallet({});
+			this.$router.push({name:"Home"});
+			var userInfo = {}
+			this.isShowNavbar = false
 			this.isShowAccountMenu = false;
 			this.$store.dispatch('setUserInfo',userInfo);
 			this.$cookies.set('userInfo', userInfo, gConfig.getUserInfoCookieExpireTime());
-			this.$router.push({name:"Home"});
+			this.$store.dispatch('logout')
+		
+			setTimeout(() => {
+				window.location.reload()
+			}, 200);
+		},
+		clearWallet() {
+			const loginBy = window.localStorage.getItem('loginBy');
+			switch(loginBy) {
+				case FORTMATIC :
+					fortmaticProvider.user.logout()
+					break
+				case WALLETCONNECT :
+					walletConnectProvider.on("disconnect", (code, reason) => {});
+					// const bridge = BRIDGE_WALLETCONNECT
+					// const connector = new WalletConnect({
+					// 	bridge
+					// })
+					// connector.killSession()
+					break
+				case BITSKI:
+					bitski.signOut()
+					break;
+			}
+		},
+		handlePopupNetwork() {
+			window.onclick = (e) => {
+				if (e.target.id !== 'network-name') {
+					this.showNetwork = false
+				}
+			}
+		},
+	},
+	watch: {
+		isShowNavbar: function () {
+			this.checkStyleOverflow();
+		},
+		signed: function () {
+			this.loginBy = window.localStorage.getItem('loginBy')
 		}
-
 	},
 }
 </script>
@@ -157,7 +492,9 @@ export default {
 .fade-enter-from, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-
+.hidden {
+	display: none;
+}
 .GNB {
 	position: absolute;
 	top:0px; left:0px;
@@ -166,10 +503,12 @@ export default {
 	@include Transition($tsTime);
 	width: 100%;
 	height: gREm(164);
-
+	
 	// @include M-Field('height',gREm(120)) ;
 	z-index: $Z-INDEX-GNB;
-
+	.button-nav{
+		display: none;
+	}
 	.gnb-box-bg {
 		position:absolute;
 		width:100%;
@@ -200,6 +539,10 @@ export default {
 			.menus {
 				@include FLEX(flex-start,center);
 				@include Transition($tsTime);
+
+				.info-network-mobile {
+					display: none;
+				}
 				.menu {
 					@include FLEX(flex-start,center);
 					@include Transition($tsTime);
@@ -292,6 +635,44 @@ export default {
 					// @include OnOverTransition();
 					&:hover {
 						opacity: 1;
+					}
+				}
+			}
+
+			.info-network {
+				margin-left: gREm(16);
+				cursor: pointer;
+
+				.network-icon {
+					font-family: $AppFont;
+				}
+				.network-popup {
+					display: flex;
+					gap: gREm(30);
+					border-radius: gREm(8);
+					margin-top: gREm(16);
+					position: absolute;
+					background-color: #ffffff;
+					padding: gREm(10) gREm(20);
+					right: 0;
+				}
+
+				.network-wrapper {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+
+					.icon {
+						width: gREm(30);
+						height: gREm(30);
+						margin-bottom: gREm(8);
+					}
+
+					label {
+						color: #000000;
+						font-size: gREm(14);
+						line-height: gREm(22);
+						font-family: $AppFont;
 					}
 				}
 			}
@@ -417,6 +798,7 @@ export default {
 			.menu-box .menus .menu {
 				margin-right: gRH(40);
 			}
+
 			.menu-btns {
 				.menus {
 					margin-left: gRH(30);
@@ -518,6 +900,25 @@ export default {
 
 @include media-max($media_small) { // 768px
 	.GNB {
+		transition: none;
+		&.shadow{
+					background: #181721;
+					z-index: 999;
+				box-shadow: -0 5px 5px 0px rgba(64,57,57,0.96);
+				-webkit-box-shadow: -1px 5px 5px 0px rgba(64,57,57,0.96);
+				-moz-box-shadow: -1px 5px 5px 0px rgba(64,57,57,0.96);
+	
+		}
+		height: gREm(124);
+		position: relative;
+		.button-nav{
+			display: block;
+			position: absolute;
+			top: 50%;
+			right: gREm(20);
+			transform: translate(-50%, -50%);
+			z-index: 99;
+		}
 		.gnb-box {
 			margin-bottom: gREm(39);
 			margin-left: gREm(20);
@@ -526,14 +927,172 @@ export default {
 				.logo {
 					width: gREm(126);
 					height: gREm(46);
+
+					&:focus {
+						outline: none !important;
+					}
+				}
+				.menus{
+					display: none;
 				}
 			}
-			.menu-box .menus {
-				opacity: 0;
-				z-index: -1;
-				display: none;
+			&.active {
+				.menu-box .menus {
+					display: block;
+					opacity: 1;
+					z-index: 9;
+					position: fixed;
+					top: 124px;
+					left: 0;
+					bottom: 0;
+					right: 0;
+					width: 100vw;
+					height: auto;
+					background: #181721;
+					padding: 40px 20px;
+					overflow-y: auto;
+					overflow-x: hidden;
+
+					.info-network-mobile {
+						display: block;
+						font-size: gREm(13);
+						font-family: $AppFont;
+						margin-bottom: gREm(32);
+
+						.network-wrapper {
+							margin: gREm(8) 0;
+							display: flex;
+							align-items: center;
+							gap: gREm(8);
+							.icon {
+								width: gREm(20);
+								height: gREm(20);
+							}
+						}
+					}
+					& .menu {
+						text-transform: uppercase;
+						margin-bottom: gREm(32);
+						width: 100%;
+						position: relative;
+						&::after{
+							right: 0;
+							top: 50%;
+							left: unset;
+							transform: translate(-50%, -50%);
+						}
+					}
+					& .menu-btns-mobile{
+						& .dvs-nav-item{
+							position: relative;
+							width: 100%;
+							height: 100%;
+							min-height: gREm(88);
+							display: flex;
+							align-items: center;
+							justify-content: space-between;
+							border-top: 1px solid #2E2C3E;
+							& .dvg-coin{
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								gap: 12px;
+								color: #FFD041;
+								font-family: Montserrat;
+								font-weight: 400;
+								font-size: gREm(16);
+							}
+							& .dvs-user{
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								gap: 12px;
+								& .uinfo-icon {
+									@include FLEX(center, center);
+									width: gREm(34);
+									height: gREm(34);
+									border-radius: 50%;
+									background-color: #ffffff;
+									.cap-text {
+										@include Set-Font($AppFont, gREm(22), gREm(24), #6c38ef, 600);
+									}
+								}
+
+								.mypage {
+									font-family: $AppFont;
+								}
+							}
+							& .dvs-no-user{
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								gap: 12px;
+								& .signup{
+									color: #FFD041;
+									opacity: 1;
+								}
+							}
+							& .g-btn{
+									width: gREm(159);
+									height: gREm(48);
+									border-radius: 0.375rem;
+    							font-family: Montserrat, sans-serif;
+    							font-size: 0.875rem;
+    							font-weight: 500;
+    							line-height: 1.125rem;
+    							font-stretch: normal;
+    							font-style: normal;
+    							letter-spacing: normal;
+    							white-space: nowrap;
+    							color: #ffffff;
+    							text-decoration: none;
+    							text-align: center;
+    							transition: transform 0.5s ease-in-out;
+								}
+
+								.no-login-btn {
+									background: linear-gradient(
+									94.76deg,
+									#62ffb3 0%,
+									#01c9c1 108.93%
+								);
+							}
+								& .menu{
+									text-transform: unset;
+									margin-bottom: unset;
+								}
+								& .user-menu-popup-wrap{
+									background: #ffffff;
+									border-radius: 10px;
+									opacity: 1;
+									position: absolute;
+    							display: flex;
+    							justify-content: center;
+    							flex-direction: column;
+    							align-items: left;
+    							top: 23px;
+    							width: gREm(190);
+									height: auto;
+									padding: 0 10px;
+									& .list-lang{
+										text-align: left;
+										padding: 5px;
+										& div{
+											color: #000000;
+											padding: 5px 0;
+										}
+
+									}
+								}
+
+								.logout {
+									font-family: $AppFont;
+								}
+						}
+					}
+				}
 			}
-			.menu-btns {
+		.menu-btns .menus {
 				display: none;
 				opacity: 0;
 				z-index: -1;

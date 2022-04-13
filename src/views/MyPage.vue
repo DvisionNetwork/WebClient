@@ -5,7 +5,7 @@
 
 		<div class="content-body-wrap">
 
-			<div class="tabs">
+			<div class="tabs remove-highlight">
 				<div class="item"
 					v-for="(item, idx) in mypageList" :key="idx"
 					:selected="page==item.id ? true : false"
@@ -20,6 +20,7 @@
 			<div class="content-box">
 				<Profile v-if="page=='profile'" />
 				<Inventory v-if="page=='inventory'" />
+				<MyPageStaking v-if="page=='staking'" />
 				<Land v-if="page=='land'" />
 			</div>
 		</div>
@@ -33,6 +34,7 @@
 import Profile from '@/views/MyPage.Profile.vue'
 import Inventory from '@/views/MyPage.Inventory.vue'
 import Land from '@/views/MyPage.Land.vue'
+import MyPageStaking from '@/views/MyPage.Staking.vue'
 import FOOT from '@/components/FOOT.vue'
 
 export default {
@@ -41,6 +43,7 @@ export default {
 		Profile,
 		Inventory,
 		Land,
+		MyPageStaking,
 		FOOT
 	},
 	props: {
@@ -70,7 +73,8 @@ export default {
 			mypageList: [
 				{name:'Profile', id:'profile'},
 				{name:'Inventory', id:'inventory'},
-				{name:'Land', id:'land'}
+				{name:'Land', id:'land'},
+				//{name: 'Staking (LAND) ', id:'staking'},
 			],
 			currTabIdx: 'profile',
 		}
@@ -195,4 +199,65 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) {
+	.MyPage {
+		min-height: unset;
+		.content-body-wrap {
+			width: 100%;
+			margin-top: 0;
+
+			.tabs {
+				width: 100%;
+				margin-top: 0;
+				align-items: center;
+				overflow-x: auto;
+				overscroll-behavior: contain;
+				overflow-y: hidden;
+				height: 100%;
+				padding-bottom: gREm(20);
+
+				.item {
+					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
+					display: flex;
+					align-items: center;
+					margin-right: gREm(16);
+					border: 1px solid #777682;
+					border-radius: gREm(8);
+					padding: gREm(25) gREm(30);
+
+					&[selected='true'] {
+						border: 2px solid #f6583e;
+
+						&:after {
+							background: none;
+						}
+					}
+
+					&:first-child {
+						margin-left: gREm(20);
+					}
+
+					&:last-child {
+						margin-right: gREm(20);
+					}
+				}
+
+			}
+			.tab-line {
+				display: none;
+			}
+			.content-box {
+				.Profile {
+					.content-box-wrap {
+						.content-box {
+							margin-top: gREm(40);
+							flex-direction: column;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 </style>

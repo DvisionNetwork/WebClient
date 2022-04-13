@@ -12,11 +12,12 @@
 			<div class="title-desc" v-html="getTitleDesc"></div>
 		</div>
 		<div class="content-body-wrap">
-
-			<div class="tabs">
-				<div class="item"
+			<div class="tabs remove-highlight">
+				<div
+					class="item remove-highlight"
 					v-for="(item, idx) in markets"
-					:selected="currTabIdx==idx ? true : false"
+					:key="idx"
+					:selected="currTabIdx == idx ? true : false"
 					@click="onTabClick(idx)"
 				>
 					{{ item.name }}
@@ -25,26 +26,35 @@
 
 			<div class="tab-line"></div>
 
-			<div v-if="tab_page.indexOf('land')==0" class="land-box">
-				<MarketLand :tab_page="tab_page"/>
+			<div v-if="tab_page.indexOf('land') == 0" class="land-box">
+				<MarketLand :isMobile="isMobile" :tab_page="tab_page" />
 			</div>
+
 			<div v-else class="content-box">
 
 				<div class="side-menu">
-					<SideMenu :sideMenu="assetMenu" @selection-changed="onChangeSideMenu"/>
+					<SideMenu
+						v-if="!isMobile"
+						:sideMenu="assetMenu"
+						@selection-changed="onChangeSideMenu"
+					/>
 				</div>
-
 				<div class="contents">
 					<div class="content-menu-box">
 						<div class="search-box">
-							<div class="icon"></div>
-							<input class="text-input"
+							<div id="iconSearch"
+								@click="handleClickOnMobile"
+								class="icon"
+							></div>
+							<input
+								id="searchInput"
+								class="text-input"
 								placeholder="Search..."
 								@input="onSearchBoxChange($event)"
-							>
+							/>
 						</div>
 
-						<div class="right-menu-box">
+						<div class="right-menu-box remove-highlight">
 
 							<div class="switch-box">
 								<div class="switch-label">For Sale</div>
@@ -83,7 +93,7 @@
 						<div class="items"
 							v-if="marketItems && marketItems.list && marketItems.list.length > 0"
 						>
-							<Product v-for="(item, idx) in marketItems.list"
+							<Product v-for="(item) in marketItems.list"
 								:key="item.id" :product="item"
 								:callFrom="'market'"
 								@click-item="onClickItem"
@@ -101,7 +111,7 @@
 									<div class="icon"></div>
 								</div>
 								<div class="page"
-									v-for="(page,idx) in pages"
+									v-for="(page) in pages"
 									:key="page"
 									:active="(currentPage == page ? 'on' : 'off')"
 									@click="onClickPage(page)"
@@ -118,12 +128,13 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
-
 		</div>
-
-
+		<div class="filter" v-if="isMobile">
+			<div class="img-wrapper">
+				<img src="../assets/img/Filter.svg" alt="filter" @click="openInfoModal">
+			</div>
+		</div>
 	</div>
 
 	<FOOT :theme="'black'"/>
@@ -152,6 +163,7 @@ import Product from '@/components/Product.vue'
 import FOOT from '@/components/FOOT.vue'
 import MarketDetail from '@/views/Market.Detail.vue'
 import MarketLand from '@/views/Market.Land.vue'
+import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 
 export default {
 	name: "Market",
@@ -198,7 +210,7 @@ export default {
 	// },
 
 	beforeMount () {
-		console.log("[Market.vue] && beforeMount(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && beforeMount(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 		var m = this.mxGetMarketItem();
 		if(this.$route.name=='Market-Detail' && !_U.isDefined(m,'id')) {
 			this.$router.replace({name:"Market"});
@@ -206,17 +218,19 @@ export default {
 		}
 	},
 	mounted () {
-		console.log("[Market.vue] && mounted(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && mounted(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 		if(this.$route.name!=='Market-Detail' && this.$route.name!=='Market-Detail-Index') {
 			this.setSearchQuery(1);
 			this.callMarketItems(this.searchQuery);
 		}
+		this.isMobile = this.checkMobile();
+		this.listenToWindowClickEvent();
 	},
 	beforeUpdate () {
-		console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
+		// console.log("[Market.vue] && beforeUpdate(), route : ", 'tab_page:'+this.tab_page, 'itemId:'+this.itemId, 'index:'+this.index, this.$route);
 	},
 	updated() {
-		console.log("[Market.vue] updated(), route : ", this.$route)
+		// console.log("[Market.vue] updated(), route : ", this.$route)
 	},
 	data () {
 		return {
@@ -257,11 +271,12 @@ export default {
 			category_2: 0,
 			filters: '',
 			search: '',
-
+			isMobile: false,
 		}
 	},
 	computed: {
 		mapId() {
+			console.log('this.itemId', this.itemId)
 			return this.itemId;
 		},
 		blockId() {
@@ -278,7 +293,7 @@ export default {
 			}
 			return idx;
 		},
-		getTitleDesc() { return this.$t('market.title-desc'); },
+		getTitleDesc() { return this.$t(`market.title-desc${this.isMobile ? '-mobile': ''}`); },
 		marketItems() {
 			// console.log("[Market] computed, marketItems ", this.mxGetMarketItems());
 			return this.mxGetMarketItems();
@@ -298,11 +313,24 @@ export default {
 		searchQuery(newVal, oldVal) {
 			// console.log("[Market.vue] watch searchQuery ", newVal, oldVal);
 			this.callMarketItems(newVal);
+		},
+		'$store.state.dataClickedInfoModal': function () {
+			this.onChangeSideMenu();
+			this.mxCloseInfoModal();
 		}
 	},
-	methods : {
-
-		onTabClick (idx) {
+	methods: {
+		openInfoModal() {
+			const isLand = this.tab_page.indexOf('land') === 0;
+			const obj = {
+				title: 'Filter',
+				component: isLand ? SimpleSideMenu : SideMenu,
+				dataComponent: isLand ? this.mxGetLandMenu() : this.assetMenu,
+				isShow: true,
+			}
+			this.mxShowInfoModal(obj);
+		},
+		onTabClick(idx) {
 			var curTab = this.tab_page;
 			var newTab = this.markets[idx].id;
 
@@ -313,17 +341,26 @@ export default {
 
 			var network = "0x0";
 
-			if(newTab == 'eth') {
+			console.log('newTab', newTab)
+
+			if(newTab === 'eth') {
 				network = gConfig.wlt.getAddr().Network;
 				this.setSearchQuery(1, network);
-			} else if (newTab = 'bsc') {
+			} else if (newTab === 'bsc') {
+				network = gConfig.wlt.getBscAddr().Network;
+				this.setSearchQuery(1, network);
+			} else if (newTab === 'staking') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
 			}
 
-			if(idx<=1) {
+			if (idx < 3) {
 				this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
 			}
+
+			// if(idx<=1) {
+			// 	this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
+			// }
 
 			return ;
 		},
@@ -568,9 +605,55 @@ export default {
 					this.mxCloseLoading();
 				}
 			});
-		}
+		},
 
-	}
+		checkMobile() {
+			return window.matchMedia('(max-width: 768px)').matches;
+		},
+		setStyleInput({searchBox, contentMenuBox, width, display, direction, iconWidth}) {
+			searchBox.style.width = width;
+			searchBox.children[0].style.width = iconWidth;
+			searchBox.children[1].style.display = display;
+			contentMenuBox.style.flexDirection = direction;
+		},
+		handleClickOnMobile(event) {
+			if (this.isMobile) {
+				const obj = {
+					searchBox: event.target.offsetParent,
+					contentMenuBox: event.target.offsetParent.offsetParent,
+					width: '100%',
+					display: 'block',
+					direction: 'column',
+					iconWidth: '1.375rem',
+				};
+				this.setStyleInput(obj);
+			}
+		},
+		listenToWindowClickEvent() {
+			window.onclick = (e) => {
+					if (
+					e.target.id !== 'iconSearch' &&
+					e.target.id !== 'searchInput'
+				) {
+					const contentMenuBox =
+						document.querySelector('.content-menu-box')
+					if (contentMenuBox) {
+						const searchBox =
+							contentMenuBox.querySelector('.search-box')
+						const obj = {
+							searchBox,
+							contentMenuBox,
+							width: 'auto',
+							display: 'none',
+							direction: 'row',
+							iconWidth: '1.25rem',
+						}
+						this.setStyleInput(obj)
+					}
+				}
+			}
+		},
+	},
 }
 </script>
 
@@ -863,12 +946,12 @@ export default {
 					@include FLEX(center, flex-start);
 					height: gREm(44);
 					width: 100%;
-					margin-top: gREm(100);
-					margin-bottom: gREm(132);
 					.page-wrap {
 						@include FLEX(center, center);
 						height: gREm(44);
 						width: gREm(600);
+						margin-top: gREm(100);
+						margin-bottom: gREm(132);
 						.arrow-left, .arrow-right, .page {
 							@include FLEX(center, center);
 							width: gREm(40);
@@ -926,6 +1009,12 @@ export default {
 		width: 100%;
 		height: auto;
 	}
+	.staking-box{
+	@include FLEX(flex-start, flex-start);
+		margin-top: gREm(77);
+		width: 100%;
+		height: auto;
+	}
 
 }
 
@@ -951,5 +1040,187 @@ export default {
 		}
 	}
 }}
+
+@include media-max($media_small) { // 768
+
+	.Market {
+		.title-box {
+			padding: 0 gREm(20);
+			height: 100%;
+	
+			.title,
+			.title-desc {
+				white-space: pre-line;
+				height: 100%;
+			}
+
+			.title {
+				width: 100%;
+				margin-top: gREm(40);
+
+				&-desc {
+					width: 75%;
+				}
+			}
+		}
+
+		.content-body-wrap {
+			padding: 0 gREm(20);
+			width: 100%;
+
+			.tabs {
+				width: 100%;
+				margin-top: gREm(41);
+				align-items: center;
+				overflow-x: auto;
+				overscroll-behavior: contain;
+				overflow-y: hidden;
+				height: 100%;
+				padding-bottom: gREm(20);
+
+				.item {
+					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
+					display: flex;
+					align-items: center;
+					margin-right: gREm(16);
+					border: 1px solid #777682;
+					border-radius: gREm(8);
+					padding: gREm(25) gREm(30);
+
+					&[selected='true'] {
+						border: 2px solid #f6583e;
+
+						&:after {
+							background: none;
+						}
+					}
+				}
+			}
+
+			.tab-line {
+				display: none;
+			}
+
+			.land-box {
+				width: 100%;
+				flex-direction: column-reverse;
+				margin-top: gREm(16);
+
+				.contents {
+					padding-left: 0;
+
+					.content-menu-box {
+						width: 100%;
+					}
+				}
+			}
+
+			.content-box {
+				width: 100%;
+				flex-direction: column-reverse;
+				margin-top: 1rem;
+
+				.contents {
+					padding-left: 0;
+
+					.content-menu-box {
+						width: 100%;
+						padding-right: 0;
+						height: 100%;
+						align-items: flex-start;
+
+						.search-box,
+						.switch-box,
+						.order-by-box {
+							padding: 0 gREm(16);
+						}
+
+						.search-box,
+						.switch-box{
+							border-right: 1px solid #2E2C3E;
+							margin-bottom: gREm(16);
+						}
+
+						.order-by-box {
+							margin: 0;
+							margin-bottom: gREm(16);
+						}
+
+						.order-popup-box-wrap {
+							left: unset;
+						}
+
+						.switch-box {
+							width: auto;
+							height: 100%;
+						}
+
+						.search-box {
+							width: auto;
+							margin-top: gREm(1);
+							.icon {
+								width: gREm(20);
+								height: gREm(20);
+							}
+							.text-input {
+								display: none;
+							}
+
+							&:hover, &:active {
+								.text-input {
+									display: block;
+								}
+							}
+						}
+
+						.right-menu-box {
+							flex-wrap: wrap;
+							width: 100%;
+
+							.switch-box {
+								.switch-label {
+									line-height: gREm(21);
+								}
+							}
+
+							.order-by-box {
+								width: auto;
+								.order {
+									line-height: gREm(21);
+								}
+							}
+						}
+					}
+
+					.item-box {
+						.items {
+							justify-content: center;
+
+							.product-card {
+								margin-right: 0;
+								width: 100%;
+							}
+						}
+					}
+				}
+			}
+		}
+		.filter {
+			width: 100%;
+			height: gREm(80);
+
+			.img-wrapper {
+				position: absolute;
+				z-index: 11;
+				background: #2A2932;
+				border-radius: 50%;
+				right: gREm(20);
+				padding: gREm(22);
+				bottom: gREm(-30);
+				box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.28);
+			}
+		}
+	}
+}
 
 </style>

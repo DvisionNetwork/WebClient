@@ -6,8 +6,12 @@
 	  npm install --save vue-cryptojs
 	  npm install --save vue3-cookies 
 
+### v.0.8.5
+	- Add wallet integration : coinbase, wallet connect, fortmatic, bitski
+	- Block : coinbase, bitski (for sequential update)
+
 ### v.0.8.4
-	- Add 3rd land sale (Berlin, SaoPaulo)
+	- Add bsc bridge for binance NFT market
 
 ### v.0.8.3
 	- Fix the bug : function for buying lands in BSC

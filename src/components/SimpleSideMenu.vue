@@ -6,7 +6,7 @@
 		:active="getOnOff(idx_1)"
 		:menu-name="menu_1.mapId"
 	>
-		<div class="menu-1" menu-level="1" :index="(idx_1)"
+		<div class="menu-1 remove-highlight" menu-level="1" :index="(idx_1)"
 			@click="onMenuClick(idx_1)"
 		>
 			<div class="title">{{menu_1.name}}</div>
@@ -121,6 +121,35 @@ export default {
 
 .sub-menu-1 * {
 	@include Transition( all .35s ease-in-out);
+}
+
+@include media-max($media_small) {
+	// 768
+	.sub-menu-1 {
+		.menu-1 {
+			height: auto;
+			.title {
+				font-size: gREm(16);
+				font-weight: 700;
+				padding: 0;
+			}
+		}
+
+		&[active='on'] {
+			.menu-1 {
+				background-color: unset;
+				.title {
+					color: #ffd041;
+				}
+			}
+		}
+
+		&:after {
+			background-color: #ffffff;
+			opacity: 0.2;
+			margin: gREm(24) 0;
+		}
+	}
 }
 
 </style>

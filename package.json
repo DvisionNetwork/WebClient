@@ -3,20 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "serve-dev": "vue-cli-service serve --mode dev",
+    "serve": "vue-cli-service serve --mode dev",
     "build": "vue-cli-service build",
     "build-dev": "vue-cli-service build --mode dev",
     "lint": "vue-cli-service lint",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
+    "@walletconnect/client": "^1.7.1",
+    "@walletconnect/qrcode-modal": "^1.7.1",
+    "@walletconnect/web3-provider": "^1.7.3",
+    "ant-design-vue": "^1.7.8",
     "axios": "^0.21.4",
+    "bitski": "^0.11.0",
+    "bitski-provider": "^0.14.0",
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
+    "ethers": "^5.5.4",
+    "fortmatic": "^2.2.1",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "node-sass": "^6.0.1",
-    "python": "^0.0.4",
     "sass-loader": "^10.2.0",
     "velocity-animate": "^1.5.2",
     "vue": "^3.0.0",
@@ -27,7 +35,9 @@
     "vue3-cookies": "^1.0.6",
     "vue3-recaptcha2": "^1.4.0",
     "vue3-touch-events": "^4.1.0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "walletlink": "^2.5.0",
+    "web3": "^1.7.0"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^2.1.0",
