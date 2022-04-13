@@ -899,7 +899,6 @@ export default {
 				this.mxShowAlert({ msg: this.$t('popup.login-required') })
 				return
 			}
-
 			this.redirectWallet(false, false)
 		},
 
@@ -1189,6 +1188,15 @@ export default {
 			var data = this.trade_data
 			if (!data) {
 				return
+			}
+			const myBalance = Number(this.$store.state.wallet.balance)
+			const price = Number(data.price) * data.amount
+			const loginBy = window.localStorage.getItem('loginBy')
+			if(loginBy === BITSKI || loginBy === FORTMATIC) {
+				if(myBalance < price) {
+					this.mxShowToast('Your wallet does not have enough DVI to make this transaction')
+					return
+				}
 			}
 			if (_U.getIfDefined(resp, 'result') == true) {
 				this.mxShowLoading('inf')
