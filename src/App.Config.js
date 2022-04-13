@@ -139,6 +139,43 @@ export default function AppConfig() {
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network : "0x89"
 			},
+
+			/* -----------------  3rd Land Sale [BSC] ----------------- */
+			addr3rdLandBscDev: {
+				// token contract for dev
+				TokenAddress :             "0xFDF82e690058eAFCc2EEbED66Eb2d3327aE93f38",
+				Contract721Address :       "0x77a6891EC937f6442B1Cd30A99C4F386eaf5FFCe",
+				Contract1155Address :      "0x0528943BD50427Db3953d7d715015325fBB616fE",
+				ContractMarketAddress :    "0xC47F78100c3cefAdd8a71EfD440d22299B6538FF",
+				Network : "0x61"
+			},
+			addr3rdLandBscProd: {
+				// token contract for rel
+				TokenAddress :             "0x758fb037a375f17c7e195cc634d77da4f554255b",
+				Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
+				Contract1155Address :      "0xF64E100ecDb3b446ECCb26aBdB6017712fff09dA",
+				ContractMarketAddress :    "0xeeF91f31F00Af45F9EEc2300483BB7Aa23111E36",
+				Network : "0x38"
+			},
+
+			/* -----------------  3rd Land Sale [POL] ----------------- */
+			addr3rdLandPolDev: {
+				// token contract for dev
+				TokenAddress :             "0xdC49590852E37419f49C02C5898C5411c5924675",
+				Contract721Address :       "0x25749eB22DE42cb4B90Da71Bd132e7c353D78053",
+				Contract1155Address :      "0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F",
+				ContractMarketAddress :    "0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d",
+				Network : "0x13881"
+			},
+			addr3rdLandPolProd: {
+				// token contract for rel
+				TokenAddress :             "",
+				Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
+				Contract1155Address :      "",
+				ContractMarketAddress :    "0x0528943BD50427Db3953d7d715015325fBB616fE",
+				Network : "0x89"
+			},
+
 			addrBid: {
 				Network : "opensea"
 			},
@@ -166,6 +203,18 @@ export default function AppConfig() {
 				}
 				return gConfig.wlt.addrPolygonDev;
 			},
+			get3rdLandBscAddr () {
+				if(gConfig.isProd) {
+					return gConfig.wlt.addr3rdLandBscDev;
+				}
+				return gConfig.wlt.addr3rdLandBscProd;
+			},
+			get3rdLandPolAddr () {
+				if(gConfig.isProd) {
+					return gConfig.wlt.addr3rdLandPolDev;
+				}
+				return gConfig.wlt.addr3rdLandPolProd;
+			},
 			getBidAddr () {
 				return gConfig.wlt.addrBid;
 			},
@@ -176,6 +225,10 @@ export default function AppConfig() {
 					return gConfig.wlt.getBscAddr();
 				}else if(network == 'POL') {
 					return gConfig.wlt.getPolygonAddr();
+				}else if(network == 'BSC3') {
+					return gConfig.wlt.get3rdLandBscAddr();
+				}else if(network == 'POL3') {
+					return gConfig.wlt.get3rdLandPolAddr();
 				}else {
 					return '';
 				}

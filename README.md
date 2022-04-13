@@ -9,6 +9,7 @@
 ### v.0.8.5
 	- Add wallet integration : coinbase, wallet connect, fortmatic, bitski
 	- Block : coinbase, bitski (for sequential update)
+	- Mobile compatible UX
 
 ### v.0.8.4
 	- Add bsc bridge for binance NFT market

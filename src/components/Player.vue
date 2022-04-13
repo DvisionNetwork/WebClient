@@ -1,7 +1,7 @@
 <template>
 	<div class="wrapper">
 		<video
-			src="/assets/video/dworld_trailer.mp4"
+			src="@/assets/video/dworld_trailer.mp4"
 			id="player"
 			class="player"
 			autoplay=""
