@@ -65,9 +65,10 @@ import AppConfig from '@/App.Config.js'
 import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
+import BscBridge from '@/features/BscBridge.js'
 
 var gConfig = AppConfig();
-
+var bscBridge = new BscBridge();
 
 export default {
 	name: "Land",
@@ -119,6 +120,11 @@ export default {
 			}
 			this.setSearchQuery(1);
 		}
+		var network = _U.getIfDefined(this.$store.state,['network']);
+
+		if(network == 'BSC') {
+			this.getBinanceNft();
+		}
 		// this.setSearchQuery(this.marketItems.page);
 	},
 	mounted () {
@@ -156,6 +162,9 @@ export default {
 			search: '',
 			searchInputTimer: null,
 			isMobile: false,
+			binanceNftBalance: '0',
+			tokenIdToLock: [],
+			tokenAmounts: [],
 		}
 	},
 	computed: {
@@ -238,6 +247,94 @@ export default {
 		// },
 
 		/// API
+		getBinanceNft() {
+			var user_wallet_addr = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+			bscBridge.getBinanceNftBalance(user_wallet_addr, (resp) => {
+
+				if(resp.res_code == 200) {
+					var balance = _U.getIfDefined(resp,['data','balance']);
+					console.log("get binance NFT balance : ", balance);
+
+					if(balance && balance == '0') {
+						console.log("no items to lock");
+						return;
+					}
+
+					this.binanceNftBalance = balance
+
+					this.mxShowAlert({
+						msg:this.$t('mypage.land.alert-biance-nft') + balance,
+						btn:this.$t('mypage.land.alert-claim-btn'),
+						callback: this.approveBiance
+					});
+				}
+
+				// this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+			});
+		},
+
+		approveBiance() {
+			this.mxShowLoading('inf');
+			
+			bscBridge.setApproveAll((resp) => {
+
+				if(resp.res_code == 200) {
+					this.getBinanceTokenId();
+				}
+
+				// this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+			});
+		},
+
+		getBinanceTokenId() {
+			var user_wallet_addr = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+
+			this.tokenIdToLock = [];
+			this.tokenAmounts = [];
+
+			for(var i = 0; i < this.binanceNftBalance; i++)
+			{
+				bscBridge.getOwnedNftId(user_wallet_addr, i, (resp) => {
+
+					if(resp.res_code == 200) {
+
+						var id = _U.getIfDefined(resp,['data','id']);
+						console.log("[MyPage.Land] get token id : ", id);
+
+						this.tokenIdToLock.push(id);
+						this.tokenAmounts.push(1);
+
+						var index = _U.getIfDefined(resp,['data','index']);
+						console.log("index : ", index)
+						if(index == this.binanceNftBalance - 1) {
+							this.mxCloseLoading();
+							var timeOut = setTimeout(()=>{
+								this.mxShowLoading('inf');
+
+								this.mxShowAlert({
+									msg:this.$t('mypage.land.alert-binance-lock') + this.tokenIdToLock,
+									btn:this.$t('mypage.land.alert-claim-btn'),
+									callback: this.lockBinanceNftOwned
+								});
+							}, 1000);
+						}
+					}
+				});
+			}
+		},
+
+		lockBinanceNftOwned() {
+			bscBridge.lockBianceNft(this.tokenIdToLock, this.tokenAmounts, (resp) => {
+
+				if(resp.res_code == 200) {
+					console.log("success on lock Binance NFT.");
+					this.mxShowToast(this.$t('mypage.land.alert-lock-success'));
+					this.mxCloseLoading();
+				}
+			});
+		},
+
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
