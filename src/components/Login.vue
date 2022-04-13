@@ -131,8 +131,6 @@
 </template>
 
 <script>
-import WalletConnect from '@walletconnect/client'
-import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig();
 
@@ -141,14 +139,9 @@ import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
 import {
-	BRIDGE_WALLETCONNECT,
-	DEFAULT_ETH_JSONRPC_URL,
-	BSC_CHAIN_ID,
-	FORTMATIC_API_KEY,
 	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
 	MATIC_RPC_ENDPOINT,
-	MATIC_CHAIN_ID,
 	METAMASK,
 	COINBASE,
 	ETH_CHAIN_ID,
