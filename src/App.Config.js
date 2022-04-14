@@ -76,9 +76,9 @@ export default function AppConfig() {
 			}
 			return rv;
 		},
-		FORTMATIC_API_KEY_DEV : 'pk_test_67B7005189579543',
+		FORTMATIC_API_KEY_DEV : 'pk_test_50DF28DCF5BE61B4',
 		FORTMATIC_API_KEY_PRODUCT : 'pk_live_27F4314B088C569C',
-		BITSKI_CLIENT_ID_DEV : 'fa55e01d-4bad-4335-9069-315b2b9e5d17',
+		BITSKI_CLIENT_ID_DEV : 'c6149992-4352-4476-a176-582ddb14bad5',
 		BITSKI_CLIENT_ID_PRODUCT : 'fd70095e-9d43-4c01-92a9-2795bcc3942f',
 		// gConfig.wlt.getAddr();
 		wlt : {
@@ -203,6 +203,18 @@ export default function AppConfig() {
 			},
 			addrBid: {
 				Network : "opensea"
+			},
+			getFortmaticAPIKey() {
+				if(gConfig.isProd) {
+					return gConfig.FORTMATIC_API_KEY_PRODUCT;
+				}
+				return gConfig.FORTMATIC_API_KEY_DEV;
+			},
+			getBitskiClientId() {
+				if(gConfig.isProd) {
+					return gConfig.BITSKI_CLIENT_ID_DEV;
+				}
+				return gConfig.BITSKI_CLIENT_ID_PRODUCT;
 			},
 			getAddr () {
 				if(gConfig.isProd) {
