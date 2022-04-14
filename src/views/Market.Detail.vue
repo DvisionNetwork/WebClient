@@ -1192,8 +1192,9 @@ export default {
 			const myBalance = Number(this.$store.state.wallet.balance)
 			const price = Number(data.price) * data.amount
 			const loginBy = window.localStorage.getItem('loginBy')
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			if(loginBy === BITSKI || loginBy === FORTMATIC) {
-				if(myBalance < price) {
+				if(myBalance < price && currentNetwork === gConfig.wlt.getAddr().Network) {
 					this.mxShowToast('Your wallet does not have enough DVI to make this transaction')
 					return
 				}
