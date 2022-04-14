@@ -651,7 +651,7 @@ export default function walletAPI() {
 										' );'
 								)
 								sendTransactionPromise = await (loginBy ===
-								FORTMATIC
+									FORTMATIC || loginBy === BITSKI
 									? contract.methods
 											.sellItem(
 												marketContract,
