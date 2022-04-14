@@ -76,7 +76,10 @@ export default function AppConfig() {
 			}
 			return rv;
 		},
-
+		FORTMATIC_API_KEY_DEV : 'pk_test_50DF28DCF5BE61B4',
+		FORTMATIC_API_KEY_PRODUCT : 'pk_test_50DF28DCF5BE61B4',
+		BITSKI_CLIENT_ID_DEV : 'c6149992-4352-4476-a176-582ddb14bad5',
+		BITSKI_CLIENT_ID_PRODUCT : 'c6149992-4352-4476-a176-582ddb14bad5',
 		// gConfig.wlt.getAddr();
 		wlt : {
 			/* -----------------  Ethereum Network ----------------- */
@@ -178,6 +181,18 @@ export default function AppConfig() {
 
 			addrBid: {
 				Network : "opensea"
+			},
+			getFortmaticAPIKey() {
+				if(gConfig.isProd) {
+					return gConfig.FORTMATIC_API_KEY_PRODUCT;
+				}
+				return gConfig.FORTMATIC_API_KEY_DEV;
+			},
+			getBitskiClientId() {
+				if(gConfig.isProd) {
+					return gConfig.BITSKI_CLIENT_ID_DEV;
+				}
+				return gConfig.BITSKI_CLIENT_ID_PRODUCT;
 			},
 			getAddr () {
 				if(gConfig.isProd) {

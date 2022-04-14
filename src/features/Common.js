@@ -1,7 +1,6 @@
 import { MSG_METAMASK_3 } from './Messages'
 export const INFURA_ID = '14ff3a7ed1484486aac3e5573bcae20d'
 export const DEFAULT_ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${INFURA_ID}`
-export const BITSKI_CLIENT_ID = 'c6149992-4352-4476-a176-582ddb14bad5'
 
 export function toFixedDecimal(val, decimals = 18) {
 	val = String(val)
@@ -124,7 +123,6 @@ export const BRIDGE_WALLETCONNECT = 'https://bridge.walletconnect.org'
 export const BSC_CHAIN_ID = 97
 export const ETH_CHAIN_ID = 4
 export const MATIC_CHAIN_ID = 80001
-export const FORTMATIC_API_KEY = 'pk_test_50DF28DCF5BE61B4'
 export const VALUE_LOGIN =
 	'7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5'
 export const METAMASK = 'METAMASK'

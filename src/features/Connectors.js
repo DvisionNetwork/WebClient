@@ -4,8 +4,6 @@ import {
   BSC_RPC_ENDPOINT,
   ETH_RPC_ENDPOINT,
   MATIC_RPC_ENDPOINT,
-  FORTMATIC_API_KEY,
-  BITSKI_CLIENT_ID,
   FORTMATIC,
   WALLETCONNECT,
   BITSKI,
@@ -14,6 +12,8 @@ import {
 import Fortmatic from 'fortmatic'
 import { Bitski } from 'bitski'
 import Web3 from 'web3'
+import AppConfig from '@/App.Config.js'
+var gConfig = AppConfig()
 
 export const walletLink = new WalletLink({
   appName: 'Division Network',
@@ -22,7 +22,7 @@ export const walletLink = new WalletLink({
   supportedChainIds: [1, 4, 56, 97, 80001]
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
-export const fortmaticProvider = new Fortmatic(FORTMATIC_API_KEY)
+export const fortmaticProvider = new Fortmatic(gConfig.wlt.getFortmaticAPIKey())
 export const walletConnectProvider = new WalletConnectProvider({
   rpc: {
     1: 'https://mainnet.mycustomnode.com',
@@ -32,7 +32,7 @@ export const walletConnectProvider = new WalletConnectProvider({
     80001: MATIC_RPC_ENDPOINT
   },
 })
-export const bitski = new Bitski(BITSKI_CLIENT_ID, `${window.location.origin}/callback.html`)
+export const bitski = new Bitski(gConfig.wlt.getBitskiClientId(), `${window.location.origin}/callback.html`)
 
 
 export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
