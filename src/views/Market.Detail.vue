@@ -691,7 +691,7 @@ export default {
 			isLand
 		) {
 			const walletName = loginBy
-			if (curActiveAccount != this.$store.state.userInfo.wallet_addr) {
+			if (curActiveAccount.toLowerCase() != this.$store.state.userInfo.wallet_addr.toLowerCase()) {
 				this.mxShowAlert({
 					msg:
 						`Current active ${walletName} account is not your wallet address.` +
