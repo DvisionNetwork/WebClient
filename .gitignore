@@ -27,3 +27,4 @@ pnpm-debug.log*
 
 Makefile
 app.json
+yarn.lock

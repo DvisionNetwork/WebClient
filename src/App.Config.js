@@ -205,15 +205,15 @@ export default function AppConfig() {
 			},
 			get3rdLandBscAddr () {
 				if(gConfig.isProd) {
-					return gConfig.wlt.addr3rdLandBscDev;
+					return gConfig.wlt.addr3rdLandBscProd;
 				}
-				return gConfig.wlt.addr3rdLandBscProd;
+				return gConfig.wlt.addr3rdLandBscDev;
 			},
 			get3rdLandPolAddr () {
 				if(gConfig.isProd) {
-					return gConfig.wlt.addr3rdLandPolDev;
+					return gConfig.wlt.addr3rdLandPolProd;
 				}
-				return gConfig.wlt.addr3rdLandPolProd;
+				return gConfig.wlt.addr3rdLandPolDev;
 			},
 			getBidAddr () {
 				return gConfig.wlt.addrBid;
