@@ -46,6 +46,7 @@ export default createStore({
 			signer: null,
 			balance: 0,
 			polygonBalance: 0,
+			balanceWallet: 0,
 		},
 		network: '',
 		homeNews: {}, // { total, page, cpp, list[]} // cpp = number of items (count) per page
@@ -129,6 +130,9 @@ export default createStore({
 		SET_WALLET_POLYGON_BALANCE(state,value) {
 			state.wallet.updated = false;
 			state.wallet.polygonBalance = value;
+		},
+		SET_BALANCE(state, value) {
+			state.wallet.balanceWallet = value
 		},
 		SET_NETWORK(state,value) {
 			state.network = value;
@@ -285,6 +289,9 @@ export default createStore({
 		setWalletPolygonBalance(context, value) {
 			// console.log("[STORE.actions] setWalletBalance(), ", value);
 			context.commit('SET_WALLET_POLYGON_BALANCE',value);
+		},
+		setBalance(context, value) {
+			context.commit('SET_BALANCE', value)
 		},
 		setNetwork(context, value) {
 			context.commit('SET_NETWORK', value)
