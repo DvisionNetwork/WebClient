@@ -17,7 +17,7 @@
 				<div class="status green" v-if="statusCampain === 3">Ongoing</div>
 			</div>
 		</div>
-		<div>
+		<div class="reward-wrap-btn">
 			<div @click="showRewardTable" class="reward-btn">Reward table</div>
 			<div @click="showMyReward" class="reward-btn">My reward</div>
 		</div>
@@ -121,14 +121,14 @@ export default {
 .reward-wrap {
 	display: flex;
 	width: 100%;
-
+	margin-bottom: gREm(52);
+	
 	.reward-box {
 		background: #1c1a2e;
 		border-radius: gREm(10);
 		width: gREm(736);
 		max-width: 100%;
 		padding: gREm(35) gREm(20);
-		margin-bottom: gREm(52);
 		margin-right: gREm(25);
 		.box-title {
 			display: flex;
@@ -197,14 +197,27 @@ export default {
 	}
 }
 @include media-max($media_small) {
-	.reward-box {
-		padding: 20px;
-		.box-title {
-			display: block;
-			margin-bottom: 10px;
-			.point {
-				text-align: right;
-				margin-top: 10px;
+	.reward-wrap {
+		display: flex;
+    	flex-direction: column;
+		.reward-box {
+			padding: 20px;
+			.box-title {
+				display: block;
+				margin-bottom: 10px;
+				.point {
+					text-align: right;
+					margin-top: 10px;
+				}
+			}
+		}
+		.reward-wrap-btn {
+			display: flex;
+			margin-top: gREm(24);
+			justify-content: center;
+			.reward-btn + .reward-btn {
+				margin-top: gREm(0);
+				margin-left: gREm(12);
 			}
 		}
 	}

@@ -1077,7 +1077,9 @@ export default {
 				overflow-y: hidden;
 				height: 100%;
 				padding-bottom: gREm(20);
-
+				&::-webkit-scrollbar {
+					display: none;
+				}
 				.item {
 					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
 					display: flex;
@@ -1199,6 +1201,12 @@ export default {
 							.product-card {
 								margin-right: 0;
 								width: 100%;
+							}
+						}
+						.page-box {
+							.page-wrap {
+								margin-top: gREm(40);
+								margin-bottom: gREm(0);
 							}
 						}
 					}
