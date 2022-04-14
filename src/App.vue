@@ -1040,5 +1040,11 @@ body {
 			padding: gREm(20);
 		}
 	}
+	.alert-box {
+		.message-box {
+			min-width: inherit;
+			padding: 0;
+		}
+	}
 }
 </style>
