@@ -782,7 +782,7 @@ export default {
 			if (curActiveAccount) {
 				const walletName = loginBy
 				if (
-					curActiveAccount != this.$store.state.userInfo.wallet_addr
+					curActiveAccount.toLowerCase() != this.$store.state.userInfo.wallet_addr.toLowerCase()
 				) {
 					this.mxShowAlert({
 						msg:
