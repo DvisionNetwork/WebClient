@@ -82,6 +82,10 @@
 								<img src="../assets/img/ic-dvi-market.svg" alt="">
 								{{addComma(wallet.balance)}}
 							</div>
+								<div v-if="balanceWallet" class="wallet-balance">
+							<div class="icon" :class="{'pol-icon': checkedNetwork === 'Polygon', 'eth-icon': checkedNetwork === 'Ethereum', 'bnb-icon': checkedNetwork === 'BSC'}"></div>
+							{{ addComma(balanceWallet) }}
+						</div>
 						</div>
 							<div class="dvs-nav-item" > 
 							<div class="dvs-user" v-if="signed=='on'">
@@ -126,14 +130,18 @@
 					</div>
 
 					<template v-if="signed=='on'">
-						<span v-if="network=='POL'" class="menu pol-box">
+						<!-- <span v-if="network=='POL'" class="menu pol-box">
 							<span class="pol-icon"></span>
 							<span class="pol-value">{{addComma(wallet.polygonBalance)}}</span>
-						</span>
+						</span> -->
 						<span class="menu dvi-box">
 							<span class="dvi-icon"></span>
 							<span class="dvi-value">{{addComma(wallet.balance)}}</span>
 						</span>
+						<div v-if="balanceWallet" class="wallet-balance">
+							<div class="icon" :class="{'pol-icon': checkedNetwork === 'Polygon', 'eth-icon': checkedNetwork === 'Ethereum', 'bnb-icon': checkedNetwork === 'BSC'}"></div>
+							{{ addComma(balanceWallet) }}
+						</div>
 						<div class="menu uinfo-icon" @mouseover="isShowAccountMenu=true" @mouseleave="isShowAccountMenu=false" >
 							<span class="cap-text">{{ getCapitalChar(userInfo.name) }}</span>
 							<transition appear name="fade">
@@ -285,6 +293,9 @@ export default {
 		},
 		currentPage() {
 			return this.$route.name;
+		},
+		balanceWallet() {
+			return this.$store.state.wallet.balanceWallet
 		}
 	},
 	mounted () {
@@ -721,6 +732,31 @@ export default {
 
 .GNB[signed="on"] {
 	.gnb-box {
+		.wallet-balance {
+					display: flex;
+					font-family: $AppFont;
+					font-size: gREm(15);
+					line-height: gREm(19);
+					margin-left: gREm(8);
+
+					.icon {
+						width: gREm(22);
+						height: gREm(22);
+						margin-right: gREm(8);
+					}
+
+					.pol-icon {
+						@include SetBgImage(url('../assets/img/ic-polygon-market.svg'));
+					}
+
+					.eth-icon {
+						@include SetBgImage(url('../assets/img/eth-icon.png'));
+					}
+
+					.bnb-icon {
+						@include SetBgImage(url('../assets/img/bnb-icon.svg'));
+					}
+				}
 		.menu-btns {
 			.menus {
 				.dvi-box {
@@ -751,6 +787,7 @@ export default {
 						@include Set-Font($AppFont, gREm(15), gREm(19), #7A4ADD);
 					}
 				}
+				
 				.uinfo-icon {
 					@include FLEX(center, center);
 					width: gREm(34);
