@@ -1166,7 +1166,9 @@ export default function walletAPI() {
 									from: J.accountAddress,
 									chain: 'rinkedby',
 							  })
-							: contract.approve(contAddr, value))
+							: contract.approve(contAddr, value, {
+								gasLimit: 6000000,
+							}))
 					} else if (J.type =='SellApproval') {
 						console.log('sell approval 721')
 						sendTransactionPromise = await (loginBy === FORTMATIC ||
@@ -1215,7 +1217,10 @@ export default function walletAPI() {
 									: contract.trade721Eth(
 											J.ownerId.toString(),
 											J.tokenId.toString(),
-											overrides
+											overrides,
+											{
+												gasLimit: 6000000,
+											}
 									  )) // function check
 							} else {
 								console.log(
@@ -1240,7 +1245,10 @@ export default function walletAPI() {
 									: contract.trade721Dvi(
 											J.ownerId.toString(),
 											J.tokenId.toString(),
-											value
+											value,
+											{
+												gasLimit: 6000000,
+											}
 									  ))
 							}
 						} else if (J.category == '1155') {
@@ -1272,7 +1280,10 @@ export default function walletAPI() {
 										J.ownerId.toString(),
 										J.tokenId.toString(),
 										value,
-										J.amount
+										J.amount,
+										{
+											gasLimit: 6000000,
+										}
 								  ))
 						}
 					} else if (J.type == 'Sell') {
@@ -1302,7 +1313,10 @@ export default function walletAPI() {
 									: contract.sellItem721(
 											J.tokenId.toString(),
 											value,
-											J.tokenType
+											J.tokenType,
+											{
+												gasLimit: 6000000,
+											}
 									  ))
 							} else {
 								console.log(
@@ -1333,7 +1347,10 @@ export default function walletAPI() {
 									: contract.sellItem721(
 											J.tokenId.toString(),
 											value,
-											tokenType
+											tokenType,
+											{
+												gasLimit: 6000000,
+											}
 									  ))
 							}
 						} else if (J.category == '1155') {
@@ -1367,7 +1384,10 @@ export default function walletAPI() {
 										J.tokenId.toString(),
 										value,
 										1,
-										J.amount
+										J.amount,
+										{
+											gasLimit: 6000000,
+										}
 								  ))
 						}
 					}
