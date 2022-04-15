@@ -561,6 +561,7 @@ export default function walletAPI() {
 								)
 								const overrides = {
 									value: value,
+									gasLimit: 6000000,
 								}
 								console.log(
 									'contract',
@@ -578,10 +579,7 @@ export default function walletAPI() {
 											})
 									: contract.trade721ETH(
 											J.tokenId.toString(),
-											overrides,
-											{
-												gasLimit: 6000000,
-											}
+											overrides
 									  )) // function check
 							} else {
 								console.log(
