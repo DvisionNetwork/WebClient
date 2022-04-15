@@ -1203,6 +1203,7 @@ export default function walletAPI() {
 								)
 								const overrides = {
 									value: value,
+									gasLimit: 6000000,
 								}
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
@@ -1217,10 +1218,7 @@ export default function walletAPI() {
 									: contract.trade721Eth(
 											J.ownerId.toString(),
 											J.tokenId.toString(),
-											overrides,
-											{
-												gasLimit: 6000000,
-											}
+											overrides
 									  )) // function check
 							} else {
 								console.log(
