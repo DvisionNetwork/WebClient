@@ -546,9 +546,7 @@ export default function walletAPI() {
 									from: J.accountAddress,
 									chain: 'rinkedby',
 							  })
-							: contract.approve(contAddr, value, {
-									gasLimit: 6000000,
-							  }))
+							: contract.approve(contAddr, value))
 					} else if (J.type == 'Trade') {
 						if (J.category == '721') {
 							if (J.tokenType == 0) {
@@ -561,14 +559,7 @@ export default function walletAPI() {
 								)
 								const overrides = {
 									value: value,
-									gasLimit: 6000000,
 								}
-								console.log(
-									'contract',
-									contract,
-									lv_provider,
-									lv_signer
-								)
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
@@ -598,14 +589,10 @@ export default function walletAPI() {
 											)
 											.send({
 												from: J.accountAddress,
-												gas: 6000000,
 											})
 									: contract.Trade_721dvi(
 											J.tokenId.toString(),
-											value,
-											{
-												gasLimit: 6000000,
-											}
+											value
 									  ))
 							}
 						} else if (J.category == '1155') {
@@ -637,10 +624,7 @@ export default function walletAPI() {
 										J.ownerId.toString(),
 										J.tokenId.toString(),
 										value,
-										J.amount,
-										{
-											gasLimit: 6000000,
-										}
+										J.amount
 								  ))
 						}
 					} else if (J.type == 'Sell') {
@@ -675,10 +659,7 @@ export default function walletAPI() {
 											marketContract,
 											J.tokenId.toString(),
 											value,
-											J.tokenType,
-											{
-												gasLimit: 6000000,
-											}
+											J.tokenType
 									  ))
 							} else {
 								console.log(
@@ -712,10 +693,7 @@ export default function walletAPI() {
 											marketContract,
 											J.tokenId.toString(),
 											value,
-											tokenType,
-											{
-												gasLimit: 6000000,
-											}
+											tokenType
 									  ))
 							}
 						} else if (J.category == '1155') {
@@ -752,10 +730,7 @@ export default function walletAPI() {
 										J.tokenId.toString(),
 										value,
 										1,
-										J.amount,
-										{
-											gasLimit: 6000000,
-										}
+										J.amount
 								  ))
 						}
 					}
