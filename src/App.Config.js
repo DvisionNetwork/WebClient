@@ -204,18 +204,6 @@ export default function AppConfig() {
 			addrBid: {
 				Network : "opensea"
 			},
-			getFortmaticAPIKey() {
-				if(gConfig.isProd) {
-					return gConfig.FORTMATIC_API_KEY_PRODUCT;
-				}
-				return gConfig.FORTMATIC_API_KEY_DEV;
-			},
-			getBitskiClientId() {
-				if(gConfig.isProd) {
-					return gConfig.BITSKI_CLIENT_ID_DEV;
-				}
-				return gConfig.BITSKI_CLIENT_ID_PRODUCT;
-			},
 			getAddr () {
 				if(gConfig.isProd) {
 					return gConfig.wlt.addrProd;

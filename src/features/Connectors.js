@@ -34,6 +34,7 @@ export const walletConnectProvider = new WalletConnectProvider({
 })
 export const bitski = new Bitski(gConfig.isProd ? gConfig.BITSKI_CLIENT_ID_PRODUCT : gConfig.BITSKI_CLIENT_ID_DEV, `${window.location.origin}/callback.html`)
 
+console.log('gConfig.wlt.getBitskiClientId()',gConfig.wlt.getBitskiClientId())
 export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
 	let web3
 	let networkOptions = {
