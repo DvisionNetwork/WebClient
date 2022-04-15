@@ -734,6 +734,7 @@ export default {
 	.gnb-box {
 		.wallet-balance {
 					display: flex;
+					align-items: center;
 					font-family: $AppFont;
 					font-size: gREm(15);
 					line-height: gREm(19);
