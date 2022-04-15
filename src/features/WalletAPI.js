@@ -1235,7 +1235,6 @@ export default function walletAPI() {
 											)
 											.send({
 												from: J.accountAddress,
-												gas: 600000,
 											})
 									: contract.trade721Dvi(
 											J.ownerId.toString(),
