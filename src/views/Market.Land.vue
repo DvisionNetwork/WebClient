@@ -282,6 +282,17 @@ export default {
 			if(o) o.value = '';
 			this.mxSetLandQuery(landQuery);
 			this.callLandItemList();
+			if (newVal == 'saopaulo') {
+				this.mxCloseLoading()
+				var msg = this.$t('market.detail.alert-link-to-shopify')
+				this.mxShowAlert({
+					msg: msg,
+					callback: ()=> {
+						const url = 'https://dvisionnetwork.myshopify.com/'; // shopify link
+						window.open(url, '_blank')
+					},
+				})
+			}
 			// this.setLandItems(landQuery);
 		},
 		searchQuery(newVal, oldVal) {

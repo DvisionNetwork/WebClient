@@ -323,6 +323,7 @@
 			"alert-cancel-sell-button": "UNLIST",
 			"alert-success-on-cancel": "Now NFT is unlisted from the sale",
 			"alert-no-wallet-account": "Invalid metamask wallet account",
+			"alert-link-to-shopify": "SaoPaulo is on sale Shopify Store. \nClick OK to move",
 			"alert-same-account": "Buyer and seller have same account",
 			"alert-network-not-matched": "Your metamask in not on network item registered.\nChange your network.",
 			"alert-address-not-matched": "Current active metamask account is not your wallet address.",
