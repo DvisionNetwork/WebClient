@@ -476,6 +476,64 @@ export default function walletAPI() {
 			return contract
 		},
 
+		getContractNew(type, network, nft, loginBy) {
+			const addr = (network == 'BSC') ? gConfig.wlt.get3rdLandBscAddr() : gConfig.wlt.get3rdLandPolAddr();
+
+			const networkRPC = window.localStorage.getItem('networkRPC')
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			let contract = null
+			if (type == 'Approval') {
+				if (loginBy === FORTMATIC || loginBy === BITSKI) {
+					contract = getContractConnect(
+						loginBy,
+						erc20_ABI,
+						addr.TokenAddress,
+						networkRPC,
+						currentNetwork
+					)
+				} else {
+					contract = new ethers.Contract(
+						addr.TokenAddress,
+						erc20_ABI,
+						lv_signer
+					)
+				}
+			} else if (type == 'SellApproval') {
+				if (loginBy === FORTMATIC || loginBy === BITSKI) {
+					contract = getContractConnect(
+						loginBy,
+						bep721_V3_ABI,
+						addr.Contract721Address,
+						networkRPC,
+						currentNetwork
+					)
+				} else {
+					contract = new ethers.Contract(
+						addr.Contract721Address,
+						bep721_V3_ABI,
+						lv_signer
+					)
+				}
+			} else {
+				if (loginBy === FORTMATIC || loginBy === BITSKI) {
+					contract = getContractConnect(
+						loginBy,
+						bepmarket_V3_ABI,
+						addr.ContractMarketAddress,
+						networkRPC,
+						currentNetwork
+					)
+				} else {
+					contract = new ethers.Contract(
+						addr.ContractMarketAddress,
+						bepmarket_V3_ABI,
+						lv_signer
+					)
+				}
+			}
+			return contract
+		},
+
 		// J = { type:Approval/Trade, nft, price, [tokenId,] [ownerId, amount,] callback } // tokenId for trade, ownerId & amount trade-1155
 		async ContractDvi(J) {
 			console.log('[WalletAPI] =========== ContractDvi() J:', J)
@@ -727,6 +785,361 @@ export default function walletAPI() {
 										})
 								: contract.Sell_Item(
 										marketContract,
+										J.tokenId.toString(),
+										value,
+										1,
+										J.amount
+								  ))
+						}
+					}
+					if (!sendTransactionPromise) {
+						J.callback({
+							res_code: 401,
+							msg:
+								'[' +
+								J.type +
+								'-' +
+								J.category +
+								'] Unsupported type of sendTransactionPromise ',
+							data: {
+								trHash: null,
+							},
+						})
+						return
+					}
+					console.log(sendTransactionPromise, 'sendTransaction')
+					const txReceipt = await (loginBy === FORTMATIC ||
+					loginBy === BITSKI
+						? sendTransactionPromise
+						: sendTransactionPromise.wait())
+					if (typeof txReceipt !== 'undefined') {
+						if (txReceipt.status == 1) {
+							// console.log('[WalletAPI] ('+J.type+'-'+J.category+') txReceipt.transactionHash:',txReceipt.transactionHash);
+							// if(J.type == 'Approval') {
+							// 	J.fToast(J.type+" of DVI transaction is succeeded.");
+							// }else{
+							// 	J.fToast(J.type+"-"+J.category+" of DVI transaction is succeeded.");
+							// }
+							ret = txReceipt.transactionHash
+							msg = 'success'
+						} else {
+							if (J.type == 'Approval') {
+								msg =
+									'[' +
+									J.type +
+									'-' +
+									J.category +
+									'] is failed'
+							} else {
+								msg =
+									'[' +
+									J.type +
+									'-' +
+									J.category +
+									'] is Reverted'
+							}
+							J.fToast(msg)
+						}
+					} else {
+						msg =
+							'[' +
+							J.type +
+							'-' +
+							J.category +
+							'] Error on sendTransactionPromise() <br> with no receipt'
+						console.error(msg)
+					}
+				} catch (err) {
+					msg =
+						'[' +
+						J.type +
+						'-' +
+						J.category +
+						'] Error catched on <br> sendTransactionPromise() <br>' +
+						err.code
+					console.error(err, msg)
+					// console.log("===========================================");
+					// console.log(err);
+					// console.log("===========================================");
+					// console.log(err.code);
+					// console.log(err.data);
+					// console.log(err.message);
+					var m = err.message
+					var mm = m.substring(m.indexOf('{'), m.lastIndexOf('}') + 1)
+					// console.log(mm);
+				}
+			} else {
+				msg =
+					'[' +
+					J.type +
+					'-' +
+					J.category +
+					'] Error on checking MetaMask '
+				console.error(msg)
+			}
+
+			J.callback({
+				res_code: ret ? 200 : 401,
+				msg: msg,
+				data: {
+					trHash: ret,
+				},
+			})
+		},
+
+		async ContractDviNew(J) {
+			console.log('[WalletAPI] =========== ContractDviNew() J:', J)
+			const loginBy = window.localStorage.getItem('loginBy')
+			const contAddr = (J.network == 'BSC') ? gConfig.wlt.get3rdLandBscAddr().ContractMarketAddress : gConfig.wlt.get3rdLandPolAddr().ContractMarketAddress;
+
+			if (!contAddr) {
+				J.callback({
+					res_code: 401,
+					msg: 'Unsupported NFT type [' + J.category + ']',
+					data: {
+						trHash: null,
+					},
+				})
+				return
+			}
+
+			lv_provider = new ethers.providers.Web3Provider(
+				J.provider ? J.provider : window.ethereum
+			)
+
+			lv_signer = lv_provider.getSigner()
+
+			console.log(lv_provider, lv_signer, 'provider, signer')
+
+			let contract = this.getContractNew(
+				J.type,
+				J.network,
+				J.category,
+				loginBy
+			)
+
+			if (!contract) {
+				J.callback({
+					res_code: 401,
+					msg: 'Unsupported type of contractDvi [' + J.type + ']',
+					data: {
+						trHash: null,
+					},
+				})
+				return
+			}
+
+			const decimals = ethers.BigNumber.from(18)
+			const vAmout = ethers.BigNumber.from(parseInt(J.price * 1000000))
+			const value = vAmout
+				.mul(ethers.BigNumber.from(10).pow(decimals))
+				.div(1000000)
+			let ret = null
+			let msg = 'failed'
+
+			const rv =
+				loginBy !== METAMASK && loginBy !== COINBASE
+					? J.network
+					: await this.checkMetamask()
+
+			if (rv != 'NONE') {
+				try {
+					J.fToast(
+						`${J.type} ${
+							J.type !== 'Approval' ? `- ${J.category}` : ''
+						} of DVI transaction is being processed.`
+					)
+					let sendTransactionPromise = null
+					if (J.type == 'Approval') {
+						console.log('account', J.accountAddress)
+						sendTransactionPromise = await (loginBy === FORTMATIC ||
+						loginBy === BITSKI
+							? contract.methods.approve(contAddr, value).send({
+									from: J.accountAddress,
+									chain: 'rinkedby',
+							  })
+							: contract.approve(contAddr, value))
+					} else if (J.type =='SellApproval') {
+						console.log('sell approval 721')
+						sendTransactionPromise = await (loginBy === FORTMATIC ||
+						loginBy === BITSKI
+							? contract.methods
+								.setApprovalForAll(contAddr, true)
+								.send({
+									from: J.accountAddress,
+							  })
+							: contract.setApprovalForAll(contAddr, true))
+					} else if (J.type == 'Trade') {
+						if (J.category == '721') {
+							if (J.tokenType == 0) {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.trade721Eth("' +
+										J.tokenId +
+										'", ' +
+										value +
+										' );'
+								)
+								const overrides = {
+									value: value,
+								}
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.trade721Eth(J.tokenId.toString())
+											.send({
+												from: J.accountAddress,
+												value: overrides.value,
+											})
+									: contract.trade721Eth(
+											J.tokenId.toString(),
+											overrides
+									  )) // function check
+							} else {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.trade721Dvi("' +
+										J.tokenId +
+										'", ' +
+										value +
+										' );'
+								)
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.trade721Dvi(
+												J.ownerId.toString(),
+												J.tokenId.toString(),
+												value
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.trade721Dvi(
+											J.ownerId.toString(),
+											J.tokenId.toString(),
+											value
+									  ))
+							}
+						} else if (J.category == '1155') {
+							console.log(
+								'[WalletAPI] ContractDvi call  contract.trade1155Eth("' +
+									J.ownerId +
+									'", "' +
+									J.tokenId +
+									'", ' +
+									value +
+									', ' +
+									J.amount +
+									' );'
+							)
+							console.log('contract', contract)
+							sendTransactionPromise = await (loginBy ===
+								FORTMATIC || loginBy === BITSKI
+								? contract.methods
+										.trade1155Eth(
+											J.ownerId.toString(),
+											J.tokenId.toString(),
+											value,
+											J.amount
+										)
+										.send({
+											from: J.accountAddress,
+										})
+								: contract.trade1155Dvi(
+										J.ownerId.toString(),
+										J.tokenId.toString(),
+										value,
+										J.amount
+								  ))
+						}
+					} else if (J.type == 'Sell') {
+						if (J.category == '721') {
+							if (J.tokenType == 0) {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.sellItem721 token 0("' +
+										'", "' +
+										J.tokenId +
+										'", ' +
+										J.tokenType +
+										', ' +
+										value +
+										' );'
+								)
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.sellItem721(
+												J.tokenId.toString(),
+												value,
+												J.tokenType
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.sellItem721(
+											J.tokenId.toString(),
+											value,
+											J.tokenType
+									  ))
+							} else {
+								console.log(
+									'[WalletAPI] ContractDvi call  contract.Sell_Item 721 token !== 0("' +
+										'", "' +
+										J.tokenId +
+										'", ' +
+										J.tokenType +
+										', ' +
+										value +
+										' );'
+								)
+								console.log('contract', contract)
+								const tokenType = J.tokenType
+									? J.tokenType
+									: '1'
+								sendTransactionPromise = await (loginBy ===
+									FORTMATIC || loginBy === BITSKI
+									? contract.methods
+											.sellItem721(
+												J.tokenId.toString(),
+												value,
+												tokenType
+											)
+											.send({
+												from: J.accountAddress,
+											})
+									: contract.sellItem721(
+											J.tokenId.toString(),
+											value,
+											tokenType
+									  ))
+							}
+						} else if (J.category == '1155') {
+							console.log(
+								'[WalletAPI] ContractDvi call  contract.Sell_Item("' +
+									marketContract +
+									'", "' +
+									J.tokenId +
+									'", ' +
+									value +
+									', ' +
+									J.amount +
+									' );'
+							)
+
+							console.log('contract 1155', contract)
+
+							sendTransactionPromise = await (loginBy ===
+								FORTMATIC || loginBy === BITSKI
+								? contract.methods
+										.sellItem1155(
+											J.tokenId.toString(),
+											value,
+											1,
+											J.amount
+										)
+										.send({
+											from: J.accountAddress,
+										})
+								: contract.sellItem1155(
 										J.tokenId.toString(),
 										value,
 										1,

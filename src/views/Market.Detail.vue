@@ -749,6 +749,7 @@ export default {
 					network: networkName,
 					provider,
 					accountAddress: curActiveAccount,
+					nftName: this.getDvLand().nftName,
 					callback: isLand ? this.onSellLand : this.onSellItem,
 				}
 
@@ -761,7 +762,30 @@ export default {
 
 				this.trade_data = { ...objClone }
 
+				if (this.getDvLand().nftName == 'bsc-land-3rd' || this.getDvLand().nftName == 'pol-land-3rd') {
+					this.approve_data = {
+						type: 'SellApproval',
+						category: '721',
+						price: this.sellPrice,
+						fToast: this.mxShowToast,
+						network: networkName,
+						provider,
+						accountAddress: curActiveAccount,
+						callback: this.onSellApprove,
+					}
+
+					this.mxCloseLoading()
+					
+					this.mxShowAlert({
+						msg: this.$t('market.detail.alert-sell-approve-msg'),
+						btn: this.$t('market.detail.alert-approve-button'),
+						callback: this.onCallbackSellApprovePopup,
+					})
+					return;
+				}
+				
 				this.mxCloseLoading()
+
 				this.mxShowAlert({
 					msg: this.$t('market.detail.alert-sell-msg'),
 					btn: this.$t('market.detail.alert-sell-button'),
@@ -849,6 +873,7 @@ export default {
 							land_code: this.getDvLand().n,
 							price: this.marketItem.price,
 							network: this.marketItem.network,
+							nftName: this.getDvLand().nftName,
 							callback: this.onBuyLandItem,
 						}
 						this.mxCloseLoading()
@@ -862,6 +887,7 @@ export default {
 							network: networkName,
 							provider,
 							accountAddress: curActiveAccount,
+							nftName: this.getDvLand().nftName,
 							callback: this.onApproveDvi,
 						}
 					}
@@ -1108,6 +1134,7 @@ export default {
 				network: networkName,
 				provider,
 				accountAddress: this.$store.state.userInfo.wallet_addr,
+				nftName: this.getDvLand().nftName,
 				callback: this.onTradeDvi,
 			}
 
@@ -1126,9 +1153,16 @@ export default {
 			if (!data) {
 				return
 			}
+			
 			if (_U.getIfDefined(resp, 'result') == true) {
-				this.mxShowLoading('inf')
-				wAPI.ContractDvi(data)
+				if (data.nftName == 'bsc-land-3rd' || data.nftName == 'pol-land-3rd')
+				{
+					this.mxShowLoading('inf')
+					wAPI.ContractDviNew(data)
+				} else {			
+					this.mxShowLoading('inf')
+					wAPI.ContractDvi(data)
+				}
 			}
 		},
 		onApproveDvi(resp) {
@@ -1199,9 +1233,17 @@ export default {
 					return
 				}
 			}
+
 			if (_U.getIfDefined(resp, 'result') == true) {
-				this.mxShowLoading('inf')
-				wAPI.ContractDvi(data)
+
+				if (data.nftName == 'bsc-land-3rd' || data.nftName == 'pol-land-3rd')
+				{
+					this.mxShowLoading('inf')
+					wAPI.ContractDviNew(data)
+				} else {			
+					this.mxShowLoading('inf')
+					wAPI.ContractDvi(data)
+				}
 			} else {
 				// console.log("[Market-Detail] onCallbackTradePopup() trade canceled on popup.");
 			}
@@ -1249,14 +1291,33 @@ export default {
 				callback: this.refreshPage,
 			})
 		},
+		onCallbackSellApprovePopup(resp) {
+			console.log('on callback sell approve', resp)
+			const data = this.approve_data
+			console.log('data', data)
+			if (!data) {
+				return
+			}
+			
+			if (_U.getIfDefined(resp, 'result') == true) {
+				this.mxShowLoading('inf')
+				wAPI.ContractDviNew(data)
+			}
+		},
 		onCallbackSellPopup(resp) {
 			var data = this.trade_data
 			if (!data) {
 				return
 			}
 			if (_U.getIfDefined(resp, 'result') == true) {
-				this.mxShowLoading('inf')
-				wAPI.ContractDvi(data)
+				if (data.nftName == 'bsc-land-3rd' || data.nftName == 'pol-land-3rd')
+				{
+					this.mxShowLoading('inf')
+					wAPI.ContractDviNew(data)
+				} else {			
+					this.mxShowLoading('inf')
+					wAPI.ContractDvi(data)
+				}
 			} else {
 				// console.log("[Market-Detail] onCallbackTradePopup() trade canceled on popup.");
 			}
@@ -1309,6 +1370,17 @@ export default {
 						callback: this.refreshPage,
 					})
 				},
+			})
+		},
+		onSellApprove(resp) {
+			console.log("list nfts on sale. price : ", this.sellPrice)
+
+			this.mxCloseLoading()
+
+			this.mxShowAlert({
+				msg: this.$t('market.detail.alert-sell-msg'),
+				btn: this.$t('market.detail.alert-sell-button'),
+				callback: this.onCallbackSellPopup,
 			})
 		},
 		onSellLand(resp) {

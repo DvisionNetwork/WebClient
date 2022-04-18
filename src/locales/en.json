@@ -316,6 +316,7 @@
 			"alert-approve-button": "APPROVE",
 			"alert-trade-msg": "DVI expenditure approval has been completed. Press the Trade button to complete the transaction.",
 			"alert-trade-button": "TRADE",
+			"alert-sell-approve-msg": "Approve the NFT in your wallet to complete the listing.",
 			"alert-sell-msg": "Amount of item will be listed for sale. Press the Listing button to completed.",
 			"alert-sell-button": "LIST",
 			"alert-no-wallet-account": "Invalid metamask wallet account",
