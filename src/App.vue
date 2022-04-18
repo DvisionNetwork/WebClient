@@ -450,14 +450,11 @@ export default {
 			}
 		},
 		wallet(newVal, oldVal) {
-			// console.log("=================== wallet:", newVal, oldVal);
-
 			if( _U.isDefined(newVal,'accounts') && newVal.accounts.length > 0
 				&& _U.getIfDefined(newVal, 'updated') == true
 			) {
-				console.log("[App.vue] watch wallet() , wallet ", newVal);
-				this.getDviBalance();
-				this.getPolygonBalance();
+				this.getDviBalance()
+				this.getBalanceWallet()
 			}
 		}
 	},
@@ -715,27 +712,26 @@ export default {
 			}
 			return provider
 		},
-		getPolygonBalance() {
+		getBalanceWallet() {
 			const network = this.getNetwork(window.localStorage.getItem('loginBy'));
-			var account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+			const account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
 
-			if(!account) {
-				// console.log("[App.vue] getDviBalance(), no account in wallet !!");
-				return;
+			if (!account) {
+				return
 			}
-			wAPI.getPolygonBalance(account, network, (resp) => {
-				// console.log('[App.vue] getDviBalance() -> getDviBalance : resp', resp);
 
+			wAPI.getBalanceWallet(account, network, (resp) => {
 				if(resp.res_code == 200) {
-					var balance = _U.getIfDefined(resp,['data','balance']);
-					
-					if(balance != null) {
-						this.mxSetWalletPolygonBalance(balance);
-						return;
-					}
+					const balance = _U.getIfDefined(resp,['data','balance']);
+					this.mxSetBalance(balance ? balance : 0)
+					return
+					// if (balance != null) {
+					// 	// this.mxSetWalletPolygonBalance(balance);
+					// 	return
+					// }
 				}
 				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
-				this.mxSetWalletPolygonBalance(0);
+				// this.mxSetWalletPolygonBalance(0);
 				// console.log("Error on get balance url", resp)
 			});
 		},
@@ -1042,6 +1038,12 @@ body {
 			max-width: 90vw;
 			white-space: pre-wrap;
 			padding: gREm(20);
+		}
+	}
+	.alert-box {
+		.message-box {
+			min-width: inherit;
+			padding: 0;
 		}
 	}
 }

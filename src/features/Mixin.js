@@ -214,7 +214,10 @@ var Mixin = {
 			this.$store.state.wallet.balance;
 		},
 		mxSetWalletPolygonBalance(balance) {
-			this.$store.dispatch('setWalletPolygonBalance',balance);
+			this.$store.dispatch('setWalletPolygonBalance', balance);
+		},
+		mxSetBalance(balance) {
+			this.$store.dispatch('setBalance', balance)
 		},
 		mxGetWalletAccount() {
 			this.$store.state.wallet.currentAccount;

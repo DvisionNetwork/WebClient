@@ -76,7 +76,10 @@ export default function AppConfig() {
 			}
 			return rv;
 		},
-
+		FORTMATIC_API_KEY_DEV : 'pk_test_67B7005189579543',
+		FORTMATIC_API_KEY_PRODUCT : 'pk_live_27F4314B088C569C',
+		BITSKI_CLIENT_ID_DEV : 'fa55e01d-4bad-4335-9069-315b2b9e5d17',
+		BITSKI_CLIENT_ID_PRODUCT : 'fd70095e-9d43-4c01-92a9-2795bcc3942f',
 		// gConfig.wlt.getAddr();
 		wlt : {
 			/* -----------------  Ethereum Network ----------------- */

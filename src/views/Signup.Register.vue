@@ -320,7 +320,7 @@ export default {
 				this.selectedWallet = '5';
 			}
 		},
-		async sinUpWithwalletConnect() {
+		async sinUpWithWalletConnect() {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
 			const accounts = await web3.eth.getAccounts();
@@ -431,7 +431,7 @@ export default {
 					this.sinUpWithMetamask()
 					break
 				case 'sinUpWith-walletConnect':
-					this.sinUpWithwalletConnect()
+					this.sinUpWithWalletConnect()
 					break
 				case 'sinUpWith-coinbase' :
 					this.sinUpWithCoinbase()

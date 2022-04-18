@@ -9,7 +9,7 @@ import {
 	FORTMATIC,
 	BITSKI,
 } from '../features/Common'
-import { getContractConnect } from './Connectors'
+import { getContractConnect, getWeb3 } from './Connectors'
 var gConfig = AppConfig()
 
 export default function walletAPI() {
@@ -266,7 +266,7 @@ export default function walletAPI() {
 			}
 		},
 
-		async getPolygonBalance(account, network, callback) {
+		async getBalanceWallet(account, network, callback) {
 			const decimals = ethers.BigNumber.from(18)
 
 			const loginBy = window.localStorage.getItem('loginBy')
@@ -277,11 +277,19 @@ export default function walletAPI() {
 
 			if (rv != 'NONE') {
 				try {
-					var ret = await ethereum.request({
-						method: 'eth_getBalance',
-						params: [account, 'latest'],
-					})
-					var balance = (ret / 10 ** decimals).toString()
+					const networkRPC = window.localStorage.getItem('networkRPC')
+					const currentNetwork =
+						window.localStorage.getItem('currentNetwork')
+					const web3 = getWeb3(loginBy, networkRPC, currentNetwork)
+					console.log('web3', web3)
+					const ret = await web3.eth.getBalance(account)
+					// const ret = await ethereum.request({
+					// 	method: 'eth_getBalance',
+					// 	params: [account, 'latest'],
+					// })
+					console.log('ret', ret)
+					const balance = (ret / 10 ** decimals).toFixed(4)
+					console.log('before balance', balance)
 
 					callback({
 						res_code: 200,
@@ -291,7 +299,7 @@ export default function walletAPI() {
 				} catch (err) {
 					callback({
 						res_code: 401,
-						message: 'Error on getting Polygon Balance',
+						message: 'Error on getting Balance',
 						balance: 0,
 					})
 				}
@@ -552,12 +560,6 @@ export default function walletAPI() {
 								const overrides = {
 									value: value,
 								}
-								console.log(
-									'contract',
-									contract,
-									lv_provider,
-									lv_signer
-								)
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
@@ -642,7 +644,7 @@ export default function walletAPI() {
 										' );'
 								)
 								sendTransactionPromise = await (loginBy ===
-								FORTMATIC
+									FORTMATIC || loginBy === BITSKI
 									? contract.methods
 											.sellItem(
 												marketContract,
@@ -674,7 +676,7 @@ export default function walletAPI() {
 								console.log('contract', contract)
 								const tokenType = J.tokenType
 									? J.tokenType
-									: '0'
+									: '1'
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
@@ -691,7 +693,7 @@ export default function walletAPI() {
 											marketContract,
 											J.tokenId.toString(),
 											value,
-											J.tokenType
+											tokenType
 									  ))
 							}
 						} else if (J.category == '1155') {

@@ -944,14 +944,15 @@ export default {
 				}
 				.page-box {
 					@include FLEX(center, flex-start);
-					height: gREm(44);
+					height: auto;
 					width: 100%;
 					.page-wrap {
 						@include FLEX(center, center);
-						height: gREm(44);
-						width: gREm(600);
-						margin-top: gREm(100);
-						margin-bottom: gREm(132);
+						height: auto;
+						width: 100%;
+						margin-top: gREm(16);
+						margin-bottom: gREm(48);
+
 						.arrow-left, .arrow-right, .page {
 							@include FLEX(center, center);
 							width: gREm(40);
@@ -1077,7 +1078,9 @@ export default {
 				overflow-y: hidden;
 				height: 100%;
 				padding-bottom: gREm(20);
-
+				&::-webkit-scrollbar {
+					display: none;
+				}
 				.item {
 					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
 					display: flex;
@@ -1193,12 +1196,22 @@ export default {
 					}
 
 					.item-box {
+
+						.page-wrap {
+							margin-bottom: gREm(8);
+						}
 						.items {
 							justify-content: center;
 
 							.product-card {
 								margin-right: 0;
 								width: 100%;
+							}
+						}
+						.page-box {
+							.page-wrap {
+								margin-top: gREm(40);
+								margin-bottom: gREm(0);
 							}
 						}
 					}

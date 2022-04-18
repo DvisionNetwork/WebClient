@@ -215,8 +215,10 @@ export default {
 				overscroll-behavior: contain;
 				overflow-y: hidden;
 				height: 100%;
-				padding-bottom: gREm(20);
-
+				padding-top: gREm(20);
+				&::-webkit-scrollbar {
+					display: none;
+				}
 				.item {
 					@include Set-Font($AppFont, gREm(18), gREm(26), #ffffff, 500);
 					display: flex;
