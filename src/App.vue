@@ -73,7 +73,7 @@
 					@click="mxCloseAlert(false)"
 				></div>
 				<div class="message" v-html="$store.state.showAlert.msg"></div>
-				<vue-recaptcha v-show="showRecaptcha" siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
+				<!-- <vue-recaptcha v-show="showRecaptcha" siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
 					size="normal" 
 					theme="light"
 					lang="en"
@@ -81,7 +81,7 @@
 					@expire="recaptchaExpired"
 					@fail="recaptchaFailed"
 					ref="vueRecaptcha">
-				</vue-recaptcha>
+				</vue-recaptcha> -->
 				<div v-if="isShowBtn" class="btn g-btn"
 					@click="mxCloseAlert(true)" >
 					{{$store.state.showAlert.btn ? $store.state.showAlert.btn : $t('btn.ok') }}
@@ -187,7 +187,7 @@ var CCodes = new CountryCodes();
 
 import DVILand from '@/data/Market.LandInfo.js'
 
-import vueRecaptcha from 'vue3-recaptcha2';
+// import vueRecaptcha from 'vue3-recaptcha2';
 import { MSG_METAMASK_2 } from '@/features/Messages.js'
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/plugin.md
 class myPlugin extends ScrollbarPlugin {
@@ -221,7 +221,7 @@ export default {
 		PopupSuccessModal,
 		PopupConfirmModal,
 		PopupInforModal,
-		vueRecaptcha,
+		// vueRecaptcha,
 		PopupRewardTable,
 		PopupMyReward,
 	},
@@ -462,8 +462,8 @@ export default {
 		return {
 			showToastTimer: null,
 			scrollbar: null,
-			showRecaptcha: true,
-			isShowBtn: false,
+			// showRecaptcha: true,
+			isShowBtn: true,
 			connectData: 0
 		}
 	},
@@ -526,19 +526,19 @@ export default {
 			this.scrollbar.scrollTo(0,0);
 		},
 
-		recaptchaVerified(response) {
-			console.log(response);
-			setTimeout(() => {
-				this.showRecaptcha = false;
-				this.isShowBtn = true;
-			},500);
-		},
-		recaptchaExpired() {
-			this.$refs.vueRecaptcha.reset();
-		},
-		recaptchaFailed() {
-			console.log("failed");
-		},
+		// recaptchaVerified(response) {
+		// 	console.log(response);
+		// 	setTimeout(() => {
+		// 		this.showRecaptcha = false;
+		// 		this.isShowBtn = true;
+		// 	},500);
+		// },
+		// recaptchaExpired() {
+		// 	this.$refs.vueRecaptcha.reset();
+		// },
+		// recaptchaFailed() {
+		// 	console.log("failed");
+		// },
 
 		setEthereumEvent() {
 
