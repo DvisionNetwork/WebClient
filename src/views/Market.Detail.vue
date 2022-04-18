@@ -763,24 +763,49 @@ export default {
 				this.trade_data = { ...objClone }
 
 				if (this.getDvLand().nftName == 'bsc-land-3rd' || this.getDvLand().nftName == 'pol-land-3rd') {
-					this.approve_data = {
-						type: 'SellApproval',
-						category: '721',
-						price: this.sellPrice,
-						fToast: this.mxShowToast,
-						network: networkName,
-						provider,
-						accountAddress: curActiveAccount,
-						callback: this.onSellApprove,
-					}
+					var onSale = this.mxGetLandItemDetail().salestate;
 
-					this.mxCloseLoading()
-					
-					this.mxShowAlert({
-						msg: this.$t('market.detail.alert-sell-approve-msg'),
-						btn: this.$t('market.detail.alert-approve-button'),
-						callback: this.onCallbackSellApprovePopup,
-					})
+					if (onSale == '1') {
+						this.approve_data = {
+							type: 'CancelSell',
+							category: '721',
+							price: this.sellPrice,
+							fToast: this.mxShowToast,
+							network: networkName,
+							provider,
+							accountAddress: curActiveAccount,
+							tokenId: this.marketItem.token_id,
+							ownerId: this.marketItem.owner_id,
+							callback: this.onCacelSellApprove,
+						}
+
+						this.mxCloseLoading()
+						
+						this.mxShowAlert({
+							msg: this.$t('market.detail.alert-cancel-sell-msg'),
+							btn: this.$t('market.detail.alert-cancel-sell-button'),
+							callback: this.onCallbackCancelSellPopup,
+						})
+					} else {
+						this.approve_data = {
+							type: 'SellApproval',
+							category: '721',
+							price: this.sellPrice,
+							fToast: this.mxShowToast,
+							network: networkName,
+							provider,
+							accountAddress: curActiveAccount,
+							callback: this.onSellApprove,
+						}
+
+						this.mxCloseLoading()
+						
+						this.mxShowAlert({
+							msg: this.$t('market.detail.alert-sell-approve-msg'),
+							btn: this.$t('market.detail.alert-approve-button'),
+							callback: this.onCallbackSellApprovePopup,
+						})
+					}
 					return;
 				}
 				
@@ -1304,6 +1329,19 @@ export default {
 				wAPI.ContractDviNew(data)
 			}
 		},
+		onCallbackCancelSellPopup(resp) {
+			console.log('on callback cancel sell', resp)
+			const data = this.approve_data
+			console.log('data', data)
+			if (!data) {
+				return
+			}
+			
+			if (_U.getIfDefined(resp, 'result') == true) {
+				this.mxShowLoading('inf')
+				wAPI.ContractDviNew(data)
+			}
+		},
 		onCallbackSellPopup(resp) {
 			var data = this.trade_data
 			if (!data) {
@@ -1381,6 +1419,14 @@ export default {
 				msg: this.$t('market.detail.alert-sell-msg'),
 				btn: this.$t('market.detail.alert-sell-button'),
 				callback: this.onCallbackSellPopup,
+			})
+		},
+		onCacelSellApprove(resp) {
+			this.mxCloseLoading()
+			var msg = this.$t('market.detail.alert-success-on-cancel')
+			this.mxShowAlert({
+				msg: msg,
+				callback: this.refreshPage,
 			})
 		},
 		onSellLand(resp) {

@@ -969,6 +969,18 @@ export default function walletAPI() {
 									from: J.accountAddress,
 							  })
 							: contract.setApprovalForAll(contAddr, true))
+					} else if (J.type =='CancelSell') {
+						console.log('cancel sell 721')
+						sendTransactionPromise = await (loginBy === FORTMATIC ||
+						loginBy === BITSKI
+							? contract.methods
+								.cancelSellItem721(
+									J.tokenId.toString())
+								.send({
+									from: J.accountAddress,
+							  })
+							: contract.cancelSellItem721(
+								J.tokenId.toString()))
 					} else if (J.type == 'Trade') {
 						if (J.category == '721') {
 							if (J.tokenType == 0) {
