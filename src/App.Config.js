@@ -172,7 +172,7 @@ export default function AppConfig() {
 			},
 			addr3rdLandPolProd: {
 				// token contract for rel
-				TokenAddress :             "",
+				TokenAddress :             "0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204",
 				Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
 				Contract1155Address :      "",
 				ContractMarketAddress :    "0x0528943BD50427Db3953d7d715015325fBB616fE",
