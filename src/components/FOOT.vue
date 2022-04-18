@@ -16,7 +16,6 @@
 						<div class="title" :theme="theme ? theme: 'black'">{{$t("foot.docs")}}</div>
 						<div class="msg-box">
 							<a class="msg" :theme="theme ? theme: 'black'" target='_blank' :href="docs[0].link">{{$t(docs[0].title)}}</a>
-							<a class="msg" :theme="theme ? theme: 'black'" target='_blank' :href="docs[1].link">{{$t(docs[1].title)}}</a>
 						</div>
 					</div>
 					<div class="contact box">
@@ -51,12 +50,11 @@ export default {
 				{title:"md", link:"https://medium.com/dvisionnetwork"}
 			],
 			docs: [
-				{title:"foot.whitepaper-kr", link:"https://dvision.network/paper/dvision_Whitepaper_ver.2.0_kr.pdf"},
-				{title:"foot.whitepaper-en", link:"https://dvision.network/paper/dvision_Whitepaper_ver.2.0_eng.pdf"}
+				{title:"foot.whitepaper", link:"https://dvision.gitbook.io/dvision-network-english/"}
 			],
 			contact: {
-				title: 'contact@dvision.network',
-				link: 'mailto:contact@dvision.network'
+				title: 'cs@dvision.network',
+				link: 'mailto:cs@dvision.network'
 			}
 		}
 	}

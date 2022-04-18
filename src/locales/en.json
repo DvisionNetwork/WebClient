@@ -351,8 +351,7 @@
 		"title": "Dvision World<br> ------ Studio ----- "
 	},
 	"foot" : {
-		"whitepaper-kr" : "Whitepaper KR",
-		"whitepaper-en" : "Whitepaper EN",
+		"whitepaper" : "Whitepaper",
 		"docs": "Docs",
 		"contact": "Contact"
 	}
