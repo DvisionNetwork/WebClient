@@ -34,7 +34,7 @@
 								<img src="../assets/img/ic-walletconnect.svg" alt="" class="ic-image">
 								WalletConnect
 							</BaseButton>
-							<BaseButton
+							<!-- <BaseButton
 								type="button"
 								class="connectbtn coinbase-btn"
 								@click="
@@ -43,7 +43,7 @@
 							>
 								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
 								CoinBase
-							</BaseButton>
+							</BaseButton> -->
 							<BaseButton
 								type="button"
 								class="connectbtn fortmatic-btn"
