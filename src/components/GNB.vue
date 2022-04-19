@@ -243,10 +243,10 @@
 <script>
 
 import AppConfig from '@/App.Config.js'
-import { ETH_RPC_ENDPOINT,
- 	BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT, FORTMATIC,
+import { ETH_RPC_ENDPOINT,BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT,
+	BSC_RPC_ENDPOINT_PROD, ETH_RPC_ENDPOINT_PROD, MATIC_RPC_ENDPOINT_PROD,
 	WALLETCONNECT, checkProviderWallet,
-	COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
+	FORTMATIC, COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
 import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
 import { MSG_METAMASK_2 } from '@/features/Messages.js'
 
@@ -310,16 +310,30 @@ export default {
 				this.mxShowToast('Please change network on extension or mobile app, thank you.')
 				return;
 			}
-			switch (network) {
-				case 'ETH':
-					this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
-					break
-				case 'BSC':
-					this.switchNetwork('0x61', 'BSC', BSC_RPC_ENDPOINT)
-					break
-				case 'POL':
-					this.switchNetwork('0x13881', 'Polygon', MATIC_RPC_ENDPOINT)
-					break
+			if(gConfig.isProd) {
+				switch (network) {
+					case 'ETH':
+						this.switchNetwork('0x1', 'Ethereum', ETH_RPC_ENDPOINT_PROD)
+						break
+					case 'BSC':
+						this.switchNetwork('0x38', 'BSC', BSC_RPC_ENDPOINT_PROD)
+						break
+					case 'POL':
+						this.switchNetwork('0x89', 'Polygon', MATIC_RPC_ENDPOINT_PROD)
+						break
+				}
+			} else {
+				switch (network) {
+					case 'ETH':
+						this.switchNetwork('0x4', 'Ethereum', ETH_RPC_ENDPOINT)
+						break
+					case 'BSC':
+						this.switchNetwork('0x61', 'BSC', BSC_RPC_ENDPOINT)
+						break
+					case 'POL':
+						this.switchNetwork('0x13881', 'Polygon', MATIC_RPC_ENDPOINT)
+						break
+				}
 			}
 		},
 		async switchNetwork(chainId, name, rpc) {
@@ -366,14 +380,20 @@ export default {
 				switch (currentNetwork) {
 					case '0x4':
 					case '4':
+					case '0x1':
+					case '1':
 						this.checkedNetwork = 'Ethereum'
 						break
 					case '0x61':
 					case '97':
+					case '0x38':
+					case '56':
 						this.checkedNetwork = 'BSC'
 						break
 					case '0x13881':
 					case '80001':
+					case '0x89':
+					case '137':
 						this.checkedNetwork = 'Polygon'
 						break
 				}
@@ -384,20 +404,27 @@ export default {
 		getInterval() {
 			const walletConnect = window.localStorage.getItem('walletconnect')
 			const chainId = JSON.parse(walletConnect).chainId
+			console.log("zmfhdn77 network : ", chainId)
 			if(chainId !== this.chainId) {
 				switch (chainId.toString()) {
 					case '0x4':
 					case '4':
+					case '0x1':
+					case '1':
 						this.checkedNetwork = 'Ethereum'
 						window.location.reload()
 						break
 					case '0x61':
 					case '97':
+					case '0x38':
+					case '56':
 						this.checkedNetwork = 'BSC'
 						window.location.reload()
 						break
 					case '0x13881':
 					case '80001':
+					case '0x89':
+					case '137':
 						this.checkedNetwork = 'Polygon'
 						window.location.reload()
 						break

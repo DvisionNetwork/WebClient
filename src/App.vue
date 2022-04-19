@@ -494,11 +494,15 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
+			
 			window.localStorage.setItem('currentNetwork', chainId)
 			if (
 				chainId !== networkBSC &&
 				chainId !== networkPoygon &&
-				chainId !== networkETH
+				chainId !== networkETH &&
+				chainId !== parseInt(networkBSC, 16).toString() &&
+				chainId !== parseInt(networkPoygon, 16).toString() &&
+				chainId !== parseInt(networkETH, 16).toString()
 			) this.mxShowToast(MSG_METAMASK_2)
 			else {
 				window.location.reload()

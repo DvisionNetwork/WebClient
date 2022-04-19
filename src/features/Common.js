@@ -113,6 +113,13 @@ export const BSC_RPC_ENDPOINT =
 export const ETH_RPC_ENDPOINT =
 	'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 export const MATIC_RPC_ENDPOINT = 'https://rpc-mumbai.maticvigil.com/'
+
+export const BSC_RPC_ENDPOINT_PROD =
+	'https://bsc-dataseed.binance.org/'
+export const ETH_RPC_ENDPOINT_PROD =
+	'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
+export const MATIC_RPC_ENDPOINT_PROD = 'https://polygon-rpc.com/'
+
 export const BSC_ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
 export const BSC_ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
 export const ETH_ADDRESS_721 = '0x13b03495467f7CfB7237cbC5784faDA36bf23848'
