@@ -357,6 +357,7 @@
 	"foot" : {
 		"whitepaper" : "Whitepaper",
 		"docs": "Docs",
-		"contact": "Contact"
+		"business": "Business Inquiry",
+		"customer": "Customer Service"
 	}
 }

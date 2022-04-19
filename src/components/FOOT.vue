@@ -15,13 +15,19 @@
 					<div class="docs box">
 						<div class="title" :theme="theme ? theme: 'black'">{{$t("foot.docs")}}</div>
 						<div class="msg-box">
-							<a class="msg" :theme="theme ? theme: 'black'" target='_blank' :href="docs[0].link">{{$t(docs[0].title)}}</a>
+							<a class="msg" :theme="theme ? theme: 'black'" target='_blank' :href="docs.link">{{$t(docs.title)}}</a>
 						</div>
 					</div>
 					<div class="contact box">
-						<div class="title" :theme="theme ? theme: 'black'">{{$t("foot.contact")}}</div>
+						<div class="title" :theme="theme ? theme: 'black'">{{$t("foot.business")}}</div>
 						<div class="msg-box">
-							<a class="msg" :theme="theme ? theme: 'black'" :href="contact.link">{{contact.title}}</a>
+							<a class="msg" :theme="theme ? theme: 'black'" :href="contact[0].link">{{contact[0].title}}</a>
+						</div>
+					</div>
+					<div class="contact box">
+						<div class="title" :theme="theme ? theme: 'black'">{{$t("foot.customer")}}</div>
+						<div class="msg-box">
+							<a class="msg" :theme="theme ? theme: 'black'" :href="contact[1].link">{{contact[1].title}}</a>
 						</div>
 					</div>
 				</div>
@@ -49,13 +55,11 @@ export default {
 				{title:"bg", link:"https://blog.naver.com/dvision_network"},
 				{title:"md", link:"https://medium.com/dvisionnetwork"}
 			],
-			docs: [
-				{title:"foot.whitepaper", link:"https://dvision.gitbook.io/dvision-network-english/"}
-			],
-			contact: {
-				title: 'cs@dvision.network',
-				link: 'mailto:cs@dvision.network'
-			}
+			docs: {title:"foot.whitepaper", link:"https://dvision.gitbook.io/dvision-network-english/"},
+			contact: [
+				{title: 'contact@dvision.network',link: 'mailto:contact@dvision.network'},
+				{title: 'cs@dvision.network',link: 'mailto:cs@dvision.network'}
+			]
 		}
 	}
 }
@@ -133,12 +137,12 @@ export default {
 		.right-box {
 			@include FLEX(flex-end, center);
 			@include Transition($tsTime);
-			width: gREm(105 + 91 + 180);
+			width: gREm(105 + 91 + 180 + 180);
 			height: 100%;
 			.right-wrap {
 				@include FLEX(space-between, center);
 				@include Transition($tsTime);
-				width: gREm(105 + 91 + 180);
+				width: gREm(105 + 91 + 180+ 180);
 				height: gREm(177);
 			}
 			.box {

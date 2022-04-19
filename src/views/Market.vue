@@ -262,7 +262,7 @@ export default {
 
 			markets: [
 				{name: 'Land', id:'land-map'},
-				{name: 'BSC', id:'bsc'},
+				{name: 'BNB', id:'bsc'},
 				{name: 'ETH', id:'eth'},
 				{name: 'Enjin (soon)', id:'partner_1'},
 			],
