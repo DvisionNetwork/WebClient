@@ -4,9 +4,7 @@
 			<div class="modal-wrapper">
 				<div class="modal-container">
 					<div>
-						<form
-							class="frm_auth frm_signin form"
-						>
+						<form class="frm_auth frm_signin form">
 							<BaseButton
 								type="button"
 								class="closebtn"
@@ -14,28 +12,72 @@
 							>
 							</BaseButton>
 
-							<div class="welcome">{{$t('login.popup.welcome-msg')}}</div>
-							<div class="popup-title">{{$t('login.popup.title')}}</div>
+							<div class="welcome">
+								{{ $t('login.popup.welcome-msg') }}
+							</div>
+							<div class="popup-title">
+								{{ $t('login.popup.title') }}
+							</div>
 
-							<BaseButton type="button" class="connectbtn metamask-btn" @click="connectMetamask">
-								<img src="../assets/img/ic-metamask.svg" alt="" class="ic-image">
+							<BaseButton
+								type="button"
+								class="connectbtn metamask-btn"
+								@click="connectMetamask"
+							>
+								<img
+									src="../assets/img/ic-metamask.svg"
+									alt=""
+									class="ic-image"
+								/>
 								Metamask
 							</BaseButton>
 
-							<BaseButton type="button" class="connectbtn walletconnect-btn" @click="connectWalletConnect">
-								<img src="../assets/img/ic-walletconnect.svg" alt="" class="ic-image">
+							<BaseButton
+								type="button"
+								class="connectbtn walletconnect-btn"
+								@click="connectWalletConnect"
+							>
+								<img
+									src="../assets/img/ic-walletconnect.svg"
+									alt=""
+									class="ic-image"
+								/>
 								WalletConnect
 							</BaseButton>
-							<BaseButton type="button" class="connectbtn coinbase-btn" @click="connectCoinbase">
-								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
+							<BaseButton
+								type="button"
+								class="connectbtn coinbase-btn"
+								@click="connectCoinbase"
+							>
+								<img
+									src="../assets/img/ic-coinbase.svg"
+									alt=""
+									class="ic-image"
+								/>
 								Coinbase
 							</BaseButton>
-							<BaseButton type="button" class="connectbtn fortmatic-btn" @click="connectFortmatic">
-								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
+							<BaseButton
+								type="button"
+								class="connectbtn fortmatic-btn"
+								@click="connectFortmatic"
+							>
+								<img
+									src="../assets/img/ic-fortmatic.svg"
+									alt=""
+									class="ic-image"
+								/>
 								Fortmatic
 							</BaseButton>
-							<BaseButton type="button" class="connectbtn bitski-btn" @click="connectBitski">
-								<img src="../assets/img/ic-bitski.png" alt="" class="ic-image">
+							<BaseButton
+								type="button"
+								class="connectbtn bitski-btn"
+								@click="connectBitski"
+							>
+								<img
+									src="../assets/img/ic-bitski.png"
+									alt=""
+									class="ic-image"
+								/>
 								Bitski
 							</BaseButton>
 							<div class="or">
@@ -44,12 +86,32 @@
 								<span class="line"></span>
 							</div>
 							<div class="login-input">
-								<input v-model="idLogin" type="text" placeholder="Please enter ID..." />
+								<input
+									v-model="idLogin"
+									type="text"
+									placeholder="Please enter ID..."
+								/>
 							</div>
 							<div class="login-pwd">
-								<input v-model="passwordLogin" :type="passwordType" placeholder="***********" />
-								<img v-if="passwordType === 'password'" class="img-eye" src="../assets/img/ic-eye.svg" alt="eye" @click="handleEyeClick()">
-								<img class="img-eye" v-else src="../assets/img/eye-close.svg" @click="handleEyeClick()" alt="eye-close">
+								<input
+									v-model="passwordLogin"
+									:type="passwordType"
+									placeholder="***********"
+								/>
+								<img
+									v-if="passwordType === 'password'"
+									class="img-eye"
+									src="../assets/img/ic-eye.svg"
+									alt="eye"
+									@click="handleEyeClick()"
+								/>
+								<img
+									class="img-eye"
+									v-else
+									src="../assets/img/eye-close.svg"
+									@click="handleEyeClick()"
+									alt="eye-close"
+								/>
 							</div>
 							<!-- TODO: Make selection UI for ID/PW login -->
 							<!-- <div class="id">
@@ -94,14 +156,33 @@
 									<div class="checks"></div>
 									<div class="remember">{{$t('login.popup.remember-me')}}</div>
 								</div> -->
-								<div class="forgot-msg" >
-									<span class="text forgot-id remove-highlight" @click="goFindId">{{$t('login.popup.forgot') +' '+ $t('login.popup.label-id')}}</span>
-									<span class="text forgot-slash">{{' / '}}</span>
-									<span class="text forgot-pwd remove-highlight" @click="goFindPwd">{{$t('login.popup.label-pwd') +'?'}}</span>
+								<div class="forgot-msg">
+									<span
+										class="text forgot-id remove-highlight"
+										@click="goFindId"
+										>{{
+											$t('login.popup.forgot') +
+											' ' +
+											$t('login.popup.label-id')
+										}}</span
+									>
+									<span class="text forgot-slash">{{
+										' / '
+									}}</span>
+									<span
+										class="text forgot-pwd remove-highlight"
+										@click="goFindPwd"
+										>{{
+											$t('login.popup.label-pwd') + '?'
+										}}</span
+									>
 								</div>
 							</div>
 
-							<BaseButton @click="loginWithEmail" type="button" class="login-btn"
+							<BaseButton
+								@click="loginWithEmail"
+								type="button"
+								class="login-btn"
 								>Login</BaseButton
 							>
 
@@ -111,19 +192,19 @@
 
 							<div class="signup-box">
 								<div class="signup-box-wrap">
-									<div class="notamember" >{{$t('login.popup.not-a-member')}}</div>
+									<div class="notamember">
+										{{ $t('login.popup.not-a-member') }}
+									</div>
 									<div
 										class="signup-msg"
 										@click="goSignUpAgreement"
 									>
-										{{$t('login.popup.sign-up')}}
+										{{ $t('login.popup.sign-up') }}
 									</div>
 								</div>
 							</div>
-
 						</form>
 					</div>
-
 				</div>
 			</div>
 		</div>
@@ -134,11 +215,11 @@
 import WalletConnect from '@walletconnect/client'
 import QRCodeModal from '@walletconnect/qrcode-modal'
 import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+var gConfig = AppConfig()
 
-import sha256 from 'crypto-js/sha256';
+import sha256 from 'crypto-js/sha256'
 import WalletAPI from '@/features/WalletAPI.js'
-var wAPI = new WalletAPI();
+var wAPI = new WalletAPI()
 
 import {
 	BRIDGE_WALLETCONNECT,
@@ -154,32 +235,37 @@ import {
 	ETH_CHAIN_ID,
 	ETH_RPC_ENDPOINT,
 	checkProviderWallet,
- FORTMATIC, WALLETCONNECT, BITSKI
+	FORTMATIC,
+	WALLETCONNECT,
+	BITSKI,
 } from '@/features/Common.js'
-import { coinbaseProvider, fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
-import Web3 from 'web3'
 import {
-	MSG_METAMASK_1,
-} from '@/features/Messages.js'
+	coinbaseProvider,
+	fortmaticProvider,
+	bitski,
+	walletConnectProvider,
+} from '@/features/Connectors.js'
+import Web3 from 'web3'
+import { MSG_METAMASK_1 } from '@/features/Messages.js'
 
 export default {
 	mounted() {
 		// this.popType = authInfo.type;
-		if(this.$cookies.isKey('remembered-id')) {
-			var rid = this.$cookies.get('remembered-id');
-			if(rid) {
-				this.fields_signin.id = rid;
-				this.checkedRememberMe = true;
+		if (this.$cookies.isKey('remembered-id')) {
+			var rid = this.$cookies.get('remembered-id')
+			if (rid) {
+				this.fields_signin.id = rid
+				this.checkedRememberMe = true
 			}
 		}
 	},
 	data() {
 		return {
-			idFocus :false,
+			idFocus: false,
 			idLength: false,
-			passwordFocus :false,
+			passwordFocus: false,
 			passwordLength: false,
-			checkedRememberMe :false,
+			checkedRememberMe: false,
 			categories: [
 				'sustainability',
 				'nature',
@@ -189,9 +275,9 @@ export default {
 				'food',
 				'community',
 			],
-			fields_signin : {
-				id:'',
-				password:''
+			fields_signin: {
+				id: '',
+				password: '',
 			},
 			passwordType: 'password',
 			idLogin: '',
@@ -207,109 +293,146 @@ export default {
 			const data = {
 				account: this.idLogin,
 				password: sha256(this.passwordLogin).toString(),
-				key: "0",
+				key: '0',
 				value: VALUE_LOGIN,
 				usedomain: gConfig.use_domain,
 			}
-			this.reqLogin(data, true);
+			this.reqLogin(data, true)
 		},
 		handleEyeClick() {
 			this.passwordType =
-				this.passwordType === 'password' ? 'text' : 'password';
+				this.passwordType === 'password' ? 'text' : 'password'
 		},
 		closePopup() {
-			this.$store.dispatch('showLoginPopup',false);
+			this.$store.dispatch('showLoginPopup', false)
 			// this.$emit('close-auth')
 		},
 
 		onBlur(v) {
-			if(v == 'id') {
-				setTimeout(()=>{
-					this.idFocus=false;
-				},500)
-			}else if(v=='password') {
-				setTimeout(()=>{
-					this.passwordFocus=false;
-				},500)
+			if (v == 'id') {
+				setTimeout(() => {
+					this.idFocus = false
+				}, 500)
+			} else if (v == 'password') {
+				setTimeout(() => {
+					this.passwordFocus = false
+				}, 500)
 			}
 		},
 
 		onClickRememberMe() {
-			this.checkedRememberMe = (this.checkedRememberMe ? false:true);
-			console.log("==================== ", this.checkedRememberMe, this.fields_signin.id)
-			if(this.checkedRememberMe) {
-				this.$cookies.set('remembered-id',this.fields_signin.id,'365d');
-			}else{
-				if(this.$cookies.isKey('remembered-id')) {
-					this.$cookies.remove('remembered-id');
+			this.checkedRememberMe = this.checkedRememberMe ? false : true
+			console.log(
+				'==================== ',
+				this.checkedRememberMe,
+				this.fields_signin.id
+			)
+			if (this.checkedRememberMe) {
+				this.$cookies.set(
+					'remembered-id',
+					this.fields_signin.id,
+					'365d'
+				)
+			} else {
+				if (this.$cookies.isKey('remembered-id')) {
+					this.$cookies.remove('remembered-id')
 				}
 			}
 		},
 
 		clearInput() {
-			this.fields_signin.id = '';
-			this.idLength = false;
-
+			this.fields_signin.id = ''
+			this.idLength = false
 		},
 		clearPWDInput() {
-		 	this.fields_signin.password = '';
+			this.fields_signin.password = ''
 		},
 		onInputId() {
-			this.idLength = this.fields_signin.id && this.fields_signin.id.length > 0 ?  true : false ;
-			if(this.checkedRememberMe==true && this.fields_signin.id) {
-				this.$cookies.set('remembered-id',this.fields_signin.id,'365d');
-			}else{
-				if(this.$cookies.isKey('remembered-id')) {
-					this.$cookies.remove('remembered-id');
+			this.idLength =
+				this.fields_signin.id && this.fields_signin.id.length > 0
+					? true
+					: false
+			if (this.checkedRememberMe == true && this.fields_signin.id) {
+				this.$cookies.set(
+					'remembered-id',
+					this.fields_signin.id,
+					'365d'
+				)
+			} else {
+				if (this.$cookies.isKey('remembered-id')) {
+					this.$cookies.remove('remembered-id')
 				}
 			}
 		},
 
-		onInputPassword(){
-			this.passwordLength = this.fields_signin.password && this.fields_signin.password.length > 0 ?  true : false ;
+		onInputPassword() {
+			this.passwordLength =
+				this.fields_signin.password &&
+				this.fields_signin.password.length > 0
+					? true
+					: false
 		},
 
 		goSignUpAgreement() {
-			this.closePopup();
+			this.closePopup()
 			// TODO: change terms agree page after terms of policy is ready
-			this.$router.push({name:"Signup-Page", params:{page: 'register'}});
+			this.$router.push({
+				name: 'Signup-Page',
+				params: { page: 'register' },
+			})
 			// this.$router.push({name:"Signup-Page", params:{page: 'agree'}});
 			// this.$emit('change-auth', { type: 'signup-agreement' })
 		},
 
 		goFindId() {
-			this.closePopup();
-			this.$router.push({name:"Signup-Page", params:{page: 'idphone'}});
+			this.closePopup()
+			this.$router.push({
+				name: 'Signup-Page',
+				params: { page: 'idphone' },
+			})
 		},
 		goFindPwd() {
-			this.closePopup();
-			this.$router.push({name:"Signup-Page", params:{page: 'pwdphone'}});
+			this.closePopup()
+			this.$router.push({
+				name: 'Signup-Page',
+				params: { page: 'pwdphone' },
+			})
 		},
 		async connectMetamask(data = null, loginWithEmail = false) {
-			const provider = checkProviderWallet(METAMASK);
-			console.log("[Login] connect metamask account");
-			const rv = await wAPI.checkMetamask(provider);
+			const provider = checkProviderWallet(METAMASK)
+			console.log('[Login] connect metamask account')
+			const rv = await wAPI.checkMetamask(provider)
 			// if(rv === 'NO-METAMASK' || !provider) {
-			if(rv === 'NO-METAMASK') {
-				window.open('https://metamask.io/download/', '_blank');
-			}
-			else if (rv !== 'NONE') {
+			if (rv === 'NO-METAMASK') {
+				window.open('https://metamask.io/download/', '_blank')
+			} else if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
-						const account = _U.getIfDefined(resp, ['data', 'account'])
+						const account = _U.getIfDefined(resp, [
+							'data',
+							'account',
+						])
 						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
-								return this.handleLogicLoginWithId(data, METAMASK)
+								return this.handleLogicLoginWithId(
+									data,
+									METAMASK
+								)
 							}
-							this.mxShowToast(MSG_METAMASK_1);
-							return;
+							this.mxShowToast(MSG_METAMASK_1)
+							return
 						}
 						if (account) {
-							wAPI.Sign_Account(account, this.reqLogin, provider, 1)
+							wAPI.Sign_Account(
+								account,
+								this.reqLogin,
+								provider,
+								1
+							)
 							this.mxSetNetwork(rv)
-							window.localStorage.setItem('loginBy', METAMASK);
+							window.localStorage.setItem('loginBy', METAMASK)
 							// window.localStorage.setItem('currentNetwork',chainId)
-							return;
+							return
 						}
 					}
 					this.mxShowAlert({
@@ -331,20 +454,25 @@ export default {
 			}
 		},
 		async connectCoinbase(data = null, loginWithEmail = false) {
-			const provider = checkProviderWallet(COINBASE);
-			console.log("[Login] connect coinbase account");
+			const provider = checkProviderWallet(COINBASE)
+			console.log('[Login] connect coinbase account')
 			coinbaseProvider.enable().then(async (accounts) => {
-				const rv = await wAPI.checkMetamask();
-				if(rv !=='NONE') {
+				const rv = await wAPI.checkMetamask()
+				if (rv !== 'NONE') {
 					if (data && loginWithEmail) {
 						if (accounts[0] === data.wlt.currentAccount) {
 							return this.handleLogicLoginWithId(data, COINBASE)
 						}
-						this.mxShowToast(MSG_METAMASK_1);
-						return;
+						this.mxShowToast(MSG_METAMASK_1)
+						return
 					}
 					if (accounts) {
-						wAPI.Sign_Account(accounts[0], this.reqLogin, provider, 2)
+						wAPI.Sign_Account(
+							accounts[0],
+							this.reqLogin,
+							provider,
+							2
+						)
 						this.mxSetNetwork(rv)
 						window.localStorage.setItem('loginBy', COINBASE)
 					} else if (error) {
@@ -352,10 +480,10 @@ export default {
 					}
 				} else {
 					this.mxShowAlert({
-					msg:
-						this.$t('signup.register.error-on-wallet-url') +
-						'\n' +
-						this.$t('popup.coinbase-chain-not-matched'),
+						msg:
+							this.$t('signup.register.error-on-wallet-url') +
+							'\n' +
+							this.$t('popup.coinbase-chain-not-matched'),
 					})
 				}
 			})
@@ -363,14 +491,14 @@ export default {
 		async connectBitski(data = null, loginWithEmail = false) {
 			const res = await bitski.signIn()
 			if (res) {
-				const provider = bitski.getProvider();
+				const provider = bitski.getProvider()
 				this.setlocalStorage()
 				if (data && loginWithEmail) {
 					if (res.accounts[0] === data.wlt.currentAccount) {
 						return this.handleLogicLoginWithId(data, BITSKI)
 					}
-					this.mxShowToast(MSG_METAMASK_1);
-					return;
+					this.mxShowToast(MSG_METAMASK_1)
+					return
 				}
 				this.reqLogin({ wallet_addr: res.accounts[0], wallet: 5 })
 				window.localStorage.setItem('loginBy', BITSKI)
@@ -380,59 +508,71 @@ export default {
 			try {
 				let web3 = new Web3(fortmaticProvider.getProvider())
 				var ref = this
-				web3.eth.getAccounts((error, accounts) =>{
-					if(error) throw error
+				web3.eth.getAccounts((error, accounts) => {
+					if (error) throw error
 					const from = accounts[0]
-					const msgToShow = 'Welcome to Dvision World.';
-					const msg = `0x${Buffer.from(msgToShow, 'utf8').toString('hex')}`
+					const msgToShow = 'Welcome to Dvision World.'
+					const msg = `0x${Buffer.from(msgToShow, 'utf8').toString(
+						'hex'
+					)}`
 					const params = [msg, from]
 					const method = 'personal_sign'
-					web3.currentProvider.sendAsync({
-						id: 1,
-						method,
-						params,
-						from
-					}, (error, result) => {
-						if(error) throw error;
-						this.setlocalStorage()
-						if (!loginWithEmail) {
-							ref.reqLogin({ wallet_addr: from, wallet : 4 })
-							window.localStorage.setItem('loginBy',FORTMATIC)
-						} else {
-							if (accounts[0] === data.wlt.currentAccount) {
-								return this.handleLogicLoginWithId(data, FORTMATIC)
+					web3.currentProvider.sendAsync(
+						{
+							id: 1,
+							method,
+							params,
+							from,
+						},
+						(error, result) => {
+							if (error) throw error
+							this.setlocalStorage()
+							if (!loginWithEmail) {
+								ref.reqLogin({ wallet_addr: from, wallet: 4 })
+								window.localStorage.setItem(
+									'loginBy',
+									FORTMATIC
+								)
+							} else {
+								if (accounts[0] === data.wlt.currentAccount) {
+									return this.handleLogicLoginWithId(
+										data,
+										FORTMATIC
+									)
+								}
+								this.mxShowToast(MSG_METAMASK_1)
+								return
 							}
-							this.mxShowToast(MSG_METAMASK_1);
-							return;
 						}
-					})
+					)
 				})
-			}
-			catch(err){
-				console.log('catch',err)
+			} catch (err) {
+				console.log('catch', err)
 			}
 		},
 		async connectWalletConnect(data, loginWithEmail = false) {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
-			const accounts = await web3.eth.getAccounts();
-			console.log(window.localStorage.getItem('walletconnect'));
-			const dataLocal = JSON.parse(window.localStorage.getItem('walletconnect'));
+			const accounts = await web3.eth.getAccounts()
+			console.log(window.localStorage.getItem('walletconnect'))
+			const dataLocal = JSON.parse(
+				window.localStorage.getItem('walletconnect')
+			)
 			if (dataLocal) {
-				window.localStorage.setItem('currentNetwork', dataLocal.chainId);
+				window.localStorage.setItem('currentNetwork', dataLocal.chainId)
 			}
 			if (data && loginWithEmail) {
 				if (accounts[0] === data.wlt.currentAccount) {
 					return this.handleLogicLoginWithId(data, WALLETCONNECT)
 				}
-				this.mxShowToast(MSG_METAMASK_1);
-				return;
+				this.mxShowToast(MSG_METAMASK_1)
+				return
 			} else if (accounts) {
 				const data = {
 					wallet_addr: accounts[0],
 					wallet: 3,
 				}
-				this.reqLogin(data);
+				this.reqLogin(data)
 				window.localStorage.setItem('loginBy', WALLETCONNECT)
 			} else {
 				this.mxShowAlert({ msg: 'error' })
@@ -487,39 +627,53 @@ export default {
 		// },
 		setlocalStorage() {
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
-			if(currentNetwork && currentNetwork.length > 0) {
+			if (currentNetwork && currentNetwork.length > 0) {
 				window.localStorage.setItem('fortmaticNetwork', currentNetwork)
 				switch (currentNetwork) {
 					case '0x4':
 					case '4':
-						window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
+						window.localStorage.setItem(
+							'networkRPC',
+							ETH_RPC_ENDPOINT
+						)
 						break
 					case '0x61':
 					case '97':
-						window.localStorage.setItem('networkRPC', BSC_RPC_ENDPOINT)
+						window.localStorage.setItem(
+							'networkRPC',
+							BSC_RPC_ENDPOINT
+						)
 						break
 					case '0x13881':
 					case '80001':
-					window.localStorage.setItem('networkRPC', MATIC_RPC_ENDPOINT)
+						window.localStorage.setItem(
+							'networkRPC',
+							MATIC_RPC_ENDPOINT
+						)
 						break
-					default :
-					window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
-					window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
+					default:
+						window.localStorage.setItem(
+							'networkRPC',
+							ETH_RPC_ENDPOINT
+						)
+						window.localStorage.setItem(
+							'fortmaticNetwork',
+							ETH_CHAIN_ID
+						)
 				}
-			}
-			else {
+			} else {
 				window.localStorage.setItem('networkRPC', ETH_RPC_ENDPOINT)
 				window.localStorage.setItem('fortmaticNetwork', ETH_CHAIN_ID)
 			}
 		},
 		reqLogin(data, loginWithEmail = false) {
-			console.log("[Auth] login() ", data);
+			console.log('[Auth] login() ', data)
 
 			_U.callPost({
 				url: gConfig.login_url,
 				data: data,
 				callback: (resp) => {
-					let rdata = resp.data;
+					let rdata = resp.data
 					if (rdata && typeof rdata == 'string') {
 						this.mxShowToast(rdata)
 					} else if (
@@ -545,23 +699,23 @@ export default {
 								}
 								switch (rdata[0].wallet) {
 									case '1':
-										this.connectMetamask(data, true);
-										break;
+										this.connectMetamask(data, true)
+										break
 									case '2':
-										this.connectCoinbase(data, true);
-										break;
+										this.connectCoinbase(data, true)
+										break
 									case '3':
-										this.connectWalletConnect(data, true);
-										break;
+										this.connectWalletConnect(data, true)
+										break
 									case '4':
-										this.connectFortmatic(data, true);
-										break;
+										this.connectFortmatic(data, true)
+										break
 									case '5':
-										this.connectBitski(data, true);
-										break;
+										this.connectBitski(data, true)
+										break
 									default:
-										this.mxShowToast('Invalid wallet');
-										break;
+										this.mxShowToast('Invalid wallet')
+										break
 								}
 								return
 							}
@@ -579,21 +733,25 @@ export default {
 							}
 						}
 					}
-				}
-			});
+				},
+			})
 		},
 
 		handleLogicLoginWithId(data, site) {
-			this.mxSetWallet(data.wlt);
-			this.$store.dispatch('setUserInfo', data.userInfo);
-			this.$cookies.set('userInfo', data. userInfo, gConfig.getUserInfoCookieExpireTime());
+			this.mxSetWallet(data.wlt)
+			this.$store.dispatch('setUserInfo', data.userInfo)
+			this.$cookies.set(
+				'userInfo',
+				data.userInfo,
+				gConfig.getUserInfoCookieExpireTime()
+			)
 			window.localStorage.setItem('loginBy', site)
-			this.closePopup();
+			this.closePopup()
 			if (this.$route.name == 'Signup-Page') {
-				this.$router.push({name:"Home"});
+				this.$router.push({ name: 'Home' })
 			}
-		}
-	}
+		},
+	},
 }
 </script>
 
@@ -623,7 +781,7 @@ export default {
 			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 			transition: all 0.3s ease;
 			font-family: Helvetica, Arial, sans-serif;
-			& .or{
+			& .or {
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -631,16 +789,16 @@ export default {
 				line-height: 22px;
 				margin-top: gREm(37);
 				margin-bottom: gREm(31);
-				& .text{
-					color: #A0A0A0;
+				& .text {
+					color: #a0a0a0;
 					font-size: gREm(14);
 					line-height: gREm(22);
 					font-family: $AppFont;
 				}
-				& .line{
+				& .line {
 					width: gREm(147);
 					height: 1px;
-					background: #E2E2E2;
+					background: #e2e2e2;
 				}
 			}
 		}
@@ -648,12 +806,12 @@ export default {
 }
 
 .form {
-	@include FLEXV(flex-start,center);
+	@include FLEXV(flex-start, center);
 	width: 100%;
 	height: auto;
-	.login-input{
+	.login-input {
 		margin-bottom: gREm(14);
-		& input{
+		& input {
 			border: 1px solid rgba(24, 23, 33, 0.1);
 			width: gREm(324);
 			height: auto;
@@ -665,10 +823,10 @@ export default {
 			font-family: $AppFont;
 		}
 	}
-	.login-pwd{
+	.login-pwd {
 		position: relative;
-		& input{
-			border: 1px solid #E2E2E2;
+		& input {
+			border: 1px solid #e2e2e2;
 			width: gREm(324);
 			height: auto;
 			padding: gREm(13) gREm(75) gREm(13) gREm(32);
@@ -688,7 +846,7 @@ export default {
 	}
 
 	input::placeholder {
-		color: #BABABA;
+		color: #bababa;
 	}
 
 	.login-btn {
@@ -719,14 +877,14 @@ export default {
 	}
 	.welcome {
 		height: auto;
-		width:100%;
+		width: 100%;
 		margin-top: gREm(50);
 		text-align: center;
 		@include Set-Font($AppFont, gREm(14), gREm(24), #0d0c22);
 	}
 	.popup-title {
 		height: auto;
-		width:100%;
+		width: 100%;
 		margin-top: gREm(8);
 		margin-bottom: gREm(12);
 		text-align: center;
@@ -749,35 +907,38 @@ export default {
 			width: gREm(420);
 			height: gREm(20);
 			margin-top: gREm(15);
-			@include FLEX(space-between,center);
-			.field-input{
+			@include FLEX(space-between, center);
+			.field-input {
 				height: 100%;
 				width: gREm(420 - 20 - 10);
 				@include Set-Font($AppFont, gREm(16), gREm(24), #0d0c22);
 				text-align: left;
-
 			}
 			.icon {
-				&[active='on']{
+				&[active='on'] {
 					width: gREm(20);
 					height: gREm(20);
 					cursor: pointer;
-					@include SetBgImage(url('../assets/img/ic-closed-input-n.svg'));
+					@include SetBgImage(
+						url('../assets/img/ic-closed-input-n.svg')
+					);
 					// @include OnOverTransition();
 				}
 				&[active='on']:hover {
-					@include SetBgImage(url('../assets/img/ic-closed-input-h.svg'));
+					@include SetBgImage(
+						url('../assets/img/ic-closed-input-h.svg')
+					);
 				}
 			}
 		}
 		.line {
 			width: 100%;
 			height: gREm(1);
-			margin-top:gREm(6);
+			margin-top: gREm(6);
 			background-color: #ededed;
 			@include Transition(0.5s ease-in-out);
 
-			&[active='on']{
+			&[active='on'] {
 				background-color: #6c38ef;
 				height: gREm(2);
 			}
@@ -790,26 +951,28 @@ export default {
 	.password {
 		margin-top: gREm(50);
 		// margin-bottom:gREm(20);
-		.input-box{
-			@include FLEX(space-between,center);
-			.field-input{
+		.input-box {
+			@include FLEX(space-between, center);
+			.field-input {
 				width: gREm(420 - 20 - 10);
 			}
-			.icon{
-				&[active='on']{
+			.icon {
+				&[active='on'] {
 					width: gREm(20);
 					height: gREm(20);
 					cursor: pointer;
-					@include SetBgImage(url('../assets/img/ic-closed-input-n.svg'));
+					@include SetBgImage(
+						url('../assets/img/ic-closed-input-n.svg')
+					);
 					// @include OnOverTransition();
 				}
-				&[active='on']:hover{
-					@include SetBgImage(url('../assets/img/ic-closed-input-h.svg'));
+				&[active='on']:hover {
+					@include SetBgImage(
+						url('../assets/img/ic-closed-input-h.svg')
+					);
 				}
 			}
-
 		}
-
 	}
 
 	.remember-me {
@@ -817,13 +980,13 @@ export default {
 		width: 100%;
 		max-width: gREm(324);
 		height: auto;
-		@include FLEX(flex-end,center);
-		.check-box{
+		@include FLEX(flex-end, center);
+		.check-box {
 			width: gREm(120);
-			@include FLEX(flex-start,center);
+			@include FLEX(flex-start, center);
 
-			.checks{
-				@include FLEX(center,center);
+			.checks {
+				@include FLEX(center, center);
 				width: gREm(19);
 				height: gREm(19);
 				cursor: pointer;
@@ -832,28 +995,28 @@ export default {
 				// border:none;
 				margin-right: gREm(8);
 			}
-			.remember{
-				@include FLEX(flex-start,center);
-				width:gREm(91);
+			.remember {
+				@include FLEX(flex-start, center);
+				width: gREm(91);
 				height: gREm(18);
 				cursor: pointer;
 				@include Set-Font($AppFont, gREm(14), gREm(24), #6a6a6a);
-
 			}
-			&[active='on']{
-				@include FLEX(flex-start,center);
-				.checks{
+			&[active='on'] {
+				@include FLEX(flex-start, center);
+				.checks {
 					@include SetBgImage(url('../assets/img/checkbox-s.svg'));
 					margin-right: gREm(8);
 				}
 			}
 		}
-		.forgot-msg{
+		.forgot-msg {
 			margin-left: gREm(130);
 			.text {
 				@include Set-Font($AppFont, gREm(14), gREm(24), #6c38ef);
 			}
-			.forgot-id, .forgot-pwd {
+			.forgot-id,
+			.forgot-pwd {
 				cursor: pointer;
 				&:hover {
 					text-decoration-line: underline;
@@ -863,7 +1026,6 @@ export default {
 				padding-left: gREm(5);
 				padding-right: gREm(5);
 			}
-
 		}
 	}
 
@@ -875,7 +1037,7 @@ export default {
 		@include Set-Font($AppFont, gREm(18), gREm(22), #ffffff);
 		@include OnOverTransition();
 	}
-	
+
 	.connectbtn {
 		padding-left: gREm(75);
 		margin-top: gREm(10);
@@ -886,44 +1048,42 @@ export default {
 		font-size: gREm(18);
 		// @include Set-Font($AppFont, gREm(18), gREm(22), unset);
 		@include OnOverTransition();
-		& .ic-image{
+		& .ic-image {
 			margin-right: gREm(15);
 			max-width: 28px;
 			max-height: 28px;
 		}
-		&:hover{
+		&:hover {
 			transform: translateY(-2px);
 		}
 	}
 
-	.signup-box{
+	.signup-box {
 		margin-top: gREm(16);
 		margin-bottom: gREm(50);
 		width: 100%;
 		max-width: gREm(324);
 		text-align: left;
-		.signup-box-wrap{
+		.signup-box-wrap {
 			width: 100%;
 			height: auto;
-			@include FLEX(flex-start,center);
+			@include FLEX(flex-start, center);
 
-			.notamember{
-				width:auto;
+			.notamember {
+				width: auto;
 				@include Set-Font($AppFont, gREm(14), gREm(22), #6a6a6a);
 			}
-			.signup-msg{
+			.signup-msg {
 				width: auto;
-				margin-left:gREm(7);
+				margin-left: gREm(7);
 				cursor: pointer;
-				@include Set-Font($AppFont, gREm(14), gREm(22), #6C38EF, 500);
+				@include Set-Font($AppFont, gREm(14), gREm(22), #6c38ef, 500);
 				&:hover {
 					text-decoration-line: underline;
 				}
 			}
-
 		}
 	}
-
 }
 
 /*
@@ -975,7 +1135,7 @@ export default {
 					.login-pwd {
 						width: 100%;
 						font-family: $AppFont;
-						
+
 						input {
 							width: 100%;
 							font-family: $AppFont;
