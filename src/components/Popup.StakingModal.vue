@@ -134,13 +134,10 @@ import {
 	formatChainId,
 	WALLETCONNECT,
 	checkErrorMessage,
-	USER_DECLINED
+	USER_DECLINED,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
-import {
-	MSG_METAMASK_1,
-	MSG_METAMASK_2,
-} from '@/features/Messages.js'
+import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
 export default {
@@ -163,9 +160,8 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			networkRPC : window.localStorage.getItem('networkRPC'),
-			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork')
-			
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	beforeMount() {
@@ -174,20 +170,21 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.current_network = chainId
-		} else if(this.loginBy === FORTMATIC) {
-			const fortmaticNetwork = window.localStorage.getItem('fortmaticNetwork')
+		} else if (this.loginBy === FORTMATIC) {
+			const fortmaticNetwork =
+				window.localStorage.getItem('fortmaticNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
-		}
-		else {
-			const fortmaticNetwork = window.localStorage.getItem('currentNetwork')
+		} else {
+			const fortmaticNetwork =
+				window.localStorage.getItem('currentNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
 		}
 	},
 	mounted() {
-		if(ethereum) {
+		if (ethereum) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
-		})
+			})
 		}
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
@@ -228,7 +225,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('chainId',chainId)
+			console.log('chainId', chainId)
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -266,7 +263,13 @@ export default {
 					nft.imageUrl = response.data.image
 					nft.description = response.data.description
 				}
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
+				const contractConn = getContractConnect(
+					this.loginBy,
+					ABI_STAKING,
+					this.data.staking_address,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
@@ -443,8 +446,16 @@ export default {
 			}
 			this.mxShowLoading('inf')
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
-			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
-			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
+			const address = this.isErc1155
+				? this.data.address1155
+				: this.data.address721
+			const contractConn = getContractConnect(
+				this.loginBy,
+				abi,
+				address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
@@ -452,10 +463,12 @@ export default {
 				)
 				.call()
 				.catch((e) => {
-					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+					if (
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
+					) {
 						this.mxShowToast(USER_DECLINED)
-					}
-					else {
+					} else {
 						this.mxShowToast(checkErrorMessage(e))
 					}
 					this.hadUnderstand = false
@@ -471,31 +484,39 @@ export default {
 
 		async onApprovedForAll() {
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
-			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
-			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
+			const address = this.isErc1155
+				? this.data.address1155
+				: this.data.address721
+			const contractConn = getContractConnect(
+				this.loginBy,
+				abi,
+				address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			try {
 				const res = await contractConn.methods
-				.setApprovalForAll(
-					this.data.staking_address, // address Staking
-					true
-				)
-				.send({
-					from: this.current_addr,
-				})
+					.setApprovalForAll(
+						this.data.staking_address, // address Staking
+						true
+					)
+					.send({
+						from: this.current_addr,
+					})
 				if (res) {
 					this.hadUnderstand = true
 				}
-			}
-			catch(e) {
-				if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+			} catch (e) {
+				if (
+					e.message.includes('104') &&
+					e.message.includes(USER_DECLINED)
+				) {
 					this.mxShowToast(USER_DECLINED)
-				}
-				else {
+				} else {
 					this.mxShowToast(checkErrorMessage(e))
 				}
 				this.hadUnderstand = false
-			}
-			finally {
+			} finally {
 				this.mxCloseLoading()
 			}
 		},
@@ -510,7 +531,13 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
+			const contractConn = getContractConnect(
+				this.loginBy,
+				ABI_STAKING,
+				this.data.staking_address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			let params = {
 				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
 				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
@@ -523,10 +550,12 @@ export default {
 					from: this.current_addr,
 				})
 				.catch((e) => {
-					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+					if (
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
+					) {
 						this.mxShowToast(USER_DECLINED)
-					}
-					else {
+					} else {
 						this.mxShowToast(checkErrorMessage(e))
 					}
 					this.mxCloseLoading()
