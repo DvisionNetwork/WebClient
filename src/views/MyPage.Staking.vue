@@ -2,9 +2,15 @@
 	<div class="my-staked-land">
 		<StakingTab :poolDuration="poolDuration" />
 		<div class="contents">
-			<h2 class="title" v-if="poolDuration.id === 1">Campaign status (30-day pool)</h2>
-			<h2 class="title" v-if="poolDuration.id === 2">Campaign status (90-day pool)</h2>
-			<h2 class="title" v-if="poolDuration.id === 3">Campaign status (180-day pool)</h2>
+			<h2 class="title" v-if="poolDuration.id === 1">
+				Campaign status (30-day pool)
+			</h2>
+			<h2 class="title" v-if="poolDuration.id === 2">
+				Campaign status (90-day pool)
+			</h2>
+			<h2 class="title" v-if="poolDuration.id === 3">
+				Campaign status (180-day pool)
+			</h2>
 			<RewardBox
 				:poolDuration="poolDuration"
 				:rewardPool="rewardPool"
@@ -87,7 +93,7 @@ import {
 	WALLETCONNECT,
 	BITSKI,
 	DENIED_TRANSACTION,
-	USER_DECLINED
+	USER_DECLINED,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
@@ -130,7 +136,7 @@ export default {
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
-			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 			networkRPC: window.localStorage.getItem('networkRPC'),
 			pages: [1],
 			currentPage: 1,
@@ -155,7 +161,7 @@ export default {
 			chainId: 0,
 			address721: '',
 			address1155: '',
-			showReward: false
+			showReward: false,
 		}
 	},
 	beforeMount() {
@@ -164,26 +170,23 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(Number(wll.chainId))
 			this.setStakingAddress(chainId)
-		}
-		else if(this.loginBy === METAMASK || this.loginBy === COINBASE) {
-			checkProviderWallet(this.loginBy);
+		} else if (this.loginBy === METAMASK || this.loginBy === COINBASE) {
+			checkProviderWallet(this.loginBy)
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
-		}
-		else if(this.loginBy === FORTMATIC || this.loginBy === BITSKI) {
+		} else if (this.loginBy === FORTMATIC || this.loginBy === BITSKI) {
 			const chainId = window.localStorage.getItem('fortmaticNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
-		}
-		else {
+		} else {
 			const chainId = window.localStorage.getItem('currentNetwork')
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
 		}
 	},
 	mounted() {
-		if(ethereum) {
+		if (ethereum) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
 			})
@@ -407,7 +410,13 @@ export default {
 		},
 		async getTotalMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
+				const contractConn = getContractConnect(
+					this.loginBy,
+					ABI_STAKING,
+					this.staking_address,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
 				await contractConn.methods
 					.totalCampaignHashrate(campainId)
 					.call()
@@ -425,7 +434,13 @@ export default {
 		},
 		async getMyMiningHashRate(campainId) {
 			if (typeof window.ethereum !== 'undefined') {
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
+				const contractConn = getContractConnect(
+					this.loginBy,
+					ABI_STAKING,
+					this.staking_address,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
 				await contractConn.methods
 					.userInfo(campainId, this.wallet_addr)
 					.call()
@@ -438,58 +453,65 @@ export default {
 
 		getMiningHashRatePerHour(duration, totalMiningHashRate) {
 			const mininghashRatePerHour =
-				((10 * Number(this.rewardPool)) /
-					(Number(totalMiningHashRate) * (duration / 86400)))
+				(10 * Number(this.rewardPool)) /
+				(Number(totalMiningHashRate) * (duration / 86400))
 			this.mininghashRatePerHour = `${mininghashRatePerHour} DVG`
 		},
 
 		async getCampaignInfo(campainId) {
 			try {
 				this.mxShowLoading()
-					const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
-					const isAllow = await contractConn.methods.allowWithdrawAll().call()
-					const data = await contractConn.methods
-						.campaignInfo(campainId)
-						.call()
-					console.log('data', data)
-					if (data) {
-						this.poolDuration.duration = Number(data.duration)
-						let resultNumber = BigNumber.from(data.rewardRate).mul(
-							data.duration
-						)
-						this.rewardPool = Number(
-							formatEther(resultNumber)
-						).toFixed()
-						//set time countdown
-						const endValue = Number(data.timestampFinish)
-						const startValue = endValue - Number(data.duration)
-						const currValue = moment().unix()
-						if (!isAllow) {
-							if (currValue > endValue) {
-								this.allowWithdraw = true
-							} else {
-								this.allowWithdraw = false
-							}
-						}
-						else {
-							this.allowWithdraw = true
-						}
-						this.timeCount.startValue = startValue
-						this.timeCount.endValue = endValue
+				const contractConn = getContractConnect(
+					this.loginBy,
+					ABI_STAKING,
+					this.staking_address,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
+				const isAllow = await contractConn.methods
+					.allowWithdrawAll()
+					.call()
+				const data = await contractConn.methods
+					.campaignInfo(campainId)
+					.call()
+				console.log('data', data)
+				if (data) {
+					this.poolDuration.duration = Number(data.duration)
+					let resultNumber = BigNumber.from(data.rewardRate).mul(
+						data.duration
+					)
+					this.rewardPool = Number(
+						formatEther(resultNumber)
+					).toFixed()
+					//set time countdown
+					const endValue = Number(data.timestampFinish)
+					const startValue = endValue - Number(data.duration)
+					const currValue = moment().unix()
+					if (!isAllow) {
 						if (currValue > endValue) {
-							//it's end
-							this.switchStatusCampain(1)
-						} else if (
-							startValue <= currValue &&
-							currValue <= endValue
-						) {
-							//had start
-							this.switchStatusCampain(3)
-						} else if (currValue < startValue) {
-							//not start yet
-							this.switchStatusCampain(2)
+							this.allowWithdraw = true
+						} else {
+							this.allowWithdraw = false
 						}
+					} else {
+						this.allowWithdraw = true
 					}
+					this.timeCount.startValue = startValue
+					this.timeCount.endValue = endValue
+					if (currValue > endValue) {
+						//it's end
+						this.switchStatusCampain(1)
+					} else if (
+						startValue <= currValue &&
+						currValue <= endValue
+					) {
+						//had start
+						this.switchStatusCampain(3)
+					} else if (currValue < startValue) {
+						//not start yet
+						this.switchStatusCampain(2)
+					}
+				}
 				this.mxCloseLoading()
 			} catch (err) {
 				this.mxCloseLoading()
@@ -509,7 +531,7 @@ export default {
 			)
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
-				console.log('response.data',response.data)
+				console.log('response.data', response.data)
 				response.data.map((item, idx) => {
 					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
 				})
@@ -530,7 +552,13 @@ export default {
 					nft.imageUrl = response.data.image
 					nft.description = response.data.description
 				}
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
+				const contractConn = getContractConnect(
+					this.loginBy,
+					ABI_STAKING,
+					this.staking_address,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
 				await contractConn.methods
 					.tokenHashrate(is_ERC1155, nft_id)
 					.call()
@@ -603,7 +631,13 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.staking_address, this.networkRPC, this.fortmaticNetwork)
+			const contractConn = getContractConnect(
+				this.loginBy,
+				ABI_STAKING,
+				this.staking_address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			console.log('params', params)
 
 			await contractConn.methods
@@ -624,10 +658,15 @@ export default {
 				})
 				.catch((e) => {
 					this.mxCloseLoading()
-					if(error.message.includes('104') && error.message.includes(USER_DECLINED)) {
+					if (
+						error.message.includes('104') &&
+						error.message.includes(USER_DECLINED)
+					) {
 						this.mxShowToast(USER_DECLINED)
-					}
-					else if (e.code === 4001 || e.message === DENIED_TRANSACTION) {
+					} else if (
+						e.code === 4001 ||
+						e.message === DENIED_TRANSACTION
+					) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)
