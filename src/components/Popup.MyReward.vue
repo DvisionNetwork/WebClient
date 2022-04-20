@@ -305,7 +305,11 @@ export default {
 			width: 100%;
 			max-height: 100vh;
 			overflow-y: auto;
-			max-width: gREm(1010);
+			max-width: gREm(939);
+
+			.modal-body {
+				margin-bottom: 10px;
+			}
 
 			.modal-header {
 				display: flex;
