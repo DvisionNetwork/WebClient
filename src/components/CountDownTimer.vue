@@ -116,7 +116,7 @@ export default {
 			const diffDuration = moment.duration(
 				moment(this.endTime).diff(currentTime)
 			)
-			this.days = diffDuration.days()
+			this.days = Math.floor(diffDuration.asDays())
 			this.hours = diffDuration.hours()
 			this.mins = diffDuration.minutes()
 			this.secs = diffDuration.seconds()

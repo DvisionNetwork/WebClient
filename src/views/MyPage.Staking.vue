@@ -110,7 +110,6 @@ import {
 	renderOnUnStakeNftsSuccessContent,
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
-import { formatEther } from '@ethersproject/units'
 import moment from 'moment'
 const { ethereum } = window
 
@@ -333,7 +332,7 @@ export default {
 			}
 			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
-			} else if (this.statusCampain !== 1) {
+			} else if (this.statusCampain === 3) {
 				obj.title = 'Staking campaign is unavailable'
 				obj.content = renderCampainNotYetContent()
 				this.mxShowSuccessModal(obj)
@@ -417,19 +416,6 @@ export default {
 					this.networkRPC,
 					this.fortmaticNetwork
 				)
-				await contractConn.methods
-					.totalCampaignHashrate(campainId)
-					.call()
-					.then((tx) => {
-						const mathTx = Number(tx) / 10
-						this.totalMiningHashRate = mathTx
-						if (Number(tx) > 0) {
-							this.getMiningHashRatePerHour(
-								this.poolDuration.duration,
-								this.totalMiningHashRate
-							)
-						}
-					})
 			}
 		},
 		async getMyMiningHashRate(campainId) {
@@ -441,13 +427,6 @@ export default {
 					this.networkRPC,
 					this.fortmaticNetwork
 				)
-				await contractConn.methods
-					.userInfo(campainId, this.wallet_addr)
-					.call()
-					.then((tx) => {
-						const myMiningHashRate = Number(tx[0]) / 10
-						this.myMiningHashRate = myMiningHashRate.toString()
-					})
 			}
 		},
 
@@ -468,34 +447,36 @@ export default {
 					this.networkRPC,
 					this.fortmaticNetwork
 				)
-				const isAllow = await contractConn.methods
-					.allowWithdrawAll()
-					.call()
+				// const isAllow = await contractConn.methods
+				// 	.allowWithdrawAll()
+				// 	.call()
+				const isAllow = true
 				const data = await contractConn.methods
 					.campaignInfo(campainId)
 					.call()
 				console.log('data', data)
 				if (data) {
 					this.poolDuration.duration = Number(data.duration)
-					let resultNumber = BigNumber.from(data.rewardRate).mul(
-						data.duration
-					)
-					this.rewardPool = Number(
-						formatEther(resultNumber)
-					).toFixed()
+					// let resultNumber = BigNumber.from(data.rewardRate).mul(
+					// 	data.duration
+					// )
+					// this.rewardPool = Number(
+					// 	formatEther(resultNumber)
+					// ).toFixed()
 					//set time countdown
-					const endValue = Number(data.timestampFinish)
-					const startValue = endValue - Number(data.duration)
+					const endValue = Number(data.campaignEndTime)
+					// const endValue = Number('1650444630')
+					const startValue = Number(data.campaignStartTime)
 					const currValue = moment().unix()
-					if (!isAllow) {
-						if (currValue > endValue) {
-							this.allowWithdraw = true
-						} else {
-							this.allowWithdraw = false
-						}
-					} else {
-						this.allowWithdraw = true
-					}
+					// if (!isAllow) {
+					// 	if (currValue > endValue) {
+					// 		this.allowWithdraw = true
+					// 	} else {
+					// 		this.allowWithdraw = false
+					// 	}
+					// } else {
+					// 	this.allowWithdraw = true
+					// }
 					this.timeCount.startValue = startValue
 					this.timeCount.endValue = endValue
 					if (currValue > endValue) {
@@ -505,7 +486,7 @@ export default {
 						startValue <= currValue &&
 						currValue <= endValue
 					) {
-						//had start
+						//had start not staking
 						this.switchStatusCampain(3)
 					} else if (currValue < startValue) {
 						//not start yet
