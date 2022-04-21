@@ -75,7 +75,7 @@ export default {
 .info {
 	&-body {
 		overflow-y: auto;
-		max-height: gREm(630);
+		max-height: gREm(430);
 
 		.list-card {
 			display: flex;
