@@ -381,9 +381,9 @@ export default {
 			if (response?.status === 200) {
 				this.listNfts = response.data
 				this.listNfts721Check = []
-				response.data.map((item, idx) => {
-					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
-				})
+				// response.data.map((item, idx) => {
+				// 	this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
+				// })
 				this.listShowers = this.listNfts
 			} else {
 				this.mxCloseLoading()
