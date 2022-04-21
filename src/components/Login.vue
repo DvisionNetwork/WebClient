@@ -209,7 +209,7 @@ export default {
 				password: sha256(this.passwordLogin).toString(),
 				key: "0",
 				value: VALUE_LOGIN,
-				usedomain: 'false',
+				usedomain: gConfig.use_domain,
 			}
 			this.reqLogin(data, true);
 		},

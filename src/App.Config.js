@@ -165,7 +165,7 @@ export default function AppConfig() {
 			addr3rdLandPolDev: {
 				// token contract for dev
 				TokenAddress :             "0xdC49590852E37419f49C02C5898C5411c5924675",
-				Contract721Address :       "0x25749eB22DE42cb4B90Da71Bd132e7c353D78053",
+				Contract721Address :       "0x3F3cDA1A22CB7B75A9b2b5C7402962E8bC021ED3",
 				Contract1155Address :      "0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F",
 				ContractMarketAddress :    "0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d",
 				Network : "0x13881"

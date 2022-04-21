@@ -997,12 +997,15 @@ export default function walletAPI() {
 								sendTransactionPromise = await (loginBy ===
 									FORTMATIC || loginBy === BITSKI
 									? contract.methods
-											.trade721Eth(J.tokenId.toString())
+											.trade721Eth(
+												J.ownerId.toString(),
+												J.tokenId.toString())
 											.send({
 												from: J.accountAddress,
 												value: overrides.value,
 											})
 									: contract.trade721Eth(
+											J.ownerId.toString(),
 											J.tokenId.toString(),
 											overrides
 									  )) // function check
