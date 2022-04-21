@@ -304,8 +304,12 @@ export default {
 			position: absolute;
 			width: 100%;
 			max-height: 100vh;
-			overflow-y: auto;
-			max-width: gREm(1010);
+			// overflow-y: auto;
+			max-width: gREm(939);
+
+			.modal-body {
+				margin-bottom: 10px;
+			}
 
 			.modal-header {
 				display: flex;
@@ -319,8 +323,8 @@ export default {
 			}
 
 			.modal-description {
-				margin-top: gREm(19);
-				margin-bottom: gREm(29);
+				margin-top: gREm(9);
+				margin-bottom: gREm(39);
 			}
 
 			.tabs {
