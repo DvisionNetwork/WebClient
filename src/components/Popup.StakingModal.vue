@@ -33,20 +33,6 @@
 									src="../assets/img/ic-arrow-down.svg"
 							/></span>
 						</div>
-						<div class="fill" @click="setFilter">
-							<span class="child" v-if="filterBy === 'asc'"
-								><span>Sort by Hash Rate (ascending)</span>
-								<img
-									class="ic-filter"
-									src="../assets/img/ic-filter-asc.svg"
-							/></span>
-							<span class="child" v-else
-								><span>Sort by Hash Rate (descending)</span
-								><img
-									class="ic-filter"
-									src="../assets/img/ic-filter-desc.svg"
-							/></span>
-						</div>
 					</div>
 					<div class="desc" v-if="listShowers.length !== 0">
 						Staking a LAND(s) will yield DVG in Dvision WORLD.
@@ -149,7 +135,6 @@ export default {
 			loginBy: window.localStorage.getItem('loginBy'),
 			submitData: null,
 			hadUnderstand: false,
-			filterBy: 'default',
 			isErc1155: false,
 			listNfts: [],
 			listNfts721Check: [],
@@ -278,7 +263,6 @@ export default {
 					})
 				if (this.listNfts.length - 1 === idx) {
 					setTimeout(() => {
-						this.setFilter()
 						this.mxCloseLoading()
 					}, 2000)
 				}
@@ -291,7 +275,6 @@ export default {
 			console.log('search')
 		},
 		confirmSwitch() {
-			this.filterBy = 'default'
 			this.keyword = ''
 			this.hadUnderstand = false
 			this.isErc1155 = !this.isErc1155
@@ -315,24 +298,6 @@ export default {
 				this.mxShowConfirmModal(obj)
 			} else {
 				this.confirmSwitch()
-			}
-		},
-		setFilter() {
-			if (this.filterBy === 'default') {
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return a.hashRate - b.hashRate
-				})
-				this.filterBy = 'asc'
-			} else if (this.filterBy === 'asc') {
-				this.filterBy = 'desc'
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return b.hashRate - a.hashRate
-				})
-			} else {
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return a.hashRate - b.hashRate
-				})
-				this.filterBy = 'asc'
 			}
 		},
 		closePopup() {
@@ -629,24 +594,11 @@ export default {
 					font-weight: 400;
 					font-size: gREm(13);
 					line-height: gREm(19);
+					flex: 1;
+					margin-right: 10px;
 				}
 				& .erc {
 					width: gREm(140);
-					height: 100%;
-					background: #1c1a2e;
-					border: 1px solid #d6d8dc;
-					border-radius: 10px;
-					padding: 0 10px;
-					line-height: gREm(44);
-					cursor: pointer;
-					& .child {
-						display: flex;
-						align-items: center;
-						justify-content: space-between;
-					}
-				}
-				& .fill {
-					width: gREm(263);
 					height: 100%;
 					background: #1c1a2e;
 					border: 1px solid #d6d8dc;
@@ -876,12 +828,7 @@ export default {
 						width: 40%;
 					}
 
-					.fill {
-						width: 100%;
-					}
-
-					.erc,
-					.fill {
+					.erc {
 						@include Set-Font(
 							$AppFont,
 							gREm(14),
