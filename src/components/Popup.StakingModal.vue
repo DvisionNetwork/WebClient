@@ -491,7 +491,7 @@ export default {
 				return
 			}
 			if (!this.checkNetwork(this.current_network)) {
-				this.mxShowToast(MSG_METAMASK_2)
+				this.mxShowToast(MSG_METAMASK_2) 
 				return
 			}
 			this.mxShowLoading('inf')
