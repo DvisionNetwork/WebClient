@@ -229,6 +229,8 @@ export default {
 				const wc = JSON.parse(walletConnect)
 				current_addr = wc.accounts[0]
 			}
+			console.log('current_addr',current_addr);
+			console.log('this.wallet_addr',this.wallet_addr);
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
@@ -478,6 +480,7 @@ export default {
 					this.hadUnderstand = true
 				}
 			} catch (e) {
+				console.log('e',e)
 				if (
 					e.message.includes('104') &&
 					e.message.includes(USER_DECLINED)
@@ -518,9 +521,10 @@ export default {
 			const res = await contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
-					from: this.current_addr,
+					from: this.wallet_addr,
 				})
 				.catch((e) => {
+					console.log('e',e)
 					if (
 						e.message.includes('104') &&
 						e.message.includes(USER_DECLINED)
