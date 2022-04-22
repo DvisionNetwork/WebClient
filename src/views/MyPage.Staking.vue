@@ -646,8 +646,6 @@ export default {
 						e.message === DENIED_TRANSACTION
 					) {
 						this.mxShowToast(e.message)
-					} else {
-						this.mxShowToast(MSG_METAMASK_4)
 					}
 
 					this.mxCloseConfirmModal()
