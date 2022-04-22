@@ -264,7 +264,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			const currentNetwork = this.current_network
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			if (
 				currentNetwork === networkBSC ||
 				currentNetwork === networkPolygon ||
@@ -512,9 +512,6 @@ export default {
 			if (response?.status === 200) {
 				this.listNftsStake = response.data
 				console.log('response.data', response.data)
-				response.data.map((item, idx) => {
-					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
-				})
 			} else {
 				this.listNftsStake = []
 			}
