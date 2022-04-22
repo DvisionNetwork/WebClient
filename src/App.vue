@@ -250,6 +250,7 @@ export default {
 		this.setCurrentNetwork()		
 		if (ethereum) {
 			ethereum.on('chainChanged', this.handleChainChanged)
+			ethereum.on('accountsChanged', this.handleAccountsChanged);
 		}
 		if (!Scrollbar.has(_U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
@@ -836,6 +837,11 @@ export default {
 				this.checkNetwork(chainNetwork)
 			}
 		},
+		handleAccountsChanged(accounts) {
+			if (accounts[0] !== this.$store.state.userInfo.wallet_addr) {
+				this.mxShowToast('Your metamask in not on account item registered. Change your account.')
+			}
+		}
 	},
 }
 </script>
