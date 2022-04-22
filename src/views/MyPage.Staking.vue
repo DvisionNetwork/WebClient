@@ -21,7 +21,7 @@
 			<div class="staked-land">
 				<h2>Staked LANDs</h2>
 				<div
-					v-if="allowWithdraw && listNftsStake.length > 0"
+					v-if="statusCampain !== 3 && listNftsStake.length > 0"
 					class="unlock-lands active"
 					@click="handleUnlockAll"
 				>
