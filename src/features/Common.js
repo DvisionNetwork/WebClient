@@ -19,8 +19,6 @@ export function checkErrorMessage(error) {
 	const errCodes = [4001, -32603, -32602, 3001, DENIED_TRANSACTION]
 	if (errCodes.includes(error.code) || errCodes.includes(error.message)) {
 		return error.message
-	} else {
-		return MSG_METAMASK_3
 	}
 }
 export function checkProviderWallet(name) {
