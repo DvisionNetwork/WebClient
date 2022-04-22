@@ -220,6 +220,7 @@ import {
 	fortmaticProvider,
 	walletConnectProvider,
 } from './features/Connectors'
+import { MSG_METAMASK_1 } from '@/features/Messages.js'
 export default {
 	components: {
 		Scrollbar,
@@ -250,6 +251,7 @@ export default {
 		this.setCurrentNetwork()
 		if (ethereum) {
 			ethereum.on('chainChanged', this.handleChainChanged)
+			ethereum.on('accountsChanged', this.handleAccountsChanged);
 		}
 		if (!Scrollbar.has(_U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
@@ -831,6 +833,11 @@ export default {
 				this.checkNetwork(chainNetwork)
 			}
 		},
+		handleAccountsChanged(accounts) {
+			if (accounts[0] !== this.$store.state.userInfo.wallet_addr) {
+				this.mxShowToast(MSG_METAMASK_1)
+			}
+		}
 	},
 }
 </script>
