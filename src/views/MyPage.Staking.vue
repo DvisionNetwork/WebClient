@@ -634,10 +634,11 @@ export default {
 					}
 				})
 				.catch((e) => {
+					console.log('e',e)
 					this.mxCloseLoading()
 					if (
-						error.message.includes('104') &&
-						error.message.includes(USER_DECLINED)
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
 					) {
 						this.mxShowToast(USER_DECLINED)
 					} else if (
