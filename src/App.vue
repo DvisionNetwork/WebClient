@@ -220,6 +220,7 @@ import {
 	fortmaticProvider,
 	walletConnectProvider,
 } from './features/Connectors'
+import { MSG_METAMASK_1 } from '@/features/Messages.js'
 export default {
 	components: {
 		Scrollbar,
@@ -835,7 +836,7 @@ export default {
 		},
 		handleAccountsChanged(accounts) {
 			if (accounts[0] !== this.$store.state.userInfo.wallet_addr) {
-				this.mxShowToast('Your metamask in not on account item registered. Change your account.')
+				this.mxShowToast(MSG_METAMASK_1)
 			}
 		}
 	},
