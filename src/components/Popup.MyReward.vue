@@ -28,7 +28,7 @@
 						<button
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
-							@click="showPopupSuccess"
+							@click="claimRewards"
 						>
 							Claim rewards
 						</button>
@@ -46,8 +46,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { getContractConnect } from '../features/Connectors';
+import ProxyABI from '@/abi/Proxy.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
+import { BSC_PROXY_ADDRESS } from '../features/Common'
+
 export default {
 	components: {
 		MyRewardInfo,
@@ -271,6 +276,36 @@ export default {
 			}
 			this.mxCloseMyRewardModal()
 			this.mxShowSuccessModal(obj)
+		},
+		async claimRewards() {
+			this.mxShowLoading()
+			const address = this.$store.state.userInfo.wallet_addr
+			const res = await axios(`https://division-api.sotatek.works/fake-data-reward?owner=${address}`)
+			console.log('res', res.data.data, res.data.signature);
+
+			const contract = getContractConnect(
+				this.loginBy, 
+				ProxyABI, 
+				BSC_PROXY_ADDRESS, 
+				this.networkRPC,
+				this.currentNetwork,
+			)
+
+			const data = await contract.methods
+				.execTransaction(res.data.data, res.data.signature)
+				.send({ from: address })
+				.then(tx => {
+					console.log('tx', tx);
+					this.showPopupSuccess();
+				})
+				.catch(e => {
+					console.log('err', e);
+				})
+				.finally(() => {
+					this.mxCloseLoading()
+				});
+
+			console.log('data', data);
 		}
 	},
 }
