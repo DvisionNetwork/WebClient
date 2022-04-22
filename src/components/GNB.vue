@@ -248,7 +248,7 @@ import { ETH_RPC_ENDPOINT,
 	WALLETCONNECT, checkProviderWallet,
 	COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
 import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
-import { MSG_METAMASK_2 } from '@/features/Messages.js'
+import { MSG_METAMASK_2, MSG_METAMASK_1 } from '@/features/Messages.js'
 
 var gConfig = AppConfig();
 
@@ -383,7 +383,12 @@ export default {
 		},
 		getInterval() {
 			const walletConnect = window.localStorage.getItem('walletconnect')
-			const chainId = JSON.parse(walletConnect).chainId
+			const wc = JSON.parse(walletConnect)
+			const chainId = wc.chainId
+			const accounts = wc.accounts
+			if(accounts[0].toLowerCase() !== this.$store?.state?.userInfo?.wallet_addr.toLowerCase()) {
+				this.mxShowToast(MSG_METAMASK_1)
+			}
 			if(chainId !== this.chainId) {
 				switch (chainId.toString()) {
 					case '0x4':
