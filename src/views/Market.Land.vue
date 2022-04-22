@@ -1,44 +1,60 @@
 <template>
-
 	<div class="side-menu">
-		<SimpleSideMenu v-if="!isMobile" :sideMenu="landMenu" @selection-changed="onChangeSideMenu"/>
+		<SimpleSideMenu
+			v-if="!isMobile"
+			:sideMenu="landMenu"
+			@selection-changed="onChangeSideMenu"
+		/>
 	</div>
 	<div class="contents">
 		<div class="content-menu-box">
 			<div class="search-box">
-				<div id="iconSearch" class="icon" @click="handleClickOnMobile"></div>
-				<input id="searchInput" class="text-input"
+				<div
+					id="iconSearch"
+					class="icon"
+					@click="handleClickOnMobile"
+				></div>
+				<input
+					id="searchInput"
+					class="text-input"
 					placeholder="Search..."
 					@input="onSearchBoxChange($event)"
-				>
+				/>
 			</div>
 			<div class="right-menu-box remove-highlight">
-
-				<div v-if="tab_page=='land-list'" class="switch-box">
+				<div v-if="tab_page == 'land-list'" class="switch-box">
 					<div class="switch-label">For Sale</div>
 					<label class="switch">
-						<input id="land-switch-forsale" type="checkbox" v-model="landSwitchForsale"
+						<input
+							id="land-switch-forsale"
+							type="checkbox"
+							v-model="landSwitchForsale"
 							@click="onClickToggle()"
-						>
+						/>
 						<span class="slider round"></span>
 					</label>
 				</div>
 
-				<div class="order-by-box"
-					@mouseover="showOrderPopup=true"
-					@mouseleave="showOrderPopup=false"
-					:active="(showOrderPopup ? 'on': 'off')"
+				<div
+					class="order-by-box"
+					@mouseover="showOrderPopup = true"
+					@mouseleave="showOrderPopup = false"
+					:active="showOrderPopup ? 'on' : 'off'"
 				>
-					<div class="order">{{$t('market.land.'+currentOrder.name)}}</div>
+					<div class="order">
+						{{ $t('market.land.' + currentOrder.name) }}
+					</div>
 					<div class="icon"></div>
 					<transition appear name="fade">
 						<div v-if="showOrderPopup" class="order-popup-box-wrap">
 							<div class="order-popup-box">
-								<div class="order-item"
-									v-for="(order,idx) in orderList" :key="idx"
+								<div
+									class="order-item"
+									v-for="(order, idx) in orderList"
+									:key="idx"
 									@click="onClickOrderSelect(order)"
 								>
-										{{$t('market.land.'+order.name)}}
+									{{ $t('market.land.' + order.name) }}
 								</div>
 							</div>
 						</div>
@@ -46,53 +62,59 @@
 				</div>
 
 				<div class="content-type-box">
-					<div class="icon list-type"
-						:active ="tab_page=='land-list' ? 'on' : 'off'"
+					<div
+						class="icon list-type"
+						:active="tab_page == 'land-list' ? 'on' : 'off'"
 						@click="onClickLandType('list')"
 					></div>
-					<div class="icon map-type"
-						:active ="tab_page=='land-map' ? 'on' : 'off'"
+					<div
+						class="icon map-type"
+						:active="tab_page == 'land-map' ? 'on' : 'off'"
 						@click="onClickLandType('map')"
 					></div>
 				</div>
-
 			</div>
-
 		</div>
-		<div v-if="tab_page=='land-list'" class="item-box">
-			<div class="items"
+		<div v-if="tab_page == 'land-list'" class="item-box">
+			<div
+				class="items"
 				v-if="landItems && landItems.list && landItems.list.length > 0"
 			>
-				<MapItem v-for="(item, idx) in landItems.list"
-					:key="item.id" :item="item"
+				<MapItem
+					v-for="(item, idx) in landItems.list"
+					:key="item.id"
+					:item="item"
 					:itemIdx="idx"
-					:itemLastIdx="landItems.list.length -1"
+					:itemLastIdx="landItems.list.length - 1"
 					:mapId="mapId"
 					:callFrom="'market-land'"
 					@click-item="onClickItem"
 				/>
 			</div>
 			<div v-else class="message">
-				{{$t('market.search.content')}}
+				{{ $t('market.search.content') }}
 			</div>
 			<div class="page-box">
 				<div class="page-wrap" v-if="pages && pages.length > 1">
-					<div class="arrow-left"
-						:active="(firstPageGroup ? 'off' : 'on')"
+					<div
+						class="arrow-left"
+						:active="firstPageGroup ? 'off' : 'on'"
 						@click="onClickPageArrow('left')"
 					>
 						<div class="icon"></div>
 					</div>
-					<div class="page"
-						v-for="(page) in pages"
+					<div
+						class="page"
+						v-for="page in pages"
 						:key="page"
-						:active="(currentPage == page ? 'on' : 'off')"
+						:active="currentPage == page ? 'on' : 'off'"
 						@click="onClickPage(page)"
 					>
-						{{page}}
+						{{ page }}
 					</div>
-					<div class="arrow-right"
-						:active="(lastPageGroup ? 'off' : 'on')"
+					<div
+						class="arrow-right"
+						:active="lastPageGroup ? 'off' : 'on'"
 						@click="onClickPageArrow('right')"
 					>
 						<div class="icon"></div>
@@ -100,25 +122,22 @@
 				</div>
 			</div>
 		</div>
-		<div v-else-if="tab_page=='land-map'" class="canvas-box">
+		<div v-else-if="tab_page == 'land-map'" class="canvas-box">
 			<MapLand ref="refMapLand" :mapId="mapId" />
 		</div>
 	</div>
-
 </template>
 
 <script>
-
 import AppConfig from '@/App.Config.js'
 import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
 
-var gConfig = AppConfig();
-
+var gConfig = AppConfig()
 
 export default {
-	name: "Market-Land",
+	name: 'Market-Land',
 	components: {
 		SimpleSideMenu,
 		MapLand,
@@ -154,150 +173,154 @@ export default {
 	// 	next();
 	// },
 
-	beforeMount () {
-		console.log("[Market.Land.vue] beforeMount(), route : ", this.$route, this.tab_page);
-		var from = _U.getIfDefined(this.$route,['params','from']);
-		var fromFrom = _U.getIfDefined(this.$route,['params','from','params','from']);
-		if(from && fromFrom && from.name == 'Market-Detail-Index' && fromFrom.name == 'Market-Page') {
-			var landQuery = this.mxGetLandQuery();
-			this.currentOrder = landQuery.order;
-			this.mxSetLandQuery(landQuery);
-		}else{
-			if(this.tab_page == 'land-list') {
-				this.landSwitchForsale = false;
+	beforeMount() {
+		// console.log("[Market.Land.vue] beforeMount(), route : ", this.$route, this.tab_page);
+		var from = _U.getIfDefined(this.$route, ['params', 'from'])
+		var fromFrom = _U.getIfDefined(this.$route, [
+			'params',
+			'from',
+			'params',
+			'from',
+		])
+		if (
+			from &&
+			fromFrom &&
+			from.name == 'Market-Detail-Index' &&
+			fromFrom.name == 'Market-Page'
+		) {
+			var landQuery = this.mxGetLandQuery()
+			this.currentOrder = landQuery.order
+			this.mxSetLandQuery(landQuery)
+		} else {
+			if (this.tab_page == 'land-list') {
+				this.landSwitchForsale = false
 			}
-			this.setSearchQuery(1);
+			this.setSearchQuery(1)
 		}
 		// this.setSearchQuery(this.marketItems.page);
 	},
-	mounted () {
+	mounted() {
 		// console.log("[Market.Land.vue] && mounted(), route : ", this.$route);
 		// this.setLandItems(this.searchQuery);
-		this.callLandItemList();
+		this.callLandItemList()
 	},
-	beforeUpdate () {
+	beforeUpdate() {
 		// console.log("[Market.Land.vue] ##### beforeUpdate(), route : ", this.tab_page, this.mapId, this.$route);
 	},
 	updated() {
 		// console.log("[Market.Land.vue] ##### updated(), route : ", this.tab_page, this.$route);
 	},
-	data () {
+	data() {
 		return {
-
 			pages: [1],
 			currentPage: 1,
 			firstPageGroup: true,
 			lastPageGroup: true,
 
 			showOrderPopup: false,
-			currentOrder: {name: 'land_ct_all', ct: 'all'},
+			currentOrder: { name: 'land_ct_all', ct: 'all' },
 			orderList: [
-				{name: 'land_ct_all', ct: 'all'},
-				{name: 'land_ct_0', ct: "0"},
-				{name: 'land_ct_1' , ct: "1"},
-				{name: 'land_ct_2', ct: "2"},
-				{name: 'land_ct_3', ct: "3"}
+				{ name: 'land_ct_all', ct: 'all' },
+				{ name: 'land_ct_0', ct: '0' },
+				{ name: 'land_ct_1', ct: '1' },
+				{ name: 'land_ct_2', ct: '2' },
+				{ name: 'land_ct_3', ct: '3' },
 			],
 
 			landSwitchForsale: false,
 
 			search: '',
 			searchInputTimer: null,
-
 		}
 	},
 	computed: {
-
 		getDvLand() {
-			return this.mxGetLandMap(this.mapId);
+			return this.mxGetLandMap(this.mapId)
 		},
 
 		landMenu() {
-			return this.mxGetLandMenu();
+			return this.mxGetLandMenu()
 		},
 		defaultMapId() {
-			return this.mxGetLandDefaultMapId();
+			return this.mxGetLandDefaultMapId()
 		},
 
 		mapId() {
-			var mapId = null;
-			var landQuery = this.mxGetLandQuery();
+			var mapId = null
+			var landQuery = this.mxGetLandQuery()
 			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
-			if(landQuery) {
-				mapId = landQuery.mapId;
+			if (landQuery) {
+				mapId = landQuery.mapId
 			} else {
-				mapId = this.mxGetLandDefaultMapId();
+				mapId = this.mxGetLandDefaultMapId()
 			}
-			return mapId;
+			return mapId
 		},
 		landItems() {
 			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
-			return this.mxGetLandItems();
+			return this.mxGetLandItems()
 		},
 		landItem() {
-			return this.mxGetLandItem();
+			return this.mxGetLandItem()
 		},
 		searchQuery() {
-			return this.mxGetLandQuery();
-		}
-
+			return this.mxGetLandQuery()
+		},
 	},
 	watch: {
 		tab_page(newVal, oldVal) {
+			this.search = ''
+			var o = _U.Q('.search-box .text-input')
+			if (o) o.value = ''
 
-			this.search = '';
-			var o = _U.Q('.search-box .text-input');
-			if(o) o.value = '';
-
-			if(newVal == 'land-list') {
-				var landQuery = this.mxGetLandQuery();
+			if (newVal == 'land-list') {
+				var landQuery = this.mxGetLandQuery()
 				// console.log("[Market.Land.vue] ======================= watch tabpage ", newVal, oldVal);
-				landQuery.page = 1;
-				landQuery.for_sale = false;
+				landQuery.page = 1
+				landQuery.for_sale = false
 
-				var o = _U.Q('.search-box .text-input');
-				if(o) o.value = landQuery.search;
+				var o = _U.Q('.search-box .text-input')
+				if (o) o.value = landQuery.search
 
-				this.landSwitchForsale = false;
-				this.mxSetLandQuery(landQuery);
-				this.setLandItems(landQuery);
-			}else if(newVal == 'land-map') {
-				var landQuery = this.mxGetLandQuery();
+				this.landSwitchForsale = false
+				this.mxSetLandQuery(landQuery)
+				this.setLandItems(landQuery)
+			} else if (newVal == 'land-map') {
+				var landQuery = this.mxGetLandQuery()
 				// console.log("[Market.Land.vue] ======================= watch tabpage ", newVal, oldVal);
-				this.currentOrder= this.orderList[0];
-				landQuery.order = this.currentOrder;
-				landQuery.search = '';
-				this.mxSetLandQuery(landQuery);
+				this.currentOrder = this.orderList[0]
+				landQuery.order = this.currentOrder
+				landQuery.search = ''
+				this.mxSetLandQuery(landQuery)
 			}
-
 		},
 		// mapId가 바뀌면 searchQuery에서 watch되기전에 MapItem이 변경됨. mapId watch 별도 처리함.
 		mapId(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
-			var landQuery = this.mxGetLandQuery();
-			landQuery.page = 1;
-			landQuery.search = '';
-			this.search = '';
-			var o = _U.Q('.search-box .text-input');
-			if(o) o.value = '';
-			this.mxSetLandQuery(landQuery);
-			this.callLandItemList();
+			var landQuery = this.mxGetLandQuery()
+			landQuery.page = 1
+			landQuery.search = ''
+			this.search = ''
+			var o = _U.Q('.search-box .text-input')
+			if (o) o.value = ''
+			this.mxSetLandQuery(landQuery)
+			this.callLandItemList()
 			// this.setLandItems(landQuery);
 		},
 		searchQuery(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
-			this.setLandItems(newVal);
+			this.setLandItems(newVal)
 		},
 		landItems(newVal, oldVal) {
 			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
-			this.setPages();
+			this.setPages()
 		},
 		'$store.state.dataClickedInfoModal': function () {
-			this.onChangeSideMenu(this.$store.state.dataClickedInfoModal);
-			this.mxCloseInfoModal();
+			this.onChangeSideMenu(this.$store.state.dataClickedInfoModal)
+			this.mxCloseInfoModal()
 		},
 	},
-	methods : {
+	methods: {
 		// getLandType() {
 		// 	var landQuery = this.mxGetLandQuery();
 		// 	if(landQuery) return landQuery.type;
@@ -315,85 +338,84 @@ export default {
 
 		/// API
 		getDvLand() {
-			return this.mxGetLandMap(this.mapId);
+			return this.mxGetLandMap(this.mapId)
 		},
 
 		callLandItemList() {
+			console.log('[Market.Land.vue] callLandItemList() ')
 
-			console.log("[Market.Land.vue] callLandItemList() ");
+			var network = gConfig.wlt.getNetworkAddr(
+				this.getDvLand.network
+			).Network
 
-			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
-
-			this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
-				console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
-				this.setLandItems(this.searchQuery);
-			});
-
+			this.mxCallAndSetLandItemList(this.mapId, network, () => {
+				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
+				this.setLandItems(this.searchQuery)
+			})
 		},
 
 		setLandMapId(mapId) {
-			var landQuery = this.mxGetLandQuery();
-			if(!landQuery) landQuery ={};
+			var landQuery = this.mxGetLandQuery()
+			if (!landQuery) landQuery = {}
 			// console.log("[Market.Land.vue] setLandMapId  mapId",mapId, landQuery);
-			if(landQuery.mapId != mapId) {
+			if (landQuery.mapId != mapId) {
 				// console.log("[Market.Land.vue] setLandMapId  mapId call mxSetLandQuery()",mapId, landQuery);
-				landQuery.mapId = mapId;
-				this.mxSetLandQuery(landQuery);
+				landQuery.mapId = mapId
+				this.mxSetLandQuery(landQuery)
 			}
 		},
 		setLandOrder(order) {
-			if(!order) return;
-			var landQuery = this.mxGetLandQuery();
-			if(!landQuery) landQuery ={};
+			if (!order) return
+			var landQuery = this.mxGetLandQuery()
+			if (!landQuery) landQuery = {}
 			// console.log("[Market.Land.vue] setLandOrder() order",order);
-			if(!landQuery.order || (landQuery.order.name != order.name)) {
+			if (!landQuery.order || landQuery.order.name != order.name) {
 				// console.log("[Market.Land.vue] setLandOrder() order call mxSetLandQuery()",order);
-				landQuery.order = order;
-				this.mxSetLandQuery(landQuery);
+				landQuery.order = order
+				this.mxSetLandQuery(landQuery)
 			}
 		},
 		onClickLandType(landType) {
 			// console.log("[Market.Land.vue] onClickLandType landType", landType);
-			if(this.tab_page == 'land-'+landType) {
-				return;
+			if (this.tab_page == 'land-' + landType) {
+				return
 			}
 			// this.setLandType(landType);
 			var rInfo = {
-				name:'Market-Page',
-				params:{
-					'tab_page': 'land-'+landType
-				}
-			};
-			this.$router.push(rInfo);
+				name: 'Market-Page',
+				params: {
+					tab_page: 'land-' + landType,
+				},
+			}
+			this.$router.push(rInfo)
 			// rInfo.params['routerReplace'] = true;
 			// this.$router.replace(rInfo);
 		},
 		onClickItem(item) {
 			// console.log("[Market.Land.vue] onClickItem :: itemInfo", item.id);
 			var rInfo = {
-				name:"Market-Detail-Index",
-				params:{
-					'tab_page': 'land-detail',
-					'itemId': this.mapId,
-					'index': item.id
-				}
-			};
-			this.$router.push(rInfo);
+				name: 'Market-Detail-Index',
+				params: {
+					tab_page: 'land-detail',
+					itemId: this.mapId,
+					index: item.id,
+				},
+			}
+			this.$router.push(rInfo)
 		},
 		onChangeSideMenu(mapId) {
 			// console.log("[Market.Land.vue] onChangeSideMenu() landName:", mapId);
-			this.setLandMapId(mapId);
-
+			this.setLandMapId(mapId)
 		},
 		//// LAND //////////////////////////////////
 		setSearchQuery(page) {
-			if(!page || page == 0) page =1;
+			if (!page || page == 0) page = 1
 
-			var landType = this.tab_page == 'land-list' ? 'list' : 'map';
-			var mapId = this.mapId;
-			var landQuery = this.mxGetLandQuery();
-			if(_U.isDefined(landQuery,"type")) landType = landQuery.type;
-			if(_U.isDefined(landQuery,"mapId")) mapId = landQuery.mapId;
+			var landType = this.tab_page == 'land-list' ? 'list' : 'map'
+			var mapId = this.mapId
+			var landQuery = this.mxGetLandQuery()
+			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
+			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
 
 			var query = {
 				type: landType,
@@ -403,51 +425,69 @@ export default {
 				search: this.search,
 				for_sale: this.landSwitchForsale,
 				order: this.currentOrder,
-			};
+			}
 
-			this.mxSetLandQuery(query);
-
+			this.mxSetLandQuery(query)
 		},
 		setLandItems(query) {
-			var dvLand = this.getDvLand;
-			if(!dvLand) return;
+			var dvLand = this.getDvLand
+			if (!dvLand) return
 
-			console.log("[Market.Land.vue] setLandItems() dvLand==> ", dvLand);
-			var landQuery = this.mxGetLandQuery();
+			// console.log("[Market.Land.vue] setLandItems() dvLand==> ", dvLand);
+			var landQuery = this.mxGetLandQuery()
 
-			var ct = _U.getIfDefined(landQuery,["order","ct"]);
-			if(!ct) ct = 'all';
+			var ct = _U.getIfDefined(landQuery, ['order', 'ct'])
+			if (!ct) ct = 'all'
 
-			var forSale = landQuery.for_sale;
+			var forSale = landQuery.for_sale
 			// console.log("[Marke.Land.vue] setLandItems() forSale:", forSale, this.landSwitchForsale);
 
 			// 2자 이상
-			var search = _U.isDefined(landQuery,'search') && landQuery.search.length > 1 ? landQuery.search : null;
+			var search =
+				_U.isDefined(landQuery, 'search') && landQuery.search.length > 1
+					? landQuery.search
+					: null
 
-			var blockListAll = [];
-			for(var i=0; i <dvLand.map.length; i++) {
-				if(_U.isDefined(dvLand.map[i],'id')) {
-					var block = dvLand.map[i];
-					if( ct=='all' || ct == block.c.toString()) {
-						if(forSale){
-							if(block.c.toString() == '1' && block.btn_state == '1' && block.salestate == '1') {
-								if(search && search.length > 1) {
-									var name = block.n;
-									if(name && name.length > 0 && name.toLowerCase().indexOf(search.toLowerCase())>=0) {
-										blockListAll.push(block);
+			var blockListAll = []
+			for (var i = 0; i < dvLand.map.length; i++) {
+				if (_U.isDefined(dvLand.map[i], 'id')) {
+					var block = dvLand.map[i]
+					if (ct == 'all' || ct == block.c.toString()) {
+						if (forSale) {
+							if (
+								block.c.toString() == '1' &&
+								block.btn_state == '1' &&
+								block.salestate == '1'
+							) {
+								if (search && search.length > 1) {
+									var name = block.n
+									if (
+										name &&
+										name.length > 0 &&
+										name
+											.toLowerCase()
+											.indexOf(search.toLowerCase()) >= 0
+									) {
+										blockListAll.push(block)
 									}
-								}else{
-									blockListAll.push(block);
+								} else {
+									blockListAll.push(block)
 								}
 							}
-						}else{
-							if(search) {
-								var name = block.n;
-								if(name && name.length > 0 && name.toLowerCase().indexOf(search.toLowerCase())>=0) {
-									blockListAll.push(block);
+						} else {
+							if (search) {
+								var name = block.n
+								if (
+									name &&
+									name.length > 0 &&
+									name
+										.toLowerCase()
+										.indexOf(search.toLowerCase()) >= 0
+								) {
+									blockListAll.push(block)
 								}
-							}else{
-								blockListAll.push(block);
+							} else {
+								blockListAll.push(block)
 							}
 						}
 					}
@@ -456,166 +496,180 @@ export default {
 
 			// console.log("[Market.Land.vue] blockListAll==> ", blockListAll);
 
-			var blockList = [];
-			var start = (landQuery.page - 1) * landQuery.count;
-			var end = start + landQuery.count;
-			for(var i=start; i <end; i++) {
-				if(_U.isDefined(blockListAll[i],'id')) {
-					blockList.push(blockListAll[i]);
+			var blockList = []
+			var start = (landQuery.page - 1) * landQuery.count
+			var end = start + landQuery.count
+			for (var i = start; i < end; i++) {
+				if (_U.isDefined(blockListAll[i], 'id')) {
+					blockList.push(blockListAll[i])
 				}
 			}
 
 			// console.log("[Market.Land.vue] blockList==> ", blockList);
 
-			var total = blockListAll.length;
-			this.mxSetLandItems({total:total,  page:query.page, cpp: query.count,  list:blockList});
+			var total = blockListAll.length
+			this.mxSetLandItems({
+				total: total,
+				page: query.page,
+				cpp: query.count,
+				list: blockList,
+			})
 
-			if(this.$refs.refMapLand) {
-				this.$refs.refMapLand.mapInit();
+			if (this.$refs.refMapLand) {
+				this.$refs.refMapLand.mapInit()
 			}
 		},
 
 		setPages() {
-			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var pno_p_grp = gConfig.marketItem_pages_in_group // 하단에 뿌릴 page group내 page 수
+			var pgrStartPageNo =
+				Math.floor((this.landItems.page - 1) / pno_p_grp) * pno_p_grp +
+				1
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
-			this.pages = []; // 초기화 해 줄 것.
-			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
-				this.pages[i] = i + pgrStartPageNo;
+			var totalPages = Math.ceil(
+				this.landItems.total / this.landItems.cpp
+			)
+			this.pages = [] // 초기화 해 줄 것.
+			for (
+				var i = 0;
+				i < pno_p_grp && i + pgrStartPageNo <= totalPages;
+				i++
+			) {
+				this.pages[i] = i + pgrStartPageNo
 			}
 
-			this.currentPage = this.landItems.page;
-			this.firstPageGroup= pgrStartPageNo < pno_p_grp ? true: false;
-			this.lastPageGroup = this.currentPage + pno_p_grp > totalPages ? true : false;
-
+			this.currentPage = this.landItems.page
+			this.firstPageGroup = pgrStartPageNo < pno_p_grp ? true : false
+			this.lastPageGroup =
+				this.currentPage + pno_p_grp > totalPages ? true : false
 		},
 
 		onClickPage(page) {
-			this.setSearchQuery(page);
+			this.setSearchQuery(page)
 		},
 		onClickPageArrow(leftRight) {
-
-			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
-			var page = 1;
-			if(leftRight == 'right') {
-				page = pgrStartPageNo + pno_p_grp;
-			}else if(leftRight == 'left'){
-				page = pgrStartPageNo - pno_p_grp;
+			var pno_p_grp = gConfig.marketItem_pages_in_group // 하단에 뿌릴 page group내 page 수
+			var pgrStartPageNo =
+				Math.floor((this.landItems.page - 1) / pno_p_grp) * pno_p_grp +
+				1
+			var page = 1
+			if (leftRight == 'right') {
+				page = pgrStartPageNo + pno_p_grp
+			} else if (leftRight == 'left') {
+				page = pgrStartPageNo - pno_p_grp
 			}
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
-			if(page < 1) page = 1;
-			if(page > totalPages) page = totalPages;
+			var totalPages = Math.ceil(
+				this.landItems.total / this.landItems.cpp
+			)
+			if (page < 1) page = 1
+			if (page > totalPages) page = totalPages
 
 			// console.log("[Market.Land.vue] >>>>>>> onClickPageArrow("+leftRight+")", page, pgrStartPageNo,totalPages)
 
-			this.setSearchQuery(page);
+			this.setSearchQuery(page)
 		},
 
 		///////////////////////
 
 		onClickToggle() {
 			// console.log("[[Market.Land.vue] onClickToggle() land-switch-forsale changed to : " + this.landSwitchForsale);
-			var landQuery = this.mxGetLandQuery();
-			this.landSwitchForsale = this.landSwitchForsale ? false : true;
-			landQuery.for_sale = this.landSwitchForsale;
-			if(this.tab_page == 'land-list') {
-				this.mxSetLandQuery(landQuery);
-				this.setLandItems(landQuery);
-			}else{
-				landQuery.page = 1;
-				var landType = 'list';
-				landQuery.type = landType;
+			var landQuery = this.mxGetLandQuery()
+			this.landSwitchForsale = this.landSwitchForsale ? false : true
+			landQuery.for_sale = this.landSwitchForsale
+			if (this.tab_page == 'land-list') {
+				this.mxSetLandQuery(landQuery)
+				this.setLandItems(landQuery)
+			} else {
+				landQuery.page = 1
+				var landType = 'list'
+				landQuery.type = landType
 				var rInfo = {
-					name:'Market-Page',
-					params:{
-						'tab_page': 'land-'+landType
-					}
-				};
-				this.$router.push(rInfo);
+					name: 'Market-Page',
+					params: {
+						tab_page: 'land-' + landType,
+					},
+				}
+				this.$router.push(rInfo)
 			}
 		},
 		onClickOrderSelect(order) {
-			this.currentOrder=order;
-			this.showOrderPopup=false;
+			this.currentOrder = order
+			this.showOrderPopup = false
 			// console.log("[Market.Land.vue] onClickOrderSelect order", order);
-			var landType = 'list';
-			var landQuery = this.mxGetLandQuery();
-			if(!landQuery) landQuery ={};
-			landQuery.type = landType;
-			landQuery.page = 1;
-			landQuery.order = order;
-			this.mxSetLandQuery(landQuery);
+			var landType = 'list'
+			var landQuery = this.mxGetLandQuery()
+			if (!landQuery) landQuery = {}
+			landQuery.type = landType
+			landQuery.page = 1
+			landQuery.order = order
+			this.mxSetLandQuery(landQuery)
 
-			if(this.tab_page == 'land-list') {
-				this.setLandItems(landQuery);
-			}else{
+			if (this.tab_page == 'land-list') {
+				this.setLandItems(landQuery)
+			} else {
 				var rInfo = {
-					name:'Market-Page',
-					params:{
-						'tab_page': 'land-'+landType
-					}
-				};
-				this.$router.push(rInfo);
+					name: 'Market-Page',
+					params: {
+						tab_page: 'land-' + landType,
+					},
+				}
+				this.$router.push(rInfo)
 			}
 		},
 
 		onSearchBoxChange(event) {
-			var search = event.target.value;
-			this.search = search;
+			var search = event.target.value
+			this.search = search
 
-			if(this.searchInputTimer) {
-				clearTimeout(this.searchInputTimer);
-				this.searchInputTimer = null;
+			if (this.searchInputTimer) {
+				clearTimeout(this.searchInputTimer)
+				this.searchInputTimer = null
 			}
-			this.searchInputTimer = setTimeout(()=>{
-
-				var landType = 'list';
-				if(this.tab_page == 'land-list') {
+			this.searchInputTimer = setTimeout(() => {
+				var landType = 'list'
+				if (this.tab_page == 'land-list') {
 					// this.setLandItems(landQuery);
-					this.setSearchQuery(1);
-				}else{
-					var landQuery = this.mxGetLandQuery();
-					if(!landQuery) landQuery ={};
-					landQuery.search = search;
-					landQuery.type = landType;
-					this.mxSetLandQuery(landQuery);
+					this.setSearchQuery(1)
+				} else {
+					var landQuery = this.mxGetLandQuery()
+					if (!landQuery) landQuery = {}
+					landQuery.search = search
+					landQuery.type = landType
+					this.mxSetLandQuery(landQuery)
 
 					var rInfo = {
-						name:'Market-Page',
-						params:{
-							'tab_page': 'land-'+landType
-						}
-					};
-					this.$router.push(rInfo);
+						name: 'Market-Page',
+						params: {
+							tab_page: 'land-' + landType,
+						},
+					}
+					this.$router.push(rInfo)
 				}
-			},1000)
+			}, 1000)
 		},
 		handleClickOnMobile(event) {
 			if (this.isMobile) {
-				const searchBox = event.target.offsetParent;
-				const contentMenuBox = searchBox.offsetParent;
-				searchBox.style.width = '100%';
-				searchBox.children[0].style.width = '22px';
-				searchBox.children[1].style.display = 'block';
-				contentMenuBox.style.flexDirection = 'column';
+				const searchBox = event.target.offsetParent
+				const contentMenuBox = searchBox.offsetParent
+				searchBox.style.width = '100%'
+				searchBox.children[0].style.width = '22px'
+				searchBox.children[1].style.display = 'block'
+				contentMenuBox.style.flexDirection = 'column'
 			}
 		},
-	}
+	},
 }
 </script>
 
 <style lang="scss" scoped>
-
-.fade-enter-active, .fade-leave-active {
-  transition: all 0.5s ease;
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.5s ease;
 }
 .fade-enter-from, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+	opacity: 0;
 }
-
 
 .side-menu {
 	width: gREm(216);
@@ -651,7 +705,6 @@ export default {
 					opacity: 1;
 				}
 			}
-
 		}
 		.right-menu-box {
 			@include FLEX(flex-end, center);
@@ -669,11 +722,13 @@ export default {
 					display: inline-block;
 					width: gREm(40);
 					height: gREm(18);
-					vertical-align:middle;
+					vertical-align: middle;
 				}
 
 				/* Hide default HTML checkbox */
-				.switch input {display:none;}
+				.switch input {
+					display: none;
+				}
 
 				/* The slider */
 				.slider {
@@ -684,21 +739,21 @@ export default {
 					right: 0;
 					bottom: 0;
 					background-color: #363446;
-					-webkit-transition: .4s;
-					transition: .4s;
+					-webkit-transition: 0.4s;
+					transition: 0.4s;
 				}
 
 				.slider:before {
 					position: absolute;
-					content: "";
+					content: '';
 					height: gREm(14);
 					width: gREm(14);
 					left: gREm(4);
 					right: gREm(26);
 					bottom: gREm(2);
 					background-color: white;
-					-webkit-transition: .4s;
-					transition: .4s;
+					-webkit-transition: 0.4s;
+					transition: 0.4s;
 				}
 
 				input:checked + .slider {
@@ -738,11 +793,11 @@ export default {
 				height: 100%;
 				width: auto;
 				margin-left: gREm(30);
-				margin-right:gREm(10);
+				margin-right: gREm(10);
 				// padding-right: gREm(11);
 				cursor: pointer;
 				.order {
-					width:100%;
+					width: 100%;
 					text-align: right;
 					@include Set-Font($AppFont, gREm(15), gREm(19), #f6583e);
 				}
@@ -750,9 +805,11 @@ export default {
 					width: gREm(8);
 					height: gREm(5);
 					margin-left: gREm(7);
-					@include SetBgImage(url('../assets/img/ic-arrow-sortby.svg'));
+					@include SetBgImage(
+						url('../assets/img/ic-arrow-sortby.svg')
+					);
 				}
-				&[active="on"] {
+				&[active='on'] {
 					.icon {
 						transform: rotateX(180deg);
 					}
@@ -761,33 +818,41 @@ export default {
 
 			.order-popup-box-wrap {
 				position: absolute;
-				z-index:$Z-INDEX-MENU-POPUP;
-				@include FLEXV(flex-end,center);
-				top: gREm(0); left: gREm(-30);
+				z-index: $Z-INDEX-MENU-POPUP;
+				@include FLEXV(flex-end, center);
+				top: gREm(0);
+				left: gREm(-30);
 				width: gREm(220);
 				height: gREm(37 * 6 + 12 + 19);
-				padding-top: gREm( 12 + 19);
+				padding-top: gREm(12 + 19);
 
 				.order-popup-box {
-					@include FLEXV(flex-start,center);
-					top: 0; left: 0; width: 100%; height: gREm(254);
+					@include FLEXV(flex-start, center);
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: gREm(254);
 					padding-top: gREm(16);
 					padding-bottom: gREm(16);
 					border-radius: gREm(10);
 					background-color: #ffffff;
 					.order-item {
-						@include FLEX(flex-start,center);
+						@include FLEX(flex-start, center);
 						width: 100%;
 						padding-left: gREm(40);
 						padding-right: gREm(40);
 						height: gREm(37);
-						@include Set-Font($AppFont, gREm(15), gREm(30), #6a6a6a);
+						@include Set-Font(
+							$AppFont,
+							gREm(15),
+							gREm(30),
+							#6a6a6a
+						);
 						background-color: #ffffff;
 						cursor: pointer;
 						&:hover {
 							color: #6c38ef;
 							background-color: #f1f1f1;
-
 						}
 					}
 				}
@@ -803,17 +868,21 @@ export default {
 				z-index: $Z-INDEX-MENU-POPUP-PLUS-5;
 				.icon {
 					margin-left: gREm(26);
-					width:gREm(19);
+					width: gREm(19);
 					height: gREm(19);
 					opacity: 0.5;
 					&.map-type {
-						width:gREm(14);
-						@include SetBgImage(url('../assets/img/market/ic-land-map.svg'));
+						width: gREm(14);
+						@include SetBgImage(
+							url('../assets/img/market/ic-land-map.svg')
+						);
 					}
 					&.list-type {
-						@include SetBgImage(url('../assets/img/market/ic-land-list.svg'));
+						@include SetBgImage(
+							url('../assets/img/market/ic-land-list.svg')
+						);
 					}
-					&[active="on"] {
+					&[active='on'] {
 						opacity: 1;
 					}
 				}
@@ -825,7 +894,7 @@ export default {
 		width: calc(100% + 20px);
 		height: auto; // gREm(395 + 1365 + 44);
 		margin-top: gREm(15);
-    	margin-left: gREm(-20);
+		margin-left: gREm(-20);
 		margin-bottom: gREm(15);
 		@include FLEXV(flex-start, flex-start);
 		.items {
@@ -834,12 +903,12 @@ export default {
 			width: 100%;
 			height: auto; // gREm(395 + 1365 + 44 - 100 - 44);
 		}
-		.message{
+		.message {
 			@include VH-Center;
 			position: absolute;
 			width: gREm(248);
 			height: gREm(24);
-			@include Set-Font($AppFont, gREm(20), gREm(27), #f1f1f1,300);
+			@include Set-Font($AppFont, gREm(20), gREm(27), #f1f1f1, 300);
 		}
 		.page-box {
 			@include FLEX(center, flex-start);
@@ -853,7 +922,9 @@ export default {
 				@include FLEX(center, center);
 				height: gREm(44);
 				width: gREm(600);
-				.arrow-left, .arrow-right, .page {
+				.arrow-left,
+				.arrow-right,
+				.page {
 					@include FLEX(center, center);
 					cursor: pointer;
 					width: gREm(40);
@@ -869,7 +940,7 @@ export default {
 					background-color: transparent;
 					border-radius: 50%;
 					@include Set-Font($AppFont, gREm(15), gREm(19), #ffffff);
-					&[active="on"] {
+					&[active='on'] {
 						background-color: #f7f7f7;
 						color: #201360;
 						@include OnOverTransition-Off();
@@ -877,25 +948,29 @@ export default {
 				}
 				.arrow-left {
 					@include OnOverTransitionX-L();
-					&[active="off"] {
+					&[active='off'] {
 						visibility: hidden;
 						z-index: -1;
 					}
 				}
 				.arrow-right {
 					@include OnOverTransitionX-R();
-					&[active="off"] {
+					&[active='off'] {
 						visibility: hidden;
 						z-index: -1;
 					}
 				}
 
 				.arrow-left .icon {
-					@include SetBgImage(url('../assets/img/ic-arrow-page-l.svg'));
-				};
+					@include SetBgImage(
+						url('../assets/img/ic-arrow-page-l.svg')
+					);
+				}
 				.arrow-right .icon {
-					@include SetBgImage(url('../assets/img/ic-arrow-page-r.svg'));
-				};
+					@include SetBgImage(
+						url('../assets/img/ic-arrow-page-r.svg')
+					);
+				}
 			}
 		}
 	}
@@ -908,19 +983,22 @@ export default {
 		margin-top: gREm(30);
 		margin-bottom: gREm(96);
 	}
-
 }
 
+@include media-max($media_large) {
+	// 1200
+	.contents {
+	}
+}
 
-@include media-max($media_large) { // 1200
-.contents  {
-}}
+@include media-max($media_medium) {
+	// 1024
+	.contents {
+	}
+}
 
-@include media-max($media_medium) { // 1024
-.contents  {
-}}
-
-@include media-max($media_small) { // 768
+@include media-max($media_small) {
+	// 768
 	.land-box {
 		.contents {
 			padding-left: 0;
@@ -947,7 +1025,7 @@ export default {
 				.switch-box,
 				.order-by-box {
 					padding: 0 gREm(16);
-					border-right: 1px solid #2E2C3E;
+					border-right: 1px solid #2e2c3e;
 				}
 
 				.right-menu-box {
@@ -978,7 +1056,7 @@ export default {
 				width: 100%;
 				height: 50vh;
 				margin-bottom: 0;
-				border: 2px solid #77777E;
+				border: 2px solid #77777e;
 				border-radius: gREm(8);
 
 				#cv-land {
@@ -1009,7 +1087,7 @@ export default {
 							font-size: gREm(16);
 							line-height: gREm(24);
 
-							&[active="on"] {
+							&[active='on'] {
 								padding: gREm(10) gREm(19);
 							}
 						}
@@ -1019,5 +1097,4 @@ export default {
 		}
 	}
 }
-
 </style>

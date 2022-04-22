@@ -218,13 +218,6 @@ export default function walletAPI() {
 						balance: 0,
 					})
 				}
-				console.log('result console', {
-					account,
-					contract,
-					lv_provider,
-					rv,
-					addr,
-				})
 				if (!contract) return
 				try {
 					var ret
@@ -281,13 +274,11 @@ export default function walletAPI() {
 					const currentNetwork =
 						window.localStorage.getItem('currentNetwork')
 					const web3 = getWeb3(loginBy, networkRPC, currentNetwork)
-					console.log('web3', web3)
 					const ret = await web3.eth.getBalance(account)
 					// const ret = await ethereum.request({
 					// 	method: 'eth_getBalance',
 					// 	params: [account, 'latest'],
 					// })
-					console.log('ret', ret)
 					const balance = (ret / 10 ** decimals).toFixed(4)
 					console.log('before balance', balance)
 
