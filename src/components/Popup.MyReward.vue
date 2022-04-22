@@ -52,6 +52,8 @@ import ProxyABI from '@/abi/Proxy.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
 import { BSC_PROXY_ADDRESS } from '../features/Common'
+import AppConfig from '@/App.Config.js'
+var gConfig = AppConfig()
 
 export default {
 	components: {
@@ -278,9 +280,9 @@ export default {
 			this.mxShowSuccessModal(obj)
 		},
 		async claimRewards() {
-			this.mxShowLoading()
+			this.mxShowLoading('inf')
 			const address = this.$store.state.userInfo.wallet_addr
-			const res = await axios(`https://division-api.sotatek.works/fake-data-reward?owner=${address}`)
+			const res = await axios(`${gConfig.public_api_sotatek}/fake-data-reward?owner=${address}`)
 			console.log('res', res.data.data, res.data.signature);
 
 			const contract = getContractConnect(
