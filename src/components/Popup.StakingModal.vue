@@ -442,7 +442,7 @@ export default {
 					) {
 						this.mxShowToast(USER_DECLINED)
 					} else {
-						this.mxShowToast(checkErrorMessage(e))
+						this.mxShowToast(e.message)
 					}
 					this.hadUnderstand = false
 					this.mxCloseLoading()
@@ -487,7 +487,7 @@ export default {
 				) {
 					this.mxShowToast(USER_DECLINED)
 				} else {
-					this.mxShowToast(checkErrorMessage(e))
+					this.mxShowToast(e.message)
 				}
 				this.hadUnderstand = false
 			} finally {
@@ -531,7 +531,7 @@ export default {
 					) {
 						this.mxShowToast(USER_DECLINED)
 					} else {
-						this.mxShowToast(checkErrorMessage(e))
+						this.mxShowToast(e.message)
 					}
 					this.mxCloseLoading()
 				})
