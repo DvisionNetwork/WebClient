@@ -50,9 +50,8 @@
 							)
 					"
 					:isUnlock="true"
-					:enableUnlock="allowWithdraw"
+					:enableUnlock="statusCampain !== 3"
 					:maxQuantity="item.locked"
-					:hashRate="item.hashRate"
 				/>
 			</div>
 		</div>
