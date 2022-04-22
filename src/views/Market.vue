@@ -630,25 +630,27 @@ export default {
 			}
 		},
 		listenToWindowClickEvent() {
-			window.onclick = (e) => {
-					if (
-					e.target.id !== 'iconSearch' &&
-					e.target.id !== 'searchInput'
-				) {
-					const contentMenuBox =
-						document.querySelector('.content-menu-box')
-					if (contentMenuBox) {
-						const searchBox =
-							contentMenuBox.querySelector('.search-box')
-						const obj = {
-							searchBox,
-							contentMenuBox,
-							width: 'auto',
-							display: 'none',
-							direction: 'row',
-							iconWidth: '1.25rem',
+			if (this.isMobile) {
+				window.onclick = (e) => {
+						if (
+						e.target.id !== 'iconSearch' &&
+						e.target.id !== 'searchInput'
+					) {
+						const contentMenuBox =
+							document.querySelector('.content-menu-box')
+						if (contentMenuBox) {
+							const searchBox =
+								contentMenuBox.querySelector('.search-box')
+							const obj = {
+								searchBox,
+								contentMenuBox,
+								width: 'auto',
+								display: 'none',
+								direction: 'row',
+								iconWidth: '1.25rem',
+							}
+							this.setStyleInput(obj)
 						}
-						this.setStyleInput(obj)
 					}
 				}
 			}
