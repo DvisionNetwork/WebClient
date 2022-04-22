@@ -170,6 +170,7 @@ export default {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
 			})
+			this.getAccounts();
 		}
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
@@ -392,10 +393,8 @@ export default {
 		},
 		async getAccounts() {
 			try {
-				let acc = await window.ethereum.request({
-					method: 'eth_requestAccounts',
-				})
-				return acc
+				const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+				this.current_addr = accounts[0];
 			} catch (e) {
 				return []
 			}
@@ -492,7 +491,7 @@ export default {
 				return
 			}
 			if (!this.checkNetwork(this.current_network)) {
-				this.mxShowToast(MSG_METAMASK_2)
+				this.mxShowToast(MSG_METAMASK_2) 
 				return
 			}
 			this.mxShowLoading('inf')
