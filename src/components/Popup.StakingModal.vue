@@ -170,7 +170,7 @@ export default {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
 			})
-			this.getAccounts();
+			this.getAccounts()
 		}
 		this.onGetNftowner(this.isErc1155)
 		// this.popType = authInfo.type;
@@ -224,6 +224,11 @@ export default {
 			}
 		},
 		checkAddress(current_addr) {
+			if (this.loginBy === WALLETCONNECT) {
+				const walletConnect = window.localStorage.getItem('walletconnect')
+				const wc = JSON.parse(walletConnect)
+				current_addr = wc.accounts[0]
+			}
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
@@ -393,8 +398,10 @@ export default {
 		},
 		async getAccounts() {
 			try {
-				const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-				this.current_addr = accounts[0];
+				const accounts = await ethereum.request({
+					method: 'eth_requestAccounts',
+				})
+				this.current_addr = accounts[0]
 			} catch (e) {
 				return []
 			}
@@ -491,7 +498,7 @@ export default {
 				return
 			}
 			if (!this.checkNetwork(this.current_network)) {
-				this.mxShowToast(MSG_METAMASK_2) 
+				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
 			this.mxShowLoading('inf')
