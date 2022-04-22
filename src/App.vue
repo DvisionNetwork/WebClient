@@ -337,6 +337,7 @@ export default {
 			})
 			idx++
 		}
+		console.log('landMenu', landMenu)
 		this.mxSetLandMenu(landMenu)
 
 		// window.DVW['app']={
@@ -551,7 +552,6 @@ export default {
 		},
 
 		recaptchaVerified(response) {
-			console.log(response)
 			setTimeout(() => {
 				this.showRecaptcha = false
 				this.isShowBtn = true
@@ -713,7 +713,6 @@ export default {
 		},
 		getNetwork(loginBy) {
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
-			console.log(window.localStorage.getItem('fortmaticNetwork'))
 			const network =
 				loginBy === METAMASK || loginBy === COINBASE
 					? null

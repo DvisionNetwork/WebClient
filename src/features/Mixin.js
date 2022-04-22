@@ -360,14 +360,14 @@ var Mixin = {
 				land_code: landCode,
 				network: '("'+ network + '")'
 			};
-			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
+			// console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
 
 			this.mxShowLoading();
 			_U.callPost({
 				url:gConfig.market_land_item_list,
 				data: query,
 				callback: (resp) =>{
-					console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
+					// console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var midx = 0;
 
@@ -404,7 +404,7 @@ var Mixin = {
 								}
 							}
 						}
-						console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
+						// console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
 
 						this.mxSetLandMenu(landMenu);
 					}
