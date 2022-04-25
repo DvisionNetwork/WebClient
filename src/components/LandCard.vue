@@ -34,10 +34,6 @@
 		</div>
 		<div class="line" />
 		<div class="bottom">
-			<span class="left">Hash Rate</span>
-			<span>{{ hashRate }}</span>
-		</div>
-		<div class="bottom">
 			<span class="left">ID</span>
 			<span>{{ nftId }}</span>
 		</div>
@@ -84,7 +80,6 @@ export default {
 		onConfirmQuantity1155: Function,
 		maxQuantity: Number,
 		isUnstake: Boolean,
-		hashRate: Number,
 		enableUnlock: Boolean,
 	},
 	components: {

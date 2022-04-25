@@ -557,6 +557,28 @@ export default {
 
 @include media-max($media_small) { // 768
 	.Inventory {
+		.content-box {
+			margin-top: 0px;
+
+			.side-menu {
+				min-width: 0px;
+				width: 0px;
+			}
+			
+			.contents {
+				padding-left: 0px;
+
+				.item-box {
+					.items {
+						justify-content: center;
+						.product-card {
+							margin-right: 0px;
+						}
+					}
+				}
+			}
+		}
+		
 		.filter {
 			width: 100%;
 			height: gREm(80);

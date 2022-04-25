@@ -243,42 +243,42 @@ export default {
 				return false
 			return true
 		},
-		async onGetHashRate(is_ERC1155, nft_id, idx) {
-			try {
-				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
-				//cal API
-				const search = is_ERC1155 ? '1155' : '721'
-				const response = await axios.get(
-					`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
-				)
-				if (response.status === 200) {
-					nft.name = response.data.name
-					nft.imageUrl = response.data.image
-					nft.description = response.data.description
-				}
-				const contractConn = getContractConnect(
-					this.loginBy,
-					ABI_STAKING,
-					this.data.staking_address,
-					this.networkRPC,
-					this.fortmaticNetwork
-				)
-				await contractConn.methods
-					.tokenHashrate(is_ERC1155, nft_id)
-					.call()
-					.then((tx) => {
-						nft.hashRate = Number(tx) / 10
-					})
-				if (this.listNfts.length - 1 === idx) {
-					setTimeout(() => {
-						this.mxCloseLoading()
-					}, 2000)
-				}
-			} catch (err) {
-				this.mxCloseLoading()
-				console.log('catch', err)
-			}
-		},
+		// async onGetHashRate(is_ERC1155, nft_id, idx) {
+		// 	try {
+		// 		const nft = this.listNfts.find((x) => x.nft_id === nft_id)
+		// 		//cal API
+		// 		const search = is_ERC1155 ? '1155' : '721'
+		// 		const response = await axios.get(
+		// 			`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+		// 		)
+		// 		if (response.status === 200) {
+		// 			nft.name = response.data.name
+		// 			nft.imageUrl = response.data.image
+		// 			nft.description = response.data.description
+		// 		}
+		// 		const contractConn = getContractConnect(
+		// 			this.loginBy,
+		// 			ABI_STAKING,
+		// 			this.data.staking_address,
+		// 			this.networkRPC,
+		// 			this.fortmaticNetwork
+		// 		)
+		// 		await contractConn.methods
+		// 			.tokenHashrate(is_ERC1155, nft_id)
+		// 			.call()
+		// 			.then((tx) => {
+		// 				nft.hashRate = Number(tx) / 10
+		// 			})
+		// 		if (this.listNfts.length - 1 === idx) {
+		// 			setTimeout(() => {
+		// 				this.mxCloseLoading()
+		// 			}, 2000)
+		// 		}
+		// 	} catch (err) {
+		// 		this.mxCloseLoading()
+		// 		console.log('catch', err)
+		// 	}
+		// },
 		onSearch() {
 			console.log('search')
 		},
@@ -318,7 +318,7 @@ export default {
 				height: '328px',
 				title: 'Success',
 				content: renderSuccessContent(),
-				buttonTxt: 'I understand',
+				buttonTxt: 'OK',
 				isShow: true,
 			}
 			this.mxShowSuccessModal(obj)
