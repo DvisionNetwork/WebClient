@@ -6,10 +6,6 @@
 		<div class="card-title">Add LAND(s)</div>
 		<div class="line" />
 		<div class="bottom">
-			<span class="left">Hash Rate</span>
-			<span>--</span>
-		</div>
-		<div class="bottom">
 			<span class="left">ID</span>
 			<span>--</span>
 		</div>

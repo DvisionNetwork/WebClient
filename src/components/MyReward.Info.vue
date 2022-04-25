@@ -132,6 +132,7 @@ export default {
 					display: flex;
 					align-items: center;
 					justify-content: space-between;
+					margin-top: gREm(8);
 
 					span {
 						font-size: gREm(12);
