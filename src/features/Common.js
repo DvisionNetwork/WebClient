@@ -105,7 +105,7 @@ export function renderNetworkName(chainId) {
 export const BSC_STAKING_ADDRESS = '0x520FCb2B14b39C12c729FF60c533B042C7Aa4E6F'
 export const ETH_STAKING_ADDRESS = '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc'
 export const MATIC_STAKING_ADDRESS =
-	'0x205012ba1B41EDA6aE588864edBCBABC81DfD1cf'
+	'0x61D9c9F814AB6dBfDEeCE2a32E9038619302F9c7'
 export const BSC_RPC_ENDPOINT =
 	'https://data-seed-prebsc-1-s1.binance.org:8545/'
 export const ETH_RPC_ENDPOINT =
