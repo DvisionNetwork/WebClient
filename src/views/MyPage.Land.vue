@@ -852,6 +852,21 @@ export default {
 				box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.28);
 			}
 		}
+		.side-menu {
+			min-width: 0px;
+			width: 0px;
+		}
+		.contents {
+			padding-left: 0px;
+
+			.item-box {
+				margin-left: 0px;
+				width: 100%;
+				.items {
+					justify-content: center;
+				}
+			}
+		}
 	}
 }
 </style>

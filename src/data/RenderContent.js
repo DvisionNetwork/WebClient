@@ -8,9 +8,7 @@ export function renderUnlockContent() {
 }
 export function renderCampainNotYetContent() {
   return `
-  <p>This Staking campaign has not started yet.</p><br />
-  <p>You can only stake your LANDs during the campaign. Please wait until the campaign starts to stake your LANDs.</p>
-  `
+  <p>You can only stake your LANDs before the campaign starts.</p>`
 }
 export function renderNotLoginContent() {
   return `
@@ -20,8 +18,8 @@ export function renderNotLoginContent() {
 }
 export function renderSuccessContent() {
   return `
-  <p>You have staked your LAND(s) successfully. The staked LANDs will be shown under “Staked LANDs” section.</p><br />
-  <p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can harvest the accumulated DVG reward at any time during the Staking period (up until the Harvest time).</p>
+  <p>You have staked your LAND(s) successfully. The staked LANDs will be shown under the “Staked LANDs” section.</p><br />
+  <p>Please note that you will be unable to unlock your LAND(s) during the Staking period. You can only unlock your LANDs after the campaign.</p>
   `
 }
 export function renderOnClickHarvestContent(data){

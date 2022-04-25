@@ -332,7 +332,7 @@ export default {
 			if (!this.wallet_addr) {
 				this.mxShowSuccessModal(obj)
 			} else if (this.statusCampain === 3) {
-				obj.title = 'Staking campaign is unavailable'
+				obj.title = 'The campaign is ongoing'
 				obj.content = renderCampainNotYetContent()
 				this.mxShowSuccessModal(obj)
 			} else {
@@ -516,36 +516,36 @@ export default {
 				this.listNftsStake = []
 			}
 		},
-		async onGetHashRate(is_ERC1155, nft_id, idx) {
-			try {
-				const nft = this.listNftsStake[idx]
-				//cal API
-				const search = is_ERC1155 ? '1155' : '721'
-				const response = await axios.get(
-					`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
-				)
-				if (response.status === 200) {
-					nft.name = response.data.name
-					nft.imageUrl = response.data.image
-					nft.description = response.data.description
-				}
-				const contractConn = getContractConnect(
-					this.loginBy,
-					ABI_STAKING,
-					this.staking_address,
-					this.networkRPC,
-					this.fortmaticNetwork
-				)
-				await contractConn.methods
-					.tokenHashrate(is_ERC1155, nft_id)
-					.call()
-					.then((tx) => {
-						nft.hashRate = Number(tx) / 10
-					})
-			} catch (err) {
-				console.log('catch', err)
-			}
-		},
+		// async onGetHashRate(is_ERC1155, nft_id, idx) {
+		// 	try {
+		// 		const nft = this.listNftsStake[idx]
+		// 		//cal API
+		// 		const search = is_ERC1155 ? '1155' : '721'
+		// 		const response = await axios.get(
+		// 			`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+		// 		)
+		// 		if (response.status === 200) {
+		// 			nft.name = response.data.name
+		// 			nft.imageUrl = response.data.image
+		// 			nft.description = response.data.description
+		// 		}
+		// 		const contractConn = getContractConnect(
+		// 			this.loginBy,
+		// 			ABI_STAKING,
+		// 			this.staking_address,
+		// 			this.networkRPC,
+		// 			this.fortmaticNetwork
+		// 		)
+		// 		await contractConn.methods
+		// 			.tokenHashrate(is_ERC1155, nft_id)
+		// 			.call()
+		// 			.then((tx) => {
+		// 				nft.hashRate = Number(tx) / 10
+		// 			})
+		// 	} catch (err) {
+		// 		console.log('catch', err)
+		// 	}
+		// },
 		onUnStakeAllNftsSuccess() {
 			this.mxCloseConfirmModal()
 			const obj = {
