@@ -31,12 +31,21 @@
 		</div>
 	</div>
 	<div v-else class="select-tab">
-		<select @change="setPoolDuration($event.target.value)" name="tab">
-			<option v-for="item in listId" :value="item.id" :key="item.id">
-				{{ item.name }}
-			</option>
-		</select>
-		<img src="../assets/img/arrow-dropdown.svg" alt="dropdown">
+		<div class="select-wrap" @click="showDropdown">
+			<div class="selected" v-if="poolDuration.id === 1">30-day pool</div>
+			<div class="selected" v-if="poolDuration.id === 2">90-day pool</div>
+			<div class="selected" v-if="poolDuration.id === 3">180-day pool</div>
+			<div v-if="isShowDropdown" id="list">
+				<div class="item"
+					v-for="item in listId"
+					:key="item.id"
+					@click="setPoolDuration(item.id)"
+				>
+					{{ item.name }}
+				</div>
+			</div>
+		</div>
+		<img src="../assets/img/arrow-dropdown.svg" alt="dropdown" class="icon">
 	</div>
 </template>
 
@@ -55,7 +64,7 @@ export default {
 			isMobile: false,
 			listId: [
 				{
-					id: 1,
+					id: 1,	
 					name: '30-day pool',
 				},
 				{
@@ -67,10 +76,15 @@ export default {
 					name: '180-day pool',
 				},
 			],
+			isShowDropdown: false
 		}
 	},
 	mounted() {
 		this.checkMobile()
+		window.addEventListener('mousedown', this.closeList)
+	},
+	beforeDestroy() {
+		 window.removeEventListener('mousedown', this.closeList)
 	},
 	methods: {
 		setPoolDuration: function (value) {
@@ -79,6 +93,14 @@ export default {
 		checkMobile() {
 			this.isMobile = window.matchMedia('(max-width: 768px)').matches
 		},
+		showDropdown() {
+			this.isShowDropdown = !this.isShowDropdown
+		},
+		closeList(e) {
+			if(this.isShowDropdown && !e.target.closest('#list')) {
+				this.isShowDropdown = false
+			}
+		}
 	},
 }
 </script>
@@ -139,12 +161,42 @@ export default {
 		align-items: center;
 		gap: gREm(10);
 		padding: 0 gREm(20) gREm(32);
-		select {
-			font-size: gREm(16);
-			line-height: gREm(24);
-			color: #F6583E;
-			font-family: $AppFont;
-    	-webkit-appearance: none;
+		
+
+		.select-wrap {
+			position: relative;
+
+			.selected {
+				font-size: gREm(16);
+				line-height: gREm(24);
+				color: #F6583E;
+				font-family: $AppFont;
+				-webkit-appearance: none;
+				cursor: pointer;
+				padding: 4px 20px;
+			}
+			#list {
+				position: absolute;
+				top: 100%;
+				right: 0;
+				border-radius: 6px;
+				background: #fff;
+				z-index: 50;
+				width: 100%;
+
+				.item {
+					font-family: $AppFont;
+					font-size: gREm(16);
+					line-height: gREm(24);
+					text-align: center;
+					color: #191721;
+					padding: 4px 8px;
+					cursor: pointer;
+				}
+			}
+		}
+		.icon {
+			margin-left: -15px;
 		}
 	}
 }
