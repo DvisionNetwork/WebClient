@@ -146,10 +146,11 @@ export default {
 		onClickItem(item) {
 			console.log("======= onClickItem :: itemInfo", item.id);
 
-			if(item.name == 'ATTENDANCE TICKET') {
-				this.mxShowToast('After opening the Dvision Meta-City, you can exchange the tickets for various items.');
-				return;
-			}
+			// 04.25 Market
+			// if(item.name == 'ATTENDANCE TICKET') {
+			// 	this.mxShowToast('After opening the Dvision Meta-City, you can exchange the tickets for various items.');
+			// 	return;
+			// }
 
 			this.mxSetMarketItem(item);
 			this.$router.push({name:"Market-Detail", 

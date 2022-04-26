@@ -749,7 +749,9 @@ export default {
 					network: networkName,
 					provider,
 					accountAddress: curActiveAccount,
-					nftName: this.getDvLand().nftName,
+					// 04.25 Market
+					nftName: isLand ? this.getDvLand().nftName : this.marketItem.name,
+					market_index: this.marketItem.market_index,
 					callback: isLand ? this.onSellLand : this.onSellItem,
 				}
 
@@ -762,7 +764,8 @@ export default {
 
 				this.trade_data = { ...objClone }
 
-				if (this.getDvLand().nftName == 'bsc-land-3rd' || this.getDvLand().nftName == 'pol-land-3rd') {
+					// 04.25 Market
+				if (isLand && (this.getDvLand().nftName == 'bsc-land-3rd' || this.getDvLand().nftName == 'pol-land-3rd')) {
 					var onSale = this.mxGetLandItemDetail().salestate;
 
 					if (onSale == '1') {
@@ -899,6 +902,8 @@ export default {
 							price: this.marketItem.price,
 							network: this.marketItem.network,
 							nftName: this.getDvLand().nftName,
+							// 04.25 Market
+							market_index: this.marketItem.market_index,
 							callback: this.onBuyLandItem,
 						}
 						this.mxCloseLoading()
@@ -913,6 +918,8 @@ export default {
 							provider,
 							accountAddress: curActiveAccount,
 							nftName: this.getDvLand().nftName,
+							// 04.25 Market
+							market_index: this.marketItem.market_index,
 							callback: this.onApproveDvi,
 						}
 					}
@@ -925,6 +932,8 @@ export default {
 						network: this.networkName,
 						provider,
 						accountAddress: curActiveAccount,
+						// 04.25 Market
+						market_index: this.marketItem.market_index,
 						callback: this.onApproveDvi,
 					}
 				}
@@ -1106,6 +1115,8 @@ export default {
 				network: this.networkName,
 				provider,
 				accountAddress: this.$store.state.userInfo.wallet_addr,
+				// 04.25 Market
+						market_index: this.marketItem.market_index,
 				callback: this.onTradeDvi,
 			}
 
@@ -1160,6 +1171,8 @@ export default {
 				provider,
 				accountAddress: this.$store.state.userInfo.wallet_addr,
 				nftName: this.getDvLand().nftName,
+				// 04.25 Market
+				market_index: this.marketItem.market_index,
 				callback: this.onTradeDvi,
 			}
 

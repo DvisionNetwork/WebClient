@@ -179,6 +179,18 @@ export default function AppConfig() {
 				Network : "0x89"
 			},
 
+			// 04.25 Market
+			/* -----------------  Integrated Market ----------------- */
+			addrMarketBscDev: {
+				ContractMarketAddress :    "0x6982a7a4Bcb32ab6B39f9676FBf164617F1B2b3e",
+				addrs : [
+					{ // 0 : Event Ticket
+						TokenAddress :             "0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a",
+						Contract721Address :       "",
+						Contract1155Address :      "0x94d616751c16Aecc351bBF1903931f477bA47b6e",
+					}
+				]
+			},
 			addrBid: {
 				Network : "opensea"
 			},
@@ -218,22 +230,46 @@ export default function AppConfig() {
 				}
 				return gConfig.wlt.addr3rdLandPolDev;
 			},
+			// 04.25 Market
+			getMarketBscAddr () {
+				if(gConfig.isProd) {
+					return gConfig.wlt.addrMarketBscProd;
+				}
+				return gConfig.wlt.addrMarketBscDev;
+			},
 			getBidAddr () {
 				return gConfig.wlt.addrBid;
 			},
-			getNetworkAddr (network) {
-				if(network == 'ETH') {
-					return gConfig.wlt.getAddr();
-				}else if(network == 'BSC') {
-					return gConfig.wlt.getBscAddr();
-				}else if(network == 'POL') {
-					return gConfig.wlt.getPolygonAddr();
-				}else if(network == 'BSC3') {
-					return gConfig.wlt.get3rdLandBscAddr();
-				}else if(network == 'POL3') {
-					return gConfig.wlt.get3rdLandPolAddr();
-				}else {
-					return '';
+			// 04.25 Market
+			getNetworkAddr (network, market_index) {
+				if(market_index != "-1") { // 통합 마켓 컨트랙트일시
+					let market;
+					let getAddrs;
+					if(network == 'ETH') {
+						market = gConfig.wlt.getMarketBscAddr();
+					}else if(network == 'BSC') {
+						market = gConfig.wlt.getMarketBscAddr();
+					}else if(network == 'POL') {
+						market = gConfig.wlt.getMarketBscAddr();
+					}else {
+						return '';
+					}
+					getAddrs = {ContractMarketAddress : market.ContractMarketAddress, ...market.addrs[market_index]};
+					return getAddrs;
+				} else {
+					if(network == 'ETH') {
+						return gConfig.wlt.getAddr();
+					}else if(network == 'BSC') {
+						return gConfig.wlt.getBscAddr();
+					}else if(network == 'POL') {
+						return gConfig.wlt.getPolygonAddr();
+					}else if(network == 'BSC3') {
+						return gConfig.wlt.get3rdLandBscAddr();
+					}else if(network == 'POL3') {
+						return gConfig.wlt.get3rdLandPolAddr();
+					}else {
+						return '';
+					}
 				}
 			}
 		},
