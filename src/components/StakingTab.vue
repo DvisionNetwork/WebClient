@@ -30,22 +30,42 @@
 			My NFTs
 		</div>
 	</div>
-	<div v-else class="select-tab">
-		<div class="select-wrap" @click="showDropdown">
-			<div class="selected" v-if="poolDuration.id === 1">30-day pool</div>
-			<div class="selected" v-if="poolDuration.id === 2">90-day pool</div>
-			<div class="selected" v-if="poolDuration.id === 3">180-day pool</div>
-			<div v-if="isShowDropdown" id="list">
-				<div class="item"
-					v-for="item in listId"
-					:key="item.id"
-					@click="setPoolDuration(item.id)"
-				>
-					{{ item.name }}
+	<div v-else class="tab-wrap">
+		<div class="select-wrap">
+			<div class="tab-campain">
+				<div class="tab-heading active" @click="showDropdown">
+					Campaigns
+				</div>
+				<div v-if="isShowDropdown" id="list">
+					<div
+						class="tab"
+						:class="{ active: poolDuration.id === 1 }"
+						@click="setPool(1)"
+					>
+						30-day pool
+					</div>
+					<div
+						class="tab"
+						:class="{ active: poolDuration.id === 2 }"
+						@click="setPool(2)"
+					>
+						90-day pool
+					</div>
+					<div
+						class="tab"
+						:class="{ active: poolDuration.id === 3 }"
+						@click="setPool(3)"
+					>
+						180-day pool
+					</div>
+				</div>
+			</div>
+			<div class="tab-nft">
+				<div class="tab-heading active">
+					My NFTs
 				</div>
 			</div>
 		</div>
-		<img src="../assets/img/arrow-dropdown.svg" alt="dropdown" class="icon">
 	</div>
 </template>
 
@@ -100,6 +120,10 @@ export default {
 			if(this.isShowDropdown && !e.target.closest('#list')) {
 				this.isShowDropdown = false
 			}
+		},
+		setPool(id) {
+			this.setPoolDuration(id)
+			this.isShowDropdown = false
 		}
 	},
 }
@@ -155,48 +179,64 @@ export default {
 }
 
 @include media-max($media_small) {
-	.select-tab {
+	.tab-wrap {
+		width: initial;
+		max-width: initial;	
+	}
+	.select-wrap {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: center;
 		align-items: center;
 		gap: gREm(10);
 		padding: 0 gREm(20) gREm(32);
-		
+		font-family: Montserrat, sans-serif;
 
-		.select-wrap {
+		.tab-campain {
 			position: relative;
 
-			.selected {
-				font-size: gREm(16);
-				line-height: gREm(24);
-				color: #F6583E;
-				font-family: $AppFont;
-				-webkit-appearance: none;
-				cursor: pointer;
-				padding: 4px 20px;
-			}
 			#list {
 				position: absolute;
 				top: 100%;
 				right: 0;
 				border-radius: 6px;
-				background: #fff;
 				z-index: 50;
 				width: 100%;
+				background: #2a2932;
 
-				.item {
+				.tab {
 					font-family: $AppFont;
 					font-size: gREm(16);
 					line-height: gREm(24);
 					text-align: center;
-					color: #191721;
+					color: #fff;
 					padding: 4px 8px;
 					cursor: pointer;
+					position: relative;
+
+					&::before {
+						position: absolute;
+						content: "";
+						width: 3px;
+						height: 100%;
+						left: 0px;
+						top: 0px;
+						background: transparent;
+					}
+					&.active::before {
+						background: #F6583E;
+					}
 				}
 			}
 		}
-		.icon {
-			margin-left: -15px;
+		.tab-heading {
+			border-radius: gREm(10);
+			margin-bottom: gREm(4);
+			padding: gREm(11) gREm(20);
+			font-weight: bold;
+			flex: 1;
+			&.active {
+				background: #2a2932;
+			}
 		}
 	}
 }
