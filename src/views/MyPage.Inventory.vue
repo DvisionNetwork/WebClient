@@ -558,7 +558,7 @@ export default {
 @include media-max($media_small) { // 768
 	.Inventory {
 		.content-box {
-			margin-top: 0px;
+			margin-top: 15px;
 
 			.side-menu {
 				min-width: 0px;
@@ -572,7 +572,7 @@ export default {
 					.items {
 						justify-content: center;
 						.product-card {
-							margin-right: 0px;
+							margin: 18px;
 						}
 					}
 				}

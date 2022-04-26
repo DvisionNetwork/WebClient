@@ -646,8 +646,9 @@ export default {
 						e.message === DENIED_TRANSACTION
 					) {
 						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_4)
 					}
-
 					this.mxCloseConfirmModal()
 				})
 		},
@@ -778,7 +779,7 @@ export default {
 				padding: 0 gREm(20);
 				width: 100%;
 				.add-land {
-					width: 100%;
+					// width: 100%;
 					max-width: 100%;
 				}
 			}

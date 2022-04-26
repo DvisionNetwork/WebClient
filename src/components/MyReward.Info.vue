@@ -173,4 +173,15 @@ export default {
 		// }
 	}
 }
+
+@include media-max($media_small) {
+	.info {
+		.info-body {
+			.list-card {
+				justify-content: center;
+				gap: gREm(36);
+			}
+		}
+	}
+}
 </style>
