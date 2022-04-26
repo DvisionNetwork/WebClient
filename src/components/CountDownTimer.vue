@@ -1,12 +1,12 @@
 <template>
-	<span v-if="statusCampain === 1">The campaign has not started yet.</span>
-	<span v-if="statusCampain === 2"
+	<span v-if="statusCampain === 1" class="wrap-status">The campaign has not started yet.</span>
+	<span v-if="statusCampain === 2" class="wrap-status"
 		>The campaign will start in:
 		<span class="status yellow"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
 		>
 	</span>
-	<span v-if="statusCampain === 3"
+	<span v-if="statusCampain === 3" class="wrap-status"
 		>The campaign will end in:
 		<span class="status green"
 			>{{ days }}d:{{ hours }}h:{{ mins }}m:{{ secs }}s</span
@@ -126,25 +126,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.status {
-	font-family: Montserrat, sans-serif;
-	font-style: normal;
-	font-weight: 700;
-	font-size: gREm(20);
-	line-height: gREm(22);
-	&.green {
-		color: #47e269;
-	}
-	&.red {
-		color: #f6583e;
-	}
-	&.yellow {
-		color: #FFD041;
+.wrap-status {
+	display: flex;
+	.status {
+		font-family: Montserrat, sans-serif;
+		font-style: normal;
+		font-weight: 700;
+		font-size: gREm(20);
+		line-height: gREm(22);
+		&.green {
+			color: #47e269;
+		}
+		&.red {
+			color: #f6583e;
+		}
+		&.yellow {
+			color: #FFD041;
+		}
 	}
 }
 
 @include media-max($media_small) {
-	.status {
+	.wrap-status {
 		display: block;
 	}
 }

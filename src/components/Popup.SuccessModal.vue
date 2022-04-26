@@ -110,7 +110,7 @@ export default {
 			.modal-container {
 				max-width: 100vw;
 				width: 100%;
-				margin: 0;
+				// margin: 0;
 
 				.title {
 					@include Set-Font(
