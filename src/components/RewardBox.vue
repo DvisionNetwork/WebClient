@@ -203,12 +203,13 @@ export default {
 		.reward-box {
 			padding: 20px;
 			.box-title {
-				display: block;
-				margin-bottom: 10px;
 				.point {
 					text-align: right;
 					margin-top: 10px;
 				}
+			}
+			.status {
+				margin-top: auto;
 			}
 		}
 		.reward-wrap-btn {
