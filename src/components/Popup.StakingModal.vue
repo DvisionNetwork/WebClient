@@ -408,10 +408,8 @@ export default {
 			}
 		},
 		checkStateDropdown(e) {
-			console.log('id', e.target.id)
 			const className = ['dropdown-list', 'erc', 'name-land', 'arrow']
 			const index = className.findIndex((ele) => ele === e.target.id)
-			console.log('index', index)
 			this.showDropdown = index !== -1 ? !this.showDropdown : false
 		},
 		checkDropdown() {
