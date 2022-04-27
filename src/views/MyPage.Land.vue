@@ -739,9 +739,9 @@ export default {
 	.item-box {
 		width: calc(100% + 20px);
 		height: auto; // gREm(395 + 1365 + 44);
-		margin-top: gREm(15);
+		// margin-top: gREm(15);
     	margin-left: gREm(-20);
-		margin-bottom: gREm(15);
+		// margin-bottom: gREm(15);
 		@include FLEXV(flex-start, flex-start);
 		.items {
 			@include FLEX(flex-start, flex-start);
