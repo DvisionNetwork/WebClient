@@ -27,7 +27,6 @@
 						<div
 							id="erc"
 							class="erc"
-							@click="showDropdown = !showDropdown"
 						>
 							<span class="child" id="name-land">
 								<!-- <span v-if="isErc1155">ERC-1155</span>
@@ -354,7 +353,6 @@ export default {
 			var currentOwner = _U
 				.getIfDefined(this.$store.state, ['userInfo', 'wallet_addr'])
 				.toLowerCase()
-			console.log('currentOwner', dvLand.map)
 
 			for (let i = 0; i < dvLand.map.length; i++) {
 				if (_U.isDefined(dvLand.map[i], 'id')) {
@@ -367,8 +365,6 @@ export default {
 					}
 				}
 			}
-
-			console.log('block list all mypage', blockListAll)
 
 			// console.log("[Market.Land.vue] blockListAll==> ", blockListAll);
 
@@ -392,20 +388,17 @@ export default {
 			})
 		},
 		callLandItemList() {
-			console.log('this.getdv', this.getDvLand)
 			const network = window.localStorage.getItem('currentNetwork')
 			this.mxCallAndSetMyLandItemList(this.mapId, network, false, () => {
 				this.setLandItems(this.searchQuery)
 			})
 		},
 		handleClickItem(item) {
-			console.log('item', item)
 			this.landCode = item.name
 			this.setLandMapId(item.id)
 		},
 		setLandMapId(mapId) {
 			const landQuery = this.mxGetLandQuery()
-			console.log('landQuery', landQuery)
 			if (!landQuery) landQuery = {}
 			// console.log("[Market.Land.vue] setLandMapId  mapId",mapId, landQuery);
 			if (landQuery.mapId != mapId) {
@@ -415,10 +408,11 @@ export default {
 			}
 		},
 		checkStateDropdown(e) {
-			console.log('e', e.target.id)
+			console.log('id', e.target.id)
 			const className = ['dropdown-list', 'erc', 'name-land', 'arrow']
 			const index = className.findIndex((ele) => ele === e.target.id)
-			this.showDropdown = index !== -1
+			console.log('index', index)
+			this.showDropdown = index !== -1 ? !this.showDropdown : false
 		},
 		checkDropdown() {
 			window.addEventListener('click', this.checkStateDropdown)
@@ -427,7 +421,6 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('chainId', chainId)
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -445,8 +438,6 @@ export default {
 				const wc = JSON.parse(walletConnect)
 				current_addr = wc.accounts[0]
 			}
-			console.log('current_addr',current_addr);
-			console.log('this.wallet_addr',this.wallet_addr);
 			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
 				return true
 			else return false
@@ -845,7 +836,8 @@ export default {
 
 					.dropdown-list {
 						border: 1px solid #fff;
-						width: gREm(140);
+						background-color: #fff;
+						width: 100%;
 						padding: gREm(10);
 						position: absolute;
 						left: 0;
@@ -854,9 +846,7 @@ export default {
 						z-index: 10;
 
 						.dropdown-item {
-							&:hover {
-								border-bottom: 1px solid #fff;
-							}
+							color: #000;
 						}
 					}
 					& .child {
