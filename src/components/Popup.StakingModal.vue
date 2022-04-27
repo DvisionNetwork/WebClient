@@ -724,28 +724,25 @@ export default {
 			}
 			params = JSON.parse(JSON.stringify(params))
 			console.log('params', this.data, params)
-			const res = await contractConn.methods
+			contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
 					from: this.wallet_addr,
 				})
+				.then(res => {
+					this.showSuccess()
+					this.onStakingSuccess()
+				})
 				.catch((e) => {
-					console.log('e',e)
-					if (
-						e.message.includes('104') &&
-						e.message.includes(USER_DECLINED)
-					) {
-						this.mxShowToast(USER_DECLINED)
-					} else {
+					if(e.code === 4001) {
 						this.mxShowToast(e.message)
+					} else {
+						this.mxShowToast(MSG_METAMASK_4)
 					}
+				})
+				.finally(()=> {
 					this.mxCloseLoading()
 				})
-			if (res) {
-				this.mxCloseLoading()
-				this.showSuccess()
-				this.onStakingSuccess()
-			}
 		},
 	},
 }
