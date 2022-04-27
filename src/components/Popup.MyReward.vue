@@ -51,7 +51,7 @@ import { getContractConnect } from '../features/Connectors';
 import ProxyABI from '@/abi/Proxy.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
-import { BSC_PROXY_ADDRESS, fromHexToChainId } from '../features/Common'
+import { BSC_PROXY_ADDRESS } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig()
 
@@ -283,8 +283,7 @@ export default {
 			this.mxShowLoading('inf')
 			const address = this.$store.state.userInfo.wallet_addr
 			const campainId = this.data.poolDuration.id
-			const chainId = fromHexToChainId(this.data.chainId)
-
+			const chainId = this.data.chainId
 			const res = await axios(`${gConfig.public_api_sotatek}/claim-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
 			console.log({
 				data: res.data.data, 
