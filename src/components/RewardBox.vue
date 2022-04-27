@@ -108,8 +108,11 @@ export default {
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
+			const chainId = window.localStorage.getItem('currentNetwork')
 			const obj = {
 				isShow: true,
+				poolDuration: this.poolDuration,
+				chainId
 			}
 			this.mxShowMyRewardModal(obj)
 		},

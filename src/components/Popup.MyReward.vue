@@ -282,8 +282,13 @@ export default {
 		async claimRewards() {
 			this.mxShowLoading('inf')
 			const address = this.$store.state.userInfo.wallet_addr
-			const res = await axios(`${gConfig.public_api_sotatek}/fake-data-reward?owner=${address}`)
-			console.log('res', res.data.data, res.data.signature);
+			const campainId = this.data.poolDuration.id
+			const chainId = this.data.chainId
+			const res = await axios(`${gConfig.public_api_sotatek}/claim-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
+			console.log({
+				data: res.data.data, 
+				signature: res.data.signature
+			});
 
 			const contract = getContractConnect(
 				this.loginBy, 
