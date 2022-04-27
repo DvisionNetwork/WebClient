@@ -115,6 +115,7 @@ export default {
 			this.currentOrder = landQuery.order;
 			this.mxSetLandQuery(landQuery);
 		}else{
+			console.log('in else')
 			if(this.tab_page == 'land-list') {
 				this.landSwitchForsale = false;
 			}
@@ -339,7 +340,7 @@ export default {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
 			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
-			this.mxCallAndSetMyLandItemList(this.mapId, network, ()=>{
+			this.mxCallAndSetMyLandItemList(this.mapId, network,false, ()=>{
 				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 				this.setLandItems(this.searchQuery);
 			});
@@ -396,6 +397,7 @@ export default {
 			this.$router.push(rInfo);
 		},
 		onChangeSideMenu(mapId) {
+			console.log('map id', mapId)
 			// console.log("[Market.Land.vue] onChangeSideMenu() landName:", mapId);
 			this.setLandMapId(mapId);
 
@@ -407,6 +409,7 @@ export default {
 			var landType = this.tab_page == 'land-list' ? 'list' : 'map';
 			var mapId = this.mapId;
 			var landQuery = this.mxGetLandQuery();
+			console.log('in set search query', landQuery)
 			if(_U.isDefined(landQuery,"type")) landType = landQuery.type;
 			if(_U.isDefined(landQuery,"mapId")) mapId = landQuery.mapId;
 
@@ -419,16 +422,19 @@ export default {
 				for_sale: this.landSwitchForsale,
 				order: this.currentOrder,
 			};
+			console.log('query', query)
 
 			this.mxSetLandQuery(query);
 
 		},
 		setLandItems(query) {
 			var dvLand = this.getDvLand;
+			console.log('dvLand in land', dvLand)
 			if(!dvLand) return;
 
 			console.log("[Market.Land.vue] setLandItems() dvLand==> ", dvLand);
 			var landQuery = this.mxGetLandQuery();
+			console.log('landQueryy', landQuery)
 
 			var ct = _U.getIfDefined(landQuery,["order","ct"]);
 			if(!ct) ct = 'all';
@@ -441,6 +447,7 @@ export default {
 
 			var blockListAll = [];
 			var currentOwner = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']).toLowerCase();
+			console.log('currentOwner', dvLand.map)
 
 			for(var i=0; i <dvLand.map.length; i++) {
 				if(_U.isDefined(dvLand.map[i],'id')) {
@@ -451,6 +458,7 @@ export default {
 				}
 			}
 
+			console.log('block list all', blockListAll)
 			// console.log("[Market.Land.vue] blockListAll==> ", blockListAll);
 
 			var blockList = [];

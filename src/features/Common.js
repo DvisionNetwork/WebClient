@@ -229,3 +229,10 @@ export const REWARD_TABLE_3 = [
 		reward: 'Random Box G * 10, Building Box B * 1',
 	},
 ]
+
+export const LAND_CODE = {
+	SEOUL:'SeoulA',
+	NEWYORK: 'Newyork',
+	LONDON: 'London',
+	TOKYO: 'Tokyo'
+}

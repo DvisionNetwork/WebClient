@@ -57,16 +57,16 @@ export default {
 		},
 	},
 	beforeMount () {
-		console.log("[MyPage.vue] beforeMout(), route : ", this.$route)
+		// console.log("[MyPage.vue] beforeMout(), route : ", this.$route)
 	},
 	mounted () {
-		console.log("[MyPage.vue] mounted(), route : ", this.$route)
+		// console.log("[MyPage.vue] mounted(), route : ", this.$route)
 	},
 	beforeUpdate () {
-		console.log("[MyPage.vue] beforeUpdate(), route : ", this.$route);
+		// console.log("[MyPage.vue] beforeUpdate(), route : ", this.$route);
 	},
 	updated() {
-		console.log("[MyPage.vue] updated(), route : ", this.$route)
+		// console.log("[MyPage.vue] updated(), route : ", this.$route)
 	},
 	data () {
 		return {

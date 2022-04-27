@@ -304,6 +304,7 @@ var Mixin = {
 		mxGetLandMap(mapId) {
 			var rv = null;
 			var lm = this.$store.state.landMenu;
+			console.log('lmmmmm', lm)
 			for(var i=0; i<lm.length; i++) {
 				if(lm[i].mapId == mapId) {
 					rv = lm[i].land;
@@ -324,6 +325,7 @@ var Mixin = {
 		},
 
 		mxSetLandItems(landItems) {
+			console.log('set land items', landItems)
 			this.$store.dispatch('setLandItems', landItems);
 		},
 		mxGetLandItems() {
@@ -344,6 +346,7 @@ var Mixin = {
 		},
 
 		mxCallAndSetLandItemList(mapId, network, func) {
+			console.log('mapId', mapId, network)
 
 			var landMenu = this.mxGetLandMenu();
 			var dvLand = null;
@@ -366,15 +369,17 @@ var Mixin = {
 			_U.callPost({
 				url:gConfig.market_land_item_list,
 				data: query,
-				callback: (resp) =>{
+				callback: (resp) => {
 					// console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
 					var rows = _U.getIfDefined(resp,['data','rows']);
 					var midx = 0;
 
+					console.log('rows', rows)
+
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
 					if(rows && rows.length > 0) {
-						for(var ridx=0; ridx <rows.length; ridx++) {
-							var row = rows[ridx];
+						for(let ridx=0; ridx <rows.length; ridx++) {
+							let row = rows[ridx];
 							for(;midx < dvLand.map.length; midx ++) {
 								if(!_U.isDefined(dvLand.map[midx],'id')) {
 									continue;
@@ -405,7 +410,7 @@ var Mixin = {
 							}
 						}
 						// console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
-
+						console.log('landMenus', landMenu)
 						this.mxSetLandMenu(landMenu);
 					}
 
@@ -421,26 +426,29 @@ var Mixin = {
 
 		},
 
-		mxCallAndSetMyLandItemList(mapId, network, func) {
+		mxCallAndSetMyLandItemList(mapId, network,isStake, func) {
 
-			var landMenu = this.mxGetLandMenu();
-			var dvLand = null;
-			for(var i=0; i<landMenu.length; i++) {
-				if(landMenu[i].mapId == mapId) {
+			const landMenu = this.mxGetLandMenu();
+			console.log('menu in mxcallandset', landMenu)
+			let dvLand = null;
+			for (let i = 0; i < landMenu.length; i++) {
+				if (landMenu[i].mapId == mapId) {
 					dvLand = landMenu[i].land;
 					break;
 				}
 			}
+			console.log('dvLand', dvLand)
 			if(!dvLand) return;
 
-			var landCode = dvLand.n;
-			var query = {
+			const landCode = dvLand.n;
+			const query = {
 				land_code: landCode,
 				network: '("'+ network + '")',
 				owner_addr: _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
+				stake: isStake
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
-
+			console.log('gConfig', gConfig.market_land_with_owner)
 			this.mxShowLoading();
 			_U.callPost({
 				url:gConfig.market_land_with_owner,
@@ -452,7 +460,7 @@ var Mixin = {
 
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
 					if(rows && rows.length > 0) {
-						for(var ridx=0; ridx <rows.length; ridx++) {
+						for(let ridx=0; ridx <rows.length; ridx++) {
 							var row = rows[ridx];
 							for(;midx < dvLand.map.length; midx ++) {
 								if(!_U.isDefined(dvLand.map[midx],'id')) {
@@ -463,7 +471,7 @@ var Mixin = {
 									var price = _U.getIfDefined(row,'dviprice');
 									var tokentype = _U.getIfDefined(row,'tokentype');
 									var ownAddress = _U.getIfDefined(row,'owner_address');
-									var logoUrl = _U.getIfDefined(row,'logo_url');
+									var logoUrl = _U.getIfDefined(row,'thumburl');
 									var btnState = _U.getIfDefined(row,'btn_state');
 									var saleState = _U.getIfDefined(row,'salestate');
 
@@ -473,6 +481,7 @@ var Mixin = {
 									block['logo_url'] = logoUrl ? logoUrl : "";
 									block['btn_state'] = btnState ? btnState : "";
 									block['salestate'] = saleState ? saleState : "";
+									block.tokenId = row.token_id ? row.token_id : ''
 									midx ++;
 									break;
 								}else{
@@ -543,6 +552,7 @@ var Mixin = {
 			return v;
 		},
 		mxGetBgImageStyle(url) {
+			console.log('url', url)
 			return {
 				'background-image': `url(${url})`,
 				'background-repeat': 'no-repeat',
