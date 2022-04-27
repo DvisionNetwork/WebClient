@@ -335,7 +335,7 @@ export default {
 			})
 			idx++
 		}
-		console.log('landMenu', landMenu)
+		console.log('landMenu in app', landMenu)
 		this.mxSetLandMenu(landMenu)
 
 		// window.DVW['app']={

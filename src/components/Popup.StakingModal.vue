@@ -24,14 +24,36 @@
 							@change="onSearch"
 							maxlength="255"
 						/>
-						<div class="erc">
-							<span class="child" @click="switchErc">
-								<span v-if="isErc1155">ERC-1155</span>
-								<span v-else>ERC-721</span>
+						<div
+							id="erc"
+							class="erc"
+							@click="showDropdown = !showDropdown"
+						>
+							<span class="child" id="name-land">
+								<!-- <span v-if="isErc1155">ERC-1155</span>
+								<span v-else>ERC-721</span> -->
+								{{ landCode }}
 								<img
+									id="arrow"
 									class="ic-filter"
 									src="../assets/img/ic-arrow-down.svg"
 							/></span>
+							<Transition>
+								<div
+									v-if="showDropdown"
+									class="dropdown-list"
+									id="dropdown-list"
+								>
+									<div
+										class="dropdown-item"
+										v-for="item in listLandCode"
+										:key="item"
+										@click="handleClickItem(item)"
+									>
+										{{ item.name }}
+									</div>
+								</div>
+							</Transition>
 						</div>
 					</div>
 					<div class="desc" v-if="listShowers.length !== 0">
@@ -40,19 +62,19 @@
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="item in listShowers"
-							:name="item.name"
+							v-for="item in landItems.list"
+							:name="item.n"
 							:id="item.id"
 							:key="item.id"
 							:nftId="Number(item.nft_id)"
-							:imageUrl="item.imageUrl"
-							:isActive="getActive(Number(item.nft_id))"
+							:imageUrl="item.logo_url"
+							:isActive="getActive(Number(item.tokenId))"
 							:onConfirmQuantity1155="
 								(quantity, nftId) =>
 									onConfirmQuantity1155(quantity, nftId)
 							"
 							:onCheckItem="
-								() => onCheckItem(Number(item.nft_id))
+								() => onCheckItem(Number(item.tokenId))
 							"
 							:isErc1155="isErc1155"
 							:cancelQuantityModal="
@@ -60,8 +82,10 @@
 							"
 							:maxQuantity="item.value"
 							:hashRate="item.hashRate"
+							:tokenId="item.tokenId"
+							:item="item"
 						/>
-						<div v-if="listShowers.length === 0" class="no-lands">
+						<div v-if="landMenu.length === 0" class="no-lands">
 							No LANDs found.
 						</div>
 					</div>
@@ -121,6 +145,7 @@ import {
 	WALLETCONNECT,
 	checkErrorMessage,
 	USER_DECLINED,
+	LAND_CODE,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
@@ -147,6 +172,27 @@ export default {
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			networkRPC: window.localStorage.getItem('networkRPC'),
 			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
+			landCode: LAND_CODE.SEOUL,
+			showDropdown: false,
+			listLandCode: [
+				{
+					name: 'SeoulA',
+					id: 'gangnam',
+				},
+				{
+					name: 'Newyork',
+					id: 'newyork',
+				},
+				{
+					name: 'London',
+					id: 'london',
+				},
+				{
+					name: 'Tokyo',
+					id: 'tokyo',
+				},
+			],
+			currentOrder: { name: 'land_ct_all', ct: 'all' },
 		}
 	},
 	beforeMount() {
@@ -164,6 +210,7 @@ export default {
 				window.localStorage.getItem('currentNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
 		}
+		this.setSearchQuery(1)
 	},
 	mounted() {
 		if (ethereum) {
@@ -171,12 +218,51 @@ export default {
 				this.current_addr = accounts[0]
 			})
 		}
-		this.onGetNftowner(this.isErc1155)
+		// this.onGetNftowner(this.isErc1155)
+		this.checkDropdown()
 		// this.popType = authInfo.type;
+		this.callLandItemList()
+	},
+	beforeUnmount() {
+		window.removeEventListener('click', this.checkStateDropdown)
 	},
 	computed: {
 		userInfo() {
 			return this.mxGetUserInfo()
+		},
+		getDvLand() {
+			console.log('map iddddd', this.mapId)
+			return this.mxGetLandMap(this.mapId)
+		},
+
+		landMenu() {
+			return this.mxGetLandMenu()
+		},
+		defaultMapId() {
+			return this.mxGetLandDefaultMapId()
+		},
+
+		mapId() {
+			var mapId = null
+			var landQuery = this.mxGetLandQuery()
+			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
+			if (landQuery) {
+				mapId = landQuery.mapId
+			} else {
+				mapId = this.mxGetLandDefaultMapId()
+			}
+			return mapId
+		},
+		landItems() {
+			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
+			console.log('test', this.mxGetLandItems())
+			return this.mxGetLandItems()
+		},
+		landItem() {
+			return this.mxGetLandItem()
+		},
+		searchQuery() {
+			return this.mxGetLandQuery()
 		},
 	},
 	props: {
@@ -204,8 +290,138 @@ export default {
 				this.listShowers = this.listNfts
 			}
 		},
+		searchQuery(newVal, oldVal) {
+			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
+			this.setLandItems(newVal)
+		},
+		mapId(newVal, oldVal) {
+			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
+			var landQuery = this.mxGetLandQuery();
+			console.log('landQuery', landQuery)
+			landQuery.page = 1;
+			landQuery.search = '';
+			this.search = '';
+			var o = _U.Q('.search-box .text-input');
+			if(o) o.value = '';
+			this.mxSetLandQuery(landQuery);
+			this.callLandItemList()
+			// this.setLandItems(landQuery);
+		},
 	},
 	methods: {
+		setSearchQuery(page) {
+			if (!page || page == 0) page = 1
+
+			var landType = this.tab_page == 'land-list' ? 'list' : 'map'
+			var mapId = this.mapId
+			var landQuery = this.mxGetLandQuery()
+			console.log('in set search query', landQuery)
+			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
+			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
+
+			var query = {
+				type: landType,
+				mapId: mapId,
+				page: page,
+				count: gConfig.marketItem_count_per_page,
+				search: this.search,
+				for_sale: this.landSwitchForsale,
+				order: this.currentOrder,
+			}
+			console.log('query', query)
+
+			this.mxSetLandQuery(query)
+		},
+		setLandItems(query) {
+			var dvLand = this.getDvLand
+			if (!dvLand) return
+			console.log('[Market.Land.vue] setLandItems() dvLand==> ', dvLand)
+			var landQuery = this.mxGetLandQuery()
+
+			var ct = _U.getIfDefined(landQuery, ['order', 'ct'])
+			if (!ct) ct = 'all'
+
+			// console.log("[Marke.Land.vue] setLandItems() forSale:", forSale, this.landSwitchForsale);
+
+			// 2자 이상
+			var search =
+				_U.isDefined(landQuery, 'search') && landQuery.search.length > 1
+					? landQuery.search
+					: null
+
+			var blockListAll = []
+			var currentOwner = _U
+				.getIfDefined(this.$store.state, ['userInfo', 'wallet_addr'])
+				.toLowerCase()
+			console.log('currentOwner', dvLand.map)
+
+			for (let i = 0; i < dvLand.map.length; i++) {
+				if (_U.isDefined(dvLand.map[i], 'id')) {
+					var block = dvLand.map[i]
+					if (
+						block.owner_address &&
+						block.owner_address.toLowerCase() == currentOwner
+					) {
+						blockListAll.push(block)
+					}
+				}
+			}
+
+			console.log('block list all mypage', blockListAll)
+
+			// console.log("[Market.Land.vue] blockListAll==> ", blockListAll);
+
+			const blockList = []
+			// console.log('landQuery', landQuery)
+			// var start = (landQuery.page - 1) * landQuery.count;
+			// var end = start + landQuery.count;
+			// for(var i=start; i <end; i++) {
+			// 	if(_U.isDefined(blockListAll[i],'id')) {
+			// 		blockList.push(blockListAll[i]);
+			// 	}
+			// }
+
+			// console.log("[Market.Land.vue] blockList==> ", blockList);
+			const total = blockListAll.length
+			this.mxSetLandItems({
+				total,
+				page: 1,
+				cpp: query.count,
+				list: blockListAll,
+			})
+		},
+		callLandItemList() {
+			console.log('this.getdv', this.getDvLand)
+			const network = window.localStorage.getItem('currentNetwork')
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false, () => {
+				this.setLandItems(this.searchQuery)
+			})
+		},
+		handleClickItem(item) {
+			console.log('item', item)
+			this.landCode = item.name
+			this.setLandMapId(item.id)
+		},
+		setLandMapId(mapId) {
+			const landQuery = this.mxGetLandQuery()
+			console.log('landQuery', landQuery)
+			if (!landQuery) landQuery = {}
+			// console.log("[Market.Land.vue] setLandMapId  mapId",mapId, landQuery);
+			if (landQuery.mapId != mapId) {
+				// console.log("[Market.Land.vue] setLandMapId  mapId call mxSetLandQuery()",mapId, landQuery);
+				landQuery.mapId = mapId
+				this.mxSetLandQuery(landQuery)
+			}
+		},
+		checkStateDropdown(e) {
+			console.log('e', e.target.id)
+			const className = ['dropdown-list', 'erc', 'name-land', 'arrow']
+			const index = className.findIndex((ele) => ele === e.target.id)
+			this.showDropdown = index !== -1
+		},
+		checkDropdown() {
+			window.addEventListener('click', this.checkStateDropdown)
+		},
 		checkNetwork(chainId) {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
@@ -509,6 +725,7 @@ export default {
 				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
 			}
 			params = JSON.parse(JSON.stringify(params))
+			console.log('params', this.data, params)
 			const res = await contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
@@ -536,6 +753,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.v-enter-active,
+.v-leave-active {
+	transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+	opacity: 0;
+}
 .modal-mask {
 	position: absolute;
 	z-index: $Z-INDEX-LOGIN-POPUP;
@@ -606,6 +832,23 @@ export default {
 					padding: 0 10px;
 					line-height: gREm(44);
 					cursor: pointer;
+
+					.dropdown-list {
+						border: 1px solid #fff;
+						width: gREm(140);
+						padding: gREm(10);
+						position: absolute;
+						left: 0;
+						border-radius: gREm(10);
+						margin-top: gREm(5);
+						z-index: 10;
+
+						.dropdown-item {
+							&:hover {
+								border-bottom: 1px solid #fff;
+							}
+						}
+					}
 					& .child {
 						display: flex;
 						align-items: center;
