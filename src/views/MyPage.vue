@@ -167,10 +167,12 @@ export default {
 			background-color: #34304b;
 		}
 		.content-box {
-			@include FLEX(center,center);
+			@include FLEX(center,flex-start);
 			width: 100%;
 			height: auto;
 			padding-bottom: gREm(137);
+			margin-top: gREm(15);
+			margin-bottom: gREm(15);
 			// @include FLEX(flex-start, cent
 		}
 	}
