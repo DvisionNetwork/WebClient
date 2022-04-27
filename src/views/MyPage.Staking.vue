@@ -225,10 +225,6 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			console.log('networkETH', networkETH)
-			console.log('networkBSC', networkBSC)
-			console.log('networkPOL', networkPolygon)
-			console.log('chainId', chainId)
 			if (
 				chainId !== networkBSC &&
 				chainId !== networkETH &&
@@ -253,6 +249,7 @@ export default {
 				this.address1155 = MATIC_ADDRESS_1155
 			}
 			const id = this.poolDuration.id
+			console.log('staking address', this.staking_address)
 			this.getCampaignInfo(id)
 			this.onGetNftsStaked(id)
 			this.getTotalMiningHashRate(id)
@@ -439,6 +436,7 @@ export default {
 		async getCampaignInfo(campainId) {
 			try {
 				this.mxShowLoading()
+				console.log('ABI_STAKING', ABI_STAKING)
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,

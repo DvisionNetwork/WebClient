@@ -347,6 +347,7 @@ export default {
 			var network = gConfig.wlt.getNetworkAddr(
 				this.getDvLand.network
 			).Network
+			console.log('network', network)
 
 			this.mxCallAndSetLandItemList(this.mapId, network, () => {
 				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
