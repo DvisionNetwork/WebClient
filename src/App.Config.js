@@ -191,6 +191,16 @@ export default function AppConfig() {
 					}
 				]
 			},
+			addrMarketBscProd: {
+				ContractMarketAddress :    "0x05dD661fe00ed8ab1f7FAC7bC660729FC8907472",
+				addrs : [
+					{ // 0 : Event Ticket
+						TokenAddress :             "0x758FB037A375F17c7e195CC634D77dA4F554255B",
+						Contract721Address :       "",
+						Contract1155Address :      "0x4DD95613106cB1348D3eF25A3668f05fFB0c6211",
+					}
+				]
+			},
 			addrBid: {
 				Network : "opensea"
 			},
