@@ -286,27 +286,31 @@ export default {
 			const chainId = this.data.chainId
 			const res = await axios(`${gConfig.public_api_sotatek}/claim-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
 
-			const contract = getContractConnect(
-				this.loginBy, 
-				ProxyABI, 
-				BSC_PROXY_ADDRESS, 
-				this.networkRPC,
-				this.currentNetwork,
-			)
-
-			contract.methods
-				.execTransaction(res.data.data, res.data.signature)
-				.send({ from: address })
-				.then(tx => {
-					console.log('tx', tx);
-					this.showPopupSuccess();
-				})
-				.catch(e => {
-					console.log('err', e);
-				})
-				.finally(() => {
-					this.mxCloseLoading()
-				});
+			if(res.data.data && res.data.signature) {
+				const contract = getContractConnect(
+					this.loginBy, 
+					ProxyABI, 
+					BSC_PROXY_ADDRESS, 
+					this.networkRPC,
+					this.currentNetwork,
+				)
+	
+				contract.methods
+					.execTransaction(res.data.data, res.data.signature)
+					.send({ from: address })
+					.then(tx => {
+						console.log('tx', tx);
+						this.showPopupSuccess();
+					})
+					.catch(e => {
+						console.log('err', e);
+					})
+					.finally(() => {
+						this.mxCloseLoading()
+					});
+			} else {
+				this.mxCloseLoading()
+			}
 		}
 	},
 }
