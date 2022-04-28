@@ -38,7 +38,8 @@ import {
 	REWARD_TABLE_2,
 	REWARD_TABLE_3,
 } from '@/features/Common.js'
-import { getContractConnect, fromHexToChainId } from '@/features/Connectors.js'
+import { getContractConnect } from '@/features/Connectors.js'
+import { fromHexToChainId } from '@/features/Common.js'
 var gConfig = AppConfig()
 
 export default {
@@ -109,7 +110,7 @@ export default {
 		},
 		showMyReward() {
 			const network = window.localStorage.getItem('currentNetwork')
-			if(!network) return 
+			if(!network) return
 			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,

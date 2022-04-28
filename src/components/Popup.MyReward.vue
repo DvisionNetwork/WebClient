@@ -74,199 +74,31 @@ export default {
 				},
 			],
 			selectedIndex: 0,
-			dataInfo: [
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-			],
+			listReward: [],
+			rewardRandomBox: [],
+			rewardBuildingBox: [],
+			dataInfo: {}
 		}
 	},
 	props: {
 		data: Object,
 	},
 	created() {},
+	watch: {
+		async selectedIndex() {
+			if(this.selectedIndex === 1) {
+				await this.getListReward()
+				const rewardRandomBox = 'rewardRandomBox'
+				const rewardBuildingBox = 'rewardBuildingBox'
+				this.filterReward(rewardRandomBox)
+				this.filterReward(rewardBuildingBox)
+				this.dataInfo = {
+					rewardRandomBox: this.rewardRandomBox,
+					rewardBuildingBox: this.rewardBuildingBox
+				}
+			}
+		}
+	},
 	methods: {
 		showPopupSuccess() {
 			const obj = {
@@ -310,6 +142,38 @@ export default {
 					});
 			} else {
 				this.mxCloseLoading()
+			}
+		},
+		async getListReward() {
+			const address = this.$store.state.userInfo.wallet_addr
+			const campainId = this.data.poolDuration.id
+			const chainId = this.data.chainId
+			const res = await axios(`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)			
+			this.listReward = res.data.NftCampaignArr
+		},
+		filterReward(key) {
+			if(this.listReward &&  this.listReward.length > 0) {
+				console.log('this.listReward', this.listReward);
+				const data = []
+				for(let i = 1; i <= 9; i++){
+					const arr = this.listReward.filter((item) => item[key].boxType === i)
+					if(arr.length > 0) {
+						data.push(arr)
+					}
+				}
+				
+				const list = data.reduce((arr, item) => {
+					arr.push(item.reduce((obj, a) => {
+						const num = obj.amount + a[key].amount
+						return {
+							amount: num,
+							boxType: a[key].boxType
+						}
+					}, {amount: 0, boxType: ''}))
+					return arr
+				}, [])
+
+				this[key] = list.filter(item => item.amount > 0)
 			}
 		}
 	},
