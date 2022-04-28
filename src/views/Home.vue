@@ -229,11 +229,7 @@ export default {
 			this.mxGameStart();
 		},
 		checkMobile() {
-			if (navigator.appVersion.indexOf("Win")!=-1)
-				return false;
-			if (navigator.appVersion.indexOf("Mac")!=-1 && navigator.appVersion.indexOf("iPhone")==-1)
-				return false;
-			return true;
+			return window.matchMedia('(max-width: 768px)').matches;
 		},
 		getUUID() {
 			return _U.getUUID();
