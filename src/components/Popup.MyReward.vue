@@ -285,10 +285,6 @@ export default {
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
 			const res = await axios(`${gConfig.public_api_sotatek}/claim-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
-			console.log({
-				data: res.data.data, 
-				signature: res.data.signature
-			});
 
 			const contract = getContractConnect(
 				this.loginBy, 
@@ -298,7 +294,7 @@ export default {
 				this.currentNetwork,
 			)
 
-			const data = await contract.methods
+			contract.methods
 				.execTransaction(res.data.data, res.data.signature)
 				.send({ from: address })
 				.then(tx => {
@@ -311,8 +307,6 @@ export default {
 				.finally(() => {
 					this.mxCloseLoading()
 				});
-
-			console.log('data', data);
 		}
 	},
 }
