@@ -1,44 +1,34 @@
 <template>
 	<div class="info">
 		<div class="info-body">
-			<!-- <table class="table">
-				<thead>
-					<tr>
-						<th width="16%">ID</th>
-						<th>Name</th>
-						<th width="19%">Quantity</th>
-					</tr>
-				</thead>
-				<tbody class="has-data" v-if="data">
-					<tr v-for="item in data" :key="item.id">
-						<td>{{ item.id }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.quantity }}</td>
-					</tr>
-				</tbody>
-				<tr v-else>
-					<td colspan="3" class="no-rewards">
-						No rewards available.
-						<br />
-						You can stake your LANDs to see the corresponding
-						rewards in this tab.
-					</td>
-				</tr>
-			</table> -->
 			<div class="has-data" v-if="data">
 				<div class="list-card">
-					<div class="land-card" v-for="item in data" :key="item.id">
+					<div class="land-card" v-for="item in data?.rewardRandomBox" :key="item.id">
 						<div class="image">
 							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
 							<img v-else src="../assets/img/default.png" :alt="item.name" />
 						</div>
 						<div class="card-title">
-							{{ item.name }}
+							{{ getName(item.boxType) }}
 						</div>
 						<div class="line" />
 						<div class="bottom">
 							<span class="left">Quantity</span>
-							<span>{{ item.quantity }}</span>
+							<span>{{ item.amount }}</span>
+						</div>
+					</div>
+					<div class="land-card" v-for="item in data?.rewardBuildingBox" :key="item.id">
+						<div class="image">
+							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
+							<img v-else src="../assets/img/default.png" :alt="item.name" />
+						</div>
+						<div class="card-title">
+							{{ getName(item.boxType) }}
+						</div>
+						<div class="line" />
+						<div class="bottom">
+							<span class="left">Quantity</span>
+							<span>{{ item.amount }}</span>
 						</div>
 					</div>
 				</div>
@@ -67,7 +57,22 @@ export default {
 		data: Object,
 	},
 	created() {},
-	methods: {},
+	methods: {
+		getName(boxType) {
+			switch (boxType) {
+				case 1: return 'Ramdom Box A'
+				case 2: return 'Ramdom Box B'
+				case 3: return 'Ramdom Box C'
+				case 4: return 'Ramdom Box D'
+				case 5: return 'Ramdom Box E'
+				case 6: return 'Ramdom Box F'
+				case 7: return 'Ramdom Box G'
+				case 8: return 'Ramdom Building A'
+				case 9: return 'Ramdom Building B'
+				default: return ''
+			}
+		}
+	},
 }
 </script>
 
