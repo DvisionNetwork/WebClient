@@ -834,7 +834,8 @@ export default {
 			}
 		},
 		handleAccountsChanged(accounts) {
-			if (accounts[0] !== this.$store.state.userInfo.wallet_addr) {
+			const addr = this.$store.state.userInfo.wallet_addr
+			if (addr && accounts[0] !== addr) {
 				this.mxShowToast(MSG_METAMASK_1)
 			}
 		}
