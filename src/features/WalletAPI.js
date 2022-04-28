@@ -580,6 +580,7 @@ export default function walletAPI() {
 											)
 											.send({
 												from: J.accountAddress,
+												gas: 6000000,
 											})
 									: contract.Trade_721dvi(
 											J.tokenId.toString(),
@@ -664,7 +665,6 @@ export default function walletAPI() {
 										value +
 										' );'
 								)
-								console.log('contract', contract)
 								const tokenType = J.tokenType
 									? J.tokenType
 									: '1'
