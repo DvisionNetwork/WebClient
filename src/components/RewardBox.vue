@@ -109,7 +109,9 @@ export default {
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
-			const chainId = fromHexToChainId(window.localStorage.getItem('currentNetwork'))
+			const network = window.localStorage.getItem('currentNetwork')
+			if(!network) return 
+			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,
 				poolDuration: this.poolDuration,
