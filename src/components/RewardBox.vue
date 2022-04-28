@@ -38,7 +38,7 @@ import {
 	REWARD_TABLE_2,
 	REWARD_TABLE_3,
 } from '@/features/Common.js'
-import { getContractConnect } from '@/features/Connectors.js'
+import { getContractConnect, fromHexToChainId } from '@/features/Connectors.js'
 var gConfig = AppConfig()
 
 export default {
@@ -108,8 +108,13 @@ export default {
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
+			const network = window.localStorage.getItem('currentNetwork')
+			if(!network) return 
+			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,
+				poolDuration: this.poolDuration,
+				chainId
 			}
 			this.mxShowMyRewardModal(obj)
 		},
