@@ -3,21 +3,7 @@
 		<div class="info-body">
 			<div class="has-data" v-if="data">
 				<div class="list-card">
-					<div class="land-card" v-for="item in data?.rewardRandomBox" :key="item.id">
-						<div class="image">
-							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
-							<img v-else src="../assets/img/default.png" :alt="item.name" />
-						</div>
-						<div class="card-title">
-							{{ getName(item.boxType) }}
-						</div>
-						<div class="line" />
-						<div class="bottom">
-							<span class="left">Quantity</span>
-							<span>{{ item.amount }}</span>
-						</div>
-					</div>
-					<div class="land-card" v-for="item in data?.rewardBuildingBox" :key="item.id">
+					<div class="land-card" v-for="item in data" :key="item.id">
 						<div class="image">
 							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
 							<img v-else src="../assets/img/default.png" :alt="item.name" />
