@@ -59,6 +59,10 @@ export default createStore({
 		myLandQuery: {},
 		myItems: {}, // { total, page, cpp, list[]} // cpp = number of items (count) per page
 		myItemQuery: {},
+		landItems: {},
+		landItemsInPopup: {},
+		landMenuPopup: {},
+		defaultLandMenu: {},
 	},
 	mutations: {
 		SHOW_ALERT(state, value) {
@@ -161,10 +165,18 @@ export default createStore({
 		SET_LAND_MENU(state, value) {
 			state.landMenu = value;
 		},
-
+		SET_LAND_MENU_POP_UP(state, value) {
+			state.landMenuPopup = value;
+		},
+		SET_DEFAULT_LAND_MENU(state, value) {
+			state.defaultLandMenu = value;
+		},
 		////// LAND /////////
 		SET_LAND_ITEMS(state, value) {
 			state.landItems = value;
+		},
+		SET_LAND_ITEMS_POPUP_STAKING(state, value) {
+			state.landItemsInPopup = value;
 		},
 		SET_LAND_ITEM(state, value) {
 			state.landtItem = value;
@@ -330,10 +342,20 @@ export default createStore({
 			// console.log("[STORE.actions] setLandMenu(), ", value);
 			context.commit('SET_LAND_MENU',value);
 		},
-
+		setLandMenuPopUp(context, value) {
+			// console.log("[STORE.actions] setLandMenu(), ", value);
+			context.commit('SET_LAND_MENU_POP_UP',value);
+		},
+		setDefaultLandMenu(context, value) {
+			// console.log("[STORE.actions] setLandMenu(), ", value);
+			context.commit('SET_DEFAULT_LAND_MENU',value);
+		},
 		setLandItems(context, value) {
 			// console.log("[STORE.actions] setLandItems(), ", value);
 			context.commit('SET_LAND_ITEMS',value);
+		},
+		setLandItemsInPopupStaking(context, value) {
+			context.commit('SET_LAND_ITEMS_POPUP_STAKING',value);
 		},
 		setLandItem(context, value) {
 			// console.log("[STORE.actions] setLandItem(), ", value);

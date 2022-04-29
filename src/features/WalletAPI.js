@@ -280,7 +280,6 @@ export default function walletAPI() {
 					// 	params: [account, 'latest'],
 					// })
 					const balance = (ret / 10 ** decimals).toFixed(4)
-					console.log('before balance', balance)
 
 					callback({
 						res_code: 200,

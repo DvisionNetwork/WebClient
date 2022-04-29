@@ -19,7 +19,36 @@
 				:timeCount="timeCount"
 			/>
 			<div class="staked-land">
-				<h2>Staked LANDs</h2>
+				<div class="left-title">
+					<h2>Staked LANDs</h2>
+					<div class="dropdown-wrapper">
+						<span class="child" id="name-land">
+							<!-- <span v-if="isErc1155">ERC-1155</span>
+								<span v-else>ERC-721</span> -->
+							{{ landCode }}
+							<img
+								id="arrow"
+								class="ic-filter"
+								src="../assets/img/ic-arrow-down.svg"
+						/></span>
+						<Transition>
+							<div
+								v-if="showDropdown"
+								class="dropdown-list"
+								id="dropdown-list"
+							>
+								<div
+									class="dropdown-item"
+									v-for="item in listLandCode"
+									:key="item"
+									@click="handleClickItem(item)"
+								>
+									{{ item.name }}
+								</div>
+							</div>
+						</Transition>
+					</div>
+				</div>
 				<div
 					v-if="statusCampain !== 3 && listNftsStake.length > 0"
 					class="unlock-lands active"
@@ -32,21 +61,23 @@
 			<div class="list-card">
 				<AddLand :onClick="checkShowModal" :listStaking="listStaking" />
 				<LandCard
-					v-for="item in listNftsStake"
-					:name="item.name"
+					v-for="item in landItems.list"
+					:name="item.n"
 					:id="item.id"
 					:key="item.id"
 					:nftId="Number(item.nft_id)"
-					:imageUrl="item.imageUrl"
+					:imageUrl="item.thumburl"
 					:isErc1155="item.is_ERC1155 === 1 ? true : false"
 					:isUnstake="true"
+					:item="item"
+					:tokenId="item.tokenId"
 					:onCheckItem="
 						() =>
 							onCheckItemUnStakeModalConfirm(
-								Number(item.nft_id),
+								Number(item.tokenId),
 								item.is_ERC1155 === 1 ? true : false,
 								item.locked,
-								item.name
+								item.n
 							)
 					"
 					:isUnlock="true"
@@ -110,6 +141,7 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import moment from 'moment'
+import { LAND_CODE } from '../features/Common'
 const { ethereum } = window
 
 export default {
@@ -160,6 +192,28 @@ export default {
 			address721: '',
 			address1155: '',
 			showReward: false,
+			landCode: LAND_CODE.SEOUL,
+			showDropdown: false,
+			listLandCode: [
+				{
+					name: 'SeoulA',
+					id: 'gangnam',
+				},
+				{
+					name: 'Newyork',
+					id: 'newyork',
+				},
+				{
+					name: 'London',
+					id: 'london',
+				},
+				{
+					name: 'Tokyo',
+					id: 'tokyo',
+				},
+			],
+			visible: false,
+			// landItems: {},
 		}
 	},
 	beforeMount() {
@@ -182,6 +236,7 @@ export default {
 			const chainNetwork = formatChainId(Number(chainId))
 			this.setStakingAddress(chainNetwork)
 		}
+		this.setSearchQuery(1)
 	},
 	mounted() {
 		if (ethereum) {
@@ -189,17 +244,67 @@ export default {
 				this.current_addr = accounts[0]
 			})
 		}
+		this.listenToDropdown()
+		this.callLandItemList()
+	},
+	beforeUnmount() {
+		window.removeEventListener('click', this.checkStateDropdown)
+	},
+	computed: {
+		getDvLand() {
+			return this.mxGetLandMap(this.mapId)
+		},
+
+		landMenu() {
+			return this.mxGetLandMenu()
+		},
+		defaultMapId() {
+			return this.mxGetLandDefaultMapId()
+		},
+
+		mapId() {
+			var mapId = null
+			var landQuery = this.mxGetLandQuery()
+			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
+			if (landQuery) {
+				mapId = landQuery.mapId
+			} else {
+				mapId = this.mxGetLandDefaultMapId()
+			}
+			console.log('mapId in staking', mapId)
+			return mapId
+		},
+		landItems() {
+			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
+			console.log('test123', this.mxGetLandItems())
+			return this.mxGetLandItems()
+		},
+		searchQuery() {
+			return this.mxGetLandQuery()
+		},
 	},
 	watch: {
 		'poolDuration.id': {
 			handler(id) {
+				this.handleClickItem(this.listLandCode[0])
 				this.getCampaignInfo(id)
-				this.onGetNftsStaked(id)
-				this.getTotalMiningHashRate(id)
-				this.getMyMiningHashRate(id)
-				this.getTotalStaked(id)
-				this.getMyStaked(id)
+				// this.callLandItemList()
+				// this.onGetNftsStaked(id)
+				// this.getTotalMiningHashRate(id)
+				// this.getMyMiningHashRate(id)
+				// this.getTotalStaked(id)
+				// this.getMyStaked(id)
 			},
+		},
+		// '$store.state.landItems'(newVal) {
+		// 	console.log('this.landItems', this.visible, this.landItems)
+		// 	if (!this.visible) {
+		// 		this.landItems = newVal
+		// 	}
+		// },
+		'$store.state.showStakingModal.isShowModal': function () {
+			const state = this.$store.state.showStakingModal
+			this.visible = !!state
 		},
 		statusCampain() {
 			if (this.statusCampain !== 1) {
@@ -212,6 +317,23 @@ export default {
 				this.getMyStaked(campainId)
 			}
 		},
+		mapId(newVal, oldVal) {
+			if (!this.visible) {
+				console.log('in mapIddddddd staking')
+				const landQuery = this.mxGetLandQuery()
+				landQuery.page = 1
+				landQuery.search = ''
+				this.search = ''
+				const o = _U.Q('.search-box .text-input')
+				if (o) o.value = ''
+				this.mxSetLandQuery(landQuery)
+				this.callLandItemList()
+			}
+		},
+		searchQuery(newVal, oldVal) {
+			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
+			// this.setLandItems(newVal)
+		},
 		// current_network() {
 		// 	if (this.current_network) {
 		// 		this.setStakingAddress(this.current_network)
@@ -220,6 +342,53 @@ export default {
 	},
 
 	methods: {
+		setSearchQuery(page) {
+			if (!page || page == 0) page = 1
+
+			var landType = this.tab_page == 'land-list' ? 'list' : 'map'
+			var mapId = this.mapId
+			var landQuery = this.mxGetLandQuery()
+			console.log('in set search query', landQuery)
+			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
+			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
+
+			var query = {
+				type: landType,
+				mapId: mapId,
+				page: page,
+				count: gConfig.marketItem_count_per_page,
+				search: this.search,
+				for_sale: this.landSwitchForsale,
+				order: this.currentOrder,
+			}
+
+			this.mxSetLandQuery(query)
+		},
+		handleClickItem(item) {
+			this.landCode = item.name
+			this.setLandMapId(item.id)
+		},
+		setLandMapId(mapId) {
+			const landQuery = this.mxGetLandQuery()
+			if (!landQuery) landQuery = {}
+			if (landQuery.mapId != mapId) {
+				console.log(
+					'[Market.Land.vue] setLandMapId  mapId call mxSetLandQuery()',
+					mapId,
+					landQuery
+				)
+				landQuery.mapId = mapId
+				this.mxSetLandQuery(landQuery)
+			}
+		},
+		checkStateDropdown(e) {
+			const className = ['dropdown-list', 'erc', 'name-land', 'arrow']
+			const index = className.findIndex((ele) => ele === e.target.id)
+			this.showDropdown = index !== -1 ? !this.showDropdown : false
+		},
+		listenToDropdown() {
+			window.addEventListener('click', this.checkStateDropdown)
+		},
 		setStakingAddress(chainId) {
 			this.current_network = chainId
 			const networkBSC = gConfig.wlt.getBscAddr().Network
@@ -249,7 +418,6 @@ export default {
 				this.address1155 = MATIC_ADDRESS_1155
 			}
 			const id = this.poolDuration.id
-			console.log('staking address', this.staking_address)
 			this.getCampaignInfo(id)
 			this.onGetNftsStaked(id)
 			this.getTotalMiningHashRate(id)
@@ -436,7 +604,6 @@ export default {
 		async getCampaignInfo(campainId) {
 			try {
 				this.mxShowLoading()
-				console.log('ABI_STAKING', ABI_STAKING)
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,
@@ -451,7 +618,6 @@ export default {
 				const data = await contractConn.methods
 					.campaignInfo(campainId)
 					.call()
-				console.log('data', data)
 				if (data) {
 					this.poolDuration.duration = Number(data.duration)
 					// let resultNumber = BigNumber.from(data.rewardRate).mul(
@@ -496,7 +662,66 @@ export default {
 				console.log('catch', err)
 			}
 		},
+		callLandItemList() {
+			const network = window.localStorage.getItem('currentNetwork')
+			this.mxCallAndSetMyLandItemList(this.mapId, network, true)
+		},
+		setLandItems(query) {
+			const dvLand = this.getDvLand
+			if (!dvLand) return
+			var landQuery = this.mxGetLandQuery()
 
+			var ct = _U.getIfDefined(landQuery, ['order', 'ct'])
+			if (!ct) ct = 'all'
+
+			// console.log("[Marke.Land.vue] setLandItems() forSale:", forSale, this.landSwitchForsale);
+
+			// 2자 이상
+			var search =
+				_U.isDefined(landQuery, 'search') && landQuery.search.length > 1
+					? landQuery.search
+					: null
+
+			var blockListAll = []
+			var currentOwner = _U
+				.getIfDefined(this.$store.state, ['userInfo', 'wallet_addr'])
+				.toLowerCase()
+
+			for (let i = 0; i < dvLand.map.length; i++) {
+				if (_U.isDefined(dvLand.map[i], 'id')) {
+					var block = dvLand.map[i]
+					if (
+						block.owner_address &&
+						block.owner_address.toLowerCase() == currentOwner
+					) {
+						blockListAll.push(block)
+					}
+				}
+			}
+
+			console.log('[Market.Land.vue] blockListAll==> ', blockListAll)
+
+			const blockList = []
+			// console.log('landQuery', landQuery)
+			// var start = (landQuery.page - 1) * landQuery.count;
+			// var end = start + landQuery.count;
+			// for(var i=start; i <end; i++) {
+			// 	if(_U.isDefined(blockListAll[i],'id')) {
+			// 		blockList.push(blockListAll[i]);
+			// 	}
+			// }
+
+			// console.log("[Market.Land.vue] blockList==> ", blockList);
+			const total = blockListAll.length
+			this.mxSetLandItems({
+				total,
+				page: 1,
+				cpp: query.count,
+				isStake: true,
+				list: blockListAll,
+				inMixin: false
+			})
+		},
 		async onGetNftsStaked(campaignId) {
 			let params = {
 				owner: this.$store?.state?.userInfo?.wallet_addr,
@@ -632,7 +857,7 @@ export default {
 					}
 				})
 				.catch((e) => {
-					console.log('e',e)
+					console.log('e', e)
 					this.mxCloseLoading()
 					if (
 						e.message.includes('104') &&
@@ -668,6 +893,39 @@ export default {
 	width: 100%;
 	max-width: gREm(921);
 	@include FLEXV(space-between, flex-start);
+	.left-title {
+		display: flex;
+		align-items: center;
+		gap: gREm(30);
+
+		.dropdown-wrapper {
+			.child {
+				display: flex;
+				align-items: center;
+				background: #5f5f5f;
+				padding: gREm(10) 0.6875rem;
+				border-radius: 0.625rem;
+				cursor: pointer;
+			}
+			.dropdown-list {
+				border: 1px solid #fff;
+				background-color: #fff;
+				width: 100%;
+				padding: gREm(10);
+				position: absolute;
+				left: 0;
+				border-radius: gREm(10);
+				margin-top: gREm(5);
+				z-index: 10;
+
+				.dropdown-item {
+					color: #000;
+					padding: gREm(8) 0;
+					cursor: pointer;
+				}
+			}
+		}
+	}
 	.title {
 		font-weight: 600;
 		font-family: Montserrat, sans-serif;

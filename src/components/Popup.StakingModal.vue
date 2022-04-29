@@ -21,13 +21,10 @@
 						<input
 							type="text"
 							v-model="keyword"
-							@change="onSearch"
+							@change="onSearch($event.target.value)"
 							maxlength="255"
 						/>
-						<div
-							id="erc"
-							class="erc"
-						>
+						<div id="erc" class="erc">
 							<span class="child" id="name-land">
 								<!-- <span v-if="isErc1155">ERC-1155</span>
 								<span v-else>ERC-721</span> -->
@@ -61,12 +58,12 @@
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="item in landItems.list"
+							v-for="item in landItemsInPopup.list"
 							:name="item.n"
 							:id="item.id"
 							:key="item.id"
 							:nftId="Number(item.nft_id)"
-							:imageUrl="item.logo_url"
+							:imageUrl="item.thumburl"
 							:isActive="getActive(Number(item.tokenId))"
 							:onConfirmQuantity1155="
 								(quantity, nftId) =>
@@ -223,6 +220,7 @@ export default {
 		// this.onGetNftowner(this.isErc1155)
 		this.checkDropdown()
 		// this.popType = authInfo.type;
+		this.setLandMapId(this.listLandCode[0].id)
 		this.callLandItemList()
 	},
 	beforeUnmount() {
@@ -234,19 +232,15 @@ export default {
 		},
 		getDvLand() {
 			console.log('map iddddd', this.mapId)
-			return this.mxGetLandMap(this.mapId)
+			return this.mxGetLandMap(this.mapId, true)
 		},
-
 		landMenu() {
-			return this.mxGetLandMenu()
+			return this.mxGetLandMenuPopUp()
 		},
-		defaultMapId() {
-			return this.mxGetLandDefaultMapId()
-		},
-
 		mapId() {
-			var mapId = null
-			var landQuery = this.mxGetLandQuery()
+			let mapId = null
+			const landQuery = this.mxGetLandQuery()
+			console.log('landQuery in popup', landQuery)
 			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
 			if (landQuery) {
 				mapId = landQuery.mapId
@@ -255,13 +249,8 @@ export default {
 			}
 			return mapId
 		},
-		landItems() {
-			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
-			console.log('test', this.mxGetLandItems())
-			return this.mxGetLandItems()
-		},
-		landItem() {
-			return this.mxGetLandItem()
+		landItemsInPopup() {
+			return this.mxGetLandItemsInPopupStaking()
 		},
 		searchQuery() {
 			return this.mxGetLandQuery()
@@ -298,30 +287,29 @@ export default {
 		},
 		mapId(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
-			var landQuery = this.mxGetLandQuery();
+			var landQuery = this.mxGetLandQuery()
 			console.log('landQuery', landQuery)
-			landQuery.page = 1;
-			landQuery.search = '';
-			this.search = '';
-			var o = _U.Q('.search-box .text-input');
-			if(o) o.value = '';
-			this.mxSetLandQuery(landQuery);
+			landQuery.page = 1
+			landQuery.search = ''
+			this.search = ''
+			var o = _U.Q('.search-box .text-input')
+			if (o) o.value = ''
+			this.mxSetLandQuery(landQuery)
 			this.callLandItemList()
-			// this.setLandItems(landQuery);
 		},
 	},
 	methods: {
 		setSearchQuery(page) {
 			if (!page || page == 0) page = 1
 
-			var landType = this.tab_page == 'land-list' ? 'list' : 'map'
-			var mapId = this.mapId
-			var landQuery = this.mxGetLandQuery()
+			let landType = this.tab_page == 'land-list' ? 'list' : 'map'
+			let mapId = this.mapId
+			const landQuery = this.mxGetLandQuery()
 			console.log('in set search query', landQuery)
 			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
 			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
 
-			var query = {
+			const query = {
 				type: landType,
 				mapId: mapId,
 				page: page,
@@ -355,7 +343,6 @@ export default {
 			var currentOwner = _U
 				.getIfDefined(this.$store.state, ['userInfo', 'wallet_addr'])
 				.toLowerCase()
-
 			for (let i = 0; i < dvLand.map.length; i++) {
 				if (_U.isDefined(dvLand.map[i], 'id')) {
 					var block = dvLand.map[i]
@@ -368,7 +355,7 @@ export default {
 				}
 			}
 
-			// console.log("[Market.Land.vue] blockListAll==> ", blockListAll);
+			console.log('[Market.Land.vue] blockListAll==> ', blockListAll)
 
 			const blockList = []
 			// console.log('landQuery', landQuery)
@@ -382,7 +369,7 @@ export default {
 
 			// console.log("[Market.Land.vue] blockList==> ", blockList);
 			const total = blockListAll.length
-			this.mxSetLandItems({
+			this.mxSetLandItemsInPopupStaking({
 				total,
 				page: 1,
 				cpp: query.count,
@@ -391,9 +378,7 @@ export default {
 		},
 		callLandItemList() {
 			const network = window.localStorage.getItem('currentNetwork')
-			this.mxCallAndSetMyLandItemList(this.mapId, network, false, () => {
-				this.setLandItems(this.searchQuery)
-			})
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
 		},
 		handleClickItem(item) {
 			this.landCode = item.name
@@ -434,7 +419,8 @@ export default {
 		},
 		checkAddress(current_addr) {
 			if (this.loginBy === WALLETCONNECT) {
-				const walletConnect = window.localStorage.getItem('walletconnect')
+				const walletConnect =
+					window.localStorage.getItem('walletconnect')
 				const wc = JSON.parse(walletConnect)
 				current_addr = wc.accounts[0]
 			}
@@ -486,8 +472,11 @@ export default {
 		// 		console.log('catch', err)
 		// 	}
 		// },
-		onSearch() {
-			console.log('search')
+		onSearch(text) {
+			const filterItems = this.landItems.filter(
+				(ele) => ele.id === text || ele.name === text
+			)
+			console.log('filterItems', filterItems)
 		},
 		confirmSwitch() {
 			this.keyword = ''
@@ -687,7 +676,7 @@ export default {
 					this.hadUnderstand = true
 				}
 			} catch (e) {
-				console.log('e',e)
+				console.log('e', e)
 				if (
 					e.message.includes('104') &&
 					e.message.includes(USER_DECLINED)
