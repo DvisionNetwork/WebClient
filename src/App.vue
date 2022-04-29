@@ -339,6 +339,8 @@ export default {
 		}
 		console.log('landMenu in app', landMenu)
 		this.mxSetLandMenu(landMenu)
+		this.mxSetLandMenuPopUp(landMenu)
+		this.mxSetDefaultLandMenu(landMenu)
 
 		// window.DVW['app']={
 		// 	store:this.$store,

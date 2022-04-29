@@ -120,7 +120,7 @@ export default {
 			return false;
 		},
 		getBlockPosInfo(infoType) {
-			var block = this.item;
+			const block = this.item;
 			var rv = '';
 			if(infoType == 'start') {
 				rv = block.x1+','+block.y1;
