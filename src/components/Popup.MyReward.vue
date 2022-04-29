@@ -75,9 +75,7 @@ export default {
 			],
 			selectedIndex: 0,
 			listReward: [],
-			rewardRandomBox: [],
-			rewardBuildingBox: [],
-			dataInfo: {}
+			dataInfo: []
 		}
 	},
 	props: {
@@ -88,14 +86,7 @@ export default {
 		async selectedIndex() {
 			if(this.selectedIndex === 1) {
 				await this.getListReward()
-				const rewardRandomBox = 'rewardRandomBox'
-				const rewardBuildingBox = 'rewardBuildingBox'
-				this.filterReward(rewardRandomBox)
-				this.filterReward(rewardBuildingBox)
-				this.dataInfo = {
-					rewardRandomBox: this.rewardRandomBox,
-					rewardBuildingBox: this.rewardBuildingBox
-				}
+				this.filterReward()
 			}
 		}
 	},
@@ -113,10 +104,13 @@ export default {
 		},
 		async claimRewards() {
 			this.mxShowLoading('inf')
-			const address = this.$store.state.userInfo.wallet_addr
-			const campainId = this.data.poolDuration.id
-			const chainId = this.data.chainId
-			const res = await axios(`${gConfig.public_api_sotatek}/claim-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
+			const payload = {
+				address: this.$store.state.userInfo.wallet_addr,
+				campainId: this.data.poolDuration.id,
+				chainId: this.data.chainId,
+			}
+			const url = `${gConfig.public_api_sotatek}/claim-reward`;
+			const res = await axios.get(url, payload)
 
 			if(res.data.data && res.data.signature) {
 				const contract = getContractConnect(
@@ -151,29 +145,32 @@ export default {
 			const res = await axios(`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)			
 			this.listReward = res.data.NftCampaignArr
 		},
-		filterReward(key) {
+		filterReward() {
 			if(this.listReward &&  this.listReward.length > 0) {
-				console.log('this.listReward', this.listReward);
 				const data = []
 				for(let i = 1; i <= 9; i++){
-					const arr = this.listReward.filter((item) => item[key].boxType === i)
-					if(arr.length > 0) {
-						data.push(arr)
+					const nft = this.listReward.reduce((obj, item) => {
+						if(item?.rewardRandomBox?.boxType == i) {
+							obj.amount += item?.rewardRandomBox.amount
+						}
+						if(item?.rewardBuildingBoxA?.boxType == i) {
+							obj.amount += item?.rewardBuildingBoxA.amount
+						}
+						if(item?.rewardBuildingBoxB?.boxType == i) {
+							obj.amount += item?.rewardBuildingBoxB.amount
+						}
+
+						return {
+							amount: obj.amount,
+							boxType: i
+						}
+					}, {amount: 0, boxType: ''})
+
+					if(nft.amount > 0) {
+						data.push(nft)
 					}
 				}
-				
-				const list = data.reduce((arr, item) => {
-					arr.push(item.reduce((obj, a) => {
-						const num = obj.amount + a[key].amount
-						return {
-							amount: num,
-							boxType: a[key].boxType
-						}
-					}, {amount: 0, boxType: ''}))
-					return arr
-				}, [])
-
-				this[key] = list.filter(item => item.amount > 0)
+				this.dataInfo = data
 			}
 		}
 	},
