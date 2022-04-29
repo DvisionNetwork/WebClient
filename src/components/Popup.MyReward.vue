@@ -59,7 +59,11 @@ export default {
 	components: {
 		MyRewardInfo,
 	},
-	mounted() {},
+	mounted() {
+		if(this.selectedIndex === 0) {
+			this.getListOngoing()
+		}
+	},
 	computed: {},
 	data() {
 		return {
@@ -75,6 +79,7 @@ export default {
 			],
 			selectedIndex: 0,
 			listReward: [],
+			listOngoing: [],
 			dataInfo: []
 		}
 	},
@@ -87,6 +92,10 @@ export default {
 			if(this.selectedIndex === 1) {
 				await this.getListReward()
 				this.filterReward()
+			}
+			if(this.selectedIndex === 0) {
+				await this.getListOngoing()
+				this.filterOngoing()
 			}
 		}
 	},
@@ -172,7 +181,42 @@ export default {
 				}
 				this.dataInfo = data
 			}
-		}
+		},
+		async getListOngoing() {
+			const address = this.$store.state.userInfo.wallet_addr
+			const campainId = this.data.poolDuration.id
+			const chainId = this.data.chainId
+			const res = await axios(`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
+			this.listOngoing = res.data
+		},
+		filterOngoing() {
+			if(this.listOngoing &&  this.listOngoing.length > 0) {
+				const data = []
+				for(let i = 1; i <= 9; i++){
+					const nft = this.listOngoing.reduce((obj, item) => {
+						if(item?.virtualRewardRandomBox?.boxType == i) {
+							obj.amount += item?.virtualRewardRandomBox.amount
+						}
+						if(item?.virtualRewardBuildingBoxA?.boxType == i) {
+							obj.amount += item?.virtualRewardBuildingBoxA.amount
+						}
+						if(item?.virtualRewardBuildingBoxB?.boxType == i) {
+							obj.amount += item?.virtualRewardBuildingBoxB.amount
+						}
+
+						return {
+							amount: obj.amount,
+							boxType: i
+						}
+					}, {amount: 0, boxType: ''})
+
+					if(nft.amount > 0) {
+						data.push(nft)
+					}
+				}
+				this.dataInfo = data
+			}
+		},
 	},
 }
 </script>
