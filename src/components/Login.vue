@@ -26,10 +26,10 @@
 								<img src="../assets/img/ic-walletconnect.svg" alt="" class="ic-image">
 								WalletConnect
 							</BaseButton>
-							<!-- <BaseButton type="button" class="connectbtn coinbase-btn" @click="connectCoinbase">
+							<BaseButton type="button" class="connectbtn coinbase-btn" @click="connectCoinbase">
 								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
 								Coinbase
-							</BaseButton> -->
+							</BaseButton>
 							<BaseButton type="button" class="connectbtn fortmatic-btn" @click="connectFortmatic">
 								<img src="../assets/img/ic-fortmatic.svg" alt="" class="ic-image">
 								Fortmatic

@@ -252,7 +252,7 @@ export default function AppConfig() {
 			},
 			// 04.25 Market
 			getNetworkAddr (network, market_index) {
-				if(market_index != "-1") { // 통합 마켓 컨트랙트일시
+				if(market_index != undefined && market_index != "-1") { // 통합 마켓 컨트랙트일시
 					let market;
 					let getAddrs;
 					if(network == 'ETH') {
