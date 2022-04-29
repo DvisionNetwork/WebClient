@@ -145,6 +145,7 @@ import {
 	checkErrorMessage,
 	USER_DECLINED,
 	LAND_CODE,
+	METAMASK,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
@@ -212,11 +213,11 @@ export default {
 		this.setSearchQuery(1)
 	},
 	mounted() {
-		if (ethereum) {
+		if (ethereum && this.loginBy === METAMASK ) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
 			})
-			this.getAccounts()
+			this.getEtherAccounts()
 		}
 		// this.onGetNftowner(this.isErc1155)
 		this.checkDropdown()
@@ -603,7 +604,7 @@ export default {
 				this.listNfts = []
 			}
 		},
-		async getAccounts() {
+		async getEtherAccounts() {
 			try {
 				const accounts = await ethereum.request({
 					method: 'eth_requestAccounts',
