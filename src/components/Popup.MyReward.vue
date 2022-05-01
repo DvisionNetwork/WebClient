@@ -33,12 +33,6 @@
 						>
 							Claim rewards
 						</button>
-						<!-- <button
-							v-if="selectedIndex === 1 && dataInfo.length === 0"
-							class="btn btn-primary disabled"
-						>
-							Claim rewards
-						</button> -->
 						<button
 							class="btn btn-outline-primary"
 							@click="mxCloseMyRewardModal"
@@ -67,9 +61,7 @@ export default {
 		MyRewardInfo,
 	},
 	mounted() {
-		if(this.selectedIndex === 0) {
-			this.getListOngoing()
-		}
+		this.mountedPopup()
 	},
 	computed: {},
 	data() {
@@ -224,6 +216,12 @@ export default {
 				this.dataInfo = data
 			}
 		},
+		async mountedPopup() {
+			if(this.selectedIndex === 0) {
+				await this.getListOngoing()
+				this.filterOngoing();
+			}
+		}
 	},
 }
 </script>
