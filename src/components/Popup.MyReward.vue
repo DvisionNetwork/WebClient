@@ -26,18 +26,19 @@
 					<hr />
 					<div class="btn-wrapper">
 						<button
-							v-if="selectedIndex === 1 && dataInfo.length > 0"
+							v-if="selectedIndex === 1"
 							class="btn btn-primary"
 							@click="claimRewards"
+							:disabled="dataInfo.length === 0"
 						>
 							Claim rewards
 						</button>
-						<button
+						<!-- <button
 							v-if="selectedIndex === 1 && dataInfo.length === 0"
 							class="btn btn-primary disabled"
 						>
 							Claim rewards
-						</button>
+						</button> -->
 						<button
 							class="btn btn-outline-primary"
 							@click="mxCloseMyRewardModal"
@@ -340,10 +341,9 @@ export default {
 					color: #fff;
 					margin-right: gREm(16);
 
-					&.disabled {
+					&:disabled {
 						background-color: #5f5f5f;
 						border-color: #5f5f5f;
-						cursor: inherit;
 					}
 				}
 			}

@@ -3,7 +3,7 @@
 		<div class="info-body">
 			<div class="has-data" v-if="data.length > 0">
 				<div class="list-card">
-					<div class="land-card" v-for="item in data" :key="item.id">
+					<div class="land-card" v-for="(item, idx) in data" :key="idx">
 						<div class="image">
 							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
 							<img v-else src="../assets/img/default.png" :alt="item.name" />
