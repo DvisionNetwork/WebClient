@@ -20,11 +20,15 @@
 				</div>
 			</div>
 			<div v-else class="no-rewards-wrap">
-				<div class="no-rewards">
+				<div class="no-rewards" v-if="selectedIndex === 0">
 					No rewards available.
 					<br />
-					You can stake your LANDs to see the corresponding
-					rewards in this tab.
+					You can stake your LANDs to see the corresponding rewards in this tab.
+				</div>
+				<div class="no-rewards" v-if="selectedIndex === 1">
+					No rewards available. 
+					<br />
+					The rewards here will be available after the campaign ends.
 				</div>
 			</div>
 		</div>
@@ -43,6 +47,7 @@ export default {
 	},
 	props: {
 		data: Object,
+		selectedIndex: Number
 	},
 	created() {},
 	methods: {
