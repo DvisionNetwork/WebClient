@@ -21,7 +21,7 @@
 						{{ tabList[selectedIndex].header }}
 					</div>
 					<div class="modal-body">
-						<MyRewardInfo :data="dataInfo"></MyRewardInfo>
+						<MyRewardInfo :data="dataInfo" :selectedIndex="selectedIndex"></MyRewardInfo>
 					</div>
 					<hr />
 					<div class="btn-wrapper">
