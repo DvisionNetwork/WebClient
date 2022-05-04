@@ -342,6 +342,9 @@ export default {
 		// 		this.setStakingAddress(this.current_network)
 		// 	}
 		// },
+		wallet_addr() {
+			window.location.reload()
+		},
 	},
 
 	methods: {
