@@ -247,6 +247,7 @@ import {
 } from '@/features/Connectors.js'
 import Web3 from 'web3'
 import { MSG_METAMASK_1 } from '@/features/Messages.js'
+import { formatChainId } from '../features/Common'
 
 export default {
 	mounted() {
@@ -558,8 +559,9 @@ export default {
 			const dataLocal = JSON.parse(
 				window.localStorage.getItem('walletconnect')
 			)
+			console.log('dataLocal', dataLocal)
 			if (dataLocal) {
-				window.localStorage.setItem('currentNetwork', dataLocal.chainId)
+				window.localStorage.setItem('currentNetwork', formatChainId(dataLocal.chainId))
 			}
 			if (data && loginWithEmail) {
 				if (accounts[0] === data.wlt.currentAccount) {
