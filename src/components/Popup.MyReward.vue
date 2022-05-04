@@ -54,6 +54,7 @@ import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
 import { BSC_PROXY_ADDRESS } from '../features/Common'
 import AppConfig from '@/App.Config.js'
+import jwt from'jsonwebtoken';
 var gConfig = AppConfig()
 
 export default {
@@ -118,7 +119,8 @@ export default {
 				chainId: this.data.chainId,
 			}
 			const url = `${gConfig.public_api_sotatek}/claim-reward`;
-			const res = await axios.get(url, payload)
+			const data = jwt.sign(payload, 'test');
+			const res = await axios.get(url, { data })
 
 			if(res.data.data && res.data.signature) {
 				const contract = getContractConnect(
