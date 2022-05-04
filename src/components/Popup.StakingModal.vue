@@ -146,7 +146,7 @@ import {
 	COINBASE,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
-import { MSG_METAMASK_1, MSG_METAMASK_2 } from '@/features/Messages.js'
+import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_4 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
 const { ethereum } = window
 export default {
