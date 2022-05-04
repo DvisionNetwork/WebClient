@@ -1,9 +1,9 @@
 <template>
 	<div class="info">
 		<div class="info-body">
-			<div class="has-data" v-if="data">
+			<div class="has-data" v-if="data.length > 0">
 				<div class="list-card">
-					<div class="land-card" v-for="item in data" :key="item.id">
+					<div class="land-card" v-for="(item, idx) in data" :key="idx">
 						<div class="image">
 							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
 							<img v-else src="../assets/img/default.png" :alt="item.name" />
@@ -19,11 +19,17 @@
 					</div>
 				</div>
 			</div>
-			<div v-else class="no-rewards">
-				No rewards available.
-				<br />
-				You can stake your LANDs to see the corresponding
-				rewards in this tab.
+			<div v-else class="no-rewards-wrap">
+				<div class="no-rewards" v-if="selectedIndex === 0">
+					No rewards available.
+					<br />
+					You can stake your LANDs to see the corresponding rewards in this tab.
+				</div>
+				<div class="no-rewards" v-if="selectedIndex === 1">
+					No rewards available. 
+					<br />
+					The rewards here will be available after the campaign ends.
+				</div>
 			</div>
 		</div>
 	</div>
@@ -41,6 +47,7 @@ export default {
 	},
 	props: {
 		data: Object,
+		selectedIndex: Number
 	},
 	created() {},
 	methods: {
@@ -137,31 +144,16 @@ export default {
 				}
 			}
 		}
-		// .table {
-		// 	width: 100%;
-		// 	border-collapse: collapse;
-
-		// 	.no-rewards {
-		// 		text-align: center;
-		// 		height: gREm(400);
-		// 	}
-
-		// 	th,
-		// 	td {
-		// 		text-align: left;
-		// 		padding: gREm(14);
-		// 	}
-
-		// 	th {
-		// 		color: #825298;
-		// 		font-size: gREm(18);
-		// 		font-weight: 700;
-		// 		position: sticky;
-		// 		top: 0;
-		// 		z-index: 1;
-		// 		background-color: #181721;
-		// 	}
-		// }
+		.no-rewards-wrap {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: gREm(400);
+			
+			.no-rewards {
+				text-align: center;
+			}
+		}
 	}
 }
 

@@ -21,7 +21,7 @@
 						{{ tabList[selectedIndex].header }}
 					</div>
 					<div class="modal-body">
-						<MyRewardInfo :data="dataInfo"></MyRewardInfo>
+						<MyRewardInfo :data="dataInfo" :selectedIndex="selectedIndex"></MyRewardInfo>
 					</div>
 					<hr />
 					<div class="btn-wrapper">
@@ -29,6 +29,7 @@
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
 							@click="claimRewards"
+							:disabled="dataInfo.length === 0"
 						>
 							Claim rewards
 						</button>
@@ -60,9 +61,7 @@ export default {
 		MyRewardInfo,
 	},
 	mounted() {
-		if(this.selectedIndex === 0) {
-			this.getListOngoing()
-		}
+		this.mountedPopup()
 	},
 	computed: {},
 	data() {
@@ -217,6 +216,12 @@ export default {
 				this.dataInfo = data
 			}
 		},
+		async mountedPopup() {
+			if(this.selectedIndex === 0) {
+				await this.getListOngoing()
+				this.filterOngoing();
+			}
+		}
 	},
 }
 </script>
