@@ -163,7 +163,7 @@ export default {
 	data() {
 		return {
 			loginBy: window.localStorage.getItem('loginBy'),
-			// wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
@@ -239,6 +239,13 @@ export default {
 		this.setSearchQuery(1)
 	},
 	mounted() {
+		if(!this.wallet_addr) {
+			this.$router.push({
+				name: 'Home'
+			})
+			return
+		}
+
 		if (ethereum) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
@@ -281,9 +288,6 @@ export default {
 		},
 		searchQuery() {
 			return this.mxGetLandQuery()
-		},
-		wallet_addr() {
-			return this.$store?.state?.userInfo?.wallet_addr
 		},
 	},
 	watch: {
@@ -342,9 +346,6 @@ export default {
 		// 		this.setStakingAddress(this.current_network)
 		// 	}
 		// },
-		wallet_addr() {
-			window.location.reload()
-		},
 	},
 
 	methods: {
