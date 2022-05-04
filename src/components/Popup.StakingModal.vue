@@ -250,6 +250,7 @@ export default {
 			return mapId
 		},
 		landItemsInPopup() {
+			console.log('arrays', this.mxGetLandItemsInPopupStaking())
 			return this.mxGetLandItemsInPopupStaking()
 		},
 		searchQuery() {
