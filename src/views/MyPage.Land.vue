@@ -10,12 +10,12 @@
 	<div class="contents">
 		<div class="item-box">
 			<div class="items"
-				v-if="landItems && landItems.list && landItems.list.length > 0"
+				v-if="landItemsInPopup && landItemsInPopup.list && landItemsInPopup.list.length > 0"
 			>
-				<MapItem v-for="(item, idx) in landItems.list"
+				<MapItem v-for="(item, idx) in landItemsInPopup.list"
 					:key="item.id" :item="item"
 					:itemIdx="idx"
-					:itemLastIdx="landItems.list.length -1"
+					:itemLastIdx="landItemsInPopup.list.length -1"
 					:mapId="mapId"
 					:callFrom="'market-land'"
 					@click-item="onClickItem"
@@ -201,8 +201,10 @@ export default {
 		},
 		searchQuery() {
 			return this.mxGetLandQuery();
-		}
-
+		},
+		landItemsInPopup() {
+			return this.mxGetLandItemsInPopupStaking()
+		},
 	},
 	watch: {
 		// mapId가 바뀌면 searchQuery에서 watch되기전에 MapItem이 변경됨. mapId watch 별도 처리함.
@@ -339,12 +341,13 @@ export default {
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
-			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
-			this.mxCallAndSetMyLandItemList(this.mapId, network,false, ()=>{
-				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
-				this.setLandItems(this.searchQuery);
-			});
-
+			// var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+			const network = window.localStorage.getItem('currentNetwork')
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
+			// this.mxCallAndSetMyLandItemList(this.mapId, network,false, ()=>{
+			// 	// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
+			// 	this.setLandItems(this.searchQuery);
+			// });
 		},
 
 		setLandMapId(mapId) {
