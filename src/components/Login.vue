@@ -238,6 +238,7 @@ import {
 	FORTMATIC,
 	WALLETCONNECT,
 	BITSKI,
+	formatChainId
 } from '@/features/Common.js'
 import {
 	coinbaseProvider,
@@ -247,7 +248,6 @@ import {
 } from '@/features/Connectors.js'
 import Web3 from 'web3'
 import { MSG_METAMASK_1 } from '@/features/Messages.js'
-import { formatChainId } from '../features/Common'
 
 export default {
 	mounted() {
@@ -555,11 +555,9 @@ export default {
 			await walletConnectProvider.enable()
 			const web3 = new Web3(walletConnectProvider)
 			const accounts = await web3.eth.getAccounts()
-			console.log(window.localStorage.getItem('walletconnect'))
 			const dataLocal = JSON.parse(
 				window.localStorage.getItem('walletconnect')
 			)
-			console.log('dataLocal', dataLocal)
 			if (dataLocal) {
 				window.localStorage.setItem('currentNetwork', formatChainId(dataLocal.chainId))
 			}
