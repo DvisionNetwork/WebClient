@@ -115,7 +115,7 @@ export default {
 			this.mxShowLoading('inf')
 			const payload = {
 				address: this.$store.state.userInfo.wallet_addr,
-				campainId: this.data.poolDuration.id,
+				campaignId: this.data.poolDuration.id,
 				chainId: this.data.chainId,
 			}
 			const url = `${gConfig.public_api_sotatek}/claim-reward`;
