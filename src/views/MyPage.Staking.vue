@@ -164,7 +164,7 @@ export default {
 	data() {
 		return {
 			loginBy: window.localStorage.getItem('loginBy'),
-			// wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
+			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
@@ -282,9 +282,6 @@ export default {
 		},
 		searchQuery() {
 			return this.mxGetLandQuery()
-		},
-		wallet_addr() {
-			return this.$store?.state?.userInfo?.wallet_addr
 		},
 	},
 	watch: {
