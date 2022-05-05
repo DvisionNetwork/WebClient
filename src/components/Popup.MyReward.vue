@@ -119,7 +119,7 @@ export default {
 				chainId: this.data.chainId,
 			}
 			const url = `${gConfig.public_api_sotatek}/claim-reward`;
-			const data = jwt.sign(payload, 'test');
+			const data = jwt.sign(payload, gConfig.privateKeyEncode);
 			const res = await axios.get(url, { data })
 
 			if(res.data.data && res.data.signature) {
