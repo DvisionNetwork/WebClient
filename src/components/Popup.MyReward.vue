@@ -22,7 +22,7 @@
 					</div>
 					<div class="modal-body">
 						<MyRewardInfo v-if="selectedIndex === 0" :data="dataOngoing" :selectedIndex="selectedIndex" />
-						<MyRewardInfo v-if="selectedIndex === 1" :data="dataReward" :selectedIndex="selectedIndex" />
+						<MyRewardInfo v-else :data="dataReward" :selectedIndex="selectedIndex" />
 					</div>
 					<hr />
 					<div class="btn-wrapper">
@@ -117,7 +117,7 @@ export default {
 			this.mxShowLoading('inf')
 			const address = this.$store.state.userInfo.wallet_addr
 			const payload = {
-				address: address,
+				address,
 				campaignId: this.data.poolDuration.id,
 				chainId: this.data.chainId,
 			}
@@ -183,7 +183,7 @@ export default {
 						data.push(nft)
 					}
 				}
-				this.dataReward = data
+				this.dataReward = [...data]
 			}
 		},
 		async getListOngoing() {
@@ -218,7 +218,7 @@ export default {
 						data.push(nft)
 					}
 				}
-				this.dataOngoing = data
+				this.dataOngoing = [...data]
 			}
 		},
 		async mountedPopup() {
