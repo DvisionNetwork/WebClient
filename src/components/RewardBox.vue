@@ -115,7 +115,8 @@ export default {
 			const obj = {
 				isShow: true,
 				poolDuration: this.poolDuration,
-				chainId
+				chainId,
+				statusCampain: this.statusCampain
 			}
 			this.mxShowMyRewardModal(obj)
 		},
