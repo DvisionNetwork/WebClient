@@ -52,18 +52,8 @@ export default {
 	created() {},
 	methods: {
 		getName(boxType) {
-			switch (boxType) {
-				case 1: return 'Random Box A'
-				case 2: return 'Random Box B'
-				case 3: return 'Random Box C'
-				case 4: return 'Random Box D'
-				case 5: return 'Random Box E'
-				case 6: return 'Random Box F'
-				case 7: return 'Random Box G'
-				case 8: return 'Building Box A'
-				case 9: return 'Building Box B'
-				default: return ''
-			}
+			const nameArr = ['', 'Box A', 'Box B', 'Box C', 'Box D', 'Box E', 'Box F', 'Box G']
+			return boxType > 8 ? `Building ${nameArr[boxType - nameArr.length - 1]}` : `Random ${nameArr[boxType]}`
 		}
 	},
 }
