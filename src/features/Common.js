@@ -131,6 +131,7 @@ export const WALLETCONNECT = 'WALLETCONNECT'
 export const BITSKI = 'BITSKI'
 export const DENIED_TRANSACTION = 'User rejected the transaction'
 export const USER_DECLINED = 'The user has declined this request'
+export const OUT_OF_GAS = `You don't have enough native coins to make this transaction.`
 
 export const REWARD_TABLE_1 = [
 	{
@@ -191,7 +192,7 @@ export const REWARD_TABLE_2 = [
 		land: '3x3',
 		reward: 'Random Box G * 10, Building Box A * 1',
 	},
-];
+]
 export const REWARD_TABLE_3 = [
 	{
 		land: '1x1',
@@ -224,8 +225,16 @@ export const REWARD_TABLE_3 = [
 ]
 
 export const LAND_CODE = {
-	SEOUL:'SeoulA',
+	SEOUL: 'SeoulA',
 	NEWYORK: 'Newyork',
 	LONDON: 'London',
-	TOKYO: 'Tokyo'
+	TOKYO: 'Tokyo',
+}
+
+export async function checkGasWithBalance(web3, gasNumber, currentAccount) {
+	const priceOfGas = await web3.eth.getGasPrice()
+	const balance = await web3.eth.getBalance(currentAccount)
+	const totalPrice = gasNumber * priceOfGas
+	console.log('price', +balance, totalPrice)
+	return totalPrice > +balance
 }
