@@ -3,10 +3,22 @@
 		<div class="info-body">
 			<div class="has-data" v-if="data.length > 0">
 				<div class="list-card">
-					<div class="land-card" v-for="(item, idx) in data" :key="idx">
+					<div
+						class="land-card"
+						v-for="(item, idx) in data"
+						:key="idx"
+					>
 						<div class="image">
-							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
-							<img v-else src="../assets/img/default.png" :alt="item.name" />
+							<img
+								v-if="item.imageUrl"
+								:src="item.imageUrl"
+								:alt="item.name"
+							/>
+							<img
+								v-else
+								src="../assets/img/default.png"
+								:alt="item.name"
+							/>
 						</div>
 						<div class="card-title">
 							{{ getName(item.boxType) }}
@@ -23,10 +35,11 @@
 				<div class="no-rewards" v-if="selectedIndex === 0">
 					No rewards available.
 					<br />
-					You can stake your LANDs to see the corresponding rewards in this tab.
+					You can stake your LANDs to see the corresponding rewards in
+					this tab.
 				</div>
 				<div class="no-rewards" v-if="selectedIndex === 1">
-					No rewards available. 
+					No rewards available.
 					<br />
 					The rewards here will be available after the campaign ends.
 				</div>
@@ -47,14 +60,25 @@ export default {
 	},
 	props: {
 		data: Object,
-		selectedIndex: Number
+		selectedIndex: Number,
 	},
 	created() {},
 	methods: {
 		getName(boxType) {
-			const nameArr = ['', 'Box A', 'Box B', 'Box C', 'Box D', 'Box E', 'Box F', 'Box G']
-			return boxType >= 8 ? `Building ${nameArr[boxType - nameArr.length - 1]}` : `Random ${nameArr[boxType]}`
-		}
+			const nameArr = [
+				'',
+				'Box A',
+				'Box B',
+				'Box C',
+				'Box D',
+				'Box E',
+				'Box F',
+				'Box G',
+			]
+			return boxType >= 8
+				? `Building ${nameArr[boxType - nameArr.length + 1]}`
+				: `Random ${nameArr[boxType]}`
+		},
 	},
 }
 </script>
@@ -80,7 +104,7 @@ export default {
 				max-width: gREm(282);
 				padding: gREm(15) gREm(20);
 				position: relative;
-					
+
 				.image {
 					width: gREm(240);
 					height: gREm(285);
@@ -139,7 +163,7 @@ export default {
 			justify-content: center;
 			align-items: center;
 			height: gREm(400);
-			
+
 			.no-rewards {
 				text-align: center;
 			}
