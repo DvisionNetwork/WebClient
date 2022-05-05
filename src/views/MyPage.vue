@@ -90,7 +90,14 @@ export default {
 			console.log('onclick', itemName);
 			this.$router.push({name:"MyPage-Page", params:{'page': itemName}});
 		},
-	}
+	},
+	beforeCreate() {
+		if(!this.$store?.state?.userInfo?.wallet_addr) {
+			this.$router.push({ 
+				name: 'Home'
+			})
+		}
+	},
 }
 
 </script>
