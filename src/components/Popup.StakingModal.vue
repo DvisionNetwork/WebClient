@@ -146,8 +146,14 @@ import {
 	COINBASE,
 } from '@/features/Common.js'
 import { getContractConnect } from '@/features/Connectors.js'
-import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_4 } from '@/features/Messages.js'
+import {
+	MSG_METAMASK_1,
+	MSG_METAMASK_2,
+	MSG_METAMASK_4,
+} from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
+import { BITSKI, checkGasWithBalance, OUT_OF_GAS } from '../features/Common'
+import { getWeb3 } from '../features/Connectors'
 const { ethereum } = window
 export default {
 	components: {
@@ -211,7 +217,10 @@ export default {
 		this.setSearchQuery(1)
 	},
 	mounted() {
-		if (ethereum && this.loginBy === METAMASK || this.loginBy === COINBASE ) {
+		if (
+			(ethereum && this.loginBy === METAMASK) ||
+			this.loginBy === COINBASE
+		) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
 			})
@@ -626,6 +635,32 @@ export default {
 				this.networkRPC,
 				this.fortmaticNetwork
 			)
+			if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+				const web3 = getWeb3(
+					this.loginBy,
+					this.networkRPC,
+					this.current_network
+				)
+				const gasNumber = await contractConn.methods
+					.isApprovedForAll(
+						this.$store?.state?.userInfo?.wallet_addr,
+						this.data.staking_address
+					)
+					.estimateGas({
+						from: this.current_addr,
+					})
+				const condition = await checkGasWithBalance(
+					web3,
+					gasNumber,
+					this.current_addr
+				)
+				console.log('condition', condition)
+				if (condition) {
+					this.mxCloseLoading()
+					this.mxShowToast(OUT_OF_GAS)
+					return
+				}
+			}
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
@@ -665,6 +700,31 @@ export default {
 				this.fortmaticNetwork
 			)
 			try {
+				if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+					const web3 = getWeb3(
+						this.loginBy,
+						this.networkRPC,
+						this.current_network
+					)
+					const gasNumber = await contractConn.methods
+						.setApprovalForAll(
+							this.data.staking_address, // address Staking
+							true
+						)
+						.estimateGas({
+							from: this.current_addr,
+						})
+					const condition = await checkGasWithBalance(
+						web3,
+						gasNumber,
+						this.current_addr
+					)
+					if (condition) {
+						this.mxCloseLoading()
+						this.mxShowToast(OUT_OF_GAS)
+						return
+					}
+				}
 				const res = await contractConn.methods
 					.setApprovalForAll(
 						this.data.staking_address, // address Staking
@@ -715,24 +775,46 @@ export default {
 				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
 			}
 			params = JSON.parse(JSON.stringify(params))
-			console.log('params', this.data, params)
+			if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+				const web3 = getWeb3(
+					this.loginBy,
+					this.networkRPC,
+					this.current_network
+				)
+				const gasNumber = await contractConn.methods
+					.deposit(this.data.duration.id, params)
+					.estimateGas({
+						from: this.current_addr,
+					})
+				const condition = await checkGasWithBalance(
+					web3,
+					gasNumber,
+					this.current_addr
+				)
+				if (condition) {
+					this.mxCloseLoading()
+					this.mxShowToast(OUT_OF_GAS)
+					return
+				}
+			}
 			contractConn.methods
 				.deposit(this.data.duration.id, params)
 				.send({
 					from: this.wallet_addr,
 				})
-				.then(res => {
+				.then((res) => {
 					this.showSuccess()
 					this.onStakingSuccess()
 				})
 				.catch((e) => {
-					if(e.code === 4001) {
+					console.log('error stake', e, e.code)
+					if (e.code === 4001) {
 						this.mxShowToast(e.message)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)
 					}
 				})
-				.finally(()=> {
+				.finally(() => {
 					this.mxCloseLoading()
 				})
 		},

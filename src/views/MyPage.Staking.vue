@@ -50,7 +50,7 @@
 					</div>
 				</div>
 				<div
-					v-if="statusCampain !== 3 && listNftsStake.length > 0"
+					v-if="statusCampain !== 3"
 					class="unlock-lands active"
 					@click="handleUnlockAll"
 				>
@@ -141,7 +141,8 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import moment from 'moment'
-import { LAND_CODE } from '../features/Common'
+import { checkGasWithBalance, LAND_CODE, OUT_OF_GAS } from '../features/Common'
+import { getWeb3 } from '../features/Connectors'
 const { ethereum } = window
 
 export default {
@@ -474,16 +475,14 @@ export default {
 				this.mxCloseConfirmModal()
 				return
 			}
-			const item721 = await this.listNftsStake.filter(
-				(item) => item.is_ERC1155 === 0
-			)
+			const item721 = [...this.landItems.list]
 			const item1155 = await this.listNftsStake.filter(
 				(item) => item.is_ERC1155 === 1
 			)
 
 			let params = {
-				erc721TokenIds: this.pluck(item721, 'nft_id'),
-				erc1155TokenIds: this.pluck(item1155, 'nft_id'),
+				erc721TokenIds: this.pluck(item721, 'tokenId'),
+				erc1155TokenIds: this.pluck(item1155, 'tokenId'),
 				erc1155Amounts: this.pluck(item1155, 'locked'),
 			}
 
@@ -731,7 +730,7 @@ export default {
 				cpp: query.count,
 				isStake: true,
 				list: blockListAll,
-				inMixin: false
+				inMixin: false,
 			})
 		},
 		async onGetNftsStaked(campaignId) {
@@ -850,8 +849,32 @@ export default {
 				this.networkRPC,
 				this.fortmaticNetwork
 			)
-			console.log('params', params)
-
+			if (
+				this.loginBy === COINBASE ||
+				this.loginBy === BITSKI ||
+				this.loginBy === WALLETCONNECT
+			) {
+				const web3 = getWeb3(
+					this.loginBy,
+					this.networkRPC,
+					this.current_network
+				)
+				const gasNumber = await contractConn.methods
+					.withdraw(this.poolDuration.id, params)
+					.estimateGas({
+						from: this.current_addr,
+					})
+				const condition = await checkGasWithBalance(
+					web3,
+					gasNumber,
+					this.current_addr
+				)
+				if (condition) {
+					this.mxCloseLoading()
+					this.mxShowToast(OUT_OF_GAS)
+					return
+				}
+			}
 			await contractConn.methods
 				.withdraw(this.poolDuration.id, params)
 				.send({
