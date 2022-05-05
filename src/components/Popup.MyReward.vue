@@ -120,6 +120,7 @@ export default {
 				address,
 				campaignId: this.data.poolDuration.id,
 				chainId: this.data.chainId,
+				currentTime: Date.now()
 			}
 			const url = `${gConfig.public_api_sotatek}/claim-reward`;
 			const data = jwt.sign(payload, gConfig.privateKeyEncode);
