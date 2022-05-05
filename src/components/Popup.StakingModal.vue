@@ -635,32 +635,32 @@ export default {
 				this.networkRPC,
 				this.fortmaticNetwork
 			)
-			if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
-				const web3 = getWeb3(
-					this.loginBy,
-					this.networkRPC,
-					this.current_network
-				)
-				const gasNumber = await contractConn.methods
-					.isApprovedForAll(
-						this.$store?.state?.userInfo?.wallet_addr,
-						this.data.staking_address
-					)
-					.estimateGas({
-						from: this.current_addr,
-					})
-				const condition = await checkGasWithBalance(
-					web3,
-					gasNumber,
-					this.current_addr
-				)
-				console.log('condition', condition)
-				if (condition) {
-					this.mxCloseLoading()
-					this.mxShowToast(OUT_OF_GAS)
-					return
-				}
-			}
+			// if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+			// 	const web3 = getWeb3(
+			// 		this.loginBy,
+			// 		this.networkRPC,
+			// 		this.current_network
+			// 	)
+			// 	const gasNumber = await contractConn.methods
+			// 		.isApprovedForAll(
+			// 			this.$store?.state?.userInfo?.wallet_addr,
+			// 			this.data.staking_address
+			// 		)
+			// 		.estimateGas({
+			// 			from: this.current_addr,
+			// 		})
+			// 	const condition = await checkGasWithBalance(
+			// 		web3,
+			// 		gasNumber,
+			// 		this.current_addr
+			// 	)
+			// 	console.log('condition', condition)
+			// 	if (condition) {
+			// 		this.mxCloseLoading()
+			// 		this.mxShowToast(OUT_OF_GAS)
+			// 		return
+			// 	}
+			// }
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
