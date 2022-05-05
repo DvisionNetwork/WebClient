@@ -53,15 +53,15 @@ export default {
 	methods: {
 		getName(boxType) {
 			switch (boxType) {
-				case 1: return 'Ramdom Box A'
-				case 2: return 'Ramdom Box B'
-				case 3: return 'Ramdom Box C'
-				case 4: return 'Ramdom Box D'
-				case 5: return 'Ramdom Box E'
-				case 6: return 'Ramdom Box F'
-				case 7: return 'Ramdom Box G'
-				case 8: return 'Ramdom Building A'
-				case 9: return 'Ramdom Building B'
+				case 1: return 'Random Box A'
+				case 2: return 'Random Box B'
+				case 3: return 'Random Box C'
+				case 4: return 'Random Box D'
+				case 5: return 'Random Box E'
+				case 6: return 'Random Box F'
+				case 7: return 'Random Box G'
+				case 8: return 'Building Box A'
+				case 9: return 'Building Box B'
 				default: return ''
 			}
 		}
