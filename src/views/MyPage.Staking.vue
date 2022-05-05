@@ -465,6 +465,15 @@ export default {
 			return sol
 		},
 		async handleUnlockAll() {
+			if (!this.checkAddress(this.current_addr)) {
+				this.mxShowToast(MSG_METAMASK_1)
+				this.mxCloseConfirmModal()
+				return
+			}
+			if (!this.checkNetwork()) {
+				this.mxCloseConfirmModal()
+				return
+			}
 			const item721 = await this.listNftsStake.filter(
 				(item) => item.is_ERC1155 === 0
 			)
