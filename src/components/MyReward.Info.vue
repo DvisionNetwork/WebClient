@@ -53,7 +53,7 @@ export default {
 	methods: {
 		getName(boxType) {
 			const nameArr = ['', 'Box A', 'Box B', 'Box C', 'Box D', 'Box E', 'Box F', 'Box G']
-			return boxType > 8 ? `Building ${nameArr[boxType - nameArr.length - 1]}` : `Random ${nameArr[boxType]}`
+			return boxType >= 8 ? `Building ${nameArr[boxType - nameArr.length - 1]}` : `Random ${nameArr[boxType]}`
 		}
 	},
 }
