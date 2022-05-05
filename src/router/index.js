@@ -6,28 +6,26 @@ const routes = [
 		name: '',
 		redirect: () => {
 			return '/en'
-		}
+		},
 	},
 	{
 		path: '/:lang',
 		component: {
 			template: '<router-view />',
 		},
-		redirect: to => ({
-			path: '/'+to.params.lang+'/home',
+		redirect: (to) => ({
+			path: '/' + to.params.lang + '/home',
 		}),
-		children:[
+		children: [
 			{
 				path: '',
 				name: 'Home',
-				component: () =>
-					import('@/views/Home.vue'),
+				component: () => import('@/views/Home.vue'),
 			},
 			{
 				path: 'home',
 				name: 'Home',
-				component: () =>
-					import('@/views/Home.vue'),
+				component: () => import('@/views/Home.vue'),
 			},
 			{
 				path: 'market',
@@ -35,8 +33,8 @@ const routes = [
 					template: '<router-view />',
 				},
 				name: 'Market',
-				redirect: to => ({
-					path: '/'+to.params.lang+'/market/bsc',
+				redirect: (to) => ({
+					path: '/' + to.params.lang + '/market/bsc',
 				}),
 			},
 			{
@@ -46,17 +44,23 @@ const routes = [
 				// route level code-splitting
 				// this generates a separate chunk (about.[hash].js) for this route
 				// which is lazy-loaded when the route is visited.
-				component: () =>
-					import('@/views/Market.vue'),
+				component: () => import('@/views/Market.vue'),
 				beforeEnter: (to, from, next) => {
 					// console.log('[JNJT router/index.js] beforeEnter(),to, from,next : ',to, from,next);
 					// var view = {name:to.name}
-					if(_U.getIfDefined(from,['params','from','params','from'])) {
-						from.params.from.params.from = null;
+					if (
+						_U.getIfDefined(from, [
+							'params',
+							'from',
+							'params',
+							'from',
+						])
+					) {
+						from.params.from.params.from = null
 					}
-					to.params.from = from;
+					to.params.from = from
 					next()
-				}
+				},
 			},
 			{
 				path: 'market/:tab_page/:itemId',
@@ -65,8 +69,7 @@ const routes = [
 				// route level code-splitting
 				// this generates a separate chunk (about.[hash].js) for this route
 				// which is lazy-loaded when the route is visited.
-				component: () =>
-					import('@/views/Market.vue'),
+				component: () => import('@/views/Market.vue'),
 			},
 			{
 				path: 'market/:tab_page/:itemId/:index',
@@ -75,23 +78,28 @@ const routes = [
 				// route level code-splitting
 				// this generates a separate chunk (about.[hash].js) for this route
 				// which is lazy-loaded when the route is visited.
-				component: () =>
-					import('@/views/Market.vue'),
+				component: () => import('@/views/Market.vue'),
 				beforeEnter: (to, from, next) => {
 					// console.log('[JNJT router/index.js] beforeEnter(),to, from,next : ',to, from,next);
 					// var view = {name:to.name}
-					if(_U.getIfDefined(from,['params','from','params','from'])) {
-						from.params.from.params.from = null;
+					if (
+						_U.getIfDefined(from, [
+							'params',
+							'from',
+							'params',
+							'from',
+						])
+					) {
+						from.params.from.params.from = null
 					}
-					to.params.from = from;
+					to.params.from = from
 					next()
-				}
+				},
 			},
 			{
 				path: 'studio',
 				name: 'Studio',
-				component: () =>
-					import('@/views/Studio.vue'),
+				component: () => import('@/views/Studio.vue'),
 			},
 			{
 				path: 'guide',
@@ -99,23 +107,21 @@ const routes = [
 					template: '<router-view />',
 				},
 				name: 'Guide',
-				redirect: to => ({
-					path: '/'+to.params.lang+'/guide/guide',
+				redirect: (to) => ({
+					path: '/' + to.params.lang + '/guide/guide',
 				}),
 			},
 			{
 				path: 'guide/:page',
 				name: 'Guide-Page',
 				props: true,
-				component: () =>
-					import('@/views/Guide.vue'),
+				component: () => import('@/views/Guide.vue'),
 			},
 			{
 				path: 'guide/:page/:wIdx',
 				name: 'Guide-SubPage',
 				props: true,
-				component: () =>
-					import('@/views/Guide.vue'),
+				component: () => import('@/views/Guide.vue'),
 			},
 			{
 				path: 'news',
@@ -123,23 +129,21 @@ const routes = [
 					template: '<router-view />',
 				},
 				name: 'News',
-				redirect: to => ({
-					path: '/'+to.params.lang+'/news/0',
+				redirect: (to) => ({
+					path: '/' + to.params.lang + '/news/0',
 				}),
 			},
 			{
 				path: 'news/:page',
 				name: 'News-Page',
 				props: true,
-				component: () =>
-					import('@/views/News.vue')
+				component: () => import('@/views/News.vue'),
 			},
 			{
 				path: 'news-detail/:itemId',
 				name: 'News-Detail',
 				props: true,
-				component: () =>
-					import('@/views/News.Detail.vue'),
+				component: () => import('@/views/News.Detail.vue'),
 			},
 			{
 				path: 'signup',
@@ -147,17 +151,16 @@ const routes = [
 				component: {
 					template: '<router-view />',
 				},
-				redirect: to => ({
+				redirect: (to) => ({
 					// path: '/'+to.params.lang+'/signup/agree', // agree, register, confirm,
-					path: '/'+to.params.lang+'/signup/register', // agree, register, confirm,
+					path: '/' + to.params.lang + '/signup/register', // agree, register, confirm,
 				}),
 			},
 			{
 				path: 'signup/:page',
 				name: 'Signup-Page',
 				props: true,
-				component: () =>
-					import('@/views/Signup.vue'),
+				component: () => import('@/views/Signup.vue'),
 			},
 			{
 				path: 'mypage',
@@ -165,16 +168,15 @@ const routes = [
 				component: {
 					template: '<router-view />',
 				},
-				redirect: to => ({
-					path: '/'+to.params.lang+'/mypage/profile', // profile inventory
+				redirect: (to) => ({
+					path: '/' + to.params.lang + '/mypage/profile', // profile inventory
 				}),
 			},
 			{
 				path: 'mypage/:page',
 				name: 'MyPage-Page',
 				props: true,
-				component: () =>
-					import('@/views/MyPage.vue'),
+				component: () => import('@/views/MyPage.vue'),
 			},
 			// {
 			// 	path: 'mypage/:page/:wIdx',
@@ -190,15 +192,18 @@ const routes = [
 			// 		import(/* webpackChunkName: "about" */ '@/views/Help.vue'),
 			// },
 		],
-		// beforeEnter: (to, from, next) => {
-		// 	console.log('[JNJT router/index.js] beforeEnter(),to, from,next : ',to, from,next);
-		// 	// var view = {name:to.name}
-		// 	if(_U.getIfDefined(from,['params','jfrom','jfrom'])) {
-		// 		from.params.jfrom.jfrom = null;
-		// 	}
-		// 	to.params.jfrom = from;
-		// 	next()
-		// }
+		beforeEnter: (to, from, next) => {
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (to.name === 'MyPage-Page' && !loginBy) {
+				next('/' + to.params.lang + '/home')
+				return
+			} else next()
+			// var view = {name:to.name}
+			// if(_U.getIfDefined(from,['params','jfrom','jfrom'])) {
+			// 	from.params.jfrom.jfrom = null;
+			// }
+			// to.params.jfrom = from;
+		},
 		// beforeEnter: (to, from, next) => {
 		// 	console.log('[JNJT router/index.js] beforeEnter(),to, from,next : ',to, from,next)
 		// 	// view = {name:to.name, path:to.path, params:param}
