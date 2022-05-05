@@ -239,13 +239,6 @@ export default {
 		this.setSearchQuery(1)
 	},
 	mounted() {
-		if(!this.wallet_addr) {
-			this.$router.push({
-				name: 'Home'
-			})
-			return
-		}
-
 		if (ethereum) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
