@@ -21,7 +21,8 @@
 						{{ tabList[selectedIndex].header }}
 					</div>
 					<div class="modal-body">
-						<MyRewardInfo :data="dataInfo" :selectedIndex="selectedIndex"></MyRewardInfo>
+						<MyRewardInfo v-if="selectedIndex === 0" :data="dataOngoing" :selectedIndex="selectedIndex" />
+						<MyRewardInfo v-else :data="dataReward" :selectedIndex="selectedIndex" />
 					</div>
 					<hr />
 					<div class="btn-wrapper">
@@ -29,7 +30,7 @@
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
 							@click="claimRewards"
-							:disabled="dataInfo.length === 0"
+							:disabled="dataReward.length === 0"
 						>
 							Claim rewards
 						</button>
@@ -80,7 +81,8 @@ export default {
 			selectedIndex: 0,
 			listReward: [],
 			listOngoing: [],
-			dataInfo: []
+			dataOngoing: [],
+			dataReward: [],
 		}
 	},
 	props: {
@@ -89,7 +91,7 @@ export default {
 	created() {},
 	watch: {
 		async selectedIndex() {
-			if(this.selectedIndex === 1) {
+			if(this.selectedIndex === 1 && this.data.statusCampain === 0 || this.data.statusCampain === 1) {
 				await this.getListReward()
 				this.filterReward()
 			}
@@ -113,14 +115,15 @@ export default {
 		},
 		async claimRewards() {
 			this.mxShowLoading('inf')
+			const address = this.$store.state.userInfo.wallet_addr
 			const payload = {
-				address: this.$store.state.userInfo.wallet_addr,
+				address,
 				campaignId: this.data.poolDuration.id,
 				chainId: this.data.chainId,
 			}
 			const url = `${gConfig.public_api_sotatek}/claim-reward`;
 			const data = jwt.sign(payload, gConfig.privateKeyEncode);
-			const res = await axios.get(url, { data })
+			const res = await axios.put(url, { data })
 
 			if(res.data.data && res.data.signature) {
 				const contract = getContractConnect(
@@ -130,7 +133,7 @@ export default {
 					this.networkRPC,
 					this.currentNetwork,
 				)
-	
+
 				contract.methods
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
@@ -180,7 +183,7 @@ export default {
 						data.push(nft)
 					}
 				}
-				this.dataInfo = data
+				this.dataReward = [...data]
 			}
 		},
 		async getListOngoing() {
@@ -215,7 +218,7 @@ export default {
 						data.push(nft)
 					}
 				}
-				this.dataInfo = data
+				this.dataOngoing = [...data]
 			}
 		},
 		async mountedPopup() {
