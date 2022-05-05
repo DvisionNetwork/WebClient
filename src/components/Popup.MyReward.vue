@@ -21,8 +21,16 @@
 						{{ tabList[selectedIndex].header }}
 					</div>
 					<div class="modal-body">
-						<MyRewardInfo v-if="selectedIndex === 0" :data="dataOngoing" :selectedIndex="selectedIndex" />
-						<MyRewardInfo v-else :data="dataReward" :selectedIndex="selectedIndex" />
+						<MyRewardInfo
+							v-if="selectedIndex === 0"
+							:data="dataOngoing"
+							:selectedIndex="selectedIndex"
+						/>
+						<MyRewardInfo
+							v-else
+							:data="dataReward"
+							:selectedIndex="selectedIndex"
+						/>
 					</div>
 					<hr />
 					<div class="btn-wrapper">
@@ -48,14 +56,14 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { getContractConnect } from '../features/Connectors';
+import axios from 'axios'
+import { getContractConnect, getWeb3 } from '../features/Connectors'
 import ProxyABI from '@/abi/Proxy.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
-import { BSC_PROXY_ADDRESS } from '../features/Common'
+import { BITSKI, BSC_PROXY_ADDRESS, checkGasWithBalance, COINBASE, OUT_OF_GAS, WALLETCONNECT } from '../features/Common'
 import AppConfig from '@/App.Config.js'
-import jwt from'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 var gConfig = AppConfig()
 
 export default {
@@ -91,24 +99,27 @@ export default {
 	created() {},
 	watch: {
 		async selectedIndex() {
-			if(this.selectedIndex === 1 && this.data.statusCampain === 0 || this.data.statusCampain === 1) {
+			if (
+				(this.selectedIndex === 1 && this.data.statusCampain === 0) ||
+				this.data.statusCampain === 1
+			) {
 				await this.getListReward()
 				this.filterReward()
 			}
-			if(this.selectedIndex === 0) {
+			if (this.selectedIndex === 0) {
 				await this.getListOngoing()
 				this.filterOngoing()
 			}
-		}
+		},
 	},
 	methods: {
 		showPopupSuccess() {
 			const obj = {
 				isShow: true,
 				content: renderStakingRewardsClaimed(),
-				title: "Rewards have been claimed",
-				buttonTxt: "OK",
-				width: "712px"
+				title: 'Rewards have been claimed',
+				buttonTxt: 'OK',
+				width: '712px',
 			}
 			this.mxCloseMyRewardModal()
 			this.mxShowSuccessModal(obj)
@@ -120,34 +131,60 @@ export default {
 				address,
 				campaignId: this.data.poolDuration.id,
 				chainId: this.data.chainId,
-				currentTime: Date.now()
+				currentTime: Date.now(),
 			}
-			const url = `${gConfig.public_api_sotatek}/claim-reward`;
-			const data = jwt.sign(payload, gConfig.privateKeyEncode);
+			const url = `${gConfig.public_api_sotatek}/claim-reward`
+			const data = jwt.sign(payload, gConfig.privateKeyEncode)
+
 			const res = await axios.put(url, { data })
 
-			if(res.data.data && res.data.signature) {
+			if (res.data.data && res.data.signature) {
 				const contract = getContractConnect(
-					this.loginBy, 
-					ProxyABI, 
-					BSC_PROXY_ADDRESS, 
+					this.loginBy,
+					ProxyABI,
+					BSC_PROXY_ADDRESS,
 					this.networkRPC,
-					this.currentNetwork,
+					this.currentNetwork
 				)
-
+				if (
+					this.loginBy === COINBASE ||
+					this.loginBy === BITSKI ||
+					this.loginBy === WALLETCONNECT
+				) {
+					const web3 = getWeb3(
+						this.loginBy,
+						this.networkRPC,
+						this.currentNetwork
+					)
+					const gasNumber = await contract.methods
+						.execTransaction(res.data.data, res.data.signature)
+						.estimateGas({
+							from: address,
+						})
+					const condition = await checkGasWithBalance(
+						web3,
+						gasNumber,
+						address
+					)
+					if (condition) {
+						this.mxCloseLoading()
+						this.mxShowToast(OUT_OF_GAS)
+						return
+					}
+				}
 				contract.methods
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
-					.then(tx => {
-						console.log('tx', tx);
-						this.showPopupSuccess();
+					.then((tx) => {
+						console.log('tx', tx)
+						this.showPopupSuccess()
 					})
-					.catch(e => {
-						console.log('err', e);
+					.catch((e) => {
+						console.log('err', e)
 					})
 					.finally(() => {
 						this.mxCloseLoading()
-					});
+					})
 			} else {
 				this.mxCloseLoading()
 			}
@@ -156,31 +193,36 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
-			const res = await axios(`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)			
+			const res = await axios(
+				`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			)
 			this.listReward = res.data.NftCampaignArr
 		},
 		filterReward() {
-			if(this.listReward &&  this.listReward.length > 0) {
+			if (this.listReward && this.listReward.length > 0) {
 				const data = []
-				for(let i = 1; i <= 9; i++){
-					const nft = this.listReward.reduce((obj, item) => {
-						if(item?.rewardRandomBox?.boxType == i) {
-							obj.amount += item?.rewardRandomBox.amount
-						}
-						if(item?.rewardBuildingBoxA?.boxType == i) {
-							obj.amount += item?.rewardBuildingBoxA.amount
-						}
-						if(item?.rewardBuildingBoxB?.boxType == i) {
-							obj.amount += item?.rewardBuildingBoxB.amount
-						}
+				for (let i = 1; i <= 9; i++) {
+					const nft = this.listReward.reduce(
+						(obj, item) => {
+							if (item?.rewardRandomBox?.boxType == i) {
+								obj.amount += item?.rewardRandomBox.amount
+							}
+							if (item?.rewardBuildingBoxA?.boxType == i) {
+								obj.amount += item?.rewardBuildingBoxA.amount
+							}
+							if (item?.rewardBuildingBoxB?.boxType == i) {
+								obj.amount += item?.rewardBuildingBoxB.amount
+							}
 
-						return {
-							amount: obj.amount,
-							boxType: i
-						}
-					}, {amount: 0, boxType: ''})
+							return {
+								amount: obj.amount,
+								boxType: i,
+							}
+						},
+						{ amount: 0, boxType: '' }
+					)
 
-					if(nft.amount > 0) {
+					if (nft.amount > 0) {
 						data.push(nft)
 					}
 				}
@@ -191,31 +233,39 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
-			const res = await axios(`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`)
+			const res = await axios(
+				`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			)
 			this.listOngoing = res.data
 		},
 		filterOngoing() {
-			if(this.listOngoing &&  this.listOngoing.length > 0) {
+			if (this.listOngoing && this.listOngoing.length > 0) {
 				const data = []
-				for(let i = 1; i <= 9; i++){
-					const nft = this.listOngoing.reduce((obj, item) => {
-						if(item?.virtualRewardRandomBox?.boxType == i) {
-							obj.amount += item?.virtualRewardRandomBox.amount
-						}
-						if(item?.virtualRewardBuildingBoxA?.boxType == i) {
-							obj.amount += item?.virtualRewardBuildingBoxA.amount
-						}
-						if(item?.virtualRewardBuildingBoxB?.boxType == i) {
-							obj.amount += item?.virtualRewardBuildingBoxB.amount
-						}
+				for (let i = 1; i <= 9; i++) {
+					const nft = this.listOngoing.reduce(
+						(obj, item) => {
+							if (item?.virtualRewardRandomBox?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardRandomBox.amount
+							}
+							if (item?.virtualRewardBuildingBoxA?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardBuildingBoxA.amount
+							}
+							if (item?.virtualRewardBuildingBoxB?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardBuildingBoxB.amount
+							}
 
-						return {
-							amount: obj.amount,
-							boxType: i
-						}
-					}, {amount: 0, boxType: ''})
+							return {
+								amount: obj.amount,
+								boxType: i,
+							}
+						},
+						{ amount: 0, boxType: '' }
+					)
 
-					if(nft.amount > 0) {
+					if (nft.amount > 0) {
 						data.push(nft)
 					}
 				}
@@ -223,11 +273,11 @@ export default {
 			}
 		},
 		async mountedPopup() {
-			if(this.selectedIndex === 0) {
+			if (this.selectedIndex === 0) {
 				await this.getListOngoing()
-				this.filterOngoing();
+				this.filterOngoing()
 			}
-		}
+		},
 	},
 }
 </script>
