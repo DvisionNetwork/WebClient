@@ -842,7 +842,6 @@ export default {
 		},
 		handleAccountsChanged(accounts) {
 			const addr = this.$store.state.userInfo.wallet_addr
-			console.log('account changed', accounts, addr)
 			if (addr && accounts[0] !== addr) {
 				window.localStorage.setItem(ADDRESS_METAMASK, accounts)
 				this.mxShowToast(MSG_METAMASK_1)
