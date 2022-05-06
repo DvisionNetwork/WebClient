@@ -803,8 +803,11 @@ export default {
 					from: this.wallet_addr,
 				})
 				.then((res) => {
-					this.showSuccess()
-					this.onStakingSuccess()
+					setTimeout(() => {
+						this.mxGetLandItems()
+						this.showSuccess()
+						this.onStakingSuccess()
+					}, 5000)
 				})
 				.catch((e) => {
 					console.log('error stake', e, e.code)
