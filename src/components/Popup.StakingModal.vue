@@ -21,7 +21,8 @@
 						<input
 							type="text"
 							v-model="keyword"
-							@change="onSearch($event.target.value)"
+							ref="inputSearch"
+							@keyup="onSearch($event.target.value)"
 							maxlength="255"
 						/>
 						<div id="erc" class="erc">
@@ -392,6 +393,7 @@ export default {
 		},
 		handleClickItem(item) {
 			this.landCode = item.name
+			this.keyword = ''
 			this.setLandMapId(item.id)
 		},
 		setLandMapId(mapId) {
@@ -489,10 +491,21 @@ export default {
 		// 	}
 		// },
 		onSearch(text) {
-			const filterItems = this.landItems.filter(
-				(ele) => ele.id === text || ele.name === text
-			)
-			console.log('filterItems', filterItems)
+			const defaultData = { ...this.$store.state.defaultLandItemsPopup }
+			let filterItems = [...defaultData.list]
+			if (text) {
+				filterItems = [...defaultData.list].filter(
+					(ele) =>
+						ele.tokenId.includes(text) ||
+						ele.n.toLowerCase().includes(text.toLowerCase())
+				)
+			}
+
+			const params = {
+				...defaultData,
+				list: filterItems,
+			}
+			this.mxSetLandItemsInPopupStaking(params)
 		},
 		confirmSwitch() {
 			this.keyword = ''
@@ -817,14 +830,15 @@ export default {
 					from: this.wallet_addr,
 				})
 				.then((res) => {
+					// this.mxGetLandItems()
+					this.mxCloseLoading()
+					this.showSuccess()
+					this.mxShowLoading()
 					setTimeout(() => {
-						this.mxGetLandItems()
-						this.showSuccess()
 						this.onStakingSuccess()
-					}, 5000)
+					}, 5000);
 				})
 				.catch((e) => {
-					console.log('error stake', e, e.code)
 					if (e.code === 4001) {
 						this.mxShowToast(e.message)
 					} else {
@@ -832,7 +846,7 @@ export default {
 					}
 				})
 				.finally(() => {
-					this.mxCloseLoading()
+					// this.mxCloseLoading()
 				})
 		},
 	},
