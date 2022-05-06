@@ -38,7 +38,7 @@
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
 							@click="claimRewards"
-							:disabled="dataReward.length === 0"
+							:disabled="dataReward.length === 0 || data.statusCampain === 3"
 						>
 							Claim rewards
 						</button>
@@ -112,10 +112,7 @@ export default {
 	created() {},
 	watch: {
 		async selectedIndex() {
-			if (
-				(this.selectedIndex === 1 && this.data.statusCampain === 0) ||
-				this.data.statusCampain === 1
-			) {
+			if (this.selectedIndex === 1) {
 				await this.getListReward()
 				this.filterReward()
 			}
