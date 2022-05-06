@@ -210,7 +210,7 @@ import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Web3 from 'web3'
 import {
-  ADDRESS_METAMASK,
+	ADDRESS_METAMASK,
 	BITSKI,
 	FORTMATIC,
 	renderNetworkName,
@@ -252,7 +252,7 @@ export default {
 		this.setCurrentNetwork()		
 		if (ethereum) {
 			ethereum.on('chainChanged', this.handleChainChanged)
-			ethereum.on('accountsChanged', this.handleAccountsChanged);
+			ethereum.on('accountsChanged', this.handleAccountsChanged)
 		}
 		if (!Scrollbar.has(_U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
@@ -372,7 +372,10 @@ export default {
 	onUnmounted() {
 		if (ethereum) {
 			ethereum.removeListener('chainChanged', this.handleChainChanged)
-			ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
+			ethereum.removeListener(
+				'accountsChanged',
+				this.handleAccountsChanged
+			)
 		}
 	},
 	computed: {
@@ -843,11 +846,11 @@ export default {
 		},
 		handleAccountsChanged(accounts) {
 			const addr = this.$store.state.userInfo.wallet_addr
+			window.localStorage.setItem(ADDRESS_METAMASK, accounts)
 			if (addr && accounts[0] !== addr) {
-				window.localStorage.setItem(ADDRESS_METAMASK, accounts)
 				this.mxShowToast(MSG_METAMASK_1)
 			}
-		}
+		},
 	},
 }
 </script>

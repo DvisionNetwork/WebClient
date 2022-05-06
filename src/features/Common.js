@@ -249,10 +249,6 @@ export async function checkGasWithBalance(web3, gasNumber, currentAccount) {
 
 export function checkAddress(walletAddress) {
 	const currentAddress = window.localStorage.getItem('addressMetamask')
-	console.log(
-		'asd',
-		currentAddress.toLowerCase() === walletAddress.toLowerCase()
-	)
 	return currentAddress
 		? currentAddress.toLowerCase() === walletAddress.toLowerCase()
 		: true
