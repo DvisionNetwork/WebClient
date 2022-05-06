@@ -532,20 +532,19 @@ export default {
 					address721: this.address721,
 					address1155: this.address1155,
 					onStakingSuccess: () =>
-						setTimeout(() => {
-							this.onStakingSuccess(this.poolDuration.id)
-						}, 2000),
+						this.onStakingSuccess(this.poolDuration.id),
 				}
 				this.mxShowStakingModal(stakingData)
 			}
 		},
 		onStakingSuccess(campaignId) {
-			this.onGetNftsStaked(campaignId)
+			// this.onGetNftsStaked(campaignId)
+			this.callLandItemList()
 			this.getCampaignInfo(campaignId)
-			this.getTotalMiningHashRate(campaignId)
-			this.getMyMiningHashRate(campaignId)
-			this.getTotalStaked(campaignId)
-			this.getMyStaked(campaignId)
+			// this.getTotalMiningHashRate(campaignId)
+			// this.getMyMiningHashRate(campaignId)
+			// this.getTotalStaked(campaignId)
+			// this.getMyStaked(campaignId)
 		},
 		async getAccounts() {
 			try {
@@ -625,7 +624,7 @@ export default {
 
 		async getCampaignInfo(campainId) {
 			try {
-				this.mxShowLoading()
+				// this.mxShowLoading()
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,
@@ -800,9 +799,7 @@ export default {
 				buttonTxt: 'OK',
 				isShow: true,
 			}
-			setTimeout(() => {
-				this.onStakingSuccess(this.poolDuration.id)
-			}, 2000)
+			this.onStakingSuccess(this.poolDuration.id)
 			this.mxShowSuccessModal(obj)
 		},
 
@@ -815,9 +812,7 @@ export default {
 				buttonTxt: 'OK',
 				isShow: true,
 			}
-			setTimeout(() => {
-				this.onStakingSuccess(this.poolDuration.id)
-			}, 2000)
+			this.onStakingSuccess(this.poolDuration.id)
 			this.mxShowSuccessModal(obj)
 		},
 
@@ -893,18 +888,17 @@ export default {
 				})
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
-					
+
+					// this.mxCloseLoading()
+					// this.onStakingSuccess(this.poolDuration.id)
+					this.mxCloseConfirmModal()
 					setTimeout(() => {
-						this.callLandItemList()
-						this.mxCloseLoading()
-						this.onStakingSuccess(this.poolDuration.id)
-						this.mxCloseConfirmModal()
 						if (unLockAll) {
 							this.onUnStakeAllNftsSuccess()
 						} else {
 							this.onUnStakeNftsSuccess()
 						}
-					}, 5000)
+					}, 5000);
 				})
 				.catch((e) => {
 					console.log('e', e)
