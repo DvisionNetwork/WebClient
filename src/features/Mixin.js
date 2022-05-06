@@ -358,6 +358,9 @@ var Mixin = {
 		mxSetLandItemsInPopupStaking(landItems) {
 			this.$store.dispatch('setLandItemsInPopupStaking', landItems)
 		},
+		mxSetLandItemsDefaultInPopupStaking(landItems) {
+			this.$store.dispatch('setLandItemsDefaultInPopupStaking', landItems)
+		},
 		mxGetLandItems() {
 			return this.$store.state.landItems
 		},
@@ -540,7 +543,6 @@ var Mixin = {
 									: '0'
 								return element
 							})
-						console.log('arrListNft', arrListNft)
 						// for (let ridx = 0; ridx < rows.length; ridx++) {
 						// 	const row = rows[ridx]
 						// 	for (; midx < dvLand.map.length; midx++) {
@@ -610,9 +612,11 @@ var Mixin = {
 						cpp: query.count,
 						isStake: true,
 						list: arrListNft,
-						inMixin: true
+						inMixin: true,
 					}
-					isStake ? this.mxSetLandItems(params) : this.mxSetLandItemsInPopupStaking(params)
+					isStake
+						? this.mxSetLandItems(params)
+						: this.setLandItemsPopup(params)
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
 					// console.log('dvland after')
 					// console.log('landMenu in mixin', landMenu)
@@ -629,6 +633,11 @@ var Mixin = {
 					this.mxCloseLoading()
 				},
 			})
+		},
+
+		setLandItemsPopup(params) {
+			this.mxSetLandItemsInPopupStaking(params)
+			this.mxSetLandItemsDefaultInPopupStaking(params)
 		},
 
 		// market level api ///

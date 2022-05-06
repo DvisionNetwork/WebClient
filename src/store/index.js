@@ -61,6 +61,7 @@ export default createStore({
 		myItemQuery: {},
 		landItems: {},
 		landItemsInPopup: {},
+		defaultLandItemsPopup: {},
 		landMenuPopup: {},
 		defaultLandMenu: {},
 	},
@@ -177,6 +178,9 @@ export default createStore({
 		},
 		SET_LAND_ITEMS_POPUP_STAKING(state, value) {
 			state.landItemsInPopup = value;
+		},
+		SET_LAND_ITEMS_DEFAULT_POPUP_STAKING(state, value) {
+			state.defaultLandItemsPopup = value;
 		},
 		SET_LAND_ITEM(state, value) {
 			state.landtItem = value;
@@ -356,6 +360,9 @@ export default createStore({
 		},
 		setLandItemsInPopupStaking(context, value) {
 			context.commit('SET_LAND_ITEMS_POPUP_STAKING',value);
+		},
+		setLandItemsDefaultInPopupStaking(context, value) {
+			context.commit('SET_LAND_ITEMS_DEFAULT_POPUP_STAKING',value);
 		},
 		setLandItem(context, value) {
 			// console.log("[STORE.actions] setLandItem(), ", value);
