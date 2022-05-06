@@ -239,3 +239,10 @@ export async function checkGasWithBalance(web3, gasNumber, currentAccount) {
 	console.log('price', +balance, totalPrice)
 	return totalPrice > +balance
 }
+
+export function checkAddress(walletAddress) {
+	const currentAddress = window.localStorage.getItem('addressMetamask')
+	return currentAddress
+		? currentAddress.toLowerCase() === walletAddress.toLowerCase()
+		: true
+}
