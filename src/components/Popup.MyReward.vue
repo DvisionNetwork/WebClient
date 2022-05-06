@@ -70,10 +70,12 @@ import {
 	METAMASK,
 	OUT_OF_GAS,
 	WALLETCONNECT,
+	fromHexToChainId,
+	DENIED_TRANSACTION,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
-import { MSG_METAMASK_1 } from '../features/Messages'
+import { MSG_METAMASK_1, MSG_METAMASK_2 } from '../features/Messages'
 var gConfig = AppConfig()
 
 export default {
@@ -136,6 +138,17 @@ export default {
 		},
 		async claimRewards() {
 			this.mxShowLoading('inf')
+
+			const oldChainId = this.data.chainId
+			const network = window.localStorage.getItem('currentNetwork')
+			const currentChainId = fromHexToChainId(network)
+
+			if(oldChainId !== currentChainId) {
+				this.mxCloseLoading()
+				this.mxShowToast(MSG_METAMASK_2)
+				return	
+			}
+
 			const address = this.$store.state.userInfo.wallet_addr
 			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
 			if (
@@ -192,15 +205,25 @@ export default {
 						return
 					}
 				}
+
 				contract.methods
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
 					.then((tx) => {
+						const url = `${gConfig.public_api_sotatek}/update-reward`
+						axios.put(url, { data })
+							.then((res) => {
+								console.log(res);
+								this.showPopupSuccess()
+							})
+							.catch((err) => {
+								console.log(err);
+							})
 						console.log('tx', tx)
-						this.showPopupSuccess()
 					})
 					.catch((e) => {
 						console.log('err', e)
+						this.mxShowToast(DENIED_TRANSACTION)
 					})
 					.finally(() => {
 						this.mxCloseLoading()

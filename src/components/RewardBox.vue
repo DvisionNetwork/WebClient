@@ -74,6 +74,7 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
+		current_network: String,
 		// staking_address: String
 	},
 	// beforeMount() {
@@ -109,8 +110,7 @@ export default {
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
-			const network = window.localStorage.getItem('currentNetwork')
-			if(!network) return
+			const network = this.current_network
 			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,

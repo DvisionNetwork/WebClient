@@ -17,6 +17,7 @@
 				:statusCampain="statusCampain"
 				:switchStatusCampain="switchStatusCampain"
 				:timeCount="timeCount"
+				:current_network="current_network"
 			/>
 			<div class="staked-land">
 				<div class="left-title">
