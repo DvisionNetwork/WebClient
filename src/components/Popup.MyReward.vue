@@ -112,7 +112,7 @@ export default {
 	created() {},
 	watch: {
 		async selectedIndex() {
-			if (this.selectedIndex === 1) {
+			if (this.selectedIndex === 1 && (this.data.statusCampain === 1 || this.data.statusCampain === 2)) {
 				await this.getListReward()
 				this.filterReward()
 			}
