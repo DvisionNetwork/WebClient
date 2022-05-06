@@ -103,6 +103,7 @@ export default {
 			listOngoing: [],
 			dataOngoing: [],
 			dataReward: [],
+			loginBy: window.localStorage.getItem('loginBy'),
 		}
 	},
 	props: {
@@ -143,10 +144,10 @@ export default {
 			const network = window.localStorage.getItem('currentNetwork')
 			const currentChainId = fromHexToChainId(network)
 
-			if(oldChainId !== currentChainId) {
+			if (oldChainId !== currentChainId) {
 				this.mxCloseLoading()
 				this.mxShowToast(MSG_METAMASK_2)
-				return	
+				return
 			}
 
 			const address = this.$store.state.userInfo.wallet_addr
@@ -211,13 +212,14 @@ export default {
 					.send({ from: address })
 					.then((tx) => {
 						const url = `${gConfig.public_api_sotatek}/update-reward`
-						axios.put(url, { data })
+						axios
+							.put(url, { data })
 							.then((res) => {
-								console.log(res);
+								console.log(res)
 								this.showPopupSuccess()
 							})
 							.catch((err) => {
-								console.log(err);
+								console.log(err)
 							})
 						console.log('tx', tx)
 					})
