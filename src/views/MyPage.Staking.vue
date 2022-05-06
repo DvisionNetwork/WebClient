@@ -52,7 +52,8 @@
 				</div>
 				<div
 					v-if="statusCampain !== 3"
-					class="unlock-lands active"
+					class="unlock-lands"
+					:class="{ active: landItems?.list?.length > 0 }"
 					@click="handleUnlockAll"
 				>
 					Unlock all LANDs
@@ -142,7 +143,12 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import moment from 'moment'
-import { checkAddress, checkGasWithBalance, LAND_CODE, OUT_OF_GAS } from '../features/Common'
+import {
+	checkAddress,
+	checkGasWithBalance,
+	LAND_CODE,
+	OUT_OF_GAS,
+} from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 const { ethereum } = window
 
@@ -468,6 +474,9 @@ export default {
 			return sol
 		},
 		async handleUnlockAll() {
+			if (this.landItems.list.length <= 0) {
+				return
+			}
 			// if (!checkAddress(this.wallet_addr)) {
 			// 	this.mxShowToast(MSG_METAMASK_1)
 			// 	this.mxCloseConfirmModal()
@@ -939,7 +948,7 @@ export default {
 			.child {
 				display: flex;
 				align-items: center;
-				background: #5f5f5f;
+				background: #f6583e;
 				padding: gREm(10) 0.6875rem;
 				border-radius: 0.625rem;
 				cursor: pointer;
