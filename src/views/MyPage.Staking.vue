@@ -893,14 +893,18 @@ export default {
 				})
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
-					this.mxCloseLoading()
-					this.onStakingSuccess(this.poolDuration.id)
-					this.mxCloseConfirmModal()
-					if (unLockAll) {
-						this.onUnStakeAllNftsSuccess()
-					} else {
-						this.onUnStakeNftsSuccess()
-					}
+					
+					setTimeout(() => {
+						this.callLandItemList()
+						this.mxCloseLoading()
+						this.onStakingSuccess(this.poolDuration.id)
+						this.mxCloseConfirmModal()
+						if (unLockAll) {
+							this.onUnStakeAllNftsSuccess()
+						} else {
+							this.onUnStakeNftsSuccess()
+						}
+					}, 5000)
 				})
 				.catch((e) => {
 					console.log('e', e)
