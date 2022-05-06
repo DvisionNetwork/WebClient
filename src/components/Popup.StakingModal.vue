@@ -428,15 +428,21 @@ export default {
 			}
 		},
 		checkAddress(current_addr) {
+			let accountAddWalletConnect = null
 			if (this.loginBy === WALLETCONNECT) {
 				const walletConnect =
 					window.localStorage.getItem('walletconnect')
 				const wc = JSON.parse(walletConnect)
-				current_addr = wc.accounts[0]
+				accountAddWalletConnect = wc.accounts[0]
 			}
-			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
-				return true
-			else return false
+			const currentAddress =
+				this.loginBy === WALLETCONNECT
+					? accountAddWalletConnect
+					: window.localStorage.getItem('addressMetamask')
+			return currentAddress
+				? currentAddress.toLowerCase() ===
+						this.wallet_addr.toLowerCase()
+				: true
 		},
 		onEnableStakeButton() {
 			if (!this.hadUnderstand) return false
@@ -700,7 +706,11 @@ export default {
 				this.fortmaticNetwork
 			)
 			try {
-				if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+				if (
+					this.loginBy === COINBASE ||
+					this.loginBy === BITSKI ||
+					this.loginBy === WALLETCONNECT
+				) {
 					const web3 = getWeb3(
 						this.loginBy,
 						this.networkRPC,
@@ -775,7 +785,11 @@ export default {
 				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
 			}
 			params = JSON.parse(JSON.stringify(params))
-			if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
+			if (
+				this.loginBy === COINBASE ||
+				this.loginBy === BITSKI ||
+				this.loginBy === WALLETCONNECT
+			) {
 				const web3 = getWeb3(
 					this.loginBy,
 					this.networkRPC,
