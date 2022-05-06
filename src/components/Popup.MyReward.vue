@@ -61,9 +61,19 @@ import { getContractConnect, getWeb3 } from '../features/Connectors'
 import ProxyABI from '@/abi/Proxy.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
-import { BITSKI, BSC_PROXY_ADDRESS, checkGasWithBalance, COINBASE, OUT_OF_GAS, WALLETCONNECT } from '../features/Common'
+import {
+	ADDRESS_METAMASK,
+	BITSKI,
+	BSC_PROXY_ADDRESS,
+	checkGasWithBalance,
+	COINBASE,
+	METAMASK,
+	OUT_OF_GAS,
+	WALLETCONNECT,
+} from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
+import { MSG_METAMASK_1 } from '../features/Messages'
 var gConfig = AppConfig()
 
 export default {
@@ -127,6 +137,16 @@ export default {
 		async claimRewards() {
 			this.mxShowLoading('inf')
 			const address = this.$store.state.userInfo.wallet_addr
+			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
+			if (
+				addressChange &&
+				addressChange !== address &&
+				this.loginBy === METAMASK
+			) {
+				this.mxCloseLoading()
+				this.mxShowToast(MSG_METAMASK_1)
+				return
+			}
 			const payload = {
 				address,
 				campaignId: this.data.poolDuration.id,
