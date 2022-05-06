@@ -884,8 +884,8 @@ export default {
 				.then((tx) => {
 					console.log('onUnStakeNfts', tx)
 					
-					this.callLandItemList()
 					setTimeout(() => {
+						this.callLandItemList()
 						this.mxCloseLoading()
 						this.onStakingSuccess(this.poolDuration.id)
 						this.mxCloseConfirmModal()
