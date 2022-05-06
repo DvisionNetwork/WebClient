@@ -372,6 +372,7 @@ export default {
 	onUnmounted() {
 		if (ethereum) {
 			ethereum.removeListener('chainChanged', this.handleChainChanged)
+			ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
 		}
 	},
 	computed: {

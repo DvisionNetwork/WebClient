@@ -70,10 +70,11 @@ import {
 	METAMASK,
 	OUT_OF_GAS,
 	WALLETCONNECT,
+	fromHexToChainId,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
-import { MSG_METAMASK_1 } from '../features/Messages'
+import { MSG_METAMASK_1, MSG_METAMASK_2 } from '../features/Messages'
 var gConfig = AppConfig()
 
 export default {
@@ -136,6 +137,17 @@ export default {
 		},
 		async claimRewards() {
 			this.mxShowLoading('inf')
+
+			const oldChainId = this.data.chainId
+			const network = window.localStorage.getItem('currentNetwork')
+			const currentChainId = fromHexToChainId(network)
+
+			if(oldChainId !== currentChainId) {
+				this.mxCloseLoading()
+				this.mxShowToast(MSG_METAMASK_2)
+				return	
+			}
+
 			const address = this.$store.state.userInfo.wallet_addr
 			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
 			if (
