@@ -142,7 +142,7 @@ import {
 	renderOnCheckItemUnStakeModalConfirmContent,
 } from '@/data/RenderContent.js'
 import moment from 'moment'
-import { checkGasWithBalance, LAND_CODE, OUT_OF_GAS } from '../features/Common'
+import { checkAddress, checkGasWithBalance, LAND_CODE, OUT_OF_GAS } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 const { ethereum } = window
 
@@ -241,11 +241,11 @@ export default {
 		this.setSearchQuery(1)
 	},
 	mounted() {
-		if (ethereum) {
-			ethereum.on('accountsChanged', (accounts) => {
-				this.current_addr = accounts[0]
-			})
-		}
+		// if (ethereum) {
+		// 	ethereum.on('accountsChanged', (accounts) => {
+		// 		this.current_addr = accounts[0]
+		// 	})
+		// }
 		this.listenToDropdown()
 		this.callLandItemList()
 	},
@@ -278,7 +278,6 @@ export default {
 		},
 		landItems() {
 			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
-			console.log('test123', this.mxGetLandItems())
 			return this.mxGetLandItems()
 		},
 		searchQuery() {
@@ -446,10 +445,12 @@ export default {
 				return false
 			}
 		},
-		checkAddress(current_addr) {
-			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
-				return true
-			else return false
+		checkAddress() {
+			const currentAddress =
+				window.localStorage.getItem('addressMetamask')
+			return (
+				currentAddress.toLowerCase() === this.wallet_addr.toLowerCase()
+			)
 		},
 		switchStatusCampain(status) {
 			if (this.statusCampain !== status) {
@@ -467,11 +468,11 @@ export default {
 			return sol
 		},
 		async handleUnlockAll() {
-			if (!this.checkAddress(this.current_addr)) {
-				this.mxShowToast(MSG_METAMASK_1)
-				this.mxCloseConfirmModal()
-				return
-			}
+			// if (!checkAddress(this.wallet_addr)) {
+			// 	this.mxShowToast(MSG_METAMASK_1)
+			// 	this.mxCloseConfirmModal()
+			// 	return
+			// }
 			if (!this.checkNetwork()) {
 				this.mxCloseConfirmModal()
 				return
@@ -833,7 +834,7 @@ export default {
 			this.mxShowConfirmModal(obj)
 		},
 		async onUnStakeNfts(params, unLockAll) {
-			if (!this.checkAddress(this.current_addr)) {
+			if (!checkAddress(this.wallet_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				this.mxCloseConfirmModal()
 				return
