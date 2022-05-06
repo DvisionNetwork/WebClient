@@ -210,6 +210,7 @@ import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Web3 from 'web3'
 import {
+  ADDRESS_METAMASK,
 	BITSKI,
 	FORTMATIC,
 	renderNetworkName,
@@ -278,7 +279,6 @@ export default {
 				balance: 0,
 				updated: true,
 			}
-
 			this.mxSetWallet(wlt)
 			this.$store.dispatch('setUserInfo', userInfo)
 		}
@@ -312,7 +312,7 @@ export default {
 
 		this.setDownloadUrl('WINDOWS')
 		this.setDownloadUrl('MAC')
-		this.setEthereumEvent()
+		// this.setEthereumEvent()
 
 		var landMenu = []
 		// set DVILand menu ID
@@ -842,7 +842,9 @@ export default {
 		},
 		handleAccountsChanged(accounts) {
 			const addr = this.$store.state.userInfo.wallet_addr
+			console.log('account changed', accounts, addr)
 			if (addr && accounts[0] !== addr) {
+				window.localStorage.setItem(ADDRESS_METAMASK, accounts)
 				this.mxShowToast(MSG_METAMASK_1)
 			}
 		}

@@ -139,6 +139,7 @@ export const BITSKI = 'BITSKI'
 export const DENIED_TRANSACTION = 'User rejected the transaction'
 export const USER_DECLINED = 'The user has declined this request'
 export const OUT_OF_GAS = `You don't have enough native coins to make this transaction.`
+export const ADDRESS_METAMASK = 'addressMetamask'
 
 export const REWARD_TABLE_1 = [
 	{
