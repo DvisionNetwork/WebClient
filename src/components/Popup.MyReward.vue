@@ -71,6 +71,7 @@ import {
 	OUT_OF_GAS,
 	WALLETCONNECT,
 	fromHexToChainId,
+	DENIED_TRANSACTION,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
@@ -204,15 +205,25 @@ export default {
 						return
 					}
 				}
+
 				contract.methods
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
 					.then((tx) => {
+						const url = `${gConfig.public_api_sotatek}/update-reward`
+						axios.put(url, { data })
+							.then((res) => {
+								console.log(res);
+								this.showPopupSuccess()
+							})
+							.catch((err) => {
+								console.log(err);
+							})
 						console.log('tx', tx)
-						this.showPopupSuccess()
 					})
 					.catch((e) => {
 						console.log('err', e)
+						this.mxShowToast(DENIED_TRANSACTION)
 					})
 					.finally(() => {
 						this.mxCloseLoading()
