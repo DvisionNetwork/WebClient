@@ -82,7 +82,7 @@
 							:tokenId="item.tokenId"
 							:item="item"
 						/>
-						<div v-if="landMenu.length === 0" class="no-lands">
+						<div v-if="landItemsInPopup.list.length === 0" class="no-lands">
 							No LANDs found.
 						</div>
 					</div>
@@ -990,6 +990,8 @@ export default {
 					top: 50%;
 					left: 50%;
 					transform: translate(-50%, -50%);
+					color: #f6583e;
+					font-size: gREm(15);
 				}
 			}
 			& .line {
