@@ -354,7 +354,7 @@ export default {
 @include media-max($media_small) {
 	.land-card {
 		width: 100%;
-		max-width: 100%;
+		max-width: 18rem;
 		margin-bottom: gREm(15);
 
 		.image {
