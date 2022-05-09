@@ -298,7 +298,7 @@ export default {
 			handler(id) {
 				this.handleClickItem(this.listLandCode[0])
 				this.getCampaignInfo(id)
-				// this.callLandItemList()
+				this.callLandItemList(id)
 				// this.onGetNftsStaked(id)
 				// this.getTotalMiningHashRate(id)
 				// this.getMyMiningHashRate(id)
@@ -683,9 +683,9 @@ export default {
 				console.log('catch', err)
 			}
 		},
-		callLandItemList() {
+		callLandItemList(id = 1) {
 			const network = window.localStorage.getItem('currentNetwork')
-			this.mxCallAndSetMyLandItemList(this.mapId, network, true)
+			this.mxCallAndSetMyLandItemList(this.mapId, network, true, id)
 		},
 		setLandItems(query) {
 			const dvLand = this.getDvLand
