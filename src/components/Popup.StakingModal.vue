@@ -397,8 +397,8 @@ export default {
 		handleClickItem(item) {
 			const obj = {
 				width: '712px',
-				title: 'Switch LAND?',
-				content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND. Proceed?',
+				title: 'Switch LAND area?',
+				content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
 				buttonTxt: 'Switch',
 				isShow: true,
 				onClick: () => this.handleConfirmClick(item)
