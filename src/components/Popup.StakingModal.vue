@@ -844,6 +844,7 @@ export default {
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)
 					}
+					this.mxCloseLoading()
 				})
 				.finally(() => {
 					// this.mxCloseLoading()
