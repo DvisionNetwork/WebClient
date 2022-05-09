@@ -253,7 +253,7 @@ export default {
 		// 	})
 		// }
 		this.listenToDropdown()
-		this.callLandItemList()
+		this.callLandItemList(1)
 	},
 	beforeUnmount() {
 		window.removeEventListener('click', this.checkStateDropdown)
