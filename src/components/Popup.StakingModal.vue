@@ -82,7 +82,10 @@
 							:tokenId="item.tokenId"
 							:item="item"
 						/>
-						<div v-if="landItemsInPopup.list.length === 0" class="no-lands">
+						<div
+							v-if="landItemsInPopup.list.length === 0"
+							class="no-lands"
+						>
 							No LANDs found.
 						</div>
 					</div>
@@ -392,9 +395,22 @@ export default {
 			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
 		},
 		handleClickItem(item) {
+			const obj = {
+				width: '712px',
+				title: 'Switch LAND?',
+				content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND. Proceed?',
+				buttonTxt: 'Switch',
+				isShow: true,
+				onClick: () => this.handleConfirmClick(item)
+			}
+			this.mxShowConfirmModal(obj)
+		},
+		handleConfirmClick(item) {
 			this.landCode = item.name
 			this.keyword = ''
+			this.listNfts721Check = []
 			this.setLandMapId(item.id)
+			this.mxCloseConfirmModal()
 		},
 		setLandMapId(mapId) {
 			const landQuery = this.mxGetLandQuery()
@@ -836,7 +852,7 @@ export default {
 					this.mxShowLoading()
 					setTimeout(() => {
 						this.onStakingSuccess()
-					}, 5000);
+					}, 5000)
 				})
 				.catch((e) => {
 					if (e.code === 4001) {
