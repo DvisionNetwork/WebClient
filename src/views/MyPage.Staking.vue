@@ -320,11 +320,11 @@ export default {
 			if (this.statusCampain !== 1) {
 				const campainId = this.poolDuration.id
 				// this.getCampaignInfo(campainId)
-				this.onGetNftsStaked(campainId)
-				this.getTotalMiningHashRate(campainId)
-				this.getMyMiningHashRate(campainId)
-				this.getTotalStaked(campainId)
-				this.getMyStaked(campainId)
+				// this.onGetNftsStaked(campainId)
+				// this.getTotalMiningHashRate(campainId)
+				// this.getMyMiningHashRate(campainId)
+				// this.getTotalStaked(campainId)
+				// this.getMyStaked(campainId)
 			}
 		},
 		mapId(newVal, oldVal) {
@@ -429,11 +429,11 @@ export default {
 			}
 			const id = this.poolDuration.id
 			this.getCampaignInfo(id)
-			this.onGetNftsStaked(id)
-			this.getTotalMiningHashRate(id)
-			this.getMyMiningHashRate(id)
-			this.getTotalStaked(id)
-			this.getMyStaked(id)
+			// this.onGetNftsStaked(id)
+			// this.getTotalMiningHashRate(id)
+			// this.getMyMiningHashRate(id)
+			// this.getTotalStaked(id)
+			// this.getMyStaked(id)
 		},
 		checkNetwork() {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
