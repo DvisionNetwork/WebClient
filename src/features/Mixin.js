@@ -478,7 +478,7 @@ var Mixin = {
 			})
 		},
 
-		mxCallAndSetMyLandItemList(mapId, network, isStake, func) {
+		mxCallAndSetMyLandItemList(mapId, network, isStake, campaignId, func) {
 			let landMenu = isStake
 				? this.mxGetLandMenu()
 				: this.mxGetLandMenuPopUp()
@@ -501,6 +501,7 @@ var Mixin = {
 					'wallet_addr',
 				]),
 				stake: isStake,
+				campaignId,
 			}
 			this.mxShowLoading()
 			_U.callPost({
