@@ -395,15 +395,19 @@ export default {
 			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
 		},
 		handleClickItem(item) {
-			const obj = {
-				width: '712px',
-				title: 'Switch LAND area?',
-				content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
-				buttonTxt: 'Switch',
-				isShow: true,
-				onClick: () => this.handleConfirmClick(item)
+			if (this.listNfts721Check.length > 0) {
+				const obj = {
+					width: '712px',
+					title: 'Switch LAND area?',
+					content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
+					buttonTxt: 'Switch',
+					isShow: true,
+					onClick: () => this.handleConfirmClick(item)
+				}
+				this.mxShowConfirmModal(obj)
+				return
 			}
-			this.mxShowConfirmModal(obj)
+			this.handleConfirmClick(item)
 		},
 		handleConfirmClick(item) {
 			this.landCode = item.name
