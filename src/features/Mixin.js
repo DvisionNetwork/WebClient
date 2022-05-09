@@ -503,10 +503,14 @@ var Mixin = {
 				stake: isStake,
 				campaignId,
 			}
+			const cloneQuery = { ...query }
+			if (!isStake) {
+				delete cloneQuery.campaignId
+			}
 			this.mxShowLoading()
 			_U.callPost({
 				url: gConfig.market_land_with_owner,
-				data: query,
+				data: cloneQuery,
 				callback: (resp) => {
 					const rows = _U.getIfDefined(resp, ['data', 'rows'])
 					// let midx = 0
