@@ -392,6 +392,7 @@ export default {
 		},
 		callLandItemList() {
 			const network = window.localStorage.getItem('currentNetwork')
+			this.landItemsInPopup.list = []
 			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
 		},
 		handleClickItem(item) {
