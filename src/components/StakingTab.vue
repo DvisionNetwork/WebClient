@@ -1,8 +1,6 @@
 <template>
 	<div v-if="!isMobile" class="tab-wrap">
-		<div class="tab-heading active">
-			Campaigns
-		</div>
+		<div class="tab-heading active">Campaigns</div>
 		<div class="tab-menu">
 			<div
 				class="tab"
@@ -26,15 +24,18 @@
 				180-day pool
 			</div>
 		</div>
-		<div class="tab-heading">
-			My NFTs
-		</div>
+		<div class="tab-heading">My NFTs</div>
 	</div>
 	<div v-else class="tab-wrap">
 		<div class="select-wrap">
 			<div class="tab-campain">
 				<div class="tab-heading active" @click="showDropdown">
 					Campaigns
+					<img
+						id="arrow"
+						class="ic-filter"
+						src="../assets/img/ic-arrow-down.svg"
+					/>
 				</div>
 				<div v-if="isShowDropdown" id="list">
 					<div
@@ -61,9 +62,7 @@
 				</div>
 			</div>
 			<div class="tab-nft">
-				<div class="tab-heading active">
-					My NFTs
-				</div>
+				<div class="tab-heading active">My NFTs</div>
 			</div>
 		</div>
 	</div>
@@ -84,7 +83,7 @@ export default {
 			isMobile: false,
 			listId: [
 				{
-					id: 1,	
+					id: 1,
 					name: '30-day pool',
 				},
 				{
@@ -96,19 +95,20 @@ export default {
 					name: '180-day pool',
 				},
 			],
-			isShowDropdown: false
+			isShowDropdown: false,
 		}
 	},
 	mounted() {
 		this.checkMobile()
 		window.addEventListener('mousedown', this.closeList)
 	},
-	beforeDestroy() {
-		 window.removeEventListener('mousedown', this.closeList)
+	beforeUnmount() {
+		window.removeEventListener('mousedown', this.closeList)
 	},
 	methods: {
-		setPoolDuration: function (value) {
-			this.poolDuration.id = +value;
+		setPoolDuration(value) {
+			this.$emit('updatePoolId', value)
+			// this.poolDuration.id = +value
 		},
 		checkMobile() {
 			this.isMobile = window.matchMedia('(max-width: 768px)').matches
@@ -117,14 +117,14 @@ export default {
 			this.isShowDropdown = !this.isShowDropdown
 		},
 		closeList(e) {
-			if(this.isShowDropdown && !e.target.closest('#list')) {
+			if (this.isShowDropdown && !e.target.closest('#list')) {
 				this.isShowDropdown = false
 			}
 		},
 		setPool(id) {
 			this.setPoolDuration(id)
 			this.isShowDropdown = false
-		}
+		},
 	},
 }
 </script>
@@ -139,6 +139,8 @@ export default {
 		margin-bottom: gREm(4);
 		padding: gREm(11) gREm(20);
 		font-weight: bold;
+		display: flex;
+		align-items: center;
 		&.active {
 			background: #2a2932;
 		}
@@ -161,15 +163,15 @@ export default {
 			}
 			&::before {
 				position: absolute;
-				content: "";
+				content: '';
 				width: 4px;
 				height: 42px;
 				left: -4px;
 				top: 0px;
-				background: #2A2932;
+				background: #2a2932;
 			}
 			&.active::before {
-				background: #F6583E;
+				background: #f6583e;
 			}
 		}
 		& .tab + .tab {
@@ -181,7 +183,7 @@ export default {
 @include media-max($media_small) {
 	.tab-wrap {
 		width: initial;
-		max-width: initial;	
+		max-width: initial;
 	}
 	.select-wrap {
 		display: flex;
@@ -215,7 +217,7 @@ export default {
 
 					&::before {
 						position: absolute;
-						content: "";
+						content: '';
 						width: 3px;
 						height: 100%;
 						left: 0px;
@@ -223,7 +225,7 @@ export default {
 						background: transparent;
 					}
 					&.active::before {
-						background: #F6583E;
+						background: #f6583e;
 					}
 				}
 			}

@@ -61,6 +61,7 @@ var Mixin = {
 				clearTimeout(lv_LoadingTimer)
 				lv_LoadingTimer = null
 			}
+			console.log('close spinning')
 			this.$store.dispatch('showLoading', false)
 		},
 		// J = msg,btn,callback
