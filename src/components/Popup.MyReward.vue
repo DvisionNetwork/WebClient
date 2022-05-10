@@ -418,6 +418,8 @@ export default {
 			}
 
 			.btn-wrapper {
+				display: flex;
+				justify-content: end;
 				margin-top: gREm(24);
 				text-align: right;
 				.btn {
@@ -459,6 +461,17 @@ export default {
 				line-height: gREm(19);
 				font-weight: 800;
 				margin-bottom: gREm(30);
+			}
+		}
+	}
+}
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				.btn-wrapper {
+					justify-content: center;
+				}
 			}
 		}
 	}
