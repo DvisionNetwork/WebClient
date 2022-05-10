@@ -210,7 +210,7 @@ export default {
 					.then((tx) => {
 						const url = `${gConfig.public_api_sotatek}/update-reward`
 						axios
-							.put(url, { data })
+							.put(url, { data, dataReward: this.dataReward })
 							.then((res) => {
 								console.log(res)
 								this.showPopupSuccess()
