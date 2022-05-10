@@ -1,6 +1,6 @@
 <template>
 	<div class="my-staked-land">
-		<StakingTab :poolDuration="poolDuration" />
+		<StakingTab :poolDuration="poolDuration" @updatePoolId="updateIdPool" />
 		<div class="contents">
 			<h2 class="title" v-if="poolDuration.id === 1">
 				Campaign status (30-day pool)
@@ -22,7 +22,7 @@
 			<div class="staked-land">
 				<div class="left-title">
 					<h2>Staked LANDs</h2>
-					<div class="dropdown-wrapper">
+					<div class="dropdown-wrapper remove-highlight">
 						<span class="child" id="name-land">
 							<!-- <span v-if="isErc1155">ERC-1155</span>
 								<span v-else>ERC-721</span> -->
@@ -52,7 +52,7 @@
 				</div>
 				<div
 					v-if="statusCampain !== 3"
-					class="unlock-lands"
+					class="unlock-lands remove-highlight"
 					:class="{ active: landItems?.list?.length > 0 }"
 					@click="handleUnlockAll"
 				>
@@ -279,7 +279,6 @@ export default {
 			} else {
 				mapId = this.mxGetLandDefaultMapId()
 			}
-			console.log('mapId in staking', mapId)
 			return mapId
 		},
 		landItems() {
@@ -317,9 +316,10 @@ export default {
 			this.visible = !!state
 		},
 		statusCampain() {
+			console.log('this.pool', this.poolDuration)
 			if (this.statusCampain !== 1) {
 				const campainId = this.poolDuration.id
-				// this.getCampaignInfo(campainId)
+				this.getCampaignInfo(campainId)
 				// this.onGetNftsStaked(campainId)
 				// this.getTotalMiningHashRate(campainId)
 				// this.getMyMiningHashRate(campainId)
@@ -352,6 +352,9 @@ export default {
 	},
 
 	methods: {
+		updateIdPool(id) {
+			this.poolDuration.id = id
+		},
 		setSearchQuery(page) {
 			if (!page || page == 0) page = 1
 
@@ -631,6 +634,8 @@ export default {
 					this.staking_address,
 					this.networkRPC,
 					this.fortmaticNetwork
+						? this.fortmaticNetwork
+						: this.current_network
 				)
 				// const isAllow = await contractConn.methods
 				// 	.allowWithdrawAll()
@@ -639,6 +644,7 @@ export default {
 				const data = await contractConn.methods
 					.campaignInfo(campainId)
 					.call()
+				console.log('data', data)
 				if (data) {
 					this.poolDuration.duration = Number(data.duration)
 					// let resultNumber = BigNumber.from(data.rewardRate).mul(
@@ -685,7 +691,12 @@ export default {
 		},
 		callLandItemList(id = 1) {
 			const network = window.localStorage.getItem('currentNetwork')
-			this.mxCallAndSetMyLandItemList(this.mapId, network, true, id)
+			this.mxCallAndSetMyLandItemList(
+				this.mapId,
+				network,
+				true,
+				this.poolDuration.id ? this.poolDuration.id : id
+			)
 		},
 		setLandItems(query) {
 			const dvLand = this.getDvLand
@@ -898,7 +909,7 @@ export default {
 						} else {
 							this.onUnStakeNftsSuccess()
 						}
-					}, 5000);
+					}, 5000)
 				})
 				.catch((e) => {
 					console.log('e', e)

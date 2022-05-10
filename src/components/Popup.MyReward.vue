@@ -352,6 +352,7 @@ export default {
 			position: absolute;
 			width: 100%;
 			max-height: 100vh;
+			height: 100vh;
 			// overflow-y: auto;
 			max-width: gREm(939);
 
@@ -422,6 +423,15 @@ export default {
 				justify-content: end;
 				margin-top: gREm(24);
 				text-align: right;
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: #000;
+				padding: gREm(15) gREm(28);
 				.btn {
 					color: #f6583e;
 					border: 1px solid #f6583e;
@@ -432,6 +442,7 @@ export default {
 					font-family: $AppFont;
 					font-size: gREm(16);
 					line-height: gREm(29.63);
+					max-width: gREm(150);
 				}
 
 				.btn-primary {
