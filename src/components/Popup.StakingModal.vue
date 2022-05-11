@@ -199,6 +199,14 @@ export default {
 					name: 'Tokyo',
 					id: 'tokyo',
 				},
+				{
+					name: 'Berlin',
+					id: 'berlin',
+				},
+				{
+					name: 'São Paulo',
+					id: 'saopaulo',
+				},
 			],
 			currentOrder: { name: 'land_ct_all', ct: 'all' },
 		}
