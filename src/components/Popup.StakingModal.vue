@@ -158,6 +158,7 @@ import {
 import LandCard from '@/components/LandCard.vue'
 import { BITSKI, checkGasWithBalance, OUT_OF_GAS } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
+import { _api_domain } from '../App.Config'
 const { ethereum } = window
 export default {
 	components: {
@@ -489,7 +490,7 @@ export default {
 		// 		//cal API
 		// 		const search = is_ERC1155 ? '1155' : '721'
 		// 		const response = await axios.get(
-		// 			`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+		// 			`${_api_domain}/search_bep_${search}?token_id=${nft_id}`
 		// 		)
 		// 		if (response.status === 200) {
 		// 			nft.name = response.data.name
@@ -637,7 +638,7 @@ export default {
 				chainId: this.data.chainId,
 			}
 			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-owner`,
+				`${_api_domain || gConfig.public_api_sotatek}/nft-owner`,
 				{ params }
 			)
 			if (response?.status === 200) {
