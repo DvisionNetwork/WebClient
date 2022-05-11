@@ -638,7 +638,7 @@ export default {
 				chainId: this.data.chainId,
 			}
 			const response = await axios.get(
-				`${AppConfig.isProd ? _api_domain : AppConfig.public_api_sotatek}/nft-owner`,
+				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-owner`,
 				{ params }
 			)
 			if (response?.status === 200) {
