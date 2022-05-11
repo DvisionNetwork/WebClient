@@ -575,7 +575,7 @@ export default {
 					chainId: this.chainId,
 				}
 				const response = await axios.get(
-					`${_api_domain || gConfig.public_api_sotatek}/nft-total-staked`,
+					`${AppConfig.isProd ? _api_domain : AppConfig.public_api_sotatek}/nft-total-staked`,
 					{ params }
 				)
 				if (response.status === 200 && response.data.total_staked) {
@@ -595,7 +595,7 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${_api_domain || gConfig.public_api_sotatek}/nft-my-staked`,
+				`${AppConfig.isProd ? _api_domain : AppConfig.public_api_sotatek}/nft-my-staked`,
 				{ params }
 			)
 			if (response.status === 200 && response.data.totalStaked) {
@@ -770,7 +770,7 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${_api_domain || gConfig.public_api_sotatek}/nft-staked`,
+				`${AppConfig.isProd ? _api_domain : AppConfig.public_api_sotatek}/nft-staked`,
 				{ params }
 			)
 			if (response?.status === 200) {
