@@ -219,6 +219,14 @@ export default {
 					name: 'Tokyo',
 					id: 'tokyo',
 				},
+				{
+					name: 'Berlin',
+					id: 'berlin',
+				},
+				{
+					name: 'São Paulo',
+					id: 'saopaulo',
+				},
 			],
 			visible: false,
 			// landItems: {},
