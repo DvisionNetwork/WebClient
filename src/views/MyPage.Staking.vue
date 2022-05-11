@@ -150,6 +150,7 @@ import {
 	OUT_OF_GAS,
 } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
+import { _api_domain } from '../App.Config'
 const { ethereum } = window
 
 export default {
@@ -574,7 +575,7 @@ export default {
 					chainId: this.chainId,
 				}
 				const response = await axios.get(
-					`${gConfig.public_api_sotatek}/nft-total-staked`,
+					`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-total-staked`,
 					{ params }
 				)
 				if (response.status === 200 && response.data.total_staked) {
@@ -594,7 +595,7 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-my-staked`,
+				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-my-staked`,
 				{ params }
 			)
 			if (response.status === 200 && response.data.totalStaked) {
@@ -769,7 +770,7 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-staked`,
+				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-staked`,
 				{ params }
 			)
 			if (response?.status === 200) {
@@ -785,7 +786,7 @@ export default {
 		// 		//cal API
 		// 		const search = is_ERC1155 ? '1155' : '721'
 		// 		const response = await axios.get(
-		// 			`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+		// 			`${_api_domain}/search_bep_${search}?token_id=${nft_id}`
 		// 		)
 		// 		if (response.status === 200) {
 		// 			nft.name = response.data.name

@@ -1,6 +1,6 @@
 // https://www.multiverse.so/m/api/cert_sms_ex
 
-var _api_domain = 'https://www.multiverse.so/m/api'
+export var _api_domain = 'https://www.multiverse.so/m/api'
 function getApiUrl(name) {
 	return _api_domain + '/' + name
 }

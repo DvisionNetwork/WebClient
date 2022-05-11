@@ -9,16 +9,7 @@
 						:key="idx"
 					>
 						<div class="image">
-							<img
-								v-if="item.imageUrl"
-								:src="item.imageUrl"
-								:alt="item.name"
-							/>
-							<img
-								v-else
-								src="../assets/img/default.png"
-								:alt="item.name"
-							/>
+							<img :src="imgArr[item.boxType]" :alt="item.name" />
 						</div>
 						<div class="card-title">
 							{{ getName(item.boxType) }}
@@ -56,6 +47,18 @@ export default {
 	data() {
 		return {
 			isOnGoing: true,
+			imgArr: [
+				'',
+				'/randomBox/landbox_1.png',
+				'/randomBox/landbox_2.png',
+				'/randomBox/landbox_3.png',
+				'/randomBox/landbox_4.png',
+				'/randomBox/landbox_5.png',
+				'/randomBox/landbox_6.png',
+				'/randomBox/landbox_7.png',
+				'/randomBox/buildingbox_1.png',
+				'/randomBox/buildingbox_2.png',
+			],
 		}
 	},
 	props: {

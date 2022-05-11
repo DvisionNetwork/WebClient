@@ -79,6 +79,7 @@ import {
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
 import { MSG_METAMASK_1, MSG_METAMASK_2 } from '../features/Messages'
+import { _api_domain } from '../App.Config'
 var gConfig = AppConfig()
 
 export default {
@@ -170,7 +171,7 @@ export default {
 				chainId: this.data.chainId,
 				currentTime: Date.now(),
 			}
-			const url = `${gConfig.public_api_sotatek}/claim-reward`
+			const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/claim-reward`
 			const data = jwt.sign(payload, gConfig.privateKeyEncode)
 
 			const res = await axios.put(url, { data })
@@ -214,7 +215,7 @@ export default {
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
 					.then((tx) => {
-						const url = `${gConfig.public_api_sotatek}/update-reward`
+						const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/update-reward`
 						axios
 							.put(url, { data, dataReward: this.dataReward })
 							.then((res) => {
@@ -242,7 +243,7 @@ export default {
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
 			const res = await axios(
-				`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
 			this.listReward = res.data.NftCampaignArr
 		},
@@ -282,7 +283,7 @@ export default {
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
 			const res = await axios(
-				`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
 			this.listOngoing = res.data
 		},
