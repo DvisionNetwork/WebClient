@@ -29,7 +29,7 @@
 							<span class="child" id="name-land">
 								<!-- <span v-if="isErc1155">ERC-1155</span>
 								<span v-else>ERC-721</span> -->
-								{{ landCode }}
+								{{ landCodeName }}
 								<img
 									id="arrow"
 									class="ic-filter"
@@ -241,7 +241,7 @@ export default {
 		// this.onGetNftowner(this.isErc1155)
 		this.checkDropdown()
 		// this.popType = authInfo.type;
-		this.setLandMapId(this.listLandCode[0].id)
+		// this.setLandMapId(this.listLandCode[0].id)
 		this.callLandItemList()
 	},
 	beforeUnmount() {
@@ -261,8 +261,6 @@ export default {
 		mapId() {
 			let mapId = null
 			const landQuery = this.mxGetLandQuery()
-			console.log('landQuery in popup', landQuery)
-			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
 			if (landQuery) {
 				mapId = landQuery.mapId
 			} else {
@@ -276,6 +274,9 @@ export default {
 		},
 		searchQuery() {
 			return this.mxGetLandQuery()
+		},
+		landCodeName() {
+			return this.listLandCode.find((ele) => ele.id === this.mapId).name
 		},
 	},
 	props: {
@@ -310,7 +311,7 @@ export default {
 		mapId(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
 			var landQuery = this.mxGetLandQuery()
-			console.log('landQuery', landQuery)
+			console.log('landQuery in watch', landQuery)
 			landQuery.page = 1
 			landQuery.search = ''
 			this.search = ''
@@ -408,10 +409,11 @@ export default {
 				const obj = {
 					width: '712px',
 					title: 'Switch LAND area?',
-					content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
+					content:
+						'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
 					buttonTxt: 'Switch',
 					isShow: true,
-					onClick: () => this.handleConfirmClick(item)
+					onClick: () => this.handleConfirmClick(item),
 				}
 				this.mxShowConfirmModal(obj)
 				return
