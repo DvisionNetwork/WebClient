@@ -29,7 +29,7 @@
 							<span class="child" id="name-land">
 								<!-- <span v-if="isErc1155">ERC-1155</span>
 								<span v-else>ERC-721</span> -->
-								{{ landCode }}
+								{{ landCodeName }}
 								<img
 									id="arrow"
 									class="ic-filter"
@@ -242,7 +242,7 @@ export default {
 		// this.onGetNftowner(this.isErc1155)
 		this.checkDropdown()
 		// this.popType = authInfo.type;
-		this.setLandMapId(this.listLandCode[0].id)
+		// this.setLandMapId(this.listLandCode[0].id)
 		this.callLandItemList()
 	},
 	beforeUnmount() {
@@ -253,7 +253,6 @@ export default {
 			return this.mxGetUserInfo()
 		},
 		getDvLand() {
-			console.log('map iddddd', this.mapId)
 			return this.mxGetLandMap(this.mapId, true)
 		},
 		landMenu() {
@@ -262,8 +261,6 @@ export default {
 		mapId() {
 			let mapId = null
 			const landQuery = this.mxGetLandQuery()
-			console.log('landQuery in popup', landQuery)
-			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
 			if (landQuery) {
 				mapId = landQuery.mapId
 			} else {
@@ -272,11 +269,13 @@ export default {
 			return mapId
 		},
 		landItemsInPopup() {
-			console.log('arrays', this.mxGetLandItemsInPopupStaking())
 			return this.mxGetLandItemsInPopupStaking()
 		},
 		searchQuery() {
 			return this.mxGetLandQuery()
+		},
+		landCodeName() {
+			return this.listLandCode.find((ele) => ele.id === this.mapId).name
 		},
 	},
 	props: {
@@ -311,7 +310,6 @@ export default {
 		mapId(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
 			var landQuery = this.mxGetLandQuery()
-			console.log('landQuery', landQuery)
 			landQuery.page = 1
 			landQuery.search = ''
 			this.search = ''
@@ -328,7 +326,6 @@ export default {
 			let landType = this.tab_page == 'land-list' ? 'list' : 'map'
 			let mapId = this.mapId
 			const landQuery = this.mxGetLandQuery()
-			console.log('in set search query', landQuery)
 			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
 			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
 
@@ -341,7 +338,6 @@ export default {
 				for_sale: this.landSwitchForsale,
 				order: this.currentOrder,
 			}
-			console.log('query', query)
 
 			this.mxSetLandQuery(query)
 		},
@@ -409,10 +405,11 @@ export default {
 				const obj = {
 					width: '712px',
 					title: 'Switch LAND area?',
-					content: 'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
+					content:
+						'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
 					buttonTxt: 'Switch',
 					isShow: true,
-					onClick: () => this.handleConfirmClick(item)
+					onClick: () => this.handleConfirmClick(item),
 				}
 				this.mxShowConfirmModal(obj)
 				return

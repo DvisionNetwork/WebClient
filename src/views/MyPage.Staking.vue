@@ -26,7 +26,7 @@
 						<span class="child" id="name-land">
 							<!-- <span v-if="isErc1155">ERC-1155</span>
 								<span v-else>ERC-721</span> -->
-							{{ landCode }}
+							{{ landCodeName }}
 							<img
 								id="arrow"
 								class="ic-filter"
@@ -300,6 +300,9 @@ export default {
 		wallet_addr() {
 			return this.$store?.state?.userInfo?.wallet_addr
 		},
+		landCodeName() {
+			return this.listLandCode.find((ele) => ele.id === this.mapId).name
+		},
 	},
 	watch: {
 		'poolDuration.id': {
@@ -325,7 +328,6 @@ export default {
 			this.visible = !!state
 		},
 		statusCampain() {
-			console.log('this.pool', this.poolDuration)
 			if (this.statusCampain !== 1) {
 				const campainId = this.poolDuration.id
 				this.getCampaignInfo(campainId)
@@ -337,17 +339,14 @@ export default {
 			}
 		},
 		mapId(newVal, oldVal) {
-			if (!this.visible) {
-				console.log('in mapIddddddd staking')
-				const landQuery = this.mxGetLandQuery()
-				landQuery.page = 1
-				landQuery.search = ''
-				this.search = ''
-				const o = _U.Q('.search-box .text-input')
-				if (o) o.value = ''
-				this.mxSetLandQuery(landQuery)
-				this.callLandItemList()
-			}
+			const landQuery = this.mxGetLandQuery()
+			landQuery.page = 1
+			landQuery.search = ''
+			this.search = ''
+			const o = _U.Q('.search-box .text-input')
+			if (o) o.value = ''
+			this.mxSetLandQuery(landQuery)
+			this.callLandItemList()
 		},
 		searchQuery(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
