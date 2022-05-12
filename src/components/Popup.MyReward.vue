@@ -75,10 +75,11 @@ import {
 	WALLETCONNECT,
 	fromHexToChainId,
 	DENIED_TRANSACTION,
+  	USER_DECLINED,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
-import { MSG_METAMASK_1, MSG_METAMASK_2 } from '../features/Messages'
+import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_5 } from '../features/Messages'
 import { _api_domain } from '../App.Config'
 var gConfig = AppConfig()
 
@@ -215,21 +216,24 @@ export default {
 					.execTransaction(res.data.data, res.data.signature)
 					.send({ from: address })
 					.then((tx) => {
-						const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/update-reward`
-						axios
-							.put(url, { data, dataReward: this.dataReward })
-							.then((res) => {
-								console.log(res)
-								this.showPopupSuccess()
-							})
-							.catch((err) => {
-								console.log(err)
-							})
+						this.showPopupSuccess()
 						console.log('tx', tx)
 					})
 					.catch((e) => {
 						console.log('err', e)
-						this.mxShowToast(DENIED_TRANSACTION)
+						if (
+							e.message.includes('104') &&
+							e.message.includes(USER_DECLINED)
+						) {
+							this.mxShowToast(USER_DECLINED)
+						} else if (
+							e.code === 4001 ||
+							e.message === DENIED_TRANSACTION
+						) {
+							this.mxShowToast(DENIED_TRANSACTION)
+						} else {
+							this.mxShowToast(MSG_METAMASK_5)
+						}
 					})
 					.finally(() => {
 						this.mxCloseLoading()

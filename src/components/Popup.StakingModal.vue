@@ -153,10 +153,10 @@ import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
-	MSG_METAMASK_4,
+	MSG_METAMASK_3,
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
-import { BITSKI, checkGasWithBalance, OUT_OF_GAS } from '../features/Common'
+import { BITSKI, checkGasWithBalance, DENIED_TRANSACTION, OUT_OF_GAS } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 import { _api_domain } from '../App.Config'
 const { ethereum } = window
@@ -866,10 +866,24 @@ export default {
 					}, 5000)
 				})
 				.catch((e) => {
-					if (e.code === 4001) {
-						this.mxShowToast(e.message)
+					// if (e.code === 4001) {
+					// 	this.mxShowToast(e.message)
+					// } else {
+					// 	this.mxShowToast(MSG_METAMASK_3)
+					// }					
+
+					if (
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
+					) {
+						this.mxShowToast(USER_DECLINED)
+					} else if (
+						e.code === 4001 ||
+						e.message === DENIED_TRANSACTION
+					) {
+						this.mxShowToast(DENIED_TRANSACTION)
 					} else {
-						this.mxShowToast(MSG_METAMASK_4)
+						this.mxShowToast(MSG_METAMASK_3)
 					}
 					this.mxCloseLoading()
 				})
