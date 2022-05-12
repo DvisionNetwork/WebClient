@@ -146,6 +146,7 @@ import moment from 'moment'
 import {
 	checkAddress,
 	checkGasWithBalance,
+	fromHexToChainId,
 	LAND_CODE,
 	OUT_OF_GAS,
 } from '../features/Common'
@@ -336,6 +337,9 @@ export default {
 				// this.getMyMiningHashRate(campainId)
 				// this.getTotalStaked(campainId)
 				// this.getMyStaked(campainId)
+			}
+			if(this.$store.state.showMyReward.isShow) {
+				this.updateStatusPopupReward()	
 			}
 		},
 		mapId(newVal, oldVal) {
@@ -931,13 +935,24 @@ export default {
 						e.code === 4001 ||
 						e.message === DENIED_TRANSACTION
 					) {
-						this.mxShowToast(e.message)
+						this.mxShowToast(DENIED_TRANSACTION)
 					} else {
 						this.mxShowToast(MSG_METAMASK_4)
 					}
 					this.mxCloseConfirmModal()
 				})
 		},
+		updateStatusPopupReward () {
+			const network = this.current_network
+			const chainId = fromHexToChainId(network)
+			const obj = {
+				isShow: true,
+				poolDuration: this.poolDuration,
+				chainId,
+				statusCampain: this.statusCampain
+			}
+			this.mxShowMyRewardModal(obj)
+		}
 	},
 }
 </script>
