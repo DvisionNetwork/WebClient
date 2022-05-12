@@ -327,7 +327,6 @@ export default {
 			this.visible = !!state
 		},
 		statusCampain() {
-			console.log('this.pool', this.poolDuration)
 			if (this.statusCampain !== 1) {
 				const campainId = this.poolDuration.id
 				this.getCampaignInfo(campainId)
@@ -339,7 +338,6 @@ export default {
 			}
 		},
 		mapId(newVal, oldVal) {
-			console.log('in mapIddddddd staking')
 			const landQuery = this.mxGetLandQuery()
 			landQuery.page = 1
 			landQuery.search = ''

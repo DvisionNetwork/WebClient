@@ -252,7 +252,6 @@ export default {
 			return this.mxGetUserInfo()
 		},
 		getDvLand() {
-			console.log('map iddddd', this.mapId)
 			return this.mxGetLandMap(this.mapId, true)
 		},
 		landMenu() {
@@ -269,7 +268,6 @@ export default {
 			return mapId
 		},
 		landItemsInPopup() {
-			console.log('arrays', this.mxGetLandItemsInPopupStaking())
 			return this.mxGetLandItemsInPopupStaking()
 		},
 		searchQuery() {
@@ -311,7 +309,6 @@ export default {
 		mapId(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
 			var landQuery = this.mxGetLandQuery()
-			console.log('landQuery in watch', landQuery)
 			landQuery.page = 1
 			landQuery.search = ''
 			this.search = ''
@@ -328,7 +325,6 @@ export default {
 			let landType = this.tab_page == 'land-list' ? 'list' : 'map'
 			let mapId = this.mapId
 			const landQuery = this.mxGetLandQuery()
-			console.log('in set search query', landQuery)
 			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
 			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
 
@@ -341,7 +337,6 @@ export default {
 				for_sale: this.landSwitchForsale,
 				order: this.currentOrder,
 			}
-			console.log('query', query)
 
 			this.mxSetLandQuery(query)
 		},
