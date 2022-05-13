@@ -1,5 +1,7 @@
 <template>
-	<span v-if="statusCampain === 1" class="wrap-status">The campaign has not started yet.</span>
+	<span v-if="statusCampain === 1" class="wrap-status"
+		>The campaign has not started yet.</span
+	>
 	<span v-if="statusCampain === 2" class="wrap-status"
 		>The campaign will start in:
 		<span class="status yellow"
@@ -141,7 +143,7 @@ export default {
 			color: #f6583e;
 		}
 		&.yellow {
-			color: #FFD041;
+			color: #ffd041;
 		}
 	}
 }
