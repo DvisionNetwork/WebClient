@@ -1,4 +1,4 @@
-import { MSG_METAMASK_3 } from './Messages'
+import AppConfig from '../App.Config'
 export const INFURA_ID = '14ff3a7ed1484486aac3e5573bcae20d'
 export const DEFAULT_ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${INFURA_ID}`
 
@@ -102,18 +102,17 @@ export function renderNetworkName(chainId) {
 	return network
 }
 
-export const BSC_STAKING_ADDRESS = '0xCdb37c98691afDbF27D0cea390e5cBD0D1F9CB69'
+export const BSC_STAKING_ADDRESS = '0x4b437fd847Ac1b248eA419c13e62f08dC435A388'
 export const ETH_STAKING_ADDRESS = '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc'
 export const MATIC_STAKING_ADDRESS =
-	'0x1B20cA105A99CBb3A5FC112BebDD56fCE5d08A78'
+	'0xAE03C288f920703eba835C94763A93E8EA53c2C9'
 export const BSC_RPC_ENDPOINT =
 	'https://data-seed-prebsc-1-s1.binance.org:8545/'
 export const ETH_RPC_ENDPOINT =
 	'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 export const MATIC_RPC_ENDPOINT = 'https://rpc-mumbai.maticvigil.com/'
 
-export const BSC_RPC_ENDPOINT_PROD =
-	'https://bsc-dataseed.binance.org/'
+export const BSC_RPC_ENDPOINT_PROD = 'https://bsc-dataseed.binance.org/'
 export const ETH_RPC_ENDPOINT_PROD =
 	'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 export const MATIC_RPC_ENDPOINT_PROD = 'https://polygon-rpc.com/'
@@ -239,6 +238,44 @@ export const LAND_CODE = {
 	TOKYO: 'Tokyo',
 }
 
+export const TYPE_ADDRESS_CONTRACT = {
+	NORMAL: 'normal',
+	ADDRESS_3_LAND: '3rd',
+}
+
+export const listLandCode = [
+	{
+		name: 'SeoulA',
+		id: 'gangnam',
+		type: 'normal',
+	},
+	{
+		name: 'Newyork',
+		id: 'newyork',
+		type: 'normal',
+	},
+	{
+		name: 'London',
+		id: 'london',
+		type: 'normal',
+	},
+	{
+		name: 'Tokyo',
+		id: 'tokyo',
+		type: 'normal',
+	},
+	{
+		name: 'Berlin',
+		id: 'berlin',
+		type: '3rd',
+	},
+	{
+		name: 'São Paulo',
+		id: 'saopaulo',
+		type: '3rd',
+	},
+]
+
 export async function checkGasWithBalance(web3, gasNumber, currentAccount) {
 	const priceOfGas = await web3.eth.getGasPrice()
 	const balance = await web3.eth.getBalance(currentAccount)
@@ -252,4 +289,20 @@ export function checkAddress(walletAddress) {
 	return currentAddress
 		? currentAddress.toLowerCase() === walletAddress.toLowerCase()
 		: true
+}
+
+export const renderContractAdd = (type, network) => {
+	const wlt = { ...AppConfig().wlt }
+	const arrAddress = []
+	for (const key in wlt) {
+		arrAddress.push(wlt[key])
+	}
+	console.log('arr', arrAddress, type, network)
+	console.log(
+		'in renderContract',
+		arrAddress.find((ele) => ele.type === type && ele.Network === network)
+	)
+	return arrAddress.find(
+		(ele) => ele.type === type && ele.Network === network
+	)
 }
