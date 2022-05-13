@@ -248,31 +248,37 @@ export const listLandCode = [
 		name: 'SeoulA',
 		id: 'gangnam',
 		type: 'normal',
+		network: 'BSC',
 	},
 	{
 		name: 'Newyork',
 		id: 'newyork',
 		type: 'normal',
+		network: 'BSC',
 	},
 	{
 		name: 'London',
 		id: 'london',
 		type: 'normal',
+		network: 'POL',
 	},
 	{
 		name: 'Tokyo',
 		id: 'tokyo',
 		type: 'normal',
+		network: 'POL',
 	},
 	{
 		name: 'Berlin',
 		id: 'berlin',
 		type: '3rd',
+		network: 'BSC',
 	},
 	{
 		name: 'São Paulo',
 		id: 'saopaulo',
 		type: '3rd',
+		network: 'POL',
 	},
 ]
 
@@ -297,11 +303,6 @@ export const renderContractAdd = (type, network) => {
 	for (const key in wlt) {
 		arrAddress.push(wlt[key])
 	}
-	console.log('arr', arrAddress, type, network)
-	console.log(
-		'in renderContract',
-		arrAddress.find((ele) => ele.type === type && ele.Network === network)
-	)
 	return arrAddress.find(
 		(ele) => ele.type === type && ele.Network === network
 	)

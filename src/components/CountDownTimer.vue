@@ -31,8 +31,6 @@ export default {
 			mins: '00',
 			secs: '00',
 			interval_1: null,
-			interval_2: null,
-			interval_3: null,
 		}
 	},
 	props: {
@@ -48,81 +46,71 @@ export default {
 	watch: {
 		'timeCount.endValue': {
 			handler() {
-				const startValue = this.timeCount.startValue
-				const endValue = this.timeCount.endValue
+				console.log('in timecount')
+				const { startValue, endValue } = this.timeCount
 				this.startTime = moment(startValue * 1000).format()
 				this.endTime = moment(endValue * 1000).format()
-				if (this.poolDuration.id === 1) {
-					this.startInterVal_1(startValue, endValue)
-				}
-				if (this.poolDuration.id === 2) {
-					this.startInterVal_2(startValue, endValue)
-				}
-				if (this.poolDuration.id === 3) {
-					this.startInterVal_3(startValue, endValue)
-				}
+				this.startInterVal_1(startValue, endValue)
 			},
 		},
 	},
 	methods: {
 		startInterVal_1(startValue, endValue) {
-			clearInterval(this.interval_2)
-			clearInterval(this.interval_3)
+			clearInterval(this.interval_1)
 			this.interval_1 = setInterval(() => {
 				this.countInterVal(startValue, endValue)
 			}, 1000)
 		},
-		startInterVal_2(startValue, endValue) {
-			clearInterval(this.interval_1)
-			clearInterval(this.interval_3)
-			this.interval_2 = setInterval(() => {
-				this.countInterVal(startValue, endValue)
-			}, 1000)
-		},
-		startInterVal_3(startValue, endValue) {
-			clearInterval(this.interval_1)
-			clearInterval(this.interval_2)
-			this.interval_3 = setInterval(() => {
-				this.countInterVal(startValue, endValue)
-			}, 1000)
-		},
 		countInterVal(startValue, endValue) {
+			console.log('count interval')
 			const currentValue = moment().unix()
 			if (currentValue < startValue) {
 				if (this.statusCampain !== 2) this.switchStatusCampain(2)
-				this.countStart()
+				this.count()
 			}
 			if (startValue <= currentValue && currentValue <= endValue) {
 				if (this.statusCampain !== 3) this.switchStatusCampain(3)
-				this.countEnd()
+				this.count()
 			}
 			if (currentValue > endValue) {
 				if (this.statusCampain !== 1) this.switchStatusCampain(1)
 				clearInterval(this.interval_1)
-				clearInterval(this.interval_2)
-				clearInterval(this.interval_3)
 			}
 		},
-		countStart() {
+		count(isStart) {
 			const currentTime = moment(new Date()).format()
 			const diffDuration = moment.duration(
-				moment(this.startTime).diff(currentTime)
+				moment(isStart ? this.startTime : this.endTime).diff(
+					currentTime
+				)
 			)
-			this.days = diffDuration.days()
+			this.days = isStart
+				? diffDuration.days()
+				: Math.floor(diffDuration.asDays())
 			this.hours = diffDuration.hours()
 			this.mins = diffDuration.minutes()
 			this.secs = diffDuration.seconds()
 		},
-		countEnd() {
-			const currentTime = moment(new Date()).format()
-			const diffDuration = moment.duration(
-				moment(this.endTime).diff(currentTime)
-			)
-			this.days = Math.floor(diffDuration.asDays())
-			this.hours = diffDuration.hours()
-			this.mins = diffDuration.minutes()
-			this.secs = diffDuration.seconds()
-		},
+		// countStart() {
+		// 	const currentTime = moment(new Date()).format()
+		// 	const diffDuration = moment.duration(
+		// 		moment(this.startTime).diff(currentTime)
+		// 	)
+		// 	this.days = diffDuration.days()
+		// 	this.hours = diffDuration.hours()
+		// 	this.mins = diffDuration.minutes()
+		// 	this.secs = diffDuration.seconds()
+		// },
+		// countEnd() {
+		// 	const currentTime = moment(new Date()).format()
+		// 	const diffDuration = moment.duration(
+		// 		moment(this.endTime).diff(currentTime)
+		// 	)
+		// 	this.days = Math.floor(diffDuration.asDays())
+		// 	this.hours = diffDuration.hours()
+		// 	this.mins = diffDuration.minutes()
+		// 	this.secs = diffDuration.seconds()
+		// },
 	},
 }
 </script>
