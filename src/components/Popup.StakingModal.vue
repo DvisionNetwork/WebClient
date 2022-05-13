@@ -163,9 +163,12 @@ import {
 	listLandCode,
 	OUT_OF_GAS,
 	renderContractAdd,
+renderNetworkName,
+TYPE_ADDRESS_CONTRACT,
 } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 import { _api_domain } from '../App.Config'
+import { MSG_METAMASK_6 } from '../features/Messages'
 const { ethereum } = window
 export default {
 	components: {
@@ -400,7 +403,7 @@ export default {
 			this.handleConfirmClick(item)
 		},
 		handleConfirmClick(item) {
-			this.landCode = item.name
+			console.log('item', item)
 			this.keyword = ''
 			this.setLandMapId(item.id)
 			const cloneData = {
@@ -413,6 +416,7 @@ export default {
 				),
 			}
 			this.dataPopup = { ...cloneData }
+			this.hadUnderstand = false
 			this.listNfts721Check = []
 			this.mxCloseConfirmModal()
 		},
@@ -624,9 +628,13 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
+			const landItems = this.listLandCode.find(ele => ele.name === this.landCodeName)
+			if (landItems.network !== renderNetworkName(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_6)
+				return
+			}
 			this.mxShowLoading('inf')
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
-			console.log('addressInfo', this.dataPopup.addressInfo)
 			const { Contract1155Address, Contract721Address } =
 				this.dataPopup.addressInfo
 			const address = this.isErc1155

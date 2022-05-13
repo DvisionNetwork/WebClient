@@ -339,7 +339,6 @@ export default {
 			})
 			idx++
 		}
-		console.log('landMenu in app', landMenu)
 		this.mxSetLandMenu(landMenu)
 		this.mxSetLandMenuPopUp(landMenu)
 		this.mxSetDefaultLandMenu(landMenu)

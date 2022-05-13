@@ -412,7 +412,6 @@ export default {
 			var landType = this.tab_page == 'land-list' ? 'list' : 'map';
 			var mapId = this.mapId;
 			var landQuery = this.mxGetLandQuery();
-			console.log('in set search query', landQuery)
 			if(_U.isDefined(landQuery,"type")) landType = landQuery.type;
 			if(_U.isDefined(landQuery,"mapId")) mapId = landQuery.mapId;
 

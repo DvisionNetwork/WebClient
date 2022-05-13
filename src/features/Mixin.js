@@ -61,7 +61,6 @@ var Mixin = {
 				clearTimeout(lv_LoadingTimer)
 				lv_LoadingTimer = null
 			}
-			console.log('close spinning')
 			this.$store.dispatch('showLoading', false)
 		},
 		// J = msg,btn,callback
@@ -305,7 +304,6 @@ var Mixin = {
 			return this.$store.state.landQuery
 		},
 		mxSetLandQuery(query) {
-			console.log('mxSetLandQuery', query)
 			this.$store.dispatch('setLandQuery', query)
 		},
 
@@ -353,7 +351,6 @@ var Mixin = {
 			this.$store.dispatch('setDefaultLandMenu', menu)
 		},
 		mxSetLandItems(landItems) {
-			console.log('mxSet', landItems)
 			this.$store.dispatch('setLandItems', landItems)
 		},
 		mxSetLandItemsInPopupStaking(landItems) {
@@ -610,7 +607,6 @@ var Mixin = {
 						// }
 					}
 					arrListNft = rows && rows.length > 0 ? [...arrListNft] : []
-					console.log('arrListNft', arrListNft)
 					const params = {
 						total: 1,
 						page: 1,

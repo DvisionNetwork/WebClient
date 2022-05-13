@@ -287,9 +287,9 @@ export default {
 	watch: {
 		'poolDuration.id': {
 			handler(id) {
-				this.handleClickItem(this.listLandCode[0])
-				this.getCampaignInfo(id)
-				this.callLandItemList(id)
+				// this.handleClickItem(this.listLandCode[0])
+				// this.getCampaignInfo(id)
+				// this.callLandItemList(id)
 				// this.onGetNftsStaked(id)
 				// this.getTotalMiningHashRate(id)
 				// this.getMyMiningHashRate(id)
@@ -308,15 +308,16 @@ export default {
 			this.visible = !!state
 		},
 		statusCampain() {
-			if (this.statusCampain !== 1) {
-				const campainId = this.poolDuration.id
-				this.getCampaignInfo(campainId)
-				// this.onGetNftsStaked(campainId)
-				// this.getTotalMiningHashRate(campainId)
-				// this.getMyMiningHashRate(campainId)
-				// this.getTotalStaked(campainId)
-				// this.getMyStaked(campainId)
-			}
+			console.log('in watch')
+			// if (this.statusCampain !== 1) {
+			// 	const campainId = this.poolDuration.id
+			// 	this.getCampaignInfo(campainId)
+			// this.onGetNftsStaked(campainId)
+			// this.getTotalMiningHashRate(campainId)
+			// this.getMyMiningHashRate(campainId)
+			// this.getTotalStaked(campainId)
+			// this.getMyStaked(campainId)
+			// }
 			if (this.$store.state.showMyReward.isShow) {
 				this.updateStatusPopupReward()
 			}
@@ -344,7 +345,11 @@ export default {
 
 	methods: {
 		updateIdPool(id) {
+			console.log('in update')
 			this.poolDuration.id = id
+			this.handleClickItem(this.listLandCode[0])
+			this.getCampaignInfo(id)
+			this.callLandItemList(id)
 		},
 		setSearchQuery(page) {
 			if (!page || page == 0) page = 1
@@ -352,7 +357,6 @@ export default {
 			var landType = this.tab_page == 'land-list' ? 'list' : 'map'
 			var mapId = this.mapId
 			var landQuery = this.mxGetLandQuery()
-			console.log('in set search query', landQuery)
 			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
 			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
 
@@ -376,7 +380,6 @@ export default {
 					.type,
 				this.current_network
 			)
-			console.log('addressInfo', this.addressInfo)
 		},
 		setLandMapId(mapId) {
 			const landQuery = this.mxGetLandQuery()
@@ -459,6 +462,7 @@ export default {
 			)
 		},
 		switchStatusCampain(status) {
+			console.log('in switch status')
 			if (this.statusCampain !== status) {
 				this.statusCampain = status
 			}
@@ -652,7 +656,7 @@ export default {
 
 		async getCampaignInfo(campainId) {
 			try {
-				// this.mxShowLoading()
+				this.mxShowLoading()
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,
@@ -669,29 +673,14 @@ export default {
 				const data = await contractConn.methods
 					.campaignInfo(campainId)
 					.call()
-				console.log('data', data)
+				console.log('dataCampaign', data)
 				if (data) {
 					this.poolDuration.duration = Number(data.duration)
-					// let resultNumber = BigNumber.from(data.rewardRate).mul(
-					// 	data.duration
-					// )
-					// this.rewardPool = Number(
-					// 	formatEther(resultNumber)
-					// ).toFixed()
 					//set time countdown
 					const endValue = Number(data.campaignEndTime)
-					// const endValue = Number('1650444630')
 					const startValue = Number(data.campaignStartTime)
 					const currValue = moment().unix()
-					// if (!isAllow) {
-					// 	if (currValue > endValue) {
-					// 		this.allowWithdraw = true
-					// 	} else {
-					// 		this.allowWithdraw = false
-					// 	}
-					// } else {
-					// 	this.allowWithdraw = true
-					// }
+					console.log('time', { currValue, startValue, endValue })
 					this.timeCount.startValue = startValue
 					this.timeCount.endValue = endValue
 					if (currValue > endValue) {
