@@ -118,7 +118,7 @@ export default function AppConfig() {
 				// token contract for dev
 				TokenAddress: '0x0C9eA0E7cD659e3d45c4d70E8825011Eb31fCc45',
 				Contract721Address:
-					'0xD41eddEdB1891B626FADD17B328e14077c8248Cb',
+					'0x448321d613E3A10Cde7435D285C199A995E2B242',
 				Contract1155Address:
 					'0x0528943BD50427Db3953d7d715015325fBB616fE',
 				ContractMarketAddress:
