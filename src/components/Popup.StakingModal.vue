@@ -163,6 +163,7 @@ import {
 	listLandCode,
 	OUT_OF_GAS,
 	renderContractAdd,
+renderNetworkName,
 TYPE_ADDRESS_CONTRACT,
 } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
@@ -402,7 +403,7 @@ export default {
 			this.handleConfirmClick(item)
 		},
 		handleConfirmClick(item) {
-			this.landCode = item.name
+			console.log('item', item)
 			this.keyword = ''
 			this.setLandMapId(item.id)
 			const cloneData = {
@@ -627,8 +628,8 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
-			const landItems = this.listLandCode.find(ele => ele.name = this.landCodeName)
-			if (landItems.network !== this.current_network) {
+			const landItems = this.listLandCode.find(ele => ele.name === this.landCodeName)
+			if (landItems.network !== renderNetworkName(this.current_network)) {
 				this.mxShowToast(MSG_METAMASK_6)
 				return
 			}
