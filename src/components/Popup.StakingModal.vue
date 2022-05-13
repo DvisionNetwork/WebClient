@@ -156,7 +156,14 @@ import {
 	MSG_METAMASK_3,
 } from '@/features/Messages.js'
 import LandCard from '@/components/LandCard.vue'
-import { BITSKI, checkGasWithBalance, DENIED_TRANSACTION, OUT_OF_GAS } from '../features/Common'
+import {
+	BITSKI,
+	checkGasWithBalance,
+	DENIED_TRANSACTION,
+	listLandCode,
+	OUT_OF_GAS,
+	renderContractAdd,
+} from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 import { _api_domain } from '../App.Config'
 const { ethereum } = window
@@ -183,33 +190,9 @@ export default {
 			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 			landCode: LAND_CODE.SEOUL,
 			showDropdown: false,
-			listLandCode: [
-				{
-					name: 'SeoulA',
-					id: 'gangnam',
-				},
-				{
-					name: 'Newyork',
-					id: 'newyork',
-				},
-				{
-					name: 'London',
-					id: 'london',
-				},
-				{
-					name: 'Tokyo',
-					id: 'tokyo',
-				},
-				{
-					name: 'Berlin',
-					id: 'berlin',
-				},
-				{
-					name: 'São Paulo',
-					id: 'saopaulo',
-				},
-			],
+			listLandCode,
 			currentOrder: { name: 'land_ct_all', ct: 'all' },
+			dataPopup: { ...this.data },
 		}
 	},
 	beforeMount() {
@@ -419,8 +402,18 @@ export default {
 		handleConfirmClick(item) {
 			this.landCode = item.name
 			this.keyword = ''
-			this.listNfts721Check = []
 			this.setLandMapId(item.id)
+			const cloneData = {
+				...this.data,
+				addressInfo: renderContractAdd(
+					this.listLandCode.find(
+						(ele) => ele.name === this.landCodeName
+					).type,
+					this.current_network
+				),
+			}
+			this.dataPopup = { ...cloneData }
+			this.listNfts721Check = []
 			this.mxCloseConfirmModal()
 		},
 		setLandMapId(mapId) {
@@ -481,42 +474,6 @@ export default {
 				return false
 			return true
 		},
-		// async onGetHashRate(is_ERC1155, nft_id, idx) {
-		// 	try {
-		// 		const nft = this.listNfts.find((x) => x.nft_id === nft_id)
-		// 		//cal API
-		// 		const search = is_ERC1155 ? '1155' : '721'
-		// 		const response = await axios.get(
-		// 			`${_api_domain}/search_bep_${search}?token_id=${nft_id}`
-		// 		)
-		// 		if (response.status === 200) {
-		// 			nft.name = response.data.name
-		// 			nft.imageUrl = response.data.image
-		// 			nft.description = response.data.description
-		// 		}
-		// 		const contractConn = getContractConnect(
-		// 			this.loginBy,
-		// 			ABI_STAKING,
-		// 			this.data.staking_address,
-		// 			this.networkRPC,
-		// 			this.fortmaticNetwork
-		// 		)
-		// 		await contractConn.methods
-		// 			.tokenHashrate(is_ERC1155, nft_id)
-		// 			.call()
-		// 			.then((tx) => {
-		// 				nft.hashRate = Number(tx) / 10
-		// 			})
-		// 		if (this.listNfts.length - 1 === idx) {
-		// 			setTimeout(() => {
-		// 				this.mxCloseLoading()
-		// 			}, 2000)
-		// 		}
-		// 	} catch (err) {
-		// 		this.mxCloseLoading()
-		// 		console.log('catch', err)
-		// 	}
-		// },
 		onSearch(text) {
 			const defaultData = { ...this.$store.state.defaultLandItemsPopup }
 			let filterItems = [...defaultData.list]
@@ -611,6 +568,7 @@ export default {
 		},
 
 		onCheckingUnder() {
+			console.log('approve', this.dataPopup)
 			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				return
@@ -625,31 +583,28 @@ export default {
 				this.checkStatusNft()
 			}
 		},
-		async onGetNftowner(collection) {
-			this.mxShowLoading()
-			let params = {
-				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: collection
-					? this.data.address1155
-					: this.data.address721,
-				chainId: this.data.chainId,
-			}
-			const response = await axios.get(
-				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-owner`,
-				{ params }
-			)
-			if (response?.status === 200) {
-				this.listNfts = response.data
-				this.listNfts721Check = []
-				// response.data.map((item, idx) => {
-				// 	this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
-				// })
-				this.listShowers = this.listNfts
-			} else {
-				this.mxCloseLoading()
-				this.listNfts = []
-			}
-		},
+		// async onGetNftowner(collection) {
+		// 	this.mxShowLoading()
+		// 	let params = {
+		// 		owner: this.$store?.state?.userInfo?.wallet_addr,
+		// 		collectionAddress: collection
+		// 			? this.dataPopup.address1155
+		// 			: this.dataPopup.address721,
+		// 		chainId: this.dataPopup.chainId,
+		// 	}
+		// 	const response = await axios.get(
+		// 		`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-owner`,
+		// 		{ params }
+		// 	)
+		// 	if (response?.status === 200) {
+		// 		this.listNfts = response.data
+		// 		this.listNfts721Check = []
+		// 		this.listShowers = this.listNfts
+		// 	} else {
+		// 		this.mxCloseLoading()
+		// 		this.listNfts = []
+		// 	}
+		// },
 		async getEtherAccounts() {
 			try {
 				const accounts = await ethereum.request({
@@ -671,9 +626,12 @@ export default {
 			}
 			this.mxShowLoading('inf')
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
+			console.log('addressInfo', this.dataPopup.addressInfo)
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
 			const address = this.isErc1155
-				? this.data.address1155
-				: this.data.address721
+				? Contract1155Address
+				: Contract721Address
 			const contractConn = getContractConnect(
 				this.loginBy,
 				abi,
@@ -681,36 +639,10 @@ export default {
 				this.networkRPC,
 				this.fortmaticNetwork
 			)
-			// if (this.loginBy === COINBASE || this.loginBy === BITSKI || this.loginBy === WALLETCONNECT) {
-			// 	const web3 = getWeb3(
-			// 		this.loginBy,
-			// 		this.networkRPC,
-			// 		this.current_network
-			// 	)
-			// 	const gasNumber = await contractConn.methods
-			// 		.isApprovedForAll(
-			// 			this.$store?.state?.userInfo?.wallet_addr,
-			// 			this.data.staking_address
-			// 		)
-			// 		.estimateGas({
-			// 			from: this.current_addr,
-			// 		})
-			// 	const condition = await checkGasWithBalance(
-			// 		web3,
-			// 		gasNumber,
-			// 		this.current_addr
-			// 	)
-			// 	console.log('condition', condition)
-			// 	if (condition) {
-			// 		this.mxCloseLoading()
-			// 		this.mxShowToast(OUT_OF_GAS)
-			// 		return
-			// 	}
-			// }
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
-					this.data.staking_address // address Staking
+					this.dataPopup.staking_address // address Staking
 				)
 				.call()
 				.catch((e) => {
@@ -735,9 +667,11 @@ export default {
 
 		async onApprovedForAll() {
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
 			const address = this.isErc1155
-				? this.data.address1155
-				: this.data.address721
+				? Contract1155Address
+				: Contract721Address
 			const contractConn = getContractConnect(
 				this.loginBy,
 				abi,
@@ -758,7 +692,7 @@ export default {
 					)
 					const gasNumber = await contractConn.methods
 						.setApprovalForAll(
-							this.data.staking_address, // address Staking
+							this.dataPopup.staking_address, // address Staking
 							true
 						)
 						.estimateGas({
@@ -777,7 +711,7 @@ export default {
 				}
 				const res = await contractConn.methods
 					.setApprovalForAll(
-						this.data.staking_address, // address Staking
+						this.dataPopup.staking_address, // address Staking
 						true
 					)
 					.send({
@@ -815,14 +749,30 @@ export default {
 			const contractConn = getContractConnect(
 				this.loginBy,
 				ABI_STAKING,
-				this.data.staking_address,
+				this.dataPopup.staking_address,
 				this.networkRPC,
 				this.fortmaticNetwork
 			)
+			// let params = {
+			// 	erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
+			// 	erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
+			// 	erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
+			// }
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
 			let params = {
-				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
-				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
-				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
+				token: this.isErc1155
+					? Contract1155Address
+					: Contract721Address,
+				tokenIds: this.isErc1155
+					? this.listNfts1155Check
+					: this.listNfts721Check,
+			}
+			if (this.isErc1155) {
+				params = {
+					...params,
+					amounts: this.listNfts1155Quantity,
+				}
 			}
 			params = JSON.parse(JSON.stringify(params))
 			if (
@@ -835,11 +785,18 @@ export default {
 					this.networkRPC,
 					this.current_network
 				)
-				const gasNumber = await contractConn.methods
-					.deposit(this.data.duration.id, params)
-					.estimateGas({
-						from: this.current_addr,
-					})
+				const gasNumber = await (this.isErc1155
+					? contractConn.methods.depositERC1155(
+							this.dataPopup.duration.id,
+							params
+					  )
+					: contractConn.methods.depositERC721(
+							this.dataPopup.duration.id,
+							params
+					  )
+				).estimateGas({
+					from: this.current_addr,
+				})
 				const condition = await checkGasWithBalance(
 					web3,
 					gasNumber,
@@ -851,8 +808,16 @@ export default {
 					return
 				}
 			}
-			contractConn.methods
-				.deposit(this.data.duration.id, params)
+			;(this.isErc1155
+				? contractConn.methods.depositERC1155(
+						this.dataPopup.duration.id,
+						params
+				  )
+				: contractConn.methods.depositERC721(
+						this.dataPopup.duration.id,
+						params
+				  )
+			)
 				.send({
 					from: this.wallet_addr,
 				})
@@ -870,7 +835,7 @@ export default {
 					// 	this.mxShowToast(e.message)
 					// } else {
 					// 	this.mxShowToast(MSG_METAMASK_3)
-					// }					
+					// }
 
 					if (
 						e.message.includes('104') &&

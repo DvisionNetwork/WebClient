@@ -77,7 +77,7 @@
 						() =>
 							onCheckItemUnStakeModalConfirm(
 								Number(item.tokenId),
-								item.is_ERC1155 === 1 ? true : false,
+								item.is_ERC1155 === 1,
 								item.locked,
 								item.n
 							)
@@ -148,7 +148,9 @@ import {
 	checkGasWithBalance,
 	fromHexToChainId,
 	LAND_CODE,
+	listLandCode,
 	OUT_OF_GAS,
+	renderContractAdd,
 } from '../features/Common'
 import { getWeb3 } from '../features/Connectors'
 import { _api_domain } from '../App.Config'
@@ -204,33 +206,10 @@ export default {
 			showReward: false,
 			landCode: LAND_CODE.SEOUL,
 			showDropdown: false,
-			listLandCode: [
-				{
-					name: 'SeoulA',
-					id: 'gangnam',
-				},
-				{
-					name: 'Newyork',
-					id: 'newyork',
-				},
-				{
-					name: 'London',
-					id: 'london',
-				},
-				{
-					name: 'Tokyo',
-					id: 'tokyo',
-				},
-				{
-					name: 'Berlin',
-					id: 'berlin',
-				},
-				{
-					name: 'São Paulo',
-					id: 'saopaulo',
-				},
-			],
+			listLandCode,
 			visible: false,
+			addressInfo: {},
+			is_ERC1155: false,
 			// landItems: {},
 		}
 	},
@@ -338,8 +317,8 @@ export default {
 				// this.getTotalStaked(campainId)
 				// this.getMyStaked(campainId)
 			}
-			if(this.$store.state.showMyReward.isShow) {
-				this.updateStatusPopupReward()	
+			if (this.$store.state.showMyReward.isShow) {
+				this.updateStatusPopupReward()
 			}
 		},
 		mapId(newVal, oldVal) {
@@ -392,6 +371,12 @@ export default {
 		handleClickItem(item) {
 			this.landCode = item.name
 			this.setLandMapId(item.id)
+			this.addressInfo = renderContractAdd(
+				this.listLandCode.find((ele) => ele.name === this.landCodeName)
+					.type,
+				this.current_network
+			)
+			console.log('addressInfo', this.addressInfo)
 		},
 		setLandMapId(mapId) {
 			const landQuery = this.mxGetLandQuery()
@@ -505,12 +490,26 @@ export default {
 			const item1155 = await this.listNftsStake.filter(
 				(item) => item.is_ERC1155 === 1
 			)
-
+			const { Contract1155Address, Contract721Address } = this.addressInfo
 			let params = {
-				erc721TokenIds: this.pluck(item721, 'tokenId'),
-				erc1155TokenIds: this.pluck(item1155, 'tokenId'),
-				erc1155Amounts: this.pluck(item1155, 'locked'),
+				token: this.is_ERC1155
+					? Contract1155Address
+					: Contract721Address,
+				tokenIds: this.is_ERC1155
+					? this.pluck(item1155, 'tokenId')
+					: this.pluck(item721, 'tokenId'),
 			}
+			if (this.is_ERC1155) {
+				params = {
+					...params,
+					amounts: this.pluck(item1155, 'locked'),
+				}
+			}
+			// let params = {
+			// 	erc721TokenIds: this.pluck(item721, 'tokenId'),
+			// 	erc1155TokenIds: this.pluck(item1155, 'tokenId'),
+			// 	erc1155Amounts: this.pluck(item1155, 'locked'),
+			// }
 
 			const obj = {
 				width: '712px',
@@ -518,7 +517,8 @@ export default {
 				content: renderUnlockContent(),
 				buttonTxt: 'Unlock all',
 				isShow: true,
-				onClick: () => this.onUnStakeNfts(params, true),
+				onClick: () =>
+					this.onUnStakeNfts(params, true, this.is_ERC1155),
 			}
 			this.mxShowConfirmModal(obj)
 		},
@@ -539,13 +539,20 @@ export default {
 				this.mxShowSuccessModal(obj)
 			} else {
 				this.visible = true
+
 				const stakingData = {
 					duration: this.poolDuration,
 					isShowModal: true,
 					staking_address: this.staking_address,
 					chainId: this.chainId,
-					address721: this.address721,
-					address1155: this.address1155,
+					// address721: this.address721,
+					// address1155: this.address1155,
+					addressInfo: renderContractAdd(
+						this.listLandCode.find(
+							(ele) => ele.name === this.landCodeName
+						).type,
+						this.current_network
+					),
 					onStakingSuccess: () =>
 						this.onStakingSuccess(this.poolDuration.id),
 				}
@@ -578,7 +585,11 @@ export default {
 					chainId: this.chainId,
 				}
 				const response = await axios.get(
-					`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-total-staked`,
+					`${
+						gConfig.isProd
+							? _api_domain
+							: gConfig.public_api_sotatek
+					}/nft-total-staked`,
 					{ params }
 				)
 				if (response.status === 200 && response.data.total_staked) {
@@ -598,7 +609,9 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-my-staked`,
+				`${
+					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+				}/nft-my-staked`,
 				{ params }
 			)
 			if (response.status === 200 && response.data.totalStaked) {
@@ -773,7 +786,9 @@ export default {
 				chainId: this.chainId,
 			}
 			const response = await axios.get(
-				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-staked`,
+				`${
+					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+				}/nft-staked`,
 				{ params }
 			)
 			if (response?.status === 200) {
@@ -844,11 +859,22 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
+			const { Contract1155Address, Contract721Address } = this.addressInfo
 			let params = {
-				erc721TokenIds: is_ERC1155 ? [] : [nftId],
-				erc1155TokenIds: is_ERC1155 ? [nftId] : [],
-				erc1155Amounts: is_ERC1155 ? [locked] : [],
+				token: is_ERC1155 ? Contract1155Address : Contract721Address,
+				tokenIds: [nftId],
 			}
+			if (is_ERC1155) {
+				params = {
+					...params,
+					amounts: [locked],
+				}
+			}
+			// let params = {
+			// 	erc721TokenIds: is_ERC1155 ? [] : [nftId],
+			// 	erc1155TokenIds: is_ERC1155 ? [nftId] : [],
+			// 	erc1155Amounts: is_ERC1155 ? [locked] : [],
+			// }
 			params = JSON.parse(JSON.stringify(params))
 			const obj = {
 				width: '712px',
@@ -856,11 +882,11 @@ export default {
 				content: renderOnCheckItemUnStakeModalConfirmContent(name),
 				buttonTxt: 'Unlock',
 				isShow: true,
-				onClick: () => this.onUnStakeNfts(params, false),
+				onClick: () => this.onUnStakeNfts(params, false, is_ERC1155),
 			}
 			this.mxShowConfirmModal(obj)
 		},
-		async onUnStakeNfts(params, unLockAll) {
+		async onUnStakeNfts(params, unLockAll, is_ERC1155) {
 			if (!checkAddress(this.wallet_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				this.mxCloseConfirmModal()
@@ -871,6 +897,7 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
+			console.log('this.staking_address', this.staking_address)
 			const contractConn = getContractConnect(
 				this.loginBy,
 				ABI_STAKING,
@@ -888,11 +915,18 @@ export default {
 					this.networkRPC,
 					this.current_network
 				)
-				const gasNumber = await contractConn.methods
-					.withdraw(this.poolDuration.id, params)
-					.estimateGas({
-						from: this.current_addr,
-					})
+				const gasNumber = await (is_ERC1155
+					? contractConn.methods.withdrawERC1155(
+							this.poolDuration.id,
+							params
+					  )
+					: contractConn.methods.withdrawERC721(
+							this.poolDuration.id,
+							params
+					  )
+				).estimateGas({
+					from: this.current_addr,
+				})
 				const condition = await checkGasWithBalance(
 					web3,
 					gasNumber,
@@ -904,8 +938,16 @@ export default {
 					return
 				}
 			}
-			await contractConn.methods
-				.withdraw(this.poolDuration.id, params)
+			await (is_ERC1155
+				? contractConn.methods.withdrawERC1155(
+						this.poolDuration.id,
+						params
+				  )
+				: contractConn.methods.withdrawERC721(
+						this.poolDuration.id,
+						params
+				  )
+			)
 				.send({
 					from: this.current_addr,
 				})
@@ -942,17 +984,17 @@ export default {
 					this.mxCloseConfirmModal()
 				})
 		},
-		updateStatusPopupReward () {
+		updateStatusPopupReward() {
 			const network = this.current_network
 			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,
 				poolDuration: this.poolDuration,
 				chainId,
-				statusCampain: this.statusCampain
+				statusCampain: this.statusCampain,
 			}
 			this.mxShowMyRewardModal(obj)
-		}
+		},
 	},
 }
 </script>

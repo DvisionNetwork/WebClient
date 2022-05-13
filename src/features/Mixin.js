@@ -515,7 +515,6 @@ var Mixin = {
 				callback: (resp) => {
 					const rows = _U.getIfDefined(resp, ['data', 'rows'])
 					// let midx = 0
-					console.log('rows', rows, dvLand.map)
 					if (rows && rows.length > 0) {
 						arrListNft = dvLand.map
 							.filter(

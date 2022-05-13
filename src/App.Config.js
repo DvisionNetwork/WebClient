@@ -91,13 +91,14 @@ export default function AppConfig() {
 			addrDev: {
 				TokenAddress: '0x9403F1E9b6AE54423924B571c65Eb1F8cb316080',
 				Contract721Address:
-					'0x2a70B138c694E35E40f34c6404039F39AB39b119',
+					'0x13b03495467f7CfB7237cbC5784faDA36bf23848',
 				Contract1155Address:
-					'0x91E9d6Ea945eaDE3f6E2239532E09eC62AfdE25B',
+					'0x94d0D2FFE6d5Ab4eDd1d13Ca748cBC13210936dA',
 				ContractMarketAddress:
 					'0x50DF1a0Fd28337C06EB5E547825ED58d1ae04f53',
 				// Mainnet: "0x1", Testnet: "0x4"
 				Network: '0x4',
+				type: 'normal',
 			},
 			addrProd: {
 				// token contract for rel
@@ -110,22 +111,21 @@ export default function AppConfig() {
 					'0xfCc1D2B47b2BF7Ad768c4Cb42d5259914Fc98349',
 				// Mainnet: "0x1", Testnet: "0x3"
 				Network: '0x1',
-			},
-			addrEthDev: {
-				Network: '0x4',
+				type: 'normal',
 			},
 			/* -----------------  Binance Smart Chain Network ----------------- */
 			addrBscDev: {
 				// token contract for dev
 				TokenAddress: '0x0C9eA0E7cD659e3d45c4d70E8825011Eb31fCc45',
 				Contract721Address:
-					'0x448321d613E3A10Cde7435D285C199A995E2B242',
+					'0xD41eddEdB1891B626FADD17B328e14077c8248Cb',
 				Contract1155Address:
-					'0xCaD43aB53f628D931b8345C60BdF84D256D57752',
+					'0x0528943BD50427Db3953d7d715015325fBB616fE',
 				ContractMarketAddress:
 					'0x435874C2D07965e0671e3bd0515c5D224FdDAff2',
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network: '0x61',
+				type: 'normal',
 			},
 			addrBscProd: {
 				// token contract for rel
@@ -138,6 +138,7 @@ export default function AppConfig() {
 					'0x9cf04141E14C784302e111ECdB7B873FAf26A5F9',
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network: '0x38',
+				type: 'normal',
 			},
 
 			/* -----------------  Polygon Network ----------------- */
@@ -145,13 +146,14 @@ export default function AppConfig() {
 				// token contract for dev
 				TokenAddress: '0xE966b6F7a7A4f2A02dd3455d4F391C68f2EAbF2B',
 				Contract721Address:
-					'0xA8a9fF7e1597f00988ab643A95c07cc9D80fD979',
+					'0xa8a9ff7e1597f00988ab643a95c07cc9d80fd979',
 				Contract1155Address:
-					'0x0B162A4907127711342418b6a0e0bffD3Ef6532A',
+					'0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F',
 				ContractMarketAddress:
 					'0xbd68B0A248028A4aAE60390DEB1AcD16684EB941',
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network: '0x13881',
+				type: 'normal',
 			},
 			addrPolygonProd: {
 				// token contract for rel
@@ -164,6 +166,7 @@ export default function AppConfig() {
 					'0x5737366c02f1E60B089a56215384F733Fb02CE61',
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network: '0x89',
+				type: 'normal',
 			},
 
 			/* -----------------  3rd Land Sale [BSC] ----------------- */
@@ -177,6 +180,7 @@ export default function AppConfig() {
 				ContractMarketAddress:
 					'0xC47F78100c3cefAdd8a71EfD440d22299B6538FF',
 				Network: '0x61',
+				type: '3rd',
 			},
 			addr3rdLandBscProd: {
 				// token contract for rel
@@ -188,6 +192,7 @@ export default function AppConfig() {
 				ContractMarketAddress:
 					'0xeeF91f31F00Af45F9EEc2300483BB7Aa23111E36',
 				Network: '0x38',
+				type: '3rd',
 			},
 
 			/* -----------------  3rd Land Sale [POL] ----------------- */
@@ -197,7 +202,8 @@ export default function AppConfig() {
 				Contract721Address :       "0x3F3cDA1A22CB7B75A9b2b5C7402962E8bC021ED3",
 				Contract1155Address :      "0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F",
 				ContractMarketAddress :    "0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d",
-				Network : "0x13881"
+				Network : "0x13881",
+				type: '3rd',
 			},
 			addr3rdLandPolProd: {
 				// token contract for rel
@@ -205,7 +211,8 @@ export default function AppConfig() {
 				Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
 				Contract1155Address :      "",
 				ContractMarketAddress :    "0x0528943BD50427Db3953d7d715015325fBB616fE",
-				Network : "0x89"
+				Network : "0x89",
+				type: '3rd',
 			},
 
 			// 04.25 Market
@@ -243,7 +250,7 @@ export default function AppConfig() {
 				if (gConfig.isProd) {
 					return gConfig.wlt.addrProd
 				}
-				return gConfig.wlt.addrEthDev
+				return gConfig.wlt.addrDev
 			},
 			getBscAddr() {
 				if (gConfig.isProd) {
