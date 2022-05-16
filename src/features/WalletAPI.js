@@ -344,26 +344,19 @@ export default function walletAPI() {
 
 		// 04.25 Market
 		getContAddr(nft, network, market_index) {
-			if(market_index != "-1") {
-				const addr = gConfig.wlt.getNetworkAddr(network, market_index);
-				var contAddr = null
-				if (nft == '721') {
-					contAddr = addr.Contract721Address
-				} else if (nft == '1155') {
-					contAddr = addr.Contract1155Address
-				} else if (nft == 'market') {
-					contAddr = addr.ContractMarketAddress
-				} else if (nft == 'token') {
-					contAddr = addr.TokenAddress
-				}
-				console.log(addr, contAddr, 'address123 market')
-				return contAddr
-			} else {
-				const addr = gConfig.wlt.getNetworkAddr(network, market_index);
-				var contAddr = addr.ContractMarketAddress;
-				console.log(addr, contAddr, 'address123 prev market')
-				return contAddr
+			const addr = gConfig.wlt.getNetworkAddr(network, market_index);
+			var contAddr = null
+			if (nft == '721') {
+				contAddr = addr.Contract721Address
+			} else if (nft == '1155') {
+				contAddr = addr.Contract1155Address
+			} else if (nft == 'market') {
+				contAddr = addr.ContractMarketAddress
+			} else if (nft == 'token') {
+				contAddr = addr.TokenAddress
 			}
+			console.log(addr, contAddr, 'address123 market')
+			return contAddr
 		},
 		getMarketAddr(network) {
 			var addr = gConfig.wlt.getNetworkAddr(network)
@@ -1484,7 +1477,7 @@ export default function walletAPI() {
 					)
 				}
 
-				var contAddr = this.getContAddr(J.category, J.network)
+				var contAddr = this.getContAddr(J.category, J.network, J.market_index)
 				var contract = new ethers.Contract(
 					contAddr,
 					erc1155_ABI,

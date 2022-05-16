@@ -426,6 +426,8 @@ export default {
 					total_supply: 1,
 					sell_amount: 1,
 					own_amount: 1,
+					// 05.09 market index undefined fix
+					market_index: _U.getIfDefined(this.blockDetail, 'market_index'),
 					network: gConfig.wlt.getNetworkAddr(this.blockInfo.network)
 						.Network, // testing
 				}
@@ -779,6 +781,8 @@ export default {
 							accountAddress: curActiveAccount,
 							tokenId: this.marketItem.token_id,
 							ownerId: this.marketItem.owner_id,
+							// 05.09 market index undefined fix
+							market_index: this.marketItem.market_index,
 							callback: this.onCacelSellApprove,
 						}
 
@@ -798,6 +802,8 @@ export default {
 							network: networkName,
 							provider,
 							accountAddress: curActiveAccount,
+							// 05.09 market index undefined fix
+							market_index: this.marketItem.market_index,
 							callback: this.onSellApprove,
 						}
 
