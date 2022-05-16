@@ -61,7 +61,8 @@
 <script>
 import axios from 'axios'
 import { getContractConnect, getWeb3 } from '../features/Connectors'
-import ProxyABI from '@/abi/Proxy.json'
+import ProxyBcsABI from '@/abi/ProxyBSC.json'
+import ProxyPolygonABI from '@/abi/ProxyPolygon.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
 import {
@@ -76,6 +77,8 @@ import {
 	fromHexToChainId,
 	DENIED_TRANSACTION,
   	USER_DECLINED,
+    renderNetworkName,
+    USER_CANCELED,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
@@ -109,6 +112,8 @@ export default {
 			dataOngoing: [],
 			dataReward: [],
 			loginBy: window.localStorage.getItem('loginBy'),
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	props: {
@@ -178,13 +183,17 @@ export default {
 			const res = await axios.put(url, { data })
 
 			if (res.data.data && res.data.signature) {
+				const networkFromChainId = renderNetworkName(oldChainId)
+				const PROXY_ADDRESS = this.getAddrProxyContractByNetwork(networkFromChainId)
+				const PROXY_ABI = this.getAbiProxyContractByNetwork(networkFromChainId)
 				const contract = getContractConnect(
 					this.loginBy,
-					ProxyABI,
-					BSC_PROXY_ADDRESS,
+					PROXY_ABI,
+					PROXY_ADDRESS,
 					this.networkRPC,
-					this.currentNetwork
+					this.fortmaticNetwork
 				)
+
 				if (
 					this.loginBy === COINBASE ||
 					this.loginBy === BITSKI ||
@@ -193,13 +202,20 @@ export default {
 					const web3 = getWeb3(
 						this.loginBy,
 						this.networkRPC,
-						this.currentNetwork
+						this.fortmaticNetwork
 					)
 					const gasNumber = await contract.methods
 						.execTransaction(res.data.data, res.data.signature)
 						.estimateGas({
 							from: address,
 						})
+						.then(res => {
+							console.log('res', res);
+						})
+						.catch(err => {
+							console.log('err', err);	
+						})
+
 					const condition = await checkGasWithBalance(
 						web3,
 						gasNumber,
@@ -220,18 +236,25 @@ export default {
 						console.log('tx', tx)
 					})
 					.catch((e) => {
-						console.log('err', e)
+						console.log('tu choi', e.toString())
 						if (
 							e.message.includes('104') &&
 							e.message.includes(USER_DECLINED)
 						) {
+							console.log('vao 1');
 							this.mxShowToast(USER_DECLINED)
+						} else if(e.message.includes(USER_CANCELED)){
+							console.log('vao 2');
+							this.mxShowToast(USER_CANCELED)
 						} else if (
 							e.code === 4001 ||
 							e.message === DENIED_TRANSACTION
 						) {
+							console.log('vao 3');
 							this.mxShowToast(DENIED_TRANSACTION)
-						} else {
+						}
+						  else {
+							console.log('vao 4');
 							this.mxShowToast(MSG_METAMASK_5)
 						}
 					})
@@ -331,6 +354,30 @@ export default {
 				this.filterOngoing()
 			}
 		},
+		getAddrProxyContractByNetwork(network) {
+			switch(network) {
+				case 'ETH': 
+					return 'eth'
+				case 'BSC': 
+					return gConfig.wlt.getProxyBscAddr().contractAddr
+				case 'POL': 
+					return gConfig.wlt.getProxyPolygonAddr().contractAddr
+				default:
+					return ''
+			}
+		},
+		getAbiProxyContractByNetwork(network) {
+			switch(network) {
+				case 'ETH': 
+					return 'eth'
+				case 'BSC': 
+					return ProxyBcsABI
+				case 'POL': 
+					return ProxyPolygonABI
+				default:
+					return ''
+			}
+		}
 	},
 }
 </script>
