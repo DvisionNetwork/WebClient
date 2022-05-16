@@ -212,6 +212,7 @@ import Web3 from 'web3'
 import {
 	ADDRESS_METAMASK,
 	BITSKI,
+	convertAddressAndCheckEqual,
 	FORTMATIC,
 	renderNetworkName,
 	WALLETCONNECT,
@@ -249,7 +250,7 @@ export default {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
-		this.setCurrentNetwork()		
+		this.setCurrentNetwork()
 		if (ethereum) {
 			ethereum.on('chainChanged', this.handleChainChanged)
 			ethereum.on('accountsChanged', this.handleAccountsChanged)
@@ -267,10 +268,15 @@ export default {
 
 		window.addEventListener('beforeunload', this.unLoadEvent)
 
-		this.$cookies.config(gConfig.getUserInfoCookieExpireTime(), '', '', true);
+		this.$cookies.config(
+			gConfig.getUserInfoCookieExpireTime(),
+			'',
+			'',
+			true
+		)
 
-		if(this.$cookies.isKey('userInfo')) {
-			var userInfo = this.$cookies.get('userInfo');
+		if (this.$cookies.isKey('userInfo')) {
+			var userInfo = this.$cookies.get('userInfo')
 
 			var wlt = {
 				currentAccountIdx: 0,
@@ -524,7 +530,7 @@ export default {
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
-			
+
 			window.localStorage.setItem('currentNetwork', chainId)
 			if (
 				chainId !== networkBSC &&
@@ -533,7 +539,8 @@ export default {
 				chainId !== parseInt(networkBSC, 16).toString() &&
 				chainId !== parseInt(networkPoygon, 16).toString() &&
 				chainId !== parseInt(networkETH, 16).toString()
-			) this.mxShowToast(MSG_METAMASK_2)
+			)
+				this.mxShowToast(MSG_METAMASK_2)
 			else {
 				window.location.reload()
 			}
@@ -848,9 +855,12 @@ export default {
 			window.localStorage.setItem(ADDRESS_METAMASK, accounts)
 			const loginBy = window.localStorage.getItem('loginBy')
 			if (loginBy === METAMASK || loginBy === COINBASE) {
-				if (addr && accounts[0] !== addr) {
-				   this.mxShowToast(MSG_METAMASK_1)
-			   }
+				if (
+					addr &&
+					convertAddressAndCheckEqual(loginBy, addr, accounts[0])
+				) {
+					this.mxShowToast(MSG_METAMASK_1)
+				}
 			}
 		},
 	},

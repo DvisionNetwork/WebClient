@@ -1,4 +1,5 @@
 import AppConfig from '../App.Config'
+import { getWeb3 } from './Connectors'
 export const INFURA_ID = '14ff3a7ed1484486aac3e5573bcae20d'
 export const DEFAULT_ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${INFURA_ID}`
 
@@ -298,5 +299,13 @@ export const renderContractAdd = (type, network) => {
 	}
 	return arrAddress.find(
 		(ele) => ele.type === type && ele.Network === network
+	)
+}
+
+export const convertAddressAndCheckEqual = (loginBy, address1, address2) => {
+	const web3 = getWeb3(loginBy)
+	return (
+		web3.utils.toChecksumAddress(address1) !==
+		web3.utils.toChecksumAddress(address2)
 	)
 }
