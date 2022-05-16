@@ -84,7 +84,6 @@ import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
 import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_5 } from '../features/Messages'
 import { _api_domain } from '../App.Config'
-import { ScopedLocalStorage } from 'walletlink/dist/lib/ScopedLocalStorage'
 var gConfig = AppConfig()
 
 export default {
@@ -214,7 +213,7 @@ export default {
 							console.log('res', res);
 						})
 						.catch(err => {
-							console.log('err', err);
+							console.log('err', err);	
 						})
 
 					const condition = await checkGasWithBalance(

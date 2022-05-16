@@ -338,7 +338,7 @@ export default function AppConfig() {
 			},
 			getProxyPolygonAddr() {
 				if (gConfig.isProd) {
-					return gConfig.wlt.addrProxyPolygonDev
+					return gConfig.wlt.addrProxyPolygonProd
 				}
 				return gConfig.wlt.addrProxyPolygonDev
 			}
