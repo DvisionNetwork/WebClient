@@ -76,13 +76,18 @@ import {
 	WALLETCONNECT,
 	fromHexToChainId,
 	DENIED_TRANSACTION,
-  	USER_DECLINED,
-    renderNetworkName,
-    USER_CANCELED,
+	USER_DECLINED,
+	renderNetworkName,
+	USER_CANCELED,
+	convertAddressAndCheckEqual,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
-import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_5 } from '../features/Messages'
+import {
+	MSG_METAMASK_1,
+	MSG_METAMASK_2,
+	MSG_METAMASK_5,
+} from '../features/Messages'
 import { _api_domain } from '../App.Config'
 var gConfig = AppConfig()
 
@@ -163,9 +168,13 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
 			if (
+				this.loginBy === METAMASK &&
 				addressChange &&
-				addressChange !== address &&
-				this.loginBy === METAMASK
+				convertAddressAndCheckEqual(
+					this.loginBy,
+					address,
+					addressChange
+				)
 			) {
 				this.mxCloseLoading()
 				this.mxShowToast(MSG_METAMASK_1)
@@ -177,15 +186,19 @@ export default {
 				chainId: this.data.chainId,
 				currentTime: Date.now(),
 			}
-			const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/claim-reward`
+			const url = `${
+				gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+			}/claim-reward`
 			const data = jwt.sign(payload, gConfig.privateKeyEncode)
 
 			const res = await axios.put(url, { data })
 
 			if (res.data.data && res.data.signature) {
 				const networkFromChainId = renderNetworkName(oldChainId)
-				const PROXY_ADDRESS = this.getAddrProxyContractByNetwork(networkFromChainId)
-				const PROXY_ABI = this.getAbiProxyContractByNetwork(networkFromChainId)
+				const PROXY_ADDRESS =
+					this.getAddrProxyContractByNetwork(networkFromChainId)
+				const PROXY_ABI =
+					this.getAbiProxyContractByNetwork(networkFromChainId)
 				const contract = getContractConnect(
 					this.loginBy,
 					PROXY_ABI,
@@ -236,15 +249,14 @@ export default {
 							e.message.includes(USER_DECLINED)
 						) {
 							this.mxShowToast(USER_DECLINED)
-						} else if(e.message.includes(USER_CANCELED)){
+						} else if (e.message.includes(USER_CANCELED)) {
 							this.mxShowToast(USER_CANCELED)
 						} else if (
 							e.code === 4001 ||
 							e.message === DENIED_TRANSACTION
 						) {
 							this.mxShowToast(DENIED_TRANSACTION)
-						}
-						  else {
+						} else {
 							this.mxShowToast(MSG_METAMASK_5)
 						}
 					})
@@ -260,7 +272,9 @@ export default {
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
 			const res = await axios(
-				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${
+					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+				}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
 			this.listReward = res.data.NftCampaignArr
 		},
@@ -300,7 +314,9 @@ export default {
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
 			const res = await axios(
-				`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${
+					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+				}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
 			this.listOngoing = res.data
 		},
@@ -345,29 +361,29 @@ export default {
 			}
 		},
 		getAddrProxyContractByNetwork(network) {
-			switch(network) {
-				case 'ETH': 
+			switch (network) {
+				case 'ETH':
 					return 'eth'
-				case 'BSC': 
+				case 'BSC':
 					return gConfig.wlt.getProxyBscAddr().contractAddr
-				case 'POL': 
+				case 'POL':
 					return gConfig.wlt.getProxyPolygonAddr().contractAddr
 				default:
 					return ''
 			}
 		},
 		getAbiProxyContractByNetwork(network) {
-			switch(network) {
-				case 'ETH': 
+			switch (network) {
+				case 'ETH':
 					return 'eth'
-				case 'BSC': 
+				case 'BSC':
 					return ProxyBcsABI
-				case 'POL': 
+				case 'POL':
 					return ProxyPolygonABI
 				default:
 					return ''
 			}
-		}
+		},
 	},
 }
 </script>
