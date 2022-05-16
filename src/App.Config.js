@@ -237,6 +237,18 @@ export default function AppConfig() {
 					}
 				]
 			},
+			addrProxyBscDev: {
+				contractAddr: '0xbbb1471C1bC1963A72a21F86180c41685797Db02',
+			},
+			addrProxyBscProd: {
+				contractAddr: 'Bsc Prod',
+			},
+			addrProxyPolygonDev: {
+				contractAddr: '0x24ec28E3532aa6D7716baC526A1110510aCa5f80',
+			},
+			addrProxyPolygonProd: {
+				contractAddr: 'polygon prod',
+			},
 			addrBid: {
 				Network: 'opensea',
 			},
@@ -318,6 +330,18 @@ export default function AppConfig() {
 					}
 				}
 			},
+			getProxyBscAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addrProxyBscProd
+				}
+				return gConfig.wlt.addrProxyBscDev
+			},
+			getProxyPolygonAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addrProxyPolygonDev
+				}
+				return gConfig.wlt.addrProxyPolygonDev
+			}
 		},
 
 		canvas: {

@@ -846,8 +846,11 @@ export default {
 		handleAccountsChanged(accounts) {
 			const addr = this.$store.state.userInfo.wallet_addr
 			window.localStorage.setItem(ADDRESS_METAMASK, accounts)
-			if (addr && accounts[0] !== addr) {
-				this.mxShowToast(MSG_METAMASK_1)
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK || loginBy === COINBASE) {
+				if (addr && accounts[0] !== addr) {
+				   this.mxShowToast(MSG_METAMASK_1)
+			   }
 			}
 		},
 	},

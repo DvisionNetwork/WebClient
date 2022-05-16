@@ -137,6 +137,7 @@ export const WALLETCONNECT = 'WALLETCONNECT'
 export const BITSKI = 'BITSKI'
 export const DENIED_TRANSACTION = 'User rejected the transaction'
 export const USER_DECLINED = 'The user has declined this request'
+export const USER_CANCELED = 'The user cancelled this transaction'
 export const OUT_OF_GAS = `You don't have enough native coins to make this transaction.`
 export const ADDRESS_METAMASK = 'addressMetamask'
 
