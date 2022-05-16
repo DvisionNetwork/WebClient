@@ -653,6 +653,7 @@ export default {
 		async getCampaignInfo(campainId) {
 			try {
 				this.mxShowLoading()
+				console.log('staking address', this.staking_address)
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,
