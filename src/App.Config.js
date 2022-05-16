@@ -81,10 +81,10 @@ export default function AppConfig() {
 			}
 			return rv
 		},
-		FORTMATIC_API_KEY_DEV : 'pk_test_50DF28DCF5BE61B4',
-		FORTMATIC_API_KEY_PRODUCT : 'pk_live_27F4314B088C569C',
-		BITSKI_CLIENT_ID_DEV : 'c6149992-4352-4476-a176-582ddb14bad5',
-		BITSKI_CLIENT_ID_PRODUCT : 'fd70095e-9d43-4c01-92a9-2795bcc3942f',
+		FORTMATIC_API_KEY_DEV: 'pk_test_50DF28DCF5BE61B4',
+		FORTMATIC_API_KEY_PRODUCT: 'pk_live_27F4314B088C569C',
+		BITSKI_CLIENT_ID_DEV: 'c6149992-4352-4476-a176-582ddb14bad5',
+		BITSKI_CLIENT_ID_PRODUCT: 'fd70095e-9d43-4c01-92a9-2795bcc3942f',
 		// gConfig.wlt.getAddr();
 		wlt: {
 			/* -----------------  Ethereum Network ----------------- */
@@ -99,6 +99,7 @@ export default function AppConfig() {
 				// Mainnet: "0x1", Testnet: "0x4"
 				Network: '0x4',
 				type: 'normal',
+				stakingAddress: '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc',
 			},
 			addrProd: {
 				// token contract for rel
@@ -112,6 +113,7 @@ export default function AppConfig() {
 				// Mainnet: "0x1", Testnet: "0x3"
 				Network: '0x1',
 				type: 'normal',
+				stakingAddress: '',
 			},
 			/* -----------------  Binance Smart Chain Network ----------------- */
 			addrBscDev: {
@@ -126,6 +128,7 @@ export default function AppConfig() {
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network: '0x61',
 				type: 'normal',
+				stakingAddress: '0x4b437fd847Ac1b248eA419c13e62f08dC435A388',
 			},
 			addrBscProd: {
 				// token contract for rel
@@ -139,6 +142,7 @@ export default function AppConfig() {
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network: '0x38',
 				type: 'normal',
+				stakingAddress: '',
 			},
 
 			/* -----------------  Polygon Network ----------------- */
@@ -154,6 +158,7 @@ export default function AppConfig() {
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network: '0x13881',
 				type: 'normal',
+				stakingAddress: '0xAE03C288f920703eba835C94763A93E8EA53c2C9',
 			},
 			addrPolygonProd: {
 				// token contract for rel
@@ -167,6 +172,7 @@ export default function AppConfig() {
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network: '0x89',
 				type: 'normal',
+				stakingAddress: '',
 			},
 
 			/* -----------------  3rd Land Sale [BSC] ----------------- */
@@ -198,44 +204,57 @@ export default function AppConfig() {
 			/* -----------------  3rd Land Sale [POL] ----------------- */
 			addr3rdLandPolDev: {
 				// token contract for dev
-				TokenAddress :             "0xdC49590852E37419f49C02C5898C5411c5924675",
-				Contract721Address :       "0x3F3cDA1A22CB7B75A9b2b5C7402962E8bC021ED3",
-				Contract1155Address :      "0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F",
-				ContractMarketAddress :    "0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d",
-				Network : "0x13881",
+				TokenAddress: '0xdC49590852E37419f49C02C5898C5411c5924675',
+				Contract721Address:
+					'0x3F3cDA1A22CB7B75A9b2b5C7402962E8bC021ED3',
+				Contract1155Address:
+					'0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F',
+				ContractMarketAddress:
+					'0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d',
+				Network: '0x13881',
 				type: '3rd',
 			},
 			addr3rdLandPolProd: {
 				// token contract for rel
-				TokenAddress :             "0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204",
-				Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
-				Contract1155Address :      "",
-				ContractMarketAddress :    "0x0528943BD50427Db3953d7d715015325fBB616fE",
-				Network : "0x89",
+				TokenAddress: '0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204',
+				Contract721Address:
+					'0x252af5B14184A877adFB77D4490be6A9e1E7068D',
+				Contract1155Address: '',
+				ContractMarketAddress:
+					'0x0528943BD50427Db3953d7d715015325fBB616fE',
+				Network: '0x89',
 				type: '3rd',
 			},
 
 			// 04.25 Market
 			/* -----------------  Integrated Market ----------------- */
 			addrMarketBscDev: {
-				ContractMarketAddress :    "0x6982a7a4Bcb32ab6B39f9676FBf164617F1B2b3e",
-				addrs : [
-					{ // 0 : Event Ticket
-						TokenAddress :             "0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a",
-						Contract721Address :       "",
-						Contract1155Address :      "0x94d616751c16Aecc351bBF1903931f477bA47b6e",
-					}
-				]
+				ContractMarketAddress:
+					'0x6982a7a4Bcb32ab6B39f9676FBf164617F1B2b3e',
+				addrs: [
+					{
+						// 0 : Event Ticket
+						TokenAddress:
+							'0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a',
+						Contract721Address: '',
+						Contract1155Address:
+							'0x94d616751c16Aecc351bBF1903931f477bA47b6e',
+					},
+				],
 			},
 			addrMarketBscProd: {
-				ContractMarketAddress :    "0x05dD661fe00ed8ab1f7FAC7bC660729FC8907472",
-				addrs : [
-					{ // 0 : Event Ticket
-						TokenAddress :             "0x758FB037A375F17c7e195CC634D77dA4F554255B",
-						Contract721Address :       "",
-						Contract1155Address :      "0x4DD95613106cB1348D3eF25A3668f05fFB0c6211",
-					}
-				]
+				ContractMarketAddress:
+					'0x05dD661fe00ed8ab1f7FAC7bC660729FC8907472',
+				addrs: [
+					{
+						// 0 : Event Ticket
+						TokenAddress:
+							'0x758FB037A375F17c7e195CC634D77dA4F554255B',
+						Contract721Address: '',
+						Contract1155Address:
+							'0x4DD95613106cB1348D3eF25A3668f05fFB0c6211',
+					},
+				],
 			},
 			addrProxyBscDev: {
 				contractAddr: '0xbbb1471C1bC1963A72a21F86180c41685797Db02',
@@ -276,57 +295,61 @@ export default function AppConfig() {
 				}
 				return gConfig.wlt.addrPolygonDev
 			},
-			get3rdLandBscAddr () {
-				if(gConfig.isProd) {
-					return gConfig.wlt.addr3rdLandBscProd;
+			get3rdLandBscAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addr3rdLandBscProd
 				}
-				return gConfig.wlt.addr3rdLandBscDev;
+				return gConfig.wlt.addr3rdLandBscDev
 			},
-			get3rdLandPolAddr () {
-				if(gConfig.isProd) {
-					return gConfig.wlt.addr3rdLandPolProd;
+			get3rdLandPolAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addr3rdLandPolProd
 				}
-				return gConfig.wlt.addr3rdLandPolDev;
+				return gConfig.wlt.addr3rdLandPolDev
 			},
 			// 04.25 Market
-			getMarketBscAddr () {
-				if(gConfig.isProd) {
-					return gConfig.wlt.addrMarketBscProd;
+			getMarketBscAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addrMarketBscProd
 				}
-				return gConfig.wlt.addrMarketBscDev;
+				return gConfig.wlt.addrMarketBscDev
 			},
 			getBidAddr() {
 				return gConfig.wlt.addrBid
 			},
 			// 04.25 Market
-			getNetworkAddr (network, market_index) {
-				if(market_index != undefined && market_index != "-1") { // 통합 마켓 컨트랙트일시
-					let market;
-					let getAddrs;
-					if(network == 'ETH') {
-						market = gConfig.wlt.getMarketBscAddr();
-					}else if(network == 'BSC') {
-						market = gConfig.wlt.getMarketBscAddr();
-					}else if(network == 'POL') {
-						market = gConfig.wlt.getMarketBscAddr();
-					}else {
-						return '';
+			getNetworkAddr(network, market_index) {
+				if (market_index != undefined && market_index != '-1') {
+					// 통합 마켓 컨트랙트일시
+					let market
+					let getAddrs
+					if (network == 'ETH') {
+						market = gConfig.wlt.getMarketBscAddr()
+					} else if (network == 'BSC') {
+						market = gConfig.wlt.getMarketBscAddr()
+					} else if (network == 'POL') {
+						market = gConfig.wlt.getMarketBscAddr()
+					} else {
+						return ''
 					}
-					getAddrs = {ContractMarketAddress : market.ContractMarketAddress, ...market.addrs[market_index]};
-					return getAddrs;
+					getAddrs = {
+						ContractMarketAddress: market.ContractMarketAddress,
+						...market.addrs[market_index],
+					}
+					return getAddrs
 				} else {
-					if(network == 'ETH') {
-						return gConfig.wlt.getAddr();
-					}else if(network == 'BSC') {
-						return gConfig.wlt.getBscAddr();
-					}else if(network == 'POL') {
-						return gConfig.wlt.getPolygonAddr();
-					}else if(network == 'BSC3') {
-						return gConfig.wlt.get3rdLandBscAddr();
-					}else if(network == 'POL3') {
-						return gConfig.wlt.get3rdLandPolAddr();
-					}else {
-						return '';
+					if (network == 'ETH') {
+						return gConfig.wlt.getAddr()
+					} else if (network == 'BSC') {
+						return gConfig.wlt.getBscAddr()
+					} else if (network == 'POL') {
+						return gConfig.wlt.getPolygonAddr()
+					} else if (network == 'BSC3') {
+						return gConfig.wlt.get3rdLandBscAddr()
+					} else if (network == 'POL3') {
+						return gConfig.wlt.get3rdLandPolAddr()
+					} else {
+						return ''
 					}
 				}
 			},
@@ -341,7 +364,25 @@ export default function AppConfig() {
 					return gConfig.wlt.addrProxyPolygonProd
 				}
 				return gConfig.wlt.addrProxyPolygonDev
-			}
+			},
+			getStakingEthAddr() {
+				const { isProd, wlt } = gConfig
+				return isProd
+					? wlt.addrDev.stakingAddress
+					: wlt.addrProd.stakingAddress
+			},
+			getStakingBscAddr() {
+				const { isProd, wlt } = gConfig
+				return isProd
+					? wlt.addrBscDev.stakingAddress
+					: wlt.addrBscProd.stakingAddress
+			},
+			getStakingPolAddr() {
+				const { isProd, wlt } = gConfig
+				return isProd
+					? wlt.addrPolygonDev.stakingAddress
+					: wlt.addrPolygonProd.stakingAddress
+			},
 		},
 
 		canvas: {
