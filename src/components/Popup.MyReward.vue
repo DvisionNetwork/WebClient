@@ -209,12 +209,6 @@ export default {
 						.estimateGas({
 							from: address,
 						})
-						.then(res => {
-							console.log('res', res);
-						})
-						.catch(err => {
-							console.log('err', err);	
-						})
 
 					const condition = await checkGasWithBalance(
 						web3,
@@ -241,20 +235,16 @@ export default {
 							e.message.includes('104') &&
 							e.message.includes(USER_DECLINED)
 						) {
-							console.log('vao 1');
 							this.mxShowToast(USER_DECLINED)
 						} else if(e.message.includes(USER_CANCELED)){
-							console.log('vao 2');
 							this.mxShowToast(USER_CANCELED)
 						} else if (
 							e.code === 4001 ||
 							e.message === DENIED_TRANSACTION
 						) {
-							console.log('vao 3');
 							this.mxShowToast(DENIED_TRANSACTION)
 						}
 						  else {
-							console.log('vao 4');
 							this.mxShowToast(MSG_METAMASK_5)
 						}
 					})
