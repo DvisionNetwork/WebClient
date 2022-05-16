@@ -367,21 +367,24 @@ export default function AppConfig() {
 			},
 			getStakingEthAddr() {
 				const { isProd, wlt } = gConfig
-				return isProd
-					? wlt.addrDev.stakingAddress
-					: wlt.addrProd.stakingAddress
+				if (isProd) {
+					return wlt.addrProd.stakingAddress
+				}
+				return wlt.addrDev.stakingAddress
 			},
 			getStakingBscAddr() {
 				const { isProd, wlt } = gConfig
-				return isProd
-					? wlt.addrBscDev.stakingAddress
-					: wlt.addrBscProd.stakingAddress
+				if (isProd) {
+					return wlt.addrBscProd.stakingAddress
+				}
+				return wlt.addrBscDev.stakingAddress
 			},
 			getStakingPolAddr() {
 				const { isProd, wlt } = gConfig
-				return isProd
-					? wlt.addrPolygonDev.stakingAddress
-					: wlt.addrPolygonProd.stakingAddress
+				if (isProd) {
+					return wlt.addrPolygonProd.stakingAddress
+				}
+				return wlt.addrPolygonDev.stakingAddress
 			},
 		},
 
