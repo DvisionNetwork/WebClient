@@ -103,11 +103,7 @@ import MapItem from '@/components/MapItem.vue'
 import RewardBox from '@/components/RewardBox.vue'
 import LandCard from '@/components/LandCard.vue'
 import AddLand from '@/components/AddLand.vue'
-import { BigNumber } from 'ethers'
 import {
-	BSC_STAKING_ADDRESS,
-	ETH_STAKING_ADDRESS,
-	MATIC_STAKING_ADDRESS,
 	BSC_CHAIN_ID,
 	ETH_CHAIN_ID,
 	MATIC_CHAIN_ID,
@@ -415,17 +411,17 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			} else if (chainId === networkBSC) {
-				this.staking_address = BSC_STAKING_ADDRESS
+				this.staking_address = gConfig.wlt.getStakingBscAddr()
 				this.chainId = BSC_CHAIN_ID
 				this.address721 = BSC_ADDRESS_721
 				this.address1155 = BSC_ADDRESS_1155
 			} else if (chainId === networkETH) {
-				this.staking_address = ETH_STAKING_ADDRESS
+				this.staking_address = gConfig.wlt.getStakingEthAddr()
 				this.chainId = ETH_CHAIN_ID
 				this.address721 = ETH_ADDRESS_721
 				this.address1155 = ETH_ADDRESS_1155
 			} else if (chainId === networkPolygon) {
-				this.staking_address = MATIC_STAKING_ADDRESS
+				this.staking_address = gConfig.wlt.getStakingPolAddr()
 				this.chainId = MATIC_CHAIN_ID
 				this.address721 = MATIC_ADDRESS_721
 				this.address1155 = MATIC_ADDRESS_1155
