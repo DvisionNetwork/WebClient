@@ -239,6 +239,7 @@ export default {
 		// }
 		this.listenToDropdown()
 		this.callLandItemList(1)
+		this.addAddressInfo()
 	},
 	beforeUnmount() {
 		window.removeEventListener('click', this.checkStateDropdown)
@@ -340,6 +341,13 @@ export default {
 	},
 
 	methods: {
+		addAddressInfo() {
+			this.addressInfo = renderContractAdd(
+				this.listLandCode.find((ele) => ele.name === this.landCodeName)
+					.type,
+				this.current_network
+			)
+		},
 		updateIdPool(id) {
 			console.log('in update')
 			this.poolDuration.id = id
@@ -491,6 +499,7 @@ export default {
 				(item) => item.is_ERC1155 === 1
 			)
 			const { Contract1155Address, Contract721Address } = this.addressInfo
+			console.log('address', this.addressInfo)
 			let params = {
 				token: this.is_ERC1155
 					? Contract1155Address
@@ -505,6 +514,7 @@ export default {
 					amounts: this.pluck(item1155, 'locked'),
 				}
 			}
+			console.log('params', params)
 			// let params = {
 			// 	erc721TokenIds: this.pluck(item721, 'tokenId'),
 			// 	erc1155TokenIds: this.pluck(item1155, 'tokenId'),
@@ -924,7 +934,8 @@ export default {
 					return
 				}
 			}
-			await (is_ERC1155
+			console.log('in', contractConn)
+			;(is_ERC1155
 				? contractConn.methods.withdrawERC1155(
 						this.poolDuration.id,
 						params
