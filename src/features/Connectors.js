@@ -19,7 +19,7 @@ export const walletLink = new WalletLink({
 	appName: 'Division Network',
 	appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
 	darkMode: false,
-	supportedChainIds: [1, 4, 56, 97, 80001],
+	supportedChainIds: [1, 4, 56, 97, 137, 80001],
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
 export const fortmaticProvider = new Fortmatic(
@@ -32,6 +32,8 @@ export const walletConnectProvider = new WalletConnectProvider({
 		1: 'https://mainnet.mycustomnode.com',
 		3: 'https://ropsten.mycustomnode.com',
 		97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+		56: 'https://bsc-dataseed.binance.org/',
+		137: 'https://polygon-rpc.com/',
 		4: ETH_RPC_ENDPOINT,
 		80001: MATIC_RPC_ENDPOINT,
 	},

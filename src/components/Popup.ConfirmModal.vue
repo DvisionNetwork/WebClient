@@ -31,9 +31,7 @@ export default {
 	props: {
 		data: Object,
 	},
-	created() {
-		console.log('obj', this.obj)
-	},
+	created() {},
 	methods: {
 		closePopup() {
 			this.mxCloseConfirmModal()
