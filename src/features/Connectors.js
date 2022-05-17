@@ -31,7 +31,7 @@ export const walletConnectProvider = new WalletConnectProvider({
 	rpc: {
 		1: 'https://mainnet.mycustomnode.com',
 		3: 'https://ropsten.mycustomnode.com',
-		97: BSC_RPC_ENDPOINT,
+		97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
 		4: ETH_RPC_ENDPOINT,
 		80001: MATIC_RPC_ENDPOINT,
 	},
