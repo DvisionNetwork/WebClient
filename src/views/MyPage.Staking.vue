@@ -239,7 +239,7 @@ export default {
 		// }
 		this.listenToDropdown()
 		this.callLandItemList(1)
-		this.addAddressInfo()
+		this.handleClickItem(this.listLandCode[0])
 	},
 	beforeUnmount() {
 		window.removeEventListener('click', this.checkStateDropdown)
@@ -341,13 +341,6 @@ export default {
 	},
 
 	methods: {
-		addAddressInfo() {
-			this.addressInfo = renderContractAdd(
-				this.listLandCode.find((ele) => ele.name === this.landCodeName)
-					.type,
-				this.current_network
-			)
-		},
 		updateIdPool(id) {
 			console.log('in update')
 			this.poolDuration.id = id
@@ -377,6 +370,7 @@ export default {
 			this.mxSetLandQuery(query)
 		},
 		handleClickItem(item) {
+			console.log("item", item);
 			this.landCode = item.name
 			this.setLandMapId(item.id)
 			this.addressInfo = renderContractAdd(
@@ -384,6 +378,7 @@ export default {
 					.type,
 				this.current_network
 			)
+			console.log("this.addressInfo", this.addressInfo);
 		},
 		setLandMapId(mapId) {
 			const landQuery = this.mxGetLandQuery()
@@ -407,10 +402,12 @@ export default {
 			window.addEventListener('click', this.checkStateDropdown)
 		},
 		setStakingAddress(chainId) {
+			console.log("setStakingAddress", chainId)
 			this.current_network = chainId
 			const networkBSC = gConfig.wlt.getBscAddr().Network
 			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
 			const networkETH = gConfig.wlt.getEthAddr().Network
+
 			if (
 				chainId !== networkBSC &&
 				chainId !== networkETH &&
@@ -499,7 +496,6 @@ export default {
 				(item) => item.is_ERC1155 === 1
 			)
 			const { Contract1155Address, Contract721Address } = this.addressInfo
-			console.log('address', this.addressInfo)
 			let params = {
 				token: this.is_ERC1155
 					? Contract1155Address
@@ -514,7 +510,6 @@ export default {
 					amounts: this.pluck(item1155, 'locked'),
 				}
 			}
-			console.log('params', params)
 			// let params = {
 			// 	erc721TokenIds: this.pluck(item721, 'tokenId'),
 			// 	erc1155TokenIds: this.pluck(item1155, 'tokenId'),
@@ -594,11 +589,17 @@ export default {
 					campaignId: campaignId,
 					chainId: this.chainId,
 				}
+				// const response = await axios.get(
+				// 	`${
+				// 		gConfig.isProd
+				// 			? _api_domain
+				// 			: gConfig.public_api_sotatek
+				// 	}/nft-total-staked`,
+				// 	{ params }
+				// )
 				const response = await axios.get(
 					`${
-						gConfig.isProd
-							? _api_domain
-							: gConfig.public_api_sotatek
+						gConfig.public_api_sotatek
 					}/nft-total-staked`,
 					{ params }
 				)
@@ -618,9 +619,15 @@ export default {
 				user: this.wallet_addr,
 				chainId: this.chainId,
 			}
+			// const response = await axios.get(
+			// 	`${
+			// 		gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+			// 	}/nft-my-staked`,
+			// 	{ params }
+			// )
 			const response = await axios.get(
 				`${
-					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+					gConfig.public_api_sotatek
 				}/nft-my-staked`,
 				{ params }
 			)
@@ -663,7 +670,6 @@ export default {
 		async getCampaignInfo(campainId) {
 			try {
 				this.mxShowLoading()
-				console.log('staking address', this.staking_address)
 				const contractConn = getContractConnect(
 					this.loginBy,
 					ABI_STAKING,
@@ -781,9 +787,15 @@ export default {
 				campaignId: campaignId,
 				chainId: this.chainId,
 			}
+			// const response = await axios.get(
+			// 	`${
+			// 		gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+			// 	}/nft-staked`,
+			// 	{ params }
+			// )
 			const response = await axios.get(
 				`${
-					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
+					gConfig.public_api_sotatek
 				}/nft-staked`,
 				{ params }
 			)
@@ -851,15 +863,18 @@ export default {
 		},
 
 		onCheckItemUnStakeModalConfirm(nftId, is_ERC1155, locked, name) {
+			console.log(nftId, is_ERC1155, locked, name)
 			if (!this.checkNetwork()) {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
 			const { Contract1155Address, Contract721Address } = this.addressInfo
+			console.log(Contract1155Address, Contract721Address)
 			let params = {
 				token: is_ERC1155 ? Contract1155Address : Contract721Address,
 				tokenIds: [nftId],
 			}
+			console.log(params);
 			if (is_ERC1155) {
 				params = {
 					...params,
@@ -872,6 +887,7 @@ export default {
 			// 	erc1155Amounts: is_ERC1155 ? [locked] : [],
 			// }
 			params = JSON.parse(JSON.stringify(params))
+			console.log(params);
 			const obj = {
 				width: '712px',
 				title: 'Unlock the selected LAND?',
@@ -934,8 +950,7 @@ export default {
 					return
 				}
 			}
-			console.log('in', contractConn)
-			;(is_ERC1155
+			await (is_ERC1155
 				? contractConn.methods.withdrawERC1155(
 						this.poolDuration.id,
 						params

@@ -24,7 +24,7 @@
 				180-day pool
 			</div>
 		</div>
-		<div class="tab-heading">My NFTs</div>
+		<!-- <div class="tab-heading">My NFTs</div> -->
 	</div>
 	<div v-else class="tab-wrap">
 		<div class="select-wrap">
@@ -62,7 +62,7 @@
 				</div>
 			</div>
 			<div class="tab-nft">
-				<div class="tab-heading active">My NFTs</div>
+				<!-- <div class="tab-heading active">My NFTs</div> -->
 			</div>
 		</div>
 	</div>

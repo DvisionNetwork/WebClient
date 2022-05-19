@@ -142,7 +142,7 @@ export default function AppConfig() {
 				// Mainnet: "0x38", Testnet: "0x61"
 				Network: '0x38',
 				type: 'normal',
-				stakingAddress: '',
+				stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
 			},
 
 			/* -----------------  Polygon Network ----------------- */
@@ -172,7 +172,7 @@ export default function AppConfig() {
 				// Mainnet: "0x89", Testnet: "0x13881"
 				Network: '0x89',
 				type: 'normal',
-				stakingAddress: '',
+				stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
 			},
 
 			/* -----------------  3rd Land Sale [BSC] ----------------- */
@@ -187,6 +187,7 @@ export default function AppConfig() {
 					'0xC47F78100c3cefAdd8a71EfD440d22299B6538FF',
 				Network: '0x61',
 				type: '3rd',
+				stakingAddress: '0x4b437fd847Ac1b248eA419c13e62f08dC435A388',
 			},
 			addr3rdLandBscProd: {
 				// token contract for rel
@@ -199,6 +200,7 @@ export default function AppConfig() {
 					'0xeeF91f31F00Af45F9EEc2300483BB7Aa23111E36',
 				Network: '0x38',
 				type: '3rd',
+				stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
 			},
 
 			/* -----------------  3rd Land Sale [POL] ----------------- */
@@ -213,6 +215,7 @@ export default function AppConfig() {
 					'0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d',
 				Network: '0x13881',
 				type: '3rd',
+				stakingAddress: '0xAE03C288f920703eba835C94763A93E8EA53c2C9',
 			},
 			addr3rdLandPolProd: {
 				// token contract for rel
@@ -224,6 +227,7 @@ export default function AppConfig() {
 					'0x0528943BD50427Db3953d7d715015325fBB616fE',
 				Network: '0x89',
 				type: '3rd',
+				stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
 			},
 
 			// 04.25 Market
@@ -367,24 +371,21 @@ export default function AppConfig() {
 			},
 			getStakingEthAddr() {
 				const { isProd, wlt } = gConfig
-				if (isProd) {
-					return wlt.addrProd.stakingAddress
-				}
-				return wlt.addrDev.stakingAddress
+				return isProd
+					? wlt.addrProd.stakingAddress
+					: wlt.addrDev.stakingAddress
 			},
 			getStakingBscAddr() {
 				const { isProd, wlt } = gConfig
-				if (isProd) {
-					return wlt.addrBscProd.stakingAddress
-				}
-				return wlt.addrBscDev.stakingAddress
+				return isProd
+					? wlt.addrBscProd.stakingAddress
+					: wlt.addrBscDev.stakingAddress
 			},
 			getStakingPolAddr() {
 				const { isProd, wlt } = gConfig
-				if (isProd) {
-					return wlt.addrPolygonProd.stakingAddress
-				}
-				return wlt.addrPolygonDev.stakingAddress
+				return isProd
+					? wlt.addrPolygonProd.stakingAddress
+					: wlt.addrPolygonDev.stakingAddress
 			},
 		},
 
@@ -782,7 +783,7 @@ export default function AppConfig() {
 		market_land_sell: getApiUrl('lgl0004_ex'),
 
 		test_url: 'https://www.multiverse.so/m/api/terms_list_ex',
-		public_api_sotatek: 'https://division-api.sotatek.works',
+		public_api_sotatek: 'https://www.multiverse.so/m/stakingserver', //118.67.143.101
 		public_api_sotatek_2: 'https://www.multiverse.so/m/api',
 		privateKeyEncode: 'NGpICZvRVGsota',
 	}

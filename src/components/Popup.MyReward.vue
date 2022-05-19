@@ -76,18 +76,13 @@ import {
 	WALLETCONNECT,
 	fromHexToChainId,
 	DENIED_TRANSACTION,
-	USER_DECLINED,
-	renderNetworkName,
-	USER_CANCELED,
-	convertAddressAndCheckEqual,
+  	USER_DECLINED,
+    renderNetworkName,
+    USER_CANCELED,
 } from '../features/Common'
 import AppConfig from '@/App.Config.js'
 import jwt from 'jsonwebtoken'
-import {
-	MSG_METAMASK_1,
-	MSG_METAMASK_2,
-	MSG_METAMASK_5,
-} from '../features/Messages'
+import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_5 } from '../features/Messages'
 import { _api_domain } from '../App.Config'
 var gConfig = AppConfig()
 
@@ -168,13 +163,9 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
 			if (
-				this.loginBy === METAMASK &&
 				addressChange &&
-				convertAddressAndCheckEqual(
-					this.loginBy,
-					address,
-					addressChange
-				)
+				addressChange !== address &&
+				this.loginBy === METAMASK
 			) {
 				this.mxCloseLoading()
 				this.mxShowToast(MSG_METAMASK_1)
@@ -186,19 +177,16 @@ export default {
 				chainId: this.data.chainId,
 				currentTime: Date.now(),
 			}
-			const url = `${
-				gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
-			}/claim-reward`
+			// const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/claim-reward`
+			const url = `${gConfig.public_api_sotatek}/claim-reward`
 			const data = jwt.sign(payload, gConfig.privateKeyEncode)
 
 			const res = await axios.put(url, { data })
-
+		console.log("res", res);
 			if (res.data.data && res.data.signature) {
 				const networkFromChainId = renderNetworkName(oldChainId)
-				const PROXY_ADDRESS =
-					this.getAddrProxyContractByNetwork(networkFromChainId)
-				const PROXY_ABI =
-					this.getAbiProxyContractByNetwork(networkFromChainId)
+				const PROXY_ADDRESS = this.getAddrProxyContractByNetwork(networkFromChainId)
+				const PROXY_ABI = this.getAbiProxyContractByNetwork(networkFromChainId)
 				const contract = getContractConnect(
 					this.loginBy,
 					PROXY_ABI,
@@ -249,14 +237,15 @@ export default {
 							e.message.includes(USER_DECLINED)
 						) {
 							this.mxShowToast(USER_DECLINED)
-						} else if (e.message.includes(USER_CANCELED)) {
+						} else if(e.message.includes(USER_CANCELED)){
 							this.mxShowToast(USER_CANCELED)
 						} else if (
 							e.code === 4001 ||
 							e.message === DENIED_TRANSACTION
 						) {
 							this.mxShowToast(DENIED_TRANSACTION)
-						} else {
+						}
+						  else {
 							this.mxShowToast(MSG_METAMASK_5)
 						}
 					})
@@ -271,12 +260,14 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
+			// const res = await axios(
+			// 	`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			// )
 			const res = await axios(
-				`${
-					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
-				}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
-			this.listReward = res.data.NftCampaignArr
+			console.log(res);
+			this.listReward = res.data.NftCampaignArr != undefined ? res.data.NftCampaignArr : res.data;
 		},
 		filterReward() {
 			if (this.listReward && this.listReward.length > 0) {
@@ -284,6 +275,15 @@ export default {
 				for (let i = 1; i <= 9; i++) {
 					const nft = this.listReward.reduce(
 						(obj, item) => {
+							if(item?.rewardRandomBox && typeof item.rewardRandomBox === 'string') {
+								item.rewardRandomBox = JSON.parse(item.rewardRandomBox);
+							}
+							if(item?.rewardBuildingBoxA && typeof item.rewardBuildingBoxA === 'string') {
+								item.rewardBuildingBoxA = JSON.parse(item.rewardBuildingBoxA);
+							}
+							if(item?.rewardBuildingBoxB && typeof item.rewardBuildingBoxB === 'string') {
+								item.rewardBuildingBoxB = JSON.parse(item.rewardBuildingBoxB);
+							}
 							if (item?.rewardRandomBox?.boxType == i) {
 								obj.amount += item?.rewardRandomBox.amount
 							}
@@ -293,7 +293,6 @@ export default {
 							if (item?.rewardBuildingBoxB?.boxType == i) {
 								obj.amount += item?.rewardBuildingBoxB.amount
 							}
-
 							return {
 								amount: obj.amount,
 								boxType: i,
@@ -313,11 +312,13 @@ export default {
 			const address = this.$store.state.userInfo.wallet_addr
 			const campainId = this.data.poolDuration.id
 			const chainId = this.data.chainId
+			// const res = await axios(
+			// 	`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			// )
 			const res = await axios(
-				`${
-					gConfig.isProd ? _api_domain : gConfig.public_api_sotatek
-				}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+				`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
 			)
+			console.log(res);
 			this.listOngoing = res.data
 		},
 		filterOngoing() {
@@ -326,6 +327,15 @@ export default {
 				for (let i = 1; i <= 9; i++) {
 					const nft = this.listOngoing.reduce(
 						(obj, item) => {
+							if(item?.virtualRewardRandomBox && typeof item.virtualRewardRandomBox === 'string') {
+								item.virtualRewardRandomBox = JSON.parse(item.virtualRewardRandomBox);
+							}
+							if(item?.virtualRewardBuildingBoxA && typeof item.virtualRewardBuildingBoxA === 'string') {
+								item.virtualRewardBuildingBoxA = JSON.parse(item.virtualRewardBuildingBoxA);
+							}
+							if(item?.virtualRewardBuildingBoxB && typeof item.virtualRewardBuildingBoxB === 'string') {
+								item.virtualRewardBuildingBoxB = JSON.parse(item.virtualRewardBuildingBoxB);
+							}
 							if (item?.virtualRewardRandomBox?.boxType == i) {
 								obj.amount +=
 									item?.virtualRewardRandomBox.amount
@@ -361,29 +371,29 @@ export default {
 			}
 		},
 		getAddrProxyContractByNetwork(network) {
-			switch (network) {
-				case 'ETH':
+			switch(network) {
+				case 'ETH': 
 					return 'eth'
-				case 'BSC':
+				case 'BSC': 
 					return gConfig.wlt.getProxyBscAddr().contractAddr
-				case 'POL':
+				case 'POL': 
 					return gConfig.wlt.getProxyPolygonAddr().contractAddr
 				default:
 					return ''
 			}
 		},
 		getAbiProxyContractByNetwork(network) {
-			switch (network) {
-				case 'ETH':
+			switch(network) {
+				case 'ETH': 
 					return 'eth'
-				case 'BSC':
+				case 'BSC': 
 					return ProxyBcsABI
-				case 'POL':
+				case 'POL': 
 					return ProxyPolygonABI
 				default:
 					return ''
 			}
-		},
+		}
 	},
 }
 </script>

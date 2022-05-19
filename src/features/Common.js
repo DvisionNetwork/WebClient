@@ -1,5 +1,4 @@
 import AppConfig from '../App.Config'
-import { getWeb3 } from './Connectors'
 export const INFURA_ID = '14ff3a7ed1484486aac3e5573bcae20d'
 export const DEFAULT_ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${INFURA_ID}`
 
@@ -50,15 +49,31 @@ export function formatChainId(chainId) {
 	switch (chainId) {
 		case ETH_CHAIN_ID:
 		case ETH_CHAIN_ID.toString():
-			network = '0x4' //testnet
+			network = '0x1';
+			break
+		case ETH_ROP_CHAIN_ID:
+		case ETH_ROP_CHAIN_ID.toString():
+			network = '0x3';
+			break
+		case ETH_RINK_CHAIN_ID:
+		case ETH_RINK_CHAIN_ID.toString():
+			network = '0x4';
 			break
 		case BSC_CHAIN_ID:
 		case BSC_CHAIN_ID.toString():
-			network = '0x61' //testnet
+			network = '0x38';
+			break
+		case BSC_TEST_CHAIN_ID:
+		case BSC_TEST_CHAIN_ID.toString():
+			network = '0x61';
 			break
 		case MATIC_CHAIN_ID:
 		case MATIC_CHAIN_ID.toString():
-			network = '0x13881' //testnet
+			network = '0x89';
+			break
+		case MATIC_TEST_CHAIN_ID:
+		case MATIC_TEST_CHAIN_ID.toString():
+			network = '0x13881';
 			break
 	}
 	return network
@@ -90,10 +105,14 @@ export function renderNetworkName(chainId) {
 			case '3':
 				network = 'ETH'
 				break
+			case '0x38':
+			case '56':
 			case '0x61':
 			case '97':
 				network = 'BSC'
 				break
+			case '0x89':
+			case '137':
 			case '0x13881':
 			case '80001':
 				network = 'POL'
@@ -116,11 +135,21 @@ export const BSC_RPC_ENDPOINT_PROD = 'https://bsc-dataseed.binance.org/'
 export const ETH_RPC_ENDPOINT_PROD =
 	'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'
 export const MATIC_RPC_ENDPOINT_PROD = 'https://polygon-rpc.com/'
+export const BSC_ADDRESS_721 = '0xD41eddEdB1891B626FADD17B328e14077c8248Cb'
+export const BSC_ADDRESS_1155 = '0x3a0792d301a40eBcd9199431b00AD26603b7cdc4'
+export const ETH_ADDRESS_721 = '0x13b03495467f7CfB7237cbC5784faDA36bf23848'
+export const ETH_ADDRESS_1155 = '0x94d0D2FFE6d5Ab4eDd1d13Ca748cBC13210936dA'
+export const MATIC_ADDRESS_721 = '0x9A42796215D1220381988DA2f1Ccc5456399b51d'
+export const MATIC_ADDRESS_1155 = '0xc03c9c5385bEe279fE5b485985c7e92a1AfbaBEd'
 export const BSC_PROXY_ADDRESS = '0xbbb1471C1bC1963A72a21F86180c41685797Db02'
 export const BRIDGE_WALLETCONNECT = 'https://bridge.walletconnect.org'
-export const BSC_CHAIN_ID = 97
-export const ETH_CHAIN_ID = 4
-export const MATIC_CHAIN_ID = 80001
+export const ETH_CHAIN_ID = 1
+export const ETH_ROP_CHAIN_ID = 3
+export const ETH_RINK_CHAIN_ID = 4
+export const BSC_CHAIN_ID = 56
+export const BSC_TEST_CHAIN_ID = 97
+export const MATIC_CHAIN_ID = 137
+export const MATIC_TEST_CHAIN_ID = 80001
 export const VALUE_LOGIN =
 	'7cad118dfd6aade5cac88ab0656d82855fdc9028f4247e12430952d1b8085ed5'
 export const METAMASK = 'METAMASK'
@@ -299,13 +328,5 @@ export const renderContractAdd = (type, network) => {
 	}
 	return arrAddress.find(
 		(ele) => ele.type === type && ele.Network === network
-	)
-}
-
-export const convertAddressAndCheckEqual = (loginBy, address1, address2) => {
-	const web3 = getWeb3(loginBy)
-	return (
-		web3.utils.toChecksumAddress(address1) !==
-		web3.utils.toChecksumAddress(address2)
 	)
 }
