@@ -264,13 +264,13 @@ export default function AppConfig() {
 				contractAddr: '0xbbb1471C1bC1963A72a21F86180c41685797Db02',
 			},
 			addrProxyBscProd: {
-				contractAddr: 'Bsc Prod',
+				contractAddr: '0x48EE8527ba62ECb8A5B2a90fcC4c326B1C2cec1e',
 			},
 			addrProxyPolygonDev: {
 				contractAddr: '0x24ec28E3532aa6D7716baC526A1110510aCa5f80',
 			},
 			addrProxyPolygonProd: {
-				contractAddr: 'polygon prod',
+				contractAddr: '0x48EE8527ba62ECb8A5B2a90fcC4c326B1C2cec1e',
 			},
 			addrBid: {
 				Network: 'opensea',
