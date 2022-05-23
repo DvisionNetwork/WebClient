@@ -161,6 +161,7 @@ async lockBianceNft(tokenIds, amounts, callback) {
             console.log("amounts : ", amounts);
 
 			await contract.lock(bscNftAddr, tokenIds, amounts);
+			callback({res_code:200})
 		}else{
             console.log("checkMetamask error");
 			callback({res_code:402, message:'Error on checking MetaMask'})

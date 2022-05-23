@@ -404,6 +404,11 @@ export default {
 			if (salestate == '0') {
 				btn_state = '0'
 			}
+			var stake = _U.getIfDefined(this.blockDetail, 'stake')
+			if (stake == 'true') {
+				btn_state = '0'
+			}
+				
 			return btn_state
 		},
 
@@ -487,7 +492,9 @@ export default {
 		},
 
 		isItemOwned() {
-			if (this.marketItem.owner_id && this.userInfo.wallet_addr) {
+			var stake = _U.getIfDefined(this.blockDetail, 'stake')
+			
+			if (this.marketItem.owner_id && this.userInfo.wallet_addr && stake == "false") {			
 				var curWallet = this.userInfo.wallet_addr.toLowerCase()
 				var ownerId = this.marketItem.owner_id.toLowerCase()
 				console.log({curWallet, ownerId}, 'test')

@@ -30,7 +30,7 @@
 						<div class="icon"></div>
 					</div>
 					<div class="page"
-						v-for="(page,idx) in pages"
+						v-for="page in pages"
 						:key="page"
 						:active="(currentPage == page ? 'on' : 'off')"
 						@click="onClickPage(page)"
@@ -192,10 +192,10 @@ export default {
 			}
 			return mapId;
 		},
-		landItems() {
-			// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
-			return this.mxGetLandItems();
-		},
+		// landItems() {
+		// 	// console.log("[Market.Land.vue] computed, landItems ", this.mxGetLandItems());
+		// 	return this.mxGetLandItems();
+		// },
 		landItem() {
 			return this.mxGetLandItem();
 		},
@@ -218,14 +218,18 @@ export default {
 			if(o) o.value = '';
 			this.mxSetLandQuery(landQuery);
 			this.callLandItemList();
+			this.setSearchQuery(1);
 			// this.setLandItems(landQuery);
 		},
 		searchQuery(newVal, oldVal) {
 			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
 			this.setLandItems(newVal);
 		},
-		landItems(newVal, oldVal) {
-			//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
+		// landItems(newVal, oldVal) {
+		// 	//console.log("[Market.Land.vue] ======================= watch landItems ", newVal, oldVal);
+		// 	this.setPages();
+		// },
+		landItemsInPopup() {
 			this.setPages();
 		},
 		'$store.state.dataClickedInfoModal': function () {
@@ -312,15 +316,11 @@ export default {
 						console.log("index : ", index)
 						if(index == this.binanceNftBalance - 1) {
 							this.mxCloseLoading();
-							var timeOut = setTimeout(()=>{
-								this.mxShowLoading('inf');
-
-								this.mxShowAlert({
-									msg:this.$t('mypage.land.alert-binance-lock') + this.tokenIdToLock,
-									btn:this.$t('mypage.land.alert-claim-btn'),
-									callback: this.lockBinanceNftOwned
-								});
-							}, 1000);
+							this.mxShowAlert({
+								msg:this.$t('mypage.land.alert-binance-lock') + this.tokenIdToLock,
+								btn:this.$t('mypage.land.alert-claim-btn'),
+								callback: this.lockBinanceNftOwned
+							});
 						}
 					}
 				});
@@ -340,10 +340,12 @@ export default {
 
 		callLandItemList() {
 
-			console.log("[Market.Land.vue] callLandItemList() ");
+			console.warn("[Market.Land.vue] callLandItemList() ");
 			// var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
 			const network = window.localStorage.getItem('currentNetwork')
-			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false, undefined, () => {
+				this.setSearchQuery(1);
+			})
 			// this.mxCallAndSetMyLandItemList(this.mapId, network,false, ()=>{
 			// 	// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 			// 	this.setLandItems(this.searchQuery);
@@ -475,20 +477,26 @@ export default {
 			// console.log("[Market.Land.vue] blockList==> ", blockList);
 
 			var total = blockListAll.length;
-			this.mxSetLandItems({total:total,  page:query.page, cpp: query.count,  list:blockList});
+			this.mxSetLandItemsInPopupStaking({total:total,  page:query.page, cpp: query.count,  list:blockList});
 		},
 
 		setPages() {
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var pgrStartPageNo = Math.floor((this.landItemsInPopup.page -1) / pno_p_grp)*pno_p_grp +1;
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
-			this.pages = []; // 초기화 해 줄 것.
-			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
-				this.pages[i] = i + pgrStartPageNo;
+			var totalPages = Math.ceil(
+				this.landItemsInPopup.total / this.landItemsInPopup.cpp
+			)
+			this.pages = [] // 초기화 해 줄 것.
+			for (
+				var i = 0;
+				i < pno_p_grp && i + pgrStartPageNo <= totalPages;
+				i++
+			) {
+				this.pages[i] = i + pgrStartPageNo
 			}
 
-			this.currentPage = this.landItems.page;
+			this.currentPage = this.landItemsInPopup.page;
 			this.firstPageGroup= pgrStartPageNo < pno_p_grp ? true: false;
 			this.lastPageGroup = this.currentPage + pno_p_grp > totalPages ? true : false;
 
@@ -500,7 +508,7 @@ export default {
 		onClickPageArrow(leftRight) {
 
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var pgrStartPageNo = Math.floor((this.landItemsInPopup.page -1) / pno_p_grp)*pno_p_grp +1;
 			var page = 1;
 			if(leftRight == 'right') {
 				page = pgrStartPageNo + pno_p_grp;
@@ -508,7 +516,7 @@ export default {
 				page = pgrStartPageNo - pno_p_grp;
 			}
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
+			var totalPages = Math.ceil(this.landItemsInPopup.total/this.landItemsInPopup.cpp);
 			if(page < 1) page = 1;
 			if(page > totalPages) page = totalPages;
 

@@ -505,11 +505,11 @@ var Mixin = {
 			if (!isStake) {
 				delete cloneQuery.campaignId
 			}
-			this.mxShowLoading()
+			this.mxShowLoading()			
 			_U.callPost({
 				url: gConfig.market_land_with_owner,
 				data: cloneQuery,
-				callback: (resp) => {
+				callback: (resp) => {					
 					const rows = _U.getIfDefined(resp, ['data', 'rows'])
 					// let midx = 0
 					if (rows && rows.length > 0) {
@@ -626,9 +626,9 @@ var Mixin = {
 					// 	: this.mxSetLandMenuPopUp(landMenu)
 
 					// // add func
-					// if (typeof func == 'function') {
-					// 	func()
-					// }
+					if (typeof func == 'function') {						
+						func()
+					}
 
 					// this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
 					this.mxCloseLoading()
