@@ -36,7 +36,7 @@
 					:value="modelValue"
 					:placeholder="field.placeholder ? field.placeholder : field.label"
 				>
-					<option v-for="code in ccodes"
+					<option v-for="code in CCodes"
 						class="field-option"
 						:value="code.value"
 						:key="code.ccode"
@@ -56,7 +56,7 @@
 						<transition appear name="fade">
 							<ul class="cc-list" v-show="showCCPopup">
 								<div id="cc-list-content">
-									<li  class="cc-item remove-highlight" v-for="code in ccodes"
+									<li  class="cc-item remove-highlight" v-for="code in CCodes"
 										:value="code.value"
 										:key="code.ccode"
 										@click="setCCValue(code)">
@@ -110,16 +110,15 @@
 
 <script>
 import Scrollbar from 'smooth-scrollbar'
-
-import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes();
-
+import CCodes from '@/features/CountryCodes';
 
 export default {
 	props: {
-		field: {
-			type: Object,
-			default: {},
+		field: function() {
+			return {
+				type: Object,
+				default: {},
+			}
 		},
 		modelValue: {
 			type: [String, Number],
@@ -139,15 +138,15 @@ export default {
 
 		console.log("[PopupInput.vue] mounted(), route : ", this.$route, this.field)
 		if(this.field.type=='select') {
-			console.log("[PopupInput.vue] mounted(), CountryCodes: ==================== ", this.ccodes)
+			console.log("[PopupInput.vue] mounted(), CountryCodes: ==================== ", CCodes)
 		}
 		if(this.field.name=='mobile' ) {
-			if(!Scrollbar.has(_U.Q('#cc-list-content'))) {
-				this.scrollbar = Scrollbar.init(_U.Q('#cc-list-content'));
+			if(!Scrollbar.has(window._U.Q('#cc-list-content'))) {
+				this.scrollbar = Scrollbar.init(window._U.Q('#cc-list-content'));
 			}
 			var code = null;
-			for(var i=0; i<this.ccodes.length; i++) {
-				var ccode = this.ccodes[i];
+			for(var i=0; i<CCodes.length; i++) {
+				var ccode = CCodes[i];
 				if(ccode.value == this.coutryCodeNo) {
 					code = ccode;
 					break;
@@ -160,8 +159,8 @@ export default {
 	},
 	beforeUnmount() {
 		console.log("[PopupInput.vue] beforeUnmount() : ");
-		if(Scrollbar.has(_U.Q('#cc-list-content'))) {
-			Scrollbar.destroy(_U.Q('#cc-list-content'))
+		if(Scrollbar.has(window._U.Q('#cc-list-content'))) {
+			Scrollbar.destroy(window._U.Q('#cc-list-content'))
 		}
 	},
 	computed: {
@@ -175,19 +174,19 @@ export default {
 			scrollbar: null,
 			showiconPopup:false,
 			showCCPopup: false,
-			ccodes: CCodes.codes,
+			CCodes: CCodes.codes,
 			ccName: '',
 			reg : {
 				id: /^[0-9a-z]{5,20}$/,
 				password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,30}$/,
-				email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+				email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
 				mobile: /^[0-9]{10,12}$/,
 			},
 			valuefocus:false,
 		}
 	},
 	setup(props, context) {
-		const uuid = _U.getUUID()
+		const uuid = window._U.getUUID()
 
 		return {
 			uuid,
@@ -198,34 +197,34 @@ export default {
 			var v = e.target.value;
 			if(v && v.toString().length > 0) v = e.target.value.trim();
 
-			this.field.value = v;
+			this.field().value = v;
 			if(typeof v==='undefined' || v.toString().length < 1) {
-				this.field.errorMsg = '';
-				this.field.checked = false;
+				this.field().errorMsg = '';
+				this.field().checked = false;
 				if(this.field.name == 'id') {
-					this.field.buttonDimmed = true;
+					this.field().buttonDimmed = true;
 				}
 				return;
 			}
 			if(v.toString().length > 0) {
 				if(this.checkField()) {
-					this.field.errorMsg = '';
+					this.field().errorMsg = '';
 					if(this.field.name == 'id') {
-						this.field.buttonDimmed = false;
-						this.field.checked = false; // 중복확인, 인증코드 확인후 true로 됨
-						this.field.errorMsg = this.getErrorMsg(this.field.name+'-check');
+						this.field().buttonDimmed = false;
+						this.field().checked = false; // 중복확인, 인증코드 확인후 true로 됨
+						this.field().errorMsg = this.getErrorMsg(this.field.name+'-check');
 					}else{
-						this.field.checked = true;
+						this.field().checked = true;
 					}
 				}else{
 					if(this.field.name == 'id') {
-						this.field.buttonDimmed = true;
+						this.field().buttonDimmed = true;
 					}
-					this.field.errorMsg = this.getErrorMsg(this.field.name);
-					this.field.checked = false;
+					this.field().errorMsg = this.getErrorMsg(this.field.name);
+					this.field().checked = false;
 				}
 			}else{
-				this.field.checked = false;
+				this.field().checked = false;
 			}
 
 			console.log("onUpdate -====== ", this.field.value );
@@ -278,16 +277,16 @@ export default {
 					if(this.reg.password.test(val)) {
 						if(this.field.name=='password2') {
 
-							var o = _U.Q(this.fieldsetParentCss+' .field-set .field[name="password1"]');
+							var o = window._U.Q(this.fieldsetParentCss+' .field-set .field[name="password1"]');
 							if(this.popupStyle=='signup-register') {
-								o = _U.Q('.Signup .Register .field-set .field[name="password1"]');
+								o = window._U.Q('.Signup .Register .field-set .field[name="password1"]');
 							// This page is for B2B
 							}else if(this.popupStyle=='signup-register2') {
-								o = _U.Q('.Signup .Register2 .field-set .field[name="password1"]');
+								o = window._U.Q('.Signup .Register2 .field-set .field[name="password1"]');
 							}else if(this.popupStyle=='popup-edit-profile') {
-								o = _U.Q('.modal-mask .edit-profile-info .field-set .field[name="password1"]');
+								o = window._U.Q('.modal-mask .edit-profile-info .field-set .field[name="password1"]');
 							}else if(this.popupStyle=='popup-changepwd') {
-								o = _U.Q('.modal-mask .change-password-info .field-set .field[name="password1"]');
+								o = window._U.Q('.modal-mask .change-password-info .field-set .field[name="password1"]');
 							}
 							// console.log("================ this.fieldsetParentCss .field-set .field[name=password1]", this.popupStyle, this.fieldsetParentCss, o);
 
@@ -334,7 +333,7 @@ export default {
 
 			switch(this.field.name) {
 				case 'id':
-					if(_U.getIfDefined(this.field,'buttonDimmed')==true) {
+					if(window._U.getIfDefined(this.field,'buttonDimmed')==true) {
 						break;
 					}
 					if(this.reg.id.test(val)) {
@@ -523,7 +522,7 @@ export default {
 							overflow: hidden;
 							#cc-list-content {
 								width: 100%;
-    							height: 100%;
+								height: 100%;
 							}
 							.cc-item {
 								@include FLEX(flex-start, center);

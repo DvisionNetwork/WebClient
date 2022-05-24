@@ -133,34 +133,26 @@
 <script>
 import WalletConnect from '@walletconnect/client'
 import QRCodeModal from '@walletconnect/qrcode-modal'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
 
 import sha256 from 'crypto-js/sha256';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
 import {
-	BRIDGE_WALLETCONNECT,
-	DEFAULT_ETH_JSONRPC_URL,
-	BSC_CHAIN_ID,
-	FORTMATIC_API_KEY,
 	BSC_RPC_ENDPOINT,
 	VALUE_LOGIN,
 	MATIC_RPC_ENDPOINT,
-	MATIC_CHAIN_ID,
 	METAMASK,
 	COINBASE,
 	ETH_CHAIN_ID,
 	ETH_RPC_ENDPOINT,
 	checkProviderWallet,
  FORTMATIC, WALLETCONNECT, BITSKI
-} from '@/features/Common.js'
+} from '@/features/Common'
 import { coinbaseProvider, fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
 import Web3 from 'web3'
-import {
-	MSG_METAMASK_1,
-} from '@/features/Messages.js'
+import { MSG_METAMASK_1 } from '@/features/Messages'
+import { gConfig } from '@/App.Config'
 
 export default {
 	mounted() {
@@ -252,7 +244,7 @@ export default {
 
 		},
 		clearPWDInput() {
-		 	this.fields_signin.password = '';
+			this.fields_signin.password = '';
 		},
 		onInputId() {
 			this.idLength = this.fields_signin.id && this.fields_signin.id.length > 0 ?  true : false ;
@@ -296,7 +288,7 @@ export default {
 			else if (rv !== 'NONE') {
 				wAPI.Request_Account((resp) => {
 					if (resp.res_code == 200) {
-						const account = _U.getIfDefined(resp, ['data', 'account'])
+						const account = window._U.getIfDefined(resp, ['data', 'account'])
 						if (data && loginWithEmail) {
 							if (account === data.wlt.currentAccount) {
 								return this.handleLogicLoginWithId(data, METAMASK)
@@ -347,7 +339,7 @@ export default {
 						wAPI.Sign_Account(accounts[0], this.reqLogin, provider, 2)
 						this.mxSetNetwork(rv)
 						window.localStorage.setItem('loginBy', COINBASE)
-					} else if (error) {
+					} else {
 						this.mxShowAlert({ msg: 'error' })
 					}
 				} else {
@@ -379,7 +371,6 @@ export default {
 		async connectFortmatic(data, loginWithEmail = false) {
 			try {
 				let web3 = new Web3(fortmaticProvider.getProvider())
-				var ref = this
 				web3.eth.getAccounts((error, accounts) =>{
 					if(error) throw error
 					const from = accounts[0]
@@ -396,7 +387,7 @@ export default {
 						if(error) throw error;
 						this.setlocalStorage()
 						if (!loginWithEmail) {
-							ref.reqLogin({ wallet_addr: from, wallet : 4 })
+							this.reqLogin({ wallet_addr: from, wallet : 4 })
 							window.localStorage.setItem('loginBy',FORTMATIC)
 						} else {
 							if (accounts[0] === data.wlt.currentAccount) {
@@ -515,7 +506,7 @@ export default {
 		reqLogin(data, loginWithEmail = false) {
 			console.log("[Auth] login() ", data);
 
-			_U.callPost({
+			window._U.callPost({
 				url: gConfig.login_url,
 				data: data,
 				callback: (resp) => {

@@ -240,12 +240,12 @@
 </template>
 
 <script>
+import { gConfig } from '@/App.Config'
 import WalletAPI from '@/features/WalletAPI.js'
 import MapLand from '@/components/MapLand.vue'
 
 var wAPI = new WalletAPI()
 
-import AppConfig from '@/App.Config.js'
 import {
 	BITSKI,
 	checkProviderWallet,
@@ -262,8 +262,6 @@ import {
 	bitski,
 } from '../features/Connectors'
 import Web3 from 'web3'
-
-var gConfig = AppConfig()
 
 export default {
 	name: 'Market-Detail',
@@ -285,22 +283,20 @@ export default {
 		},
 	},
 	beforeMount() {
-		// console.log("[Market-Detail.vue] beforeMout(), route : ", this.$route)
+		// console.log("[Market-Detail.vue] beforeMout(), route : ", this.$route)		
 		this.tab_page = this.$route.params.tab_page
 		if (this.tab_page == 'land-detail') {
 			this.blockInfo = this.getBlockInfo()
 		}
 	},
 	mounted() {
-		// console.log("[Market-Detail.vue] mounted(), route : ", this.$route, this.tab_page, this.mapId, this.blockId);
+		// console.log("[Market-Detail.vue] mounted(), route : ", this.$route, this.tab_page, this.mapId, this.blockId);		
 		console.log('this.mapId', this.mapId)
 		if (this.tab_page == 'land-detail') {
 			var landItems = this.mxGetLandItems()
 			console.log('@@ landItems === ', landItems)
 
-			var network = gConfig.wlt.getNetworkAddr(
-				this.getDvLand().network
-			).Network
+			var network = this.NFTWallet.getAddr(this.getDvLand().network).Network
 
 			if (typeof landItems == 'undefined' || landItems == null) {
 				this.mxCallAndSetLandItemList(this.mapId, network, () => {
@@ -371,7 +367,7 @@ export default {
 			trHash: null,
 			approve_data: null,
 			trade_data: null,
-			sellPrice: 0,
+			sellPrice: 0
 		}
 	},
 	watch: {
@@ -391,6 +387,9 @@ export default {
 		},
 	},
 	computed: {
+		NFTWallet() {
+			return this.mxGetNFTWallet();
+		},
 		blockDetail() {
 			return this.mxGetLandItemDetail()
 		},
@@ -428,8 +427,7 @@ export default {
 					own_amount: 1,
 					// 05.09 market index undefined fix
 					market_index: _U.getIfDefined(this.blockDetail, 'market_index'),
-					network: gConfig.wlt.getNetworkAddr(this.blockInfo.network)
-						.Network, // testing
+					network: this.NFTWallet.getAddr(this.blockInfo.network).Network, // testing
 				}
 			} else {
 				return this.mxGetMarketItem()
@@ -456,7 +454,7 @@ export default {
 			if (marketItem.network === gConfig.wlt.getAddr().Network) {
 				return 'ETH'
 			} else if (
-				marketItem.network === gConfig.wlt.getBscAddr().Network
+				marketItem.network === this.NFTWallet.getAddr('BSC').Network
 			) {
 				return 'BSC'
 			}
@@ -505,17 +503,14 @@ export default {
 
 		callLandItemList() {
 			console.log('[Market.Detail.vue] callLandItemList()')
-			var network = gConfig.wlt.getNetworkAddr(
-				this.getDvLand().network
-			).Network
-
+			var network = this.NFTWallet.getAddr(this.getDvLand().network).Network
 			this.mxCallAndSetLandItemList(this.mapId, network)
 		},
 
 		callLandItem() {
 			var dvLand = this.getDvLand()
 			var landCode = dvLand.n
-			var network = gConfig.wlt.getNetworkAddr(dvLand.network).Network
+			var network = this.NFTWallet.getAddr(dvLand.network).Network
 			var query = {
 				land_code: landCode,
 				index: this.blockId,
@@ -1464,9 +1459,7 @@ export default {
 				return
 			}
 
-			var network = gConfig.wlt.getNetworkAddr(
-				this.getDvLand().network
-			).Network
+			var network = this.NFTWallet.getAddr(this.getDvLand().network).Network
 
 			var query = {
 				token_id: this.marketItem.token_id,

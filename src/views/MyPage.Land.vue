@@ -30,7 +30,7 @@
 						<div class="icon"></div>
 					</div>
 					<div class="page"
-						v-for="(page,idx) in pages"
+						v-for="(page) in pages"
 						:key="page"
 						:active="(currentPage == page ? 'on' : 'off')"
 						@click="onClickPage(page)"
@@ -61,13 +61,13 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
+import { gConfig } from '@/App.Config'
+
 import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
 import BscBridge from '@/features/BscBridge.js'
 
-var gConfig = AppConfig();
 var bscBridge = new BscBridge();
 
 export default {
@@ -164,7 +164,7 @@ export default {
 			isMobile: false,
 			binanceNftBalance: '0',
 			tokenIdToLock: [],
-			tokenAmounts: [],
+			tokenAmounts: []
 		}
 	},
 	computed: {
@@ -200,8 +200,10 @@ export default {
 		},
 		searchQuery() {
 			return this.mxGetLandQuery();
+		},
+		NFTWallet() {
+			return this.mxGetNFTWallet();
 		}
-
 	},
 	watch: {
 		// mapId가 바뀌면 searchQuery에서 watch되기전에 MapItem이 변경됨. mapId watch 별도 처리함.
@@ -247,7 +249,7 @@ export default {
 		// },
 
 		/// API
-		getBinanceNft() {
+		getBinanceNft() {			
 			var user_wallet_addr = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
 
 			bscBridge.getBinanceNftBalance(user_wallet_addr, (resp) => {
@@ -338,7 +340,7 @@ export default {
 		callLandItemList() {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
-			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+			var network = this.NFTWallet.getAddr(this.getDvLand.network).Network;
 			this.mxCallAndSetMyLandItemList(this.mapId, network, ()=>{
 				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
 				this.setLandItems(this.searchQuery);

@@ -28,18 +28,13 @@
 import RewardBoxItem from '@/components/RewardBox.Item.vue'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
-import AppConfig from '@/App.Config.js'
 import { formatEther } from '@ethersproject/units'
 import {
-	toFixedDecimal,
-	formatChainId,
-	WALLETCONNECT,
 	REWARD_TABLE_1,
 	REWARD_TABLE_2,
 	REWARD_TABLE_3,
-} from '@/features/Common.js'
+} from '@/features/Common'
 import { getContractConnect } from '@/features/Connectors.js'
-var gConfig = AppConfig()
 
 export default {
 	name: 'RewardBox',

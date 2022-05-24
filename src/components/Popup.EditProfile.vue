@@ -42,11 +42,9 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 import sha256 from 'crypto-js/sha256';
 import PopupInput from '@/components/PopupInput.vue'
+import { gConfig } from '@/App.Config'
 
 export default {
 	components: {
@@ -152,9 +150,9 @@ export default {
 				'country': this.mxGetCountryCodeNo(),
 			};
 
-			_U.callEmail(data,(resp)=>{
+			window._U.callEmail(data,(resp)=>{
 
-				if(_U.getIfDefined(resp,'data')=='success') {
+				if(window._U.getIfDefined(resp,'data')=='success') {
 					this.mxShowToast(this.$t('signup.register.email-message-sent'));
 					this.updateInfo.email.checked=true;
 					this.updateInfo.email.errorMsg='';
@@ -178,17 +176,17 @@ export default {
 
 			console.log('[Signup.Register] onSubmit() data:', data);
 			
-			_U.callPost({
-				url:gConfig.member_update,
+			window._U.callPost({
+				url:gConfig.memberwindow._Update,
 				data: data,
 				callback: (resp) =>{
 					console.log("[Signup.EditProfile] onSubmit()-> resp ", resp);
-					if(_U.getIfDefined(resp,'data')=='success') {
+					if(window._U.getIfDefined(resp,'data')=='success') {
 						this.updateUserInfo();
 						this.mxShowToast(this.$t('popup.edit-profile.result-ok'));
 						this.closePopup();
 					}else{
-						this.mxShowToast(this.$t('popup.edit-profile.error-api-update')+'<br>('+_U.getIfDefined(resp,'data')+')');
+						this.mxShowToast(this.$t('popup.edit-profile.error-api-update')+'<br>('+window._U.getIfDefined(resp,'data')+')');
 					}
 				}
 			});
@@ -197,9 +195,9 @@ export default {
 			var data = this.submitData;
 			data.password='';
 			data['phone_number'] = data.phone;
-			data['admin_category'] = _U.getIfDefined(this.userInfo,'admin_category');
-			data['intro'] = _U.getIfDefined(this.userInfo,'intro');
-			data['nickname'] = _U.getIfDefined(this.userInfo,'nickname');
+			data['admin_category'] = window._U.getIfDefined(this.userInfo,'admin_category');
+			data['intro'] = window._U.getIfDefined(this.userInfo,'intro');
+			data['nickname'] = window._U.getIfDefined(this.userInfo,'nickname');
 			this.mxSetUserInfo(
 				data
 			);

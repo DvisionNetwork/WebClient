@@ -21,11 +21,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# video files
-# *.mp4
-
-Makefile
-app.json
-yarn.lock
-package-lock.json

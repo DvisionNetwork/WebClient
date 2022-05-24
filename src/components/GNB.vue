@@ -242,15 +242,13 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
 import { ETH_RPC_ENDPOINT,BSC_RPC_ENDPOINT, MATIC_RPC_ENDPOINT,
 	BSC_RPC_ENDPOINT_PROD, ETH_RPC_ENDPOINT_PROD, MATIC_RPC_ENDPOINT_PROD,
 	WALLETCONNECT, checkProviderWallet,
-	FORTMATIC, COINBASE, METAMASK, BITSKI } from '@/features/Common.js'
+	FORTMATIC, COINBASE, METAMASK, BITSKI } from '@/features/Common'
 import { fortmaticProvider, bitski, walletConnectProvider } from '@/features/Connectors.js'
-import { MSG_METAMASK_2 } from '@/features/Messages.js'
-
-var gConfig = AppConfig();
+import { MSG_METAMASK_2 } from '@/features/Messages'
+import { gConfig } from '@/App.Config'
 
 export default {
 	props: {
@@ -282,9 +280,7 @@ export default {
 			this.checkCurrentNetwork()
 			const loginBy = window.localStorage.getItem('loginBy')
 			if (loginBy === WALLETCONNECT) {
-				setInterval(() => {
-					this.getInterval()
-				}, 3000);
+				this.checkInterval();
 			}
 			return this.userInfo.id ? 'on' : 'off';
 		},
@@ -301,9 +297,14 @@ export default {
 	mounted () {
 		// console.log("======== route params", this.$route, this.$route.params);
 		this.currentPage = this.$route.params.id
-		this.handlePopupNetwork()
+		this.handlePopupNetwork()		
 	},
 	methods: {
+		checkInterval() {
+			setInterval(() => {
+				this.getInterval()
+			}, 3000);
+		},
 		onClickItem(network) {
 			const loginBy = window.localStorage.getItem('loginBy')
 			if (loginBy === COINBASE) {
@@ -459,7 +460,7 @@ export default {
 			console.log('showMobileMenu()');
 		},
 		getCapitalChar(str) {
-			return _U.getCapitalChar(str);
+			return window._U.getCapitalChar(str);
 		},
 		goMyPage() {
 			this.isShowAccountMenu = false;
@@ -491,7 +492,7 @@ export default {
 					fortmaticProvider.user.logout()
 					break
 				case WALLETCONNECT :
-					walletConnectProvider.on("disconnect", (code, reason) => {});
+					walletConnectProvider.on("disconnect", (code, reason) => { console.log("connect"); });
 					// const bridge = BRIDGE_WALLETCONNECT
 					// const connector = new WalletConnect({
 					// 	bridge
@@ -552,7 +553,7 @@ export default {
 		width:100%;
 		height:100%;
 		opacity: 0.8;
-  		background-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
+		background-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
 	}
 	.gnb-box {
 		@include FLEX(space-between,flex-end);
@@ -1101,18 +1102,18 @@ export default {
 									width: gREm(159);
 									height: gREm(48);
 									border-radius: 0.375rem;
-    							font-family: Montserrat, sans-serif;
-    							font-size: 0.875rem;
-    							font-weight: 500;
-    							line-height: 1.125rem;
-    							font-stretch: normal;
-    							font-style: normal;
-    							letter-spacing: normal;
-    							white-space: nowrap;
-    							color: #ffffff;
-    							text-decoration: none;
-    							text-align: center;
-    							transition: transform 0.5s ease-in-out;
+									font-family: Montserrat, sans-serif;
+									font-size: 0.875rem;
+									font-weight: 500;
+									line-height: 1.125rem;
+									font-stretch: normal;
+									font-style: normal;
+									letter-spacing: normal;
+									white-space: nowrap;
+									color: #ffffff;
+									text-decoration: none;
+									text-align: center;
+									transition: transform 0.5s ease-in-out;
 								}
 
 								.no-login-btn {
@@ -1131,12 +1132,12 @@ export default {
 									border-radius: 10px;
 									opacity: 1;
 									position: absolute;
-    							display: flex;
-    							justify-content: center;
-    							flex-direction: column;
-    							align-items: left;
-    							top: 23px;
-    							width: gREm(190);
+									display: flex;
+									justify-content: center;
+									flex-direction: column;
+									align-items: left;
+									top: 23px;
+									width: gREm(190);
 									height: auto;
 									padding: 0 10px;
 									& .list-lang{

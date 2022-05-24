@@ -40,12 +40,9 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 import PopupInput from '@/components/PopupInput.vue'
 import sha256 from 'crypto-js/sha256';
-
+import { gConfig } from '@/App.Config'
 
 export default {
 	components: {
@@ -119,17 +116,17 @@ export default {
 			this.submitData = this.getSubmitValues();
 			var data = this.submitData;
 
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.change_password,
 				data: data,
 				callback: (resp) =>{
 					console.log("[Signup.ChangePassword] onSubmit()-> resp ", resp);
-					var resData = _U.getIfDefined(resp,'data');
+					var resData = window._U.getIfDefined(resp,'data');
 					if(resData=='success') {
 						this.mxShowToast(this.$t('popup.change-password.success-change-password'));
 						this.mxCloseChangePasswordPopup();
 					}else{
-						this.mxShowToast(this.$t('popup.change-password.error-api-change-password')+'<br>('+_U.getIfDefined(resp,'data')+')');
+						this.mxShowToast(this.$t('popup.change-password.error-api-change-password')+'<br>('+window._U.getIfDefined(resp,'data')+')');
 					}
 				}
 			});

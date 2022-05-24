@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import Velocity from 'velocity-animate'
+
 export default {
 	name: 'WideCard',
 	props: {
@@ -29,7 +31,7 @@ export default {
 
 	},
 	mounted() {
-		this.observer = _U.getObserver();
+		this.observer = window._U.getObserver();
 		this.observer.observe(this.$refs['cardBox'])
 	},
 	computed: {
@@ -91,7 +93,7 @@ export default {
 		position: absolute;
 		@include Full-Size;
 		opacity: 0.6;
-  		background-color: #000000;
+		background-color: #000000;
 	}
 	.desc-box {
 		@include FLEXV(center, flex-start);

@@ -32,8 +32,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+import { gConfig } from '@/App.Config'
 
 // @ is an alias to /src
 import Player from '@/components/Player.vue'
@@ -236,7 +235,7 @@ export default {
 			return true;
 		},
 		getUUID() {
-			return _U.getUUID();
+			return window._U.getUUID();
 		},
 		// goPageTop() {
 		// }
@@ -244,15 +243,15 @@ export default {
 			var data = {
 				type : 1, // footer : main 화면 아래
 				page: 1,
-				count: gConfig.homeNews_count_per_page
+				count: gConfig.homeNews_count_per_page,
 			};
 
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.news_get_list,
 				data: data,
 				callback: (resp) =>{
-					var rows = _U.getIfDefined(resp,['data','rows']);
-					var total = _U.getIfDefined(resp,['data','total']);
+					var rows = window._U.getIfDefined(resp,['data','rows']);
+					var total = window._U.getIfDefined(resp,['data','total']);
 					if(!rows && rows.length > 0) {
 						this.mxSetHomeNews({total:0, page:0, cpp: 0, list:[]});	 // 빈 뉴스
 						return;

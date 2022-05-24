@@ -109,13 +109,11 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
+import { gConfig } from '@/App.Config'
+
 import SimpleSideMenu from '@/components/SimpleSideMenu.vue'
 import MapLand from '@/components/MapLand.vue'
 import MapItem from '@/components/MapItem.vue'
-
-var gConfig = AppConfig();
-
 
 export default {
 	name: "Market-Land",
@@ -202,12 +200,13 @@ export default {
 			landSwitchForsale: false,
 
 			search: '',
-			searchInputTimer: null,
-
+			searchInputTimer: null
 		}
 	},
 	computed: {
-
+		NFTWallet() {
+			return this.mxGetNFTWallet();
+		},
 		getDvLand() {
 			return this.mxGetLandMap(this.mapId);
 		},
@@ -222,6 +221,8 @@ export default {
 		mapId() {
 			var mapId = null;
 			var landQuery = this.mxGetLandQuery();
+			console.log("mapId =====" + mapId);
+			console.log("landQuery =====" + landQuery);
 			// console.log("[Market.Land.vue] computed() mapId(): landQuery ==", landQuery);
 			if(landQuery) {
 				mapId = landQuery.mapId;
@@ -322,7 +323,7 @@ export default {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
 
-			var network = gConfig.wlt.getNetworkAddr(this.getDvLand.network).Network;
+			var network = this.NFTWallet.getAddr(this.getDvLand.network).Network;
 
 			this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
 				console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);

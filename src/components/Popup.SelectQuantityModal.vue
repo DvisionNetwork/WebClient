@@ -56,8 +56,6 @@
 </template>
 
 <script>
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
 
 export default {
 	components: {},

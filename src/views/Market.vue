@@ -154,9 +154,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+import { gConfig } from '@/App.Config'
 
 import SideMenu from '@/components/SideMenu.vue'
 import Product from '@/components/Product.vue'
@@ -271,7 +269,7 @@ export default {
 			category_2: 0,
 			filters: '',
 			search: '',
-			isMobile: false,
+			isMobile: false
 		}
 	},
 	computed: {
@@ -304,6 +302,9 @@ export default {
 		searchQuery() {
 			return this.mxGetMarketQuery();
 		},
+		NFTWallet() {
+			return this.mxGetNFTWallet();
+		}
 	},
 	watch: {
 		marketItems(newVal, oldVal) {
@@ -344,13 +345,13 @@ export default {
 			console.log('newTab', newTab)
 
 			if(newTab === 'eth') {
-				network = gConfig.wlt.getAddr().Network;
+				network = this.NFTWallet.getAddr('ETH').Network;
 				this.setSearchQuery(1, network);
 			} else if (newTab === 'bsc') {
-				network = gConfig.wlt.getBscAddr().Network;
+				network = this.NFTWallet.getAddr('BSC').Network;
 				this.setSearchQuery(1, network);
 			} else if (newTab === 'staking') {
-				network = gConfig.wlt.getBscAddr().Network;
+				network = this.NFTWallet.getAddr('BSC').Network;
 				this.setSearchQuery(1, network);
 			}
 
@@ -433,9 +434,9 @@ export default {
 		getNetwork() {
 			var network = '0x0';
 			if(this.tab_page.indexOf('eth') == 0) {
-				network = gConfig.wlt.getAddr().Network;
+				network = this.NFTWallet.getAddr('ETH').Network;
 			} else if (this.tab_page.indexOf('bsc') == 0) {
-				network = gConfig.wlt.getBscAddr().Network;
+				network = this.NFTWallet.getAddr('BSC').Network;
 			}
 			return network;
 		},

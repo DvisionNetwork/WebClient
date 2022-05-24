@@ -1,10 +1,7 @@
+import { gConfig } from '../App.Config'
 
 var lv_LoadingTimerCount =0;
 var lv_LoadingTimer=null;
-
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 
 var Mixin = {
 	created() {
@@ -17,7 +14,7 @@ var Mixin = {
 		// },
 
 		/// show popup ///
-		mxShowToast(msg) {
+		mxShowToast(msg) {			
 			this.$store.dispatch('showToast', {show:true, msg:msg});
 		},
 		mxCloseToast() {
@@ -186,6 +183,14 @@ var Mixin = {
 			return this.$store.state.homeNews;
 		},
 
+		// NFT Wallet //
+		mxSetNFTWallet(walletInfo) {
+			this.$store.dispatch('setNFTWallet', walletInfo);
+		},
+		mxGetNFTWallet() {
+			return this.$store.state.NFTWallet;
+		},
+
 		// News //
 		mxSetNews(newsInfo) {
 			this.$store.dispatch('setNews', newsInfo);
@@ -240,7 +245,7 @@ var Mixin = {
 			return this.$store.state.myLands;
 		},
 		mxSetMyLandQuery(query) {
-			query['updateTime'] = _U.getTime();
+			query['updateTime'] = window._U.getTime();
 			this.$store.dispatch('setMyLandQuery', query);
 		},
 		mxGetMyLandQuery() {
@@ -255,7 +260,7 @@ var Mixin = {
 			return this.$store.state.myItems;
 		},
 		mxSetMyItemQuery(query) {
-			query['updateTime'] = _U.getTime();
+			query['updateTime'] = window._U.getTime();
 			this.$store.dispatch('setMyItemQuery', query);
 		},
 		mxGetMyItemQuery() {
@@ -277,7 +282,7 @@ var Mixin = {
 		},
 
 		mxSetMarketQuery(query) {
-			query['updateTime'] = _U.getTime();
+			query['updateTime'] = window._U.getTime();
 			this.$store.dispatch('setMarketQuery', query);
 		},
 		mxGetMarketQuery() {
@@ -363,12 +368,12 @@ var Mixin = {
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
 
 			this.mxShowLoading();
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.market_land_item_list,
 				data: query,
 				callback: (resp) =>{
 					console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
-					var rows = _U.getIfDefined(resp,['data','rows']);
+					var rows = window._U.getIfDefined(resp,['data','rows']);
 					var midx = 0;
 
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
@@ -376,17 +381,17 @@ var Mixin = {
 						for(var ridx=0; ridx <rows.length; ridx++) {
 							var row = rows[ridx];
 							for(;midx < dvLand.map.length; midx ++) {
-								if(!_U.isDefined(dvLand.map[midx],'id')) {
+								if(!window._U.isDefined(dvLand.map[midx],'id')) {
 									continue;
 								}
 								var block = dvLand.map[midx];
 								if(block.id == Number(row.index)) {
-									var price = _U.getIfDefined(row,'dviprice');
-									var tokentype = _U.getIfDefined(row,'tokentype');
-									var ownAddress = _U.getIfDefined(row,'owner_address');
-									var logoUrl = _U.getIfDefined(row,'logo_url');
-									var btnState = _U.getIfDefined(row,'btn_state');
-									var saleState = _U.getIfDefined(row,'salestate');
+									var price = window._U.getIfDefined(row,'dviprice');
+									var tokentype = window._U.getIfDefined(row,'tokentype');
+									var ownAddress = window._U.getIfDefined(row,'owner_address');
+									var logoUrl = window._U.getIfDefined(row,'logo_url');
+									var btnState = window._U.getIfDefined(row,'btn_state');
+									var saleState = window._U.getIfDefined(row,'salestate');
 
 									block['dviprice']= price ? price : "0";
 									block['tokentype']= tokentype ? tokentype : "0";
@@ -437,17 +442,17 @@ var Mixin = {
 			var query = {
 				land_code: landCode,
 				network: '("'+ network + '")',
-				owner_addr: _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
+				owner_addr: window._U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
 			};
 			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
 
 			this.mxShowLoading();
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.market_land_with_owner,
 				data: query,
 				callback: (resp) =>{
 					console.log("[Mixin] callMyLandItemList()-> resp ", resp);
-					var rows = _U.getIfDefined(resp,['data','rows']);
+					var rows = window._U.getIfDefined(resp,['data','rows']);
 					var midx = 0;
 
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
@@ -455,17 +460,17 @@ var Mixin = {
 						for(var ridx=0; ridx <rows.length; ridx++) {
 							var row = rows[ridx];
 							for(;midx < dvLand.map.length; midx ++) {
-								if(!_U.isDefined(dvLand.map[midx],'id')) {
+								if(!window._U.isDefined(dvLand.map[midx],'id')) {
 									continue;
 								}
 								var block = dvLand.map[midx];
 								if(block.id == Number(row.index)) {
-									var price = _U.getIfDefined(row,'dviprice');
-									var tokentype = _U.getIfDefined(row,'tokentype');
-									var ownAddress = _U.getIfDefined(row,'owner_address');
-									var logoUrl = _U.getIfDefined(row,'logo_url');
-									var btnState = _U.getIfDefined(row,'btn_state');
-									var saleState = _U.getIfDefined(row,'salestate');
+									var price = window._U.getIfDefined(row,'dviprice');
+									var tokentype = window._U.getIfDefined(row,'tokentype');
+									var ownAddress = window._U.getIfDefined(row,'owner_address');
+									var logoUrl = window._U.getIfDefined(row,'logo_url');
+									var btnState = window._U.getIfDefined(row,'btn_state');
+									var saleState = window._U.getIfDefined(row,'salestate');
 
 									block['dviprice']= price ? price : "0";
 									block['tokentype']= tokentype ? tokentype : "0";
@@ -553,10 +558,11 @@ var Mixin = {
 		},
 
 		mxGameStart() {
+			/*
 			var userInfo = this.$cookies.get('userInfo');
 			// console.log('----- mxGameStart() ', userInfo);
 
-			if(!_U.isDefined(userInfo,'id') || userInfo.id == '') {
+			if(!window._U.isDefined(userInfo,'id') || userInfo.id == '') {
 				this.$store.dispatch('showLoginPopup',true);
 				// this.mxShowAlert({msg:this.$t('popup.login-required')});
 				return;
@@ -567,7 +573,9 @@ var Mixin = {
 			var data = {
 				wallet_addr: userInfo.wallet_addr,
 			};
-			_U.callPost({
+
+			
+			window._U.callPost({
 				url:gConfig.enter_binance_002_ex, // binance
 				data: data,
 				callback: (resp) =>{
@@ -584,6 +592,41 @@ var Mixin = {
 					},100)
 				}
 			});
+			*/
+			// TonY
+			var userInfo = this.$cookies.get('userInfo');
+			// console.log('----- mxGameStart() ', userInfo);
+			var data = {
+				wallet_addr: userInfo.wallet_addr,
+			};
+			
+			console.log("userInfo : "+ data);
+
+			if(!window._U.isDefined(userInfo,'id') || userInfo.id == '') {
+				this.$store.dispatch('showLoginPopup',true);
+				//this.mxShowAlert({msg:this.$t('popup.login-required')});
+				return;
+			}
+			
+			this.mxShowGameStartLoading();
+			window._U.callPost({
+				//url:gConfig.enter_binance_002_ex, // binance
+				url:"http://localhost:8080/GameStart.do",
+				data: data,
+				callback: (resp) =>{
+					eval(unescape(resp.data));
+					setTimeout(() => {
+						if(typeof window.isRunnable !== 'undefined' && window.isRunnable) {
+							this.mxShowGameStartLoading();
+							// this.mxShowToast('Launching exe app !!');
+						}else{
+							this.mxShowToast(this.$t('game-start.launching-app-failed'));
+							this.$router.push({name:"Guide-Page", params:{'page': 'download'}});
+						}
+					},100)
+				}
+			});
+			// TonY
 		},
 
 		osCheck() {
@@ -599,7 +642,7 @@ var Mixin = {
 		},
 
 		addComma(v) {
-			return _U.addComma(v);
+			return window._U.addComma(v);
 		},
 	}
 }

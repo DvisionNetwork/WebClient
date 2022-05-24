@@ -73,7 +73,7 @@
 					@click="mxCloseAlert(false)"
 				></div>
 				<div class="message" v-html="$store.state.showAlert.msg"></div>
-				<vue-recaptcha v-show="showRecaptcha" siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
+				<!-- <vue-recaptcha v-show="showRecaptcha" siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
 					size="normal" 
 					theme="light"
 					lang="en"
@@ -81,7 +81,7 @@
 					@expire="recaptchaExpired"
 					@fail="recaptchaFailed"
 					ref="vueRecaptcha">
-				</vue-recaptcha>
+				</vue-recaptcha> -->
 				<div v-if="isShowBtn" class="btn g-btn"
 					@click="mxCloseAlert(true)" >
 					{{$store.state.showAlert.btn ? $store.state.showAlert.btn : $t('btn.ok') }}
@@ -163,9 +163,6 @@ import Velocity from 'velocity-animate'
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/api.md
 import Scrollbar, { ScrollbarPlugin }   from 'smooth-scrollbar'
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 import GNB from './components/GNB.vue'
 import Login from './components/Login.vue'
 import SelectWalletModal from './components/Popup.SelectWalletModal.vue'
@@ -182,13 +179,10 @@ import PopupMyReward from './components/Popup.MyReward.vue';
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
-import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes();
-
 import DVILand from '@/data/Market.LandInfo.js'
 
-import vueRecaptcha from 'vue3-recaptcha2';
-import { MSG_METAMASK_2 } from '@/features/Messages.js'
+// import vueRecaptcha from 'vue3-recaptcha2';
+import { MSG_METAMASK_2 } from '@/features/Messages'
 // https://github.com/idiotWu/smooth-scrollbar/blob/900f2434f8b61237af52de3bf9f07c87c0638917/docs/plugin.md
 class myPlugin extends ScrollbarPlugin {
 	static pluginName = 'myPlugin';
@@ -202,11 +196,13 @@ class myPlugin extends ScrollbarPlugin {
 	}
 }
 const { ethereum } = window;
-import { formatChainId, COINBASE, METAMASK } from '@/features/Common.js'
+import { formatChainId, COINBASE, METAMASK } from '@/features/Common'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
 import { BITSKI, FORTMATIC, renderNetworkName, WALLETCONNECT } from './features/Common'
 import { bitski, fortmaticProvider, walletConnectProvider } from './features/Connectors'
+import CCodes from './features/CountryCodes';
+import { gConfig } from './App.Config'
 export default {
 	components: {
 		Scrollbar,
@@ -221,37 +217,40 @@ export default {
 		PopupSuccessModal,
 		PopupConfirmModal,
 		PopupInforModal,
-		vueRecaptcha,
+		// vueRecaptcha,
 		PopupRewardTable,
 		PopupMyReward,
 	},
 	data() {
 		return {
 			providerWalletCon: 'providerWalletCon',
+			showToastTimer: null,
+			scrollbar: null,
+			// showRecaptcha: true,
+			isShowBtn: true,
+			connectData: 0
 		}
 	},
 	created() {
 		// window.addEventListener('keyup', this.historyBack);
 	},
 	mounted() {
-		this.setCurrentNetwork()		
+		this.setCurrentNetwork()
 		if (ethereum) {
 			ethereum.on('chainChanged', this.handleChainChanged)
 		}
-		if(!Scrollbar.has(_U.Q('#content'))) {
+		if(!Scrollbar.has(window._U.Q('#content'))) {
 			// Scrollbar.use(myPlugin);
-			// this.scrollbar = Scrollbar.init(_U.Q('#content'));
+			// this.scrollbar = Scrollbar.init(window._U.Q('#content'));
 			// this.scrollbar.track.xAxis.element.remove();
 			// window['gMainScrollbar'] = this.scrollbar;
 		}
 
 		if (window.orientation !== undefined) {
-			_U.setAttr(_U.Q('#app'),{mobile:"on"});
+			window._U.setAttr(window._U.Q('#app'),{mobile:"on"});
 		}
 
 		window.addEventListener('beforeunload', this.unLoadEvent);
-
-		this.$cookies.config(gConfig.getUserInfoCookieExpireTime(), '', '', true);
 
 		if(this.$cookies.isKey('userInfo')) {
 			var userInfo = this.$cookies.get('userInfo');
@@ -267,7 +266,10 @@ export default {
 			this.mxSetWallet(wlt);
 			this.$store.dispatch('setUserInfo',userInfo);
 		}
-
+		else{
+			this.$cookies.set('userInfo', this.$store.state.userInfo, gConfig.getUserInfoCookieExpireTime());
+			//this.$store.dispatch('rstState');
+		}
 		if(this.$cookies.isKey('countryCodeNo')) {
 			var countryCodeNo = this.$cookies.get('countryCodeNo');
 			this.mxSetCountryCodeNo(countryCodeNo);
@@ -277,7 +279,7 @@ export default {
 				url: gConfig.geojs_url, //  'https://get.geojs.io/v1/ip/country.json',
 			})
 			.then((resp) => {
-				var cc = _U.getIfDefined(resp,['data','country']);
+				var cc = window._U.getIfDefined(resp,['data','country']);
 				// testing
 				// cc = 'BM'; // 1441
 				if(cc) {
@@ -296,6 +298,7 @@ export default {
 			});
 		}
 
+		
 		this.setDownloadUrl('WINDOWS');
 		this.setDownloadUrl('MAC');
 		this.setEthereumEvent();
@@ -431,6 +434,9 @@ export default {
 				},
 			})
 			return providerWalletCon
+		},
+		NFTWallet() {
+			return this.$store.state.NFTWallet;
 		}
 	},
 	watch: {
@@ -445,33 +451,23 @@ export default {
 		},
 		userInfo(newVal, oldVal) {
 			// console.log("[App.vue] watch userInfo() newVal, oldVal:", newVal, oldVal);
-			if(	(_U.isDefined(newVal,'id') && !_U.isDefined(oldVal,'id')) ||
-				(_U.isDefined(newVal,'id') && _U.isDefined(oldVal,'id') && newVal.id !== oldVal.id)
+			if(	(window._U.isDefined(newVal,'id') && !window._U.isDefined(oldVal,'id')) ||
+				(window._U.isDefined(newVal,'id') && window._U.isDefined(oldVal,'id') && newVal.id !== oldVal.id)
 			) {
 				this.initWallet();
 			}
 		},
 		wallet(newVal, oldVal) {
-			if( _U.isDefined(newVal,'accounts') && newVal.accounts.length > 0
-				&& _U.getIfDefined(newVal, 'updated') == true
+			if( window._U.isDefined(newVal,'accounts') && newVal.accounts.length > 0
+				&& window._U.getIfDefined(newVal, 'updated') == true
 			) {
 				this.getDviBalance()
 				this.getBalanceWallet()
 			}
 		}
 	},
-	data() {
-		return {
-			showToastTimer: null,
-			scrollbar: null,
-			showRecaptcha: true,
-			isShowBtn: false,
-			connectData: 0
-		}
-	},
-
 	methods: {
-			async setCurrentNetwork() {
+		async setCurrentNetwork() {
 			const currentNetwork = window.localStorage.getItem('currentNetwork')
 			const loginBy = window.localStorage.getItem('loginBy')
 			if (ethereum && (loginBy === METAMASK || loginBy === COINBASE)) {
@@ -488,14 +484,14 @@ export default {
 			if (!currentNetwork) {
 				window.localStorage.setItem(
 					'currentNetwork',
-					gConfig.wlt.getEthAddr().Network
+					this.NFTWallet.getAddr('ETH').Network
 				)
 			}
 		},
-		checkNetwork(chainId) {
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getEthAddr().Network
+		checkNetwork(chainId) {			
+			const networkBSC = this.NFTWallet.getAddr('BSC').Network
+			const networkPoygon = this.NFTWallet.getAddr('POL').Network
+			const networkETH = this.NFTWallet.getAddr('ETH').Network
 			
 			window.localStorage.setItem('currentNetwork', chainId)
 			if (
@@ -532,23 +528,23 @@ export default {
 			this.scrollbar.scrollTo(0,0);
 		},
 
-		recaptchaVerified(response) {
-			console.log(response);
-			setTimeout(() => {
-				this.showRecaptcha = false;
-				this.isShowBtn = true;
-			},500);
-		},
-		recaptchaExpired() {
-			this.$refs.vueRecaptcha.reset();
-		},
-		recaptchaFailed() {
-			console.log("failed");
-		},
+		// recaptchaVerified(response) {
+		// 	console.log(response);
+		// 	setTimeout(() => {
+		// 		this.showRecaptcha = false;
+		// 		this.isShowBtn = true;
+		// 	},500);
+		// },
+		// recaptchaExpired() {
+		// 	this.$refs.vueRecaptcha.reset();
+		// },
+		// recaptchaFailed() {
+		// 	console.log("failed");
+		// },
 
 		setEthereumEvent() {
 
-			if(_U.isDefined(window,'ethereum')) {
+			if(window._U.isDefined(window,'ethereum')) {
 				window.ethereum.on('accountsChanged', function (accounts) {
 					// account change event
 					if(accounts && accounts.length > 0) {
@@ -586,11 +582,11 @@ export default {
 							// console.log('[App.vue] initWallet() -> Request_Account : resp', resp);
 							if(resp.res_code == 200) {
 								// console.log('[App.vue] initWallet() 2 -> Request_Account : resp', resp.data.account);
-								var account = _U.getIfDefined(resp,['data','account']);
+								var account = window._U.getIfDefined(resp,['data','account']);
 								// this.callWalletAddressList(account);
 							}else{
 								// console.log("Error on get wallet url", resp);
-								this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+								this.mxShowToast(window._U.getIfDefined(resp,['data','message']));
 							}
 							this.mxCloseLoading();
 						});
@@ -609,7 +605,7 @@ export default {
 		// 	};
 		// 	console.log("[App] callWalletAddressList()-> req ", data);
 
-		// 	_U.callPost({
+		// 	window._U.callPost({
 		// 		url:gConfig.member_wallet_list,
 		// 		data: data,
 		// 		callback: (resp) =>{
@@ -618,7 +614,7 @@ export default {
 		// 			console.log('[App] this.wallet :', this.wallet);
 
 		// 			// accounts = [{ account:userInfo.account, createtime: "2021-06-29 20:07:15". wallet_addr:"0x...." }, ...]
-		// 			var accounts = _U.getIfDefined(resp,['data','rows']);
+		// 			var accounts = window._U.getIfDefined(resp,['data','rows']);
 		// 			if(!accounts || accounts.length < 1) {
 		// 				var wlt= {
 		// 					currentAccountIdx: -1,
@@ -632,7 +628,7 @@ export default {
 		// 			}
 		// 			var cIdx = -1;
 		// 			for(var i=0; i<accounts.length; i++) {
-		// 				if(_U.getIfDefined(accounts[i],'wallet_addr') == currWltAddr) {
+		// 				if(window._U.getIfDefined(accounts[i],'wallet_addr') == currWltAddr) {
 		// 					cIdx = i;
 		// 					break;
 		// 				}
@@ -660,7 +656,7 @@ export default {
 		// 	});
 		// },
 		async getDviBalance() {
-			const account = _U.getIfDefined(this.$store.state, [
+			const account = window._U.getIfDefined(this.$store.state, [
 				'userInfo',
 				'wallet_addr',
 			])
@@ -679,13 +675,13 @@ export default {
 
 			wAPI.getDviBalance(account, provider, network, (resp) => {
 				if (resp.res_code == 200) {
-					const balance = _U.getIfDefined(resp,['data','balance']);
+					const balance = window._U.getIfDefined(resp,['data','balance']);
 					if (balance != null) {
 						this.mxSetWalletBalance(balance)
 						return
 					}
 				}
-				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+				this.mxShowToast(window._U.getIfDefined(resp,['data','message']));
 				this.mxSetWalletBalance(0)
 				// console.log("Error on get balance url", resp)
 			})
@@ -698,7 +694,7 @@ export default {
 					? null
 					: renderNetworkName(
 							currentNetwork ? currentNetwork : window.localStorage.getItem('fortmaticNetwork')
-					  )
+						)
 			return network
 		},
 
@@ -720,7 +716,7 @@ export default {
 		},
 		getBalanceWallet() {
 			const network = this.getNetwork(window.localStorage.getItem('loginBy'));
-			const account = _U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
+			const account = window._U.getIfDefined(this.$store.state,['userInfo','wallet_addr']);
 
 			if (!account) {
 				return
@@ -728,7 +724,7 @@ export default {
 
 			wAPI.getBalanceWallet(account, network, (resp) => {
 				if(resp.res_code == 200) {
-					const balance = _U.getIfDefined(resp,['data','balance']);
+					const balance = window._U.getIfDefined(resp,['data','balance']);
 					this.mxSetBalance(balance ? balance : 0)
 					return
 					// if (balance != null) {
@@ -736,7 +732,7 @@ export default {
 					// 	return
 					// }
 				}
-				this.mxShowToast(_U.getIfDefined(resp,['data','message']));
+				this.mxShowToast(window._U.getIfDefined(resp,['data','message']));
 				// this.mxSetWalletPolygonBalance(0);
 				// console.log("Error on get balance url", resp)
 			});
@@ -752,12 +748,12 @@ export default {
 			} else {
 				urlName = 'gDVWorldMacAppDownloadUrl';
 			}
-			_U.callPost({
-				url:gConfig.get_download_url,
+			window._U.callPost({
+				url: gConfig.get_download_url,
 				data: data,
 				callback: (resp) =>{
 					// console.log("==================", resp);
-					var url = _U.getIfDefined(resp,'data');
+					var url = window._U.getIfDefined(resp,'data');
 					if(url) {
 						window[urlName] = url;
 					}
@@ -877,8 +873,8 @@ body {
 		height:auto;
 		padding: gREm(28) gREm(67);
 		border-radius: gREm(20);
-  		box-shadow: 0 gREm(6) gREm(18) 0 rgba(0, 0, 0, 0.28);
-  		background-color: #ffffff;
+			box-shadow: 0 gREm(6) gREm(18) 0 rgba(0, 0, 0, 0.28);
+			background-color: #ffffff;
 		@include Set-Font($AppFont, gREm(20), gREm(34), #0d0c22);
 		text-align: center;
 	}
@@ -988,8 +984,7 @@ body {
 	.loading-icon {
 		width:gREm(150);
 		height:gREm(150);
-  		background-color: transparent;
-
+		background-color: transparent;
 		background:url('./assets/img/loading-for-black.png') top left no-repeat;
 		// background-position-x: 0px;
 		// background-position-y: 0px;

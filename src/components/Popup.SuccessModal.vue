@@ -15,16 +15,12 @@
 </template>
 
 <script>
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
-
 export default {
 	components: {},
 	mounted() {
 		// this.popType = authInfo.type;
 	},
 	computed: {},
-	data() {},
 	props: {
 		data: Object,
 	},

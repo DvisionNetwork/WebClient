@@ -12,10 +12,7 @@
 
  Ja-Cheon Yoon, Ph.D.        email: j c y o o n @ j n j t . c o . k r
 \*----------------------------------------------------------------------*/
-
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+import { gConfig } from '../App.Config'
 
 export default function CanvasLib() {
 	var _O = {};

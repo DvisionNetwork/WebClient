@@ -1,6 +1,6 @@
 <template>
 	<div class="Download-box">
-		<div class="content-box" v-for="(item, idx) in items ">
+		<div class="content-box" v-for="(item) in items" v-bind:key="item">
 			<div class="title">{{item.title}}</div>
 			<div class="desc" v-html="item.description"></div>
 		</div>
@@ -15,10 +15,6 @@
 </template>
 
 <script>
-
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 
 import downloadcontent from '@/data/Guide.Download.js'
 export default {

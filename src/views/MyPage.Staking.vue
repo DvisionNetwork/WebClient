@@ -56,8 +56,8 @@
 
 <script>
 import axios from 'axios'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
+
+import { gConfig } from '@/App.Config'
 
 import StakingTab from '@/components/StakingTab.vue'
 import MapLand from '@/components/MapLand.vue'
@@ -88,13 +88,13 @@ import {
 	BITSKI,
 	DENIED_TRANSACTION,
 	USER_DECLINED
-} from '@/features/Common.js'
+} from '@/features/Common'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
 	MSG_METAMASK_4,
-} from '@/features/Messages.js'
+} from '@/features/Messages'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import {
 	renderUnlockContent,
@@ -189,6 +189,11 @@ export default {
 			})
 		}
 	},
+	computed: {
+		NFTWallet() {
+			return this.mxGetNFTWallet()
+		}
+	},
 	watch: {
 		'poolDuration.id': {
 			handler(id) {
@@ -221,9 +226,9 @@ export default {
 	methods: {
 		setStakingAddress(chainId) {
 			this.current_network = chainId
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getEthAddr().Network
+			const networkBSC = this.NFTWallet.getAddr('BSC').Network
+			const networkPolygon = this.NFTWallet.getAddr('POL').Network
+			const networkETH = this.NFTWallet.getAddr('ETH').Network
 			console.log('networkETH', networkETH)
 			console.log('networkBSC', networkBSC)
 			console.log('networkPOL', networkPolygon)
@@ -260,9 +265,9 @@ export default {
 			this.getMyStaked(id)
 		},
 		checkNetwork() {
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPolygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getEthAddr().Network
+			const networkBSC = this.NFTWallet.getAddr('BSC').Network
+			const networkPolygon = this.NFTWallet.getAddr('POL').Network
+			const networkETH = this.NFTWallet.getAddr('ETH').Network
 			const currentNetwork = this.current_network
 			if (
 				currentNetwork === networkBSC ||

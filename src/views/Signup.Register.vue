@@ -63,25 +63,22 @@
 </template>
 
 <script>
-import WalletConnect from '@walletconnect/client'
-import QRCodeModal from '@walletconnect/qrcode-modal'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
+
+import { gConfig } from '@/App.Config'
 
 import PopupInput from '@/components/PopupInput.vue'
 import WalletAPI from '@/features/WalletAPI.js'
+import CCodes from '@/features/CountryCodes'
 
 import sha256 from 'crypto-js/sha256'
 
 var wAPI = new WalletAPI()
-import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes()
 
 import {
 	checkProviderWallet,
 	METAMASK,
 	COINBASE
-} from '@/features/Common.js'
+} from '@/features/Common'
 import { coinbaseProvider, fortmaticProvider, walletConnectProvider, bitski } from '@/features/Connectors.js'
 import Web3 from 'web3'
 
@@ -195,7 +192,7 @@ export default {
 					},
 				},
 			},
-			ccodes: CCodes.codes,
+			CCodes: CCodes.codes,
 			title: "",
             name: "",
             value: "",

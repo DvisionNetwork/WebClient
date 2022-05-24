@@ -13,7 +13,7 @@
 					<div class="items"
 						v-if="myItems && myItems.list && myItems.list.length > 0"
 					>
-						<Product v-for="(item, idx) in myItems.list"
+						<Product v-for="(item) in myItems.list"
 							:key="item.id" :product="item"
 							:callFrom="'mypage'"
 							@click-item="onClickItem"
@@ -30,7 +30,7 @@
 								<div class="icon"></div>
 							</div>
 							<div class="page"
-								v-for="(page,idx) in pages"
+								v-for="(page) in pages"
 								:key="page"
 								:active="(currentPage == page ? 'on' : 'off')"
 								@click="onClickPage(page)"
@@ -58,8 +58,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+import { gConfig } from '@/App.Config'
 
 import SideMenu from '@/components/SideMenu.vue'
 import Product from '@/components/Product.vue'
@@ -116,7 +115,7 @@ export default {
 			category_1: 0,
 			category_2: 0,
 			filters: '',
-			isMobile: false,
+			isMobile: false
 		}
 	},
 	computed: {
@@ -126,6 +125,9 @@ export default {
 		},
 		myItemQuery() {
 			return this.mxGetMyItemQuery();
+		},
+		NFTWallet() {
+			return this.mxGetNFTWallet();
 		}
 	},
 	watch: {
@@ -261,7 +263,7 @@ export default {
 				page: page,
 				count: gConfig.myItem_count_per_page,
 				sort: this.currentOrder.idx,
-				network: '("'+ gConfig.wlt.getBscAddr().Network + '","' +  gConfig.wlt.getAddr().Network + '")',
+				network: '("'+ this.NFTWallet.getAddr('BSC').Network + '","' +  this.NFTWallet.getAddr('ETH').Network + '")',
 				category_1: this.category_1,
 				category_2: this.category_2,
 				for_sale: false,

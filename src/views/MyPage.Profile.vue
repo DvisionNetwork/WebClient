@@ -66,9 +66,6 @@
 // import WalletAPI from '@/features/WalletAPI.js'
 // var wAPI = new WalletAPI();
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
 export default {
 	name: "Profile",
 	components: {

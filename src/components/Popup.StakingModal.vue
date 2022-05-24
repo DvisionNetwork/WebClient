@@ -120,8 +120,6 @@
 import Web3 from 'web3'
 import _ from 'lodash'
 import axios from 'axios'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -135,13 +133,14 @@ import {
 	WALLETCONNECT,
 	checkErrorMessage,
 	USER_DECLINED
-} from '@/features/Common.js'
+} from '@/features/Common'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
-} from '@/features/Messages.js'
+} from '@/features/Messages'
 import LandCard from '@/components/LandCard.vue'
+import { gConfig } from '@/App.Config'
 const { ethereum } = window
 export default {
 	components: {
@@ -196,6 +195,9 @@ export default {
 		userInfo() {
 			return this.mxGetUserInfo()
 		},
+		NFTWallet() {
+			return this.mxGetNFTWallet()
+		}
 	},
 	props: {
 		data: Object,
@@ -225,9 +227,9 @@ export default {
 	},
 	methods: {
 		checkNetwork(chainId) {
-			const networkBSC = gConfig.wlt.getBscAddr().Network
-			const networkPoygon = gConfig.wlt.getPolygonAddr().Network
-			const networkETH = gConfig.wlt.getEthAddr().Network
+			const networkBSC = this.NFTWallet.getAddr('BSC').Network
+			const networkPoygon = this.NFTWallet.getAddr('POL').Network
+			const networkETH = this.NFTWallet.getAddr('ETH').Network
 			console.log('chainId',chainId)
 			if (
 				chainId === networkBSC ||

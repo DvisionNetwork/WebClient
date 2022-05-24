@@ -42,9 +42,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+import { gConfig } from '@/App.Config'
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI();
 
@@ -101,7 +99,7 @@ export default {
 							wAPI.Request_Account((resp) => {
 								console.log('[Popup.AddWallet] onBtnClick() -> Request_Account : resp', resp);
 								if(resp.res_code == 200) {
-									var account = _U.getIfDefined(resp,['data','account']);
+									var account = window._U.getIfDefined(resp,['data','account']);
 									if(account) {
 										this.walletAddr = account;
 										this.walletInfo.walletAddress.value = account;
@@ -133,14 +131,14 @@ export default {
 			console.log("[Popup.addWallet] onClickSubmit()-> req ", data);
 
 			this.mxShowLoading();
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.member_wallet_create,
 				data: data,
 				callback: (resp) =>{
 					this.mxCloseLoading();
 					// console.log('[Signup.Register] callAddWalletAddress() -> resp', resp);
-					// console.log('[Signup.Register] callAddWalletAddress()', _U.getIfDefined(resp,'data'))
-					var msg = _U.getIfDefined(resp,['data','result']);
+					// console.log('[Signup.Register] callAddWalletAddress()', window._U.getIfDefined(resp,'data'))
+					var msg = window._U.getIfDefined(resp,['data','result']);
 					if(msg=='success') {
 						this.refreshWallet();
 						this.closePopup();
@@ -160,7 +158,7 @@ export default {
 
 			this.mxShowLoading();
 
-			_U.callPost({
+			window._U.callPost({
 				url:gConfig.member_wallet_list,
 				data: data,
 				callback: (resp) =>{
@@ -169,14 +167,14 @@ export default {
 
 					console.log('[App] refreshWallet() -> resp', resp);
 					// accounts = [{ account:userInfo.account, createtime: "2021-06-29 20:07:15". wallet_addr:"0x...." }, ...]
-					var accounts = _U.getIfDefined(resp,['data','rows']);
+					var accounts = window._U.getIfDefined(resp,['data','rows']);
 					if(!accounts) {
 						this.mxShowToast(this.$t('popup.wallet-list-not-found'));
 						return;
 					}
 					var cIdx = -1;
 					for(var i=0; i<accounts.length; i++) {
-						if(_U.getIfDefined(accounts[i],'wallet_addr') == this.walletAddr) {
+						if(window._U.getIfDefined(accounts[i],'wallet_addr') == this.walletAddr) {
 							cIdx = i;
 							break;
 						}

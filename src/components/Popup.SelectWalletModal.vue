@@ -85,8 +85,6 @@
 
 <script>
 export default {
-	mounted() {},
-	data() {},
 	props: {
 		data: Object,
 	},

@@ -33,7 +33,7 @@
 					<div class="page-wrap" v-if="pages && pages.length > 1">
 						<div v-if="!firstPageGroup" class="arrow-left"></div>
 						<div class="page"
-							v-for="(page,idx) in pages"
+							v-for="(page) in pages"
 							:key="page"
 							:active="(currentPage == page ? 'on' : 'off')"
 							@click="onClickPage(page)"
@@ -55,8 +55,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+import { gConfig } from '@/App.Config'
 
 import FOOT from '@/components/FOOT.vue'
 

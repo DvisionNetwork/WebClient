@@ -12,8 +12,7 @@ import {
 import Fortmatic from 'fortmatic'
 import { Bitski } from 'bitski'
 import Web3 from 'web3'
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig()
+import { gConfig } from '../App.Config'
 
 export const walletLink = new WalletLink({
 	appName: 'Division Network',
@@ -22,7 +21,7 @@ export const walletLink = new WalletLink({
 	supportedChainIds: [1, 4, 56, 97, 80001],
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
-export const fortmaticProvider = new Fortmatic(gConfig.isProd ? gConfig.FORTMATIC_API_KEY_PRODUCT : gConfig.FORTMATIC_API_KEY_DEV)
+export const fortmaticProvider = new Fortmatic(process.env.VUE_APP_BUILD_MODE != 'DEV' ? gConfig.FORTMATIC_API_KEY_PRODUCT : gConfig.FORTMATIC_API_KEY_DEV)
 export const walletConnectProvider = new WalletConnectProvider({
 	rpc: {
 		1: 'https://mainnet.mycustomnode.com',
@@ -32,7 +31,7 @@ export const walletConnectProvider = new WalletConnectProvider({
 		80001: MATIC_RPC_ENDPOINT,
 	},
 })
-export const bitski = new Bitski(gConfig.isProd ? gConfig.BITSKI_CLIENT_ID_PRODUCT : gConfig.BITSKI_CLIENT_ID_DEV, `${window.location.origin}/callback.html`)
+export const bitski = new Bitski(process.env.VUE_APP_BUILD_MODE != 'DEV' ? gConfig.BITSKI_CLIENT_ID_PRODUCT : gConfig.BITSKI_CLIENT_ID_DEV, `${window.location.origin}/callback.html`)
 
 export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
 	let web3
@@ -51,7 +50,7 @@ export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
 			break
 		case BITSKI:
 			networkOptions.chainId = fromHexToChainId(chainId)
-			const bitskiProvider = bitski.getProvider({
+			var bitskiProvider = bitski.getProvider({
 				network: networkOptions,
 			})
 			web3 = new Web3(bitskiProvider)

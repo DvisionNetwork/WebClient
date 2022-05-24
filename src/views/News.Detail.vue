@@ -41,8 +41,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+import { gConfig } from '@/App.Config'
 
 import FOOT from '@/components/FOOT.vue'
 

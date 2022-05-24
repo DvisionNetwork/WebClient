@@ -77,9 +77,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
-
+import { gConfig } from '@/App.Config'
 
 export default {
 	name: 'GalleryCarousel',
@@ -140,13 +138,13 @@ export default {
 
 			this.mxShowLoading();
 
-			_U.callPost({
-				url:gConfig.news_get_list,
+			window._U.callPost({
+				url: gConfig.news_get_list,
 				data: data,
 				callback: (resp) =>{
 					console.log("[GalleryCarousel] getNextItem()-> resp ", resp);
-					var rows = _U.getIfDefined(resp,['data','rows']);
-					var total = _U.getIfDefined(resp,['data','total']);
+					var rows = window._U.getIfDefined(resp,['data','rows']);
+					var total = window._U.getIfDefined(resp,['data','total']);
 					if(!rows && rows.length > 0) {
 						console.log("[GalleryCarousel] getNextItem()-> resp mxSetHome ================ ", rows);
 						// this.mxSetHomeNews({total:0, page:0, cpp: 0, list:[]});	 // 빈 뉴스
@@ -188,20 +186,20 @@ export default {
 			return rv;
 		},
 		isVisibleCard(card) {
-			var rv = _U.getIfDefined(card,'empty');
-			if(rv==true && _U.getIfDefined(card,'row') == 2) return 'none';
+			var rv = window._U.getIfDefined(card,'empty');
+			if(rv==true && window._U.getIfDefined(card,'row') == 2) return 'none';
 			if(rv==true) return 'hidden'
 			return 'visible';
 		},
 		clickA(prevNext) {
-			var tO = _U.Q('.slide-box[uuid="'+this.uuid+'"]');
+			var tO = window._U.Q('.slide-box[uuid="'+this.uuid+'"]');
 			var d = 0;
 			if(prevNext == 'prev') {
 				d = -1;
 			}else{ // next
 				d = +1;
 			}
-			var o = _U.Q('.slide[order="'+prevNext+'"][uuid="'+this.uuid+'"]');
+			var o = window._U.Q('.slide[order="'+prevNext+'"][uuid="'+this.uuid+'"]');
 			if(tO && o) {
 				tO.style.left = '-'+o.offsetLeft+'px';
 				this.slidePageIdx +=d;
@@ -364,7 +362,7 @@ export default {
 				height: gREm(64);
 				text-align: center;
 				border-radius: 6px;
-  				border: solid 1px #f1f1f1;
+				border: solid 1px #f1f1f1;
 				@include Set-Font($AppFont, gREm(18), 1.22, #ffffff);
 				cursor: pointer;
 				&:hover {

@@ -36,8 +36,7 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
-var gConfig = AppConfig();
+import { gConfig } from '@/App.Config'
 
 import PopupInput from '@/components/PopupInput.vue'
 

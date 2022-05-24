@@ -11,7 +11,7 @@
 	<div
 		class="land-card"
 		:class="{ active: isActive }"
-		:key="key"
+		:key="keys"
 		@click="() => !isUnlock && onClicktoItem()"
 	>
 		<div class="quantity-box" v-if="quantity > 0">
@@ -67,7 +67,7 @@ import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
 export default {
 	name: 'LandCard',
 	props: {
-		key: Number,
+		keys: Number,
 		name: String,
 		imageUrl: String,
 		id: Number,

@@ -53,13 +53,10 @@
 <script>
 export default {
 	components: {},
-	mounted() {},
 	computed: {},
-	data() {},
 	props: {
 		data: Object,
 	},
-	created() {},
 	methods: {},
 }
 </script>

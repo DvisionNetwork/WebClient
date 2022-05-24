@@ -32,7 +32,6 @@
 <script>
 export default {
 	components: {},
-	mounted() {},
 	computed: {},
 	data() {
 		return {
@@ -42,7 +41,6 @@ export default {
 	props: {
 		data: Object,
 	},
-	created() {},
 	methods: {},
 }
 </script>

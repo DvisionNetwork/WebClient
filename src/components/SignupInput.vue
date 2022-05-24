@@ -21,7 +21,7 @@
 					@focusin="inputfocus = true;"
 					@focusout="inputfocus = false;"
 				>
-					<option v-for="code in ccodes"
+					<option v-for="code in CCodes"
 						class="field-option"
 						:value="code.value"
 						:key="code.ccode"
@@ -64,10 +64,7 @@
 
 <script>
 // import SetupFormComponent from '@/features/SetupFormComponent'
-
-import CountryCodes from '@/features/CountryCodes.js'
-var CCodes = new CountryCodes();
-
+import CCodes from '@/features/CountryCodes';
 
 export default {
 	props: {
@@ -85,12 +82,12 @@ export default {
 	mounted () {
 		console.log("[SignupInput.vue] mounted(), route : ", this.$route, this.field)
 		if(this.field.type=='select') {
-			console.log("[SignupInput.vue] mounted(), CountryCodes: ==================== ", this.ccodes)
+			console.log("[SignupInput.vue] mounted(), CountryCodes: ==================== ", CCodes)
 		}
 	},
 	data() {
 		return {
-			ccodes: CCodes.codes,
+			CCodes: CCodes.codes,
 			reg : {
 				id: /^[0-9a-z]{5,20}$/,
 				password: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,30}$/,

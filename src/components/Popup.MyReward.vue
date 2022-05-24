@@ -52,7 +52,6 @@ export default {
 	components: {
 		MyRewardInfo,
 	},
-	mounted() {},
 	computed: {},
 	data() {
 		return {
@@ -259,7 +258,6 @@ export default {
 	props: {
 		data: Object,
 	},
-	created() {},
 	methods: {
 		showPopupSuccess() {
 			const obj = {

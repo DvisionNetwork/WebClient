@@ -39,12 +39,10 @@
 
 <script>
 
-import AppConfig from '@/App.Config.js'
+import { gConfig } from '@/App.Config'
 import CVLib from '@/features/CanvasLib.js'
 
-var gConfig = AppConfig();
 var gCvLib = CVLib();
-
 
 export default {
 	name: 'ItemCard',
