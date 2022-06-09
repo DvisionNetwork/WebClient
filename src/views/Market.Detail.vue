@@ -298,7 +298,7 @@ export default {
 
 			var network = this.NFTWallet.getAddr(this.getDvLand().network).Network
 
-			if (typeof landItems == 'undefined' || landItems == null) {
+			if (Object.keys(landItems).length == 0) {
 				this.mxCallAndSetLandItemList(this.mapId, network, () => {
 					console.log(
 						'@@ landItems === undefined ==> after mxCallAndSetLandItemList() '
@@ -403,6 +403,10 @@ export default {
 			if (salestate == '0') {
 				btn_state = '0'
 			}
+			var stake = _U.getIfDefined(this.blockDetail, 'stake')
+			if (stake == 'true') {
+				btn_state = '0'
+			}
 			return btn_state
 		},
 
@@ -485,7 +489,9 @@ export default {
 		},
 
 		isItemOwned() {
-			if (this.marketItem.owner_id && this.userInfo.wallet_addr) {
+			var stake = _U.getIfDefined(this.blockDetail, 'stake')
+			
+			if (this.marketItem.owner_id && this.userInfo.wallet_addr && stake != "true") {			
 				var curWallet = this.userInfo.wallet_addr.toLowerCase()
 				var ownerId = this.marketItem.owner_id.toLowerCase()
 				console.log({curWallet, ownerId}, 'test')

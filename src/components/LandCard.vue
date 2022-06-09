@@ -11,7 +11,7 @@
 	<div
 		class="land-card"
 		:class="{ active: isActive }"
-		:key="keys"
+		:key="key"
 		@click="() => !isUnlock && onClicktoItem()"
 	>
 		<div class="quantity-box" v-if="quantity > 0">
@@ -32,18 +32,32 @@
 		<div class="card-title">
 			{{ name }}
 		</div>
+		<div class="map-block-info-box">
+			<div class="pos-box">
+				<div class="icon"></div>
+				<div class="pos">{{getBlockPosInfo('start')}}</div>
+			</div>
+
+			<div v-if="isOneByOne()==false" class="pos-tilde"> ~ </div>
+
+			<div v-if="isOneByOne()==false" class="pos-box">
+				<div class="icon"></div>
+				<div class="pos">{{getBlockPosInfo('end')}}</div>
+			</div>
+
+			<div class="pos-size">
+				{{getBlockPosInfo('size')}}
+			</div>
+
+		</div>
 		<div class="line" />
 		<div class="bottom">
-			<span class="left">Hash Rate</span>
-			<span>{{ hashRate }}</span>
-		</div>
-		<div class="bottom">
 			<span class="left">ID</span>
-			<span>{{ nftId }}</span>
+			<span>{{ tokenId }}</span>
 		</div>
 		<div class="bottom">
 			<span class="left">Quantity</span>
-			<span>{{ maxQuantity }}</span>
+			<span>1</span>
 		</div>
 		<div class="bottom">
 			<span class="left">Type</span>
@@ -67,7 +81,7 @@ import SelectQuantityModal from '@/components/Popup.SelectQuantityModal.vue'
 export default {
 	name: 'LandCard',
 	props: {
-		keys: Number,
+		key: Number,
 		name: String,
 		imageUrl: String,
 		id: Number,
@@ -84,8 +98,9 @@ export default {
 		onConfirmQuantity1155: Function,
 		maxQuantity: Number,
 		isUnstake: Boolean,
-		hashRate: Number,
 		enableUnlock: Boolean,
+		tokenId: String,
+		item: Object,
 	},
 	components: {
 		SelectQuantityModal,
@@ -97,6 +112,25 @@ export default {
 		}
 	},
 	methods: {
+		isOneByOne() {
+			var block = this.item;
+			if(block.x1 == block.x2 && block.y1 == block.y2) {
+				return true;
+			}
+			return false;
+		},
+		getBlockPosInfo(infoType) {
+			const block = this.item;
+			var rv = '';
+			if(infoType == 'start') {
+				rv = block.x1+','+block.y1;
+			}else if(infoType == 'end') {
+				rv = block.x2+','+block.y2;
+			}else if(infoType == 'size') {
+				rv = this.$t('market.land.size')+' : '+(block.x2 - block.x1 + 1)+'x'+(block.y1 - block.y2 + 1);
+			}
+			return rv;
+		},
 		closeSelectQuantityModal() {
 			this.showSelectQuantity = false
 		},
@@ -137,6 +171,57 @@ export default {
 	position: relative;
 	&.active {
 		background: #372e83;
+	}
+
+	.map-block-info-box {
+		width: 100%;
+		height: auto;
+		@include FLEX(space-between, center);
+		margin-top: gREm(10);
+		margin-bottom: gREm(10);
+		.pos-tilde {
+			width: gREm(6);
+			float:left;
+			height: gREm(24);
+			margin-left: gREm(6);
+			margin-right: gREm(6);
+			@include Set-Font($AppFont, gREm(13), gREm(24), #ffff,300);
+		}
+		.pos-box {
+			width: auto;
+			float:left;
+			height: gREm(24);
+			background-color: #2a2932;
+			border-radius: gREm(6);
+			padding-left: gREm(12);
+			padding-right: gREm(12);
+			.icon {
+				float:left;
+				width:gREm(8);
+				height: gREm(11);
+				margin-top: gREm(7);
+				background: center/ contain no-repeat url('../assets/img/market/ic-land-map.svg');
+			}
+			.pos {
+				float:left;
+				width: auto;
+				height: gREm(16);
+				margin-left: gREm(6);
+				margin-top: gREm(4);
+				// @include Set-Font($AppFont, gREm(13), gREm(16), #ffff,300);
+				@include Set-Font($AppFont, gREm(11), gREm(16), #ffff,300);
+				text-align: left;
+			}
+		}
+		.pos-size {
+			width: auto;
+			float:left;
+			margin-left: gREm(16);
+			height: gREm(24);
+			// @include Set-Font($AppFont, gREm(15), gREm(24), #ffff,300);
+			@include Set-Font($AppFont, gREm(12), gREm(24), #ffff,300);
+			text-align: left;
+		}
 	}
 	.quantity-box {
 		position: absolute;
@@ -205,6 +290,7 @@ export default {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		margin-bottom: gREm(8);
+		margin-top: gREm(8)
 	}
 	.line {
 		background: #ffffff14;
@@ -268,7 +354,7 @@ export default {
 @include media-max($media_small) {
 	.land-card {
 		width: 100%;
-		max-width: 100%;
+		max-width: 18rem;
 		margin-bottom: gREm(15);
 
 		.image {

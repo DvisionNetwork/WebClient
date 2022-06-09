@@ -30,11 +30,15 @@ import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
 import CountDownTimer from '@/components/CountDownTimer.vue'
 import { formatEther } from '@ethersproject/units'
 import {
+	toFixedDecimal,
+	formatChainId,
+	WALLETCONNECT,
 	REWARD_TABLE_1,
 	REWARD_TABLE_2,
 	REWARD_TABLE_3,
 } from '@/features/Common'
 import { getContractConnect } from '@/features/Connectors.js'
+import { fromHexToChainId } from '@/features/Common'
 
 export default {
 	name: 'RewardBox',
@@ -68,6 +72,7 @@ export default {
 		totalMiningHashRate: String,
 		myMiningHashRate: String,
 		mininghashRatePerHour: String,
+		current_network: String,
 		// staking_address: String
 	},
 	// beforeMount() {
@@ -103,8 +108,13 @@ export default {
 			this.mxShowRewardTable(obj)
 		},
 		showMyReward() {
+			const network = this.current_network
+			const chainId = fromHexToChainId(network)
 			const obj = {
 				isShow: true,
+				poolDuration: this.poolDuration,
+				chainId,
+				statusCampain: this.statusCampain
 			}
 			this.mxShowMyRewardModal(obj)
 		},
@@ -198,12 +208,13 @@ export default {
 		.reward-box {
 			padding: 20px;
 			.box-title {
-				display: block;
-				margin-bottom: 10px;
 				.point {
 					text-align: right;
 					margin-top: 10px;
 				}
+			}
+			.status {
+				margin-top: auto;
 			}
 		}
 		.reward-wrap-btn {

@@ -608,6 +608,8 @@ export namespace gConfig {
     export let market_land_sell : string = getApiUrl("lgl0004_ex");
 
     export let test_url = "https://www.multiverse.so/m/api/terms_list_ex";
-    export let public_api_sotatek = "https://division-api.sotatek.works";
+    export let public_api_sotatek = "https://www.multiverse.so/m/stakingserver";
     export let public_api_sotatek_2 = "https://www.multiverse.so/m/api";
+
+    export let privateKeyEncode = 'NGpICZvRVGsota';
 }

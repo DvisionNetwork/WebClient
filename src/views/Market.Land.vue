@@ -325,10 +325,10 @@ export default {
 
 			var network = this.NFTWallet.getAddr(this.getDvLand.network).Network;
 
-			this.mxCallAndSetLandItemList(this.mapId, network, ()=>{
-				console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
-				this.setLandItems(this.searchQuery);
-			});
+			this.mxCallAndSetLandItemList(this.mapId, network, () => {
+				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
+				this.setLandItems(this.searchQuery)
+			})
 
 		},
 

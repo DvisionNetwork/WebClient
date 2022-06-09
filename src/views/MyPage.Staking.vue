@@ -409,7 +409,7 @@ export default {
 			const BSCWallet = this.NFTWallet.getAddr('BSC')
 			const POLWallet = this.NFTWallet.getAddr('POL')
 			const ETHWallet = this.NFTWallet.getAddr('ETH')
-console.log("staking address =====> ", BSCWallet.stakingAddress);
+
 			if (
 				chainId !== BSCWallet.Network &&
 				chainId !== ETHWallet.Network &&

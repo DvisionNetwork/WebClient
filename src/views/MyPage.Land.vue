@@ -10,12 +10,12 @@
 	<div class="contents">
 		<div class="item-box">
 			<div class="items"
-				v-if="landItems && landItems.list && landItems.list.length > 0"
+				v-if="landItemsInPopup && landItemsInPopup.list && landItemsInPopup.list.length > 0"
 			>
-				<MapItem v-for="(item, idx) in landItems.list"
+				<MapItem v-for="(item, idx) in landItemsInPopup.list"
 					:key="item.id" :item="item"
 					:itemIdx="idx"
-					:itemLastIdx="landItems.list.length -1"
+					:itemLastIdx="landItemsInPopup.list.length -1"
 					:mapId="mapId"
 					:callFrom="'market-land'"
 					@click-item="onClickItem"
@@ -344,10 +344,9 @@ export default {
 
 			console.log("[Market.Land.vue] callLandItemList() ");
 			var network = this.NFTWallet.getAddr(this.getDvLand.network).Network;
-			this.mxCallAndSetMyLandItemList(this.mapId, network, ()=>{
-				// console.log("[Market.Land.vue] mxCallAndSetLandItemList() => func !! ", this.searchQuery);
-				this.setLandItems(this.searchQuery);
-			});
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false, undefined, () => {
+				this.setSearchQuery(1);
+			})
 
 		},
 
@@ -475,15 +474,15 @@ export default {
 
 		setPages() {
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var pgrStartPageNo = Math.floor((this.landItemsInPopup.page -1) / pno_p_grp)*pno_p_grp +1;
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
+			var totalPages = Math.ceil(this.landItemsInPopup.total/this.landItemsInPopup.cpp);
 			this.pages = []; // 초기화 해 줄 것.
 			for(var i=0; i< pno_p_grp && (i + pgrStartPageNo) <= totalPages; i++) {
 				this.pages[i] = i + pgrStartPageNo;
 			}
 
-			this.currentPage = this.landItems.page;
+			this.currentPage = this.landItemsInPopup.page;
 			this.firstPageGroup= pgrStartPageNo < pno_p_grp ? true: false;
 			this.lastPageGroup = this.currentPage + pno_p_grp > totalPages ? true : false;
 
@@ -495,7 +494,7 @@ export default {
 		onClickPageArrow(leftRight) {
 
 			var pno_p_grp = gConfig.marketItem_pages_in_group; // 하단에 뿌릴 page group내 page 수
-			var pgrStartPageNo = Math.floor((this.landItems.page -1) / pno_p_grp)*pno_p_grp +1;
+			var pgrStartPageNo = Math.floor((this.landItemsInPopup.page -1) / pno_p_grp)*pno_p_grp +1;
 			var page = 1;
 			if(leftRight == 'right') {
 				page = pgrStartPageNo + pno_p_grp;
@@ -503,7 +502,7 @@ export default {
 				page = pgrStartPageNo - pno_p_grp;
 			}
 
-			var totalPages = Math.ceil(this.landItems.total/this.landItems.cpp);
+			var totalPages = Math.ceil(this.landItemsInPopup.total/this.landItemsInPopup.cpp);
 			if(page < 1) page = 1;
 			if(page > totalPages) page = totalPages;
 

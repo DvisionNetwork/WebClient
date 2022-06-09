@@ -369,6 +369,103 @@ var Mixin = {
 			return this.$store.state.landItemDetail;
 		},
 
+		mxCallAndSetLandItemList(mapId, network, func) {
+			var landMenu = this.mxGetLandMenu()
+			var dvLand = null
+			for (var i = 0; i < landMenu.length; i++) {
+				if (landMenu[i].mapId == mapId) {
+					dvLand = landMenu[i].land
+					break
+				}
+			}
+			if (!dvLand) return
+
+			var landCode = dvLand.n
+			var query = {
+				land_code: landCode,
+				network: '("' + network + '")',
+			}
+			// console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
+
+			this.mxShowLoading()
+			_U.callPost({
+				url: gConfig.market_land_item_list,
+				data: query,
+				callback: (resp) => {
+					// console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
+					var rows = _U.getIfDefined(resp, ['data', 'rows'])
+					var midx = 0
+					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
+					if (rows && rows.length > 0) {
+						for (let ridx = 0; ridx < rows.length; ridx++) {
+							let row = rows[ridx]
+							for (; midx < dvLand.map.length; midx++) {
+								if (!_U.isDefined(dvLand.map[midx], 'id')) {
+									continue
+								}
+								var block = dvLand.map[midx]
+								if (block.id == Number(row.index)) {
+									var price = _U.getIfDefined(row, 'dviprice')
+									var tokentype = _U.getIfDefined(
+										row,
+										'tokentype'
+									)
+									var ownAddress = _U.getIfDefined(
+										row,
+										'owner_address'
+									)
+									var logoUrl = _U.getIfDefined(
+										row,
+										'logo_url'
+									)
+									var btnState = _U.getIfDefined(
+										row,
+										'btn_state'
+									)
+									var saleState = _U.getIfDefined(
+										row,
+										'salestate'
+									)
+
+									block['dviprice'] = price ? price : '0'
+									block['tokentype'] = tokentype
+										? tokentype
+										: '0'
+									block['owner_address'] = ownAddress
+										? ownAddress
+										: ''
+									block['logo_url'] = logoUrl ? logoUrl : ''
+									block['btn_state'] = btnState
+										? btnState
+										: ''
+									block['salestate'] = saleState
+										? saleState
+										: ''
+									midx++
+									break
+								} else {
+									block['dviprice'] = '0'
+									block['tokentype'] = '0'
+									block['owner_address'] = ''
+									block['logo_url'] = ''
+								}
+							}
+						}
+						// console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
+						this.mxSetLandMenu(landMenu)
+					}
+
+					// add func
+					if (typeof func == 'function') {
+						func()
+					}
+
+					// this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
+					this.mxCloseLoading()
+				},
+			})
+		},
+
 		mxCallAndSetMyLandItemList(mapId, network, isStake, campaignId, func) {
 			let landMenu = isStake
 				? this.mxGetLandMenu()
