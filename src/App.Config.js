@@ -122,7 +122,7 @@ export default function AppConfig() {
 				Contract721Address:
 					'0x448321d613E3A10Cde7435D285C199A995E2B242',
 				Contract1155Address:
-					'0x0528943BD50427Db3953d7d715015325fBB616fE',
+					'0xCaD43aB53f628D931b8345C60BdF84D256D57752',
 				ContractMarketAddress:
 					'0x435874C2D07965e0671e3bd0515c5D224FdDAff2',
 				// Mainnet: "0x38", Testnet: "0x61"

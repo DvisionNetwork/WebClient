@@ -302,7 +302,7 @@ export default {
 				this.getDvLand().network
 			).Network
 
-			if (typeof landItems == 'undefined' || landItems == null) {
+			if (Object.keys(landItems).length == 0) {
 				this.mxCallAndSetLandItemList(this.mapId, network, () => {
 					console.log(
 						'@@ landItems === undefined ==> after mxCallAndSetLandItemList() '
@@ -494,7 +494,7 @@ export default {
 		isItemOwned() {
 			var stake = _U.getIfDefined(this.blockDetail, 'stake')
 			
-			if (this.marketItem.owner_id && this.userInfo.wallet_addr && stake == "false") {			
+			if (this.marketItem.owner_id && this.userInfo.wallet_addr && stake != "true") {			
 				var curWallet = this.userInfo.wallet_addr.toLowerCase()
 				var ownerId = this.marketItem.owner_id.toLowerCase()
 				console.log({curWallet, ownerId}, 'test')
@@ -1120,7 +1120,7 @@ export default {
 			this.trade_data = {
 				type: 'Trade',
 				category: this.marketItem.category,
-				price: this.marketItem.price,
+				price: this.marketItem.price * this.buyCount,
 				tokenId: this.marketItem.token_id,
 				amount: this.buyCount,
 				ownerId: this.marketItem.owner_id,

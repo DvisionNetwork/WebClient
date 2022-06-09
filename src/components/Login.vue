@@ -54,7 +54,7 @@
 									alt=""
 									class="ic-image"
 								/>
-								Coinbase
+								Coinbase Wallet
 							</BaseButton>
 							<BaseButton
 								type="button"

@@ -42,7 +42,7 @@
 								"
 							>
 								<img src="../assets/img/ic-coinbase.svg" alt="" class="ic-image">
-								CoinBase
+								CoinBase Wallet
 							</BaseButton>
 							<BaseButton
 								type="button"
