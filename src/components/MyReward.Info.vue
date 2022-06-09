@@ -1,30 +1,40 @@
 <template>
 	<div class="info">
 		<div class="info-body">
-			<table class="table">
-				<thead>
-					<tr>
-						<th width="16%">ID</th>
-						<th>Name</th>
-						<th width="19%">Quantity</th>
-					</tr>
-				</thead>
-				<tbody class="has-data" v-if="data">
-					<tr v-for="item in data" :key="item.id">
-						<td>{{ item.id }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.quantity }}</td>
-					</tr>
-				</tbody>
-				<tr v-else>
-					<td colspan="3" class="no-rewards">
-						No rewards available.
-						<br />
-						You can stake your LANDs to see the corresponding
-						rewards in this tab.
-					</td>
-				</tr>
-			</table>
+			<div class="has-data" v-if="data.length > 0">
+				<div class="list-card">
+					<div
+						class="land-card"
+						v-for="(item, idx) in data"
+						:key="idx"
+					>
+						<div class="image">
+							<img :src="imgArr[item.boxType]" :alt="item.name" />
+						</div>
+						<div class="card-title">
+							{{ getName(item.boxType) }}
+						</div>
+						<div class="line" />
+						<div class="bottom">
+							<span class="left">Quantity</span>
+							<span>{{ item.amount }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div v-else class="no-rewards-wrap">
+				<div class="no-rewards" v-if="selectedIndex === 0">
+					No rewards available.
+					<br />
+					You can stake your LANDs to see the corresponding rewards in
+					this tab.
+				</div>
+				<div class="no-rewards" v-if="selectedIndex === 1">
+					No rewards available.
+					<br />
+					The rewards here will be available after the campaign ends.
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -32,16 +42,47 @@
 <script>
 export default {
 	components: {},
+	mounted() {},
 	computed: {},
 	data() {
 		return {
 			isOnGoing: true,
+			imgArr: [
+				'',
+				require('../assets/img/randomBox/landbox_1.png'),
+				require('../assets/img/randomBox/landbox_2.png'),
+				require('../assets/img/randomBox/landbox_3.png'),
+				require('../assets/img/randomBox/landbox_4.png'),
+				require('../assets/img/randomBox/landbox_5.png'),
+				require('../assets/img/randomBox/landbox_6.png'),
+				require('../assets/img/randomBox/landbox_7.png'),
+				require('../assets/img/randomBox/buildingbox_1.png'),
+				require('../assets/img/randomBox/buildingbox_2.png'),
+			],
 		}
 	},
 	props: {
 		data: Object,
+		selectedIndex: Number,
 	},
-	methods: {},
+	created() {},
+	methods: {
+		getName(boxType) {
+			const nameArr = [
+				'',
+				'Box A',
+				'Box B',
+				'Box C',
+				'Box D',
+				'Box E',
+				'Box F',
+				'Box G',
+			]
+			return boxType >= 8
+				? `Building ${nameArr[boxType - nameArr.length + 1]}`
+				: `Random ${nameArr[boxType]}`
+		},
+	},
 }
 </script>
 
@@ -49,30 +90,96 @@ export default {
 .info {
 	&-body {
 		overflow-y: auto;
-		max-height: gREm(400);
-		.table {
-			width: 100%;
-			border-collapse: collapse;
+		max-height: gREm(430);
+
+		.list-card {
+			display: flex;
+			justify-content: flex-start;
+			align-items: flex-start;
+			flex-wrap: wrap;
+			gap: gREm(20) gREm(10);
+			margin-bottom: gREm(20);
+
+			.land-card {
+				border-radius: gREm(10);
+				border: 2px solid #d6d8dc;
+				width: 100%;
+				max-width: gREm(282);
+				padding: gREm(15) gREm(20);
+				position: relative;
+
+				.image {
+					width: gREm(240);
+					height: gREm(285);
+					position: relative;
+					& img {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+						border-radius: 3px;
+					}
+				}
+
+				.card-title {
+					font-family: Montserrat, sans-serif;
+					font-weight: 400;
+					font-size: gREm(16);
+					line-height: gREm(25);
+					color: #ffffff;
+					text-overflow: ellipsis;
+					-webkit-line-clamp: 2;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					margin-bottom: gREm(8);
+					margin-top: gREm(8);
+				}
+				.line {
+					background: #ffffff14;
+					width: 100%;
+					height: 1px;
+					margin-bottom: gREm(3);
+					margin-top: gREm(3);
+				}
+
+				.bottom {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					margin-top: gREm(8);
+
+					span {
+						font-size: gREm(12);
+						line-height: gREm(16);
+						font-family: Montserrat, sans-serif;
+						&.left {
+							color: #ffffff66;
+							line-height: gREm(17);
+						}
+					}
+				}
+			}
+		}
+		.no-rewards-wrap {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: gREm(400);
 
 			.no-rewards {
 				text-align: center;
-				height: gREm(400);
 			}
+		}
+	}
+}
 
-			th,
-			td {
-				text-align: left;
-				padding: gREm(14);
-			}
-
-			th {
-				color: #825298;
-				font-size: gREm(18);
-				font-weight: 700;
-				position: sticky;
-				top: 0;
-				z-index: 1;
-				background-color: #181721;
+@include media-max($media_small) {
+	.info {
+		.info-body {
+			.list-card {
+				justify-content: center;
+				gap: gREm(36);
 			}
 		}
 	}

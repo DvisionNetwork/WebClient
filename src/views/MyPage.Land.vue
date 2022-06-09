@@ -201,6 +201,9 @@ export default {
 		searchQuery() {
 			return this.mxGetLandQuery();
 		},
+		landItemsInPopup() {
+			return this.mxGetLandItemsInPopupStaking()
+		},
 		NFTWallet() {
 			return this.mxGetNFTWallet();
 		}
@@ -467,7 +470,7 @@ export default {
 			// console.log("[Market.Land.vue] blockList==> ", blockList);
 
 			var total = blockListAll.length;
-			this.mxSetLandItems({total:total,  page:query.page, cpp: query.count,  list:blockList});
+			this.mxSetLandItemsInPopupStaking({total:total,  page:query.page, cpp: query.count,  list:blockList});
 		},
 
 		setPages() {

@@ -93,7 +93,9 @@ export namespace gConfig {
             Contract1155Address :      "0x91E9d6Ea945eaDE3f6E2239532E09eC62AfdE25B",
             ContractMarketAddress :    "0x50DF1a0Fd28337C06EB5E547825ED58d1ae04f53",
             // Mainnet: "0x1", Testnet: "0x4"
-            Network : "0x4"
+            Network : "0x4",
+            type: 'normal',
+            stakingAddress: '0x58f22dE77E00fd3836dD6877fdAE8462CC5Ebefc',
         },
         addrProd: {
             // token contract for rel
@@ -102,10 +104,9 @@ export namespace gConfig {
             Contract1155Address :      "0xC12F68adF0A5EA2F7B5585E3583656817a00Fb43",
             ContractMarketAddress :    "0xfCc1D2B47b2BF7Ad768c4Cb42d5259914Fc98349",
             // Mainnet: "0x1", Testnet: "0x3"
-            Network : "0x1"
-        },
-        addrEthDev: {
-            Network : "0x4"
+            Network : "0x1",
+            type: 'normal',
+            stakingAddress: '',
         },
         /* -----------------  Binance Smart Chain Network ----------------- */
         addrBscDev: {
@@ -115,7 +116,9 @@ export namespace gConfig {
             Contract1155Address :      "0xCaD43aB53f628D931b8345C60BdF84D256D57752",
             ContractMarketAddress :    "0x435874C2D07965e0671e3bd0515c5D224FdDAff2",
             // Mainnet: "0x38", Testnet: "0x61"
-            Network : "0x61"
+            Network : "0x61",
+            type: 'normal',
+            stakingAddress: '0x4b437fd847Ac1b248eA419c13e62f08dC435A388',
         },
         addrBscProd: {
             // token contract for rel
@@ -124,7 +127,9 @@ export namespace gConfig {
             Contract1155Address :      "0xD7191DDdF64D2Cf94Fe32e52ad3f9C6104926fb1",
             ContractMarketAddress :    "0x9cf04141E14C784302e111ECdB7B873FAf26A5F9",
             // Mainnet: "0x38", Testnet: "0x61"
-            Network : "0x38"
+            Network : "0x38",
+            type: 'normal',
+            stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
         },
 
         /* -----------------  Polygon Network ----------------- */
@@ -135,7 +140,9 @@ export namespace gConfig {
             Contract1155Address :      "0x0B162A4907127711342418b6a0e0bffD3Ef6532A",
             ContractMarketAddress :    "0xbd68B0A248028A4aAE60390DEB1AcD16684EB941",
             // Mainnet: "0x89", Testnet: "0x13881"
-            Network : "0x13881"
+            Network : "0x13881",
+            type: 'normal',
+            stakingAddress: '0xAE03C288f920703eba835C94763A93E8EA53c2C9',
         },
         addrPolygonProd: {
             // token contract for rel
@@ -144,7 +151,9 @@ export namespace gConfig {
             Contract1155Address :      "0xdd2308914a006f32d4294A609eC1418080f1A26d",
             ContractMarketAddress :    "0x5737366c02f1E60B089a56215384F733Fb02CE61",
             // Mainnet: "0x89", Testnet: "0x13881"
-            Network : "0x89"
+            Network : "0x89",
+            type: 'normal',
+            stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
         },
 
         /* -----------------  3rd Land Sale [BSC] ----------------- */
@@ -154,7 +163,9 @@ export namespace gConfig {
             Contract721Address :       "0x77a6891EC937f6442B1Cd30A99C4F386eaf5FFCe",
             Contract1155Address :      "0x0528943BD50427Db3953d7d715015325fBB616fE",
             ContractMarketAddress :    "0xC47F78100c3cefAdd8a71EfD440d22299B6538FF",
-            Network : "0x61"
+            Network : "0x61",
+            type: '3rd',
+            stakingAddress: '0x4b437fd847Ac1b248eA419c13e62f08dC435A388',
         },
         addr3rdLandBscProd: {
             // token contract for rel
@@ -162,7 +173,9 @@ export namespace gConfig {
             Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
             Contract1155Address :      "0xF64E100ecDb3b446ECCb26aBdB6017712fff09dA",
             ContractMarketAddress :    "0xeeF91f31F00Af45F9EEc2300483BB7Aa23111E36",
-            Network : "0x38"
+            Network : "0x38",
+            type: '3rd',
+            stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
         },
 
         /* -----------------  3rd Land Sale [POL] ----------------- */
@@ -172,7 +185,9 @@ export namespace gConfig {
             Contract721Address :       "0x3F3cDA1A22CB7B75A9b2b5C7402962E8bC021ED3",
             Contract1155Address :      "0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F",
             ContractMarketAddress :    "0xBd4188aAb3D900654E0e915B2Bcf177263BD0E2d",
-            Network : "0x13881"
+            Network : "0x13881",
+            type: '3rd',
+            stakingAddress: '0xAE03C288f920703eba835C94763A93E8EA53c2C9',
         },
         addr3rdLandPolProd: {
             // token contract for rel
@@ -180,7 +195,9 @@ export namespace gConfig {
             Contract721Address :       "0x252af5B14184A877adFB77D4490be6A9e1E7068D",
             Contract1155Address :      "",
             ContractMarketAddress :    "0x0528943BD50427Db3953d7d715015325fBB616fE",
-            Network : "0x89"
+            Network : "0x89",
+            type: '3rd',
+            stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
         },
 
         // 04.25 Market

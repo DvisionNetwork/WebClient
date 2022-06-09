@@ -43,7 +43,5 @@ module.exports = {
 			compositionOnly: false,
 			fullInstall: true,
 		},
-	},
-	outputDir: "../src/main/resources/static",
-	indexPath: "../src/main/resources/static/index.html",
+	}
 }

@@ -18,20 +18,31 @@ export const walletLink = new WalletLink({
 	appName: 'Division Network',
 	appLogoUrl: 'https://dvision.app/img/NV-logo.ae27f28f.svg',
 	darkMode: false,
-	supportedChainIds: [1, 4, 56, 97, 80001],
+	supportedChainIds: [1, 4, 56, 97, 137, 80001],
 })
 export const coinbaseProvider = walletLink.makeWeb3Provider()
-export const fortmaticProvider = new Fortmatic(process.env.VUE_APP_BUILD_MODE != 'DEV' ? gConfig.FORTMATIC_API_KEY_PRODUCT : gConfig.FORTMATIC_API_KEY_DEV)
+export const fortmaticProvider = new Fortmatic(
+	gConfig.isProd
+		? gConfig.FORTMATIC_API_KEY_PRODUCT
+		: gConfig.FORTMATIC_API_KEY_DEV
+)
 export const walletConnectProvider = new WalletConnectProvider({
 	rpc: {
 		1: 'https://mainnet.mycustomnode.com',
 		3: 'https://ropsten.mycustomnode.com',
-		97: BSC_RPC_ENDPOINT,
+		97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+		56: 'https://bsc-dataseed1.defibit.io/',
+		137: 'https://polygon-rpc.com/',
 		4: ETH_RPC_ENDPOINT,
 		80001: MATIC_RPC_ENDPOINT,
 	},
 })
-export const bitski = new Bitski(process.env.VUE_APP_BUILD_MODE != 'DEV' ? gConfig.BITSKI_CLIENT_ID_PRODUCT : gConfig.BITSKI_CLIENT_ID_DEV, `${window.location.origin}/callback.html`)
+export const bitski = new Bitski(
+	gConfig.isProd
+		? gConfig.BITSKI_CLIENT_ID_PRODUCT
+		: gConfig.BITSKI_CLIENT_ID_DEV,
+	`${window.location.origin}/callback.html`
+)
 
 export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
 	let web3
@@ -50,7 +61,7 @@ export function getContractConnect(loginBy, abi, address_ct, network, chainId) {
 			break
 		case BITSKI:
 			networkOptions.chainId = fromHexToChainId(chainId)
-			var bitskiProvider = bitski.getProvider({
+			const bitskiProvider = bitski.getProvider({
 				network: networkOptions,
 			})
 			web3 = new Web3(bitskiProvider)

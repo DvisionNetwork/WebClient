@@ -320,6 +320,12 @@ var Mixin = {
 		mxGetLandMenu() {
 			return this.$store.state.landMenu;
 		},
+		mxGetLandMenuPopUp() {
+			return this.$store.state.landMenuPopup
+		},
+		mxGetDefaultLandMenu() {
+			return this.$store.state.defaultLandMenu
+		},
 		mxGetLandDefaultMapId() {
 			var m = this.$store.state.landMenu;
 			return m[0].mapId;
@@ -328,11 +334,26 @@ var Mixin = {
 			this.$store.dispatch('setLandMenu', menu);
 		},
 
+		mxSetLandMenuPopUp(menu) {
+			this.$store.dispatch('setLandMenuPopUp', menu)
+		},
+		mxSetDefaultLandMenu(menu) {
+			this.$store.dispatch('setDefaultLandMenu', menu)
+		},
 		mxSetLandItems(landItems) {
-			this.$store.dispatch('setLandItems', landItems);
+			this.$store.dispatch('setLandItems', landItems)
+		},
+		mxSetLandItemsInPopupStaking(landItems) {
+			this.$store.dispatch('setLandItemsInPopupStaking', landItems)
+		},
+		mxSetLandItemsDefaultInPopupStaking(landItems) {
+			this.$store.dispatch('setLandItemsDefaultInPopupStaking', landItems)
 		},
 		mxGetLandItems() {
-			return this.$store.state.landItems;
+			return this.$store.state.landItems
+		},
+		mxGetLandItemsInPopupStaking() {
+			return this.$store.state.landItemsInPopup
 		},
 		mxSetLandItem(landItem) {
 			this.$store.dispatch('setLandItem', landItem);
@@ -348,163 +369,107 @@ var Mixin = {
 			return this.$store.state.landItemDetail;
 		},
 
-		mxCallAndSetLandItemList(mapId, network, func) {
-
-			var landMenu = this.mxGetLandMenu();
-			var dvLand = null;
-			for(var i=0; i<landMenu.length; i++) {
-				if(landMenu[i].mapId == mapId) {
-					dvLand = landMenu[i].land;
-					break;
+		mxCallAndSetMyLandItemList(mapId, network, isStake, campaignId, func) {
+			let landMenu = isStake
+				? this.mxGetLandMenu()
+				: this.mxGetLandMenuPopUp()
+			let dvLand = null
+			for (let i = 0; i < landMenu.length; i++) {
+				if (landMenu[i].mapId == mapId) {
+					dvLand = landMenu[i].land
+					break
 				}
 			}
-			if(!dvLand) return;
-
-			var landCode = dvLand.n;
-			var query = {
+			if (!dvLand) return
+			const landCode = dvLand.n
+			let arrListNft = []
+			const query = {
 				land_code: landCode,
-				network: '("'+ network + '")'
-			};
-			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
-
-			this.mxShowLoading();
-			window._U.callPost({
-				url:gConfig.market_land_item_list,
-				data: query,
-				callback: (resp) =>{
-					console.log("[Market.Detail.vue] callLandItemList()-> resp ", resp);
-					var rows = window._U.getIfDefined(resp,['data','rows']);
-					var midx = 0;
-
-					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
-					if(rows && rows.length > 0) {
-						for(var ridx=0; ridx <rows.length; ridx++) {
-							var row = rows[ridx];
-							for(;midx < dvLand.map.length; midx ++) {
-								if(!window._U.isDefined(dvLand.map[midx],'id')) {
-									continue;
-								}
-								var block = dvLand.map[midx];
-								if(block.id == Number(row.index)) {
-									var price = window._U.getIfDefined(row,'dviprice');
-									var tokentype = window._U.getIfDefined(row,'tokentype');
-									var ownAddress = window._U.getIfDefined(row,'owner_address');
-									var logoUrl = window._U.getIfDefined(row,'logo_url');
-									var btnState = window._U.getIfDefined(row,'btn_state');
-									var saleState = window._U.getIfDefined(row,'salestate');
-
-									block['dviprice']= price ? price : "0";
-									block['tokentype']= tokentype ? tokentype : "0";
-									block['owner_address'] = ownAddress ? ownAddress : "";
-									block['logo_url'] = logoUrl ? logoUrl : "";
-									block['btn_state'] = btnState ? btnState : "";
-									block['salestate'] = saleState ? saleState : "";
-									midx ++;
-									break;
-								}else{
-									block['dviprice']= "0";
-									block['tokentype']= "0";
-									block['owner_address'] = "";
-									block['logo_url'] = "";
-								}
-							}
-						}
-						console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
-
-						this.mxSetLandMenu(landMenu);
-					}
-
-					// add func
-					if(typeof func == 'function') {
-						func();
-					}
-
-					// this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
-					this.mxCloseLoading();
-				}
-			});
-
-		},
-
-		mxCallAndSetMyLandItemList(mapId, network, func) {
-
-			var landMenu = this.mxGetLandMenu();
-			var dvLand = null;
-			for(var i=0; i<landMenu.length; i++) {
-				if(landMenu[i].mapId == mapId) {
-					dvLand = landMenu[i].land;
-					break;
-				}
+				network: '("' + network + '")',
+				owner_addr: _U.getIfDefined(this.$store.state, [
+					'userInfo',
+					'wallet_addr',
+				]),
+				stake: isStake,
+				campaignId,
 			}
-			if(!dvLand) return;
-
-			var landCode = dvLand.n;
-			var query = {
-				land_code: landCode,
-				network: '("'+ network + '")',
-				owner_addr: window._U.getIfDefined(this.$store.state,['userInfo','wallet_addr']),
-			};
-			console.log("[Mixin] mxCallAndSetLandItemList(), query, dvLand : ", query, dvLand);
-
-			this.mxShowLoading();
-			window._U.callPost({
-				url:gConfig.market_land_with_owner,
-				data: query,
-				callback: (resp) =>{
-					console.log("[Mixin] callMyLandItemList()-> resp ", resp);
-					var rows = window._U.getIfDefined(resp,['data','rows']);
-					var midx = 0;
-
+			const cloneQuery = { ...query }
+			if (!isStake) {
+				delete cloneQuery.campaignId
+			}
+			this.mxShowLoading()			
+			_U.callPost({
+				url: gConfig.market_land_with_owner,
+				data: cloneQuery,
+				callback: (resp) => {					
+					const rows = _U.getIfDefined(resp, ['data', 'rows'])
+					// let midx = 0
+					if (rows && rows.length > 0) {
+						arrListNft = dvLand.map
+							.filter(
+								(ele) =>
+									rows.findIndex(
+										(e) => +e.index === ele.id
+									) !== -1
+							)
+							.map((element, index) => {
+								element.dviprice = rows[index].dviprice
+									? rows[index].dviprice
+									: '0'
+								element.tokentype = rows[index].tokentype
+									? rows[index].tokentype
+									: '0'
+								element.owner_address = rows[index]
+									.owner_address
+									? rows[index].owner_address
+									: '0'
+								element.thumburl = rows[index].thumburl
+									? rows[index].thumburl
+									: '0'
+								element.btn_state = rows[index].btn_state
+									? rows[index].btn_state
+									: '0'
+								element.salestate = rows[index].salestate
+									? rows[index].salestate
+									: '0'
+								element.tokenId = rows[index].token_id
+									? rows[index].token_id
+									: '0'
+								return element
+							})
+					}
+					arrListNft = rows && rows.length > 0 ? [...arrListNft] : []
+					const params = {
+						total: 1,
+						page: 1,
+						cpp: query.count,
+						isStake: true,
+						list: arrListNft,
+						inMixin: true,
+					}
+					isStake
+						? this.mxSetLandItems(params)
+						: this.setLandItemsPopup(params)
 					// rows의 index는 map[i].id와 같으며, 오름차순으로 정렬되어있음.
-					if(rows && rows.length > 0) {
-						for(var ridx=0; ridx <rows.length; ridx++) {
-							var row = rows[ridx];
-							for(;midx < dvLand.map.length; midx ++) {
-								if(!window._U.isDefined(dvLand.map[midx],'id')) {
-									continue;
-								}
-								var block = dvLand.map[midx];
-								if(block.id == Number(row.index)) {
-									var price = window._U.getIfDefined(row,'dviprice');
-									var tokentype = window._U.getIfDefined(row,'tokentype');
-									var ownAddress = window._U.getIfDefined(row,'owner_address');
-									var logoUrl = window._U.getIfDefined(row,'logo_url');
-									var btnState = window._U.getIfDefined(row,'btn_state');
-									var saleState = window._U.getIfDefined(row,'salestate');
-
-									block['dviprice']= price ? price : "0";
-									block['tokentype']= tokentype ? tokentype : "0";
-									block['owner_address'] = ownAddress ? ownAddress : "";
-									block['logo_url'] = logoUrl ? logoUrl : "";
-									block['btn_state'] = btnState ? btnState : "";
-									block['salestate'] = saleState ? saleState : "";
-									midx ++;
-									break;
-								}else{
-									block['dviprice']= "0";
-									block['tokentype']= "0";
-									block['owner_address'] = "";
-									block['logo_url'] = "";
-								}
-							}
-						}
-						console.log("[Market.Detail.vue] callLandItemList()-> dvLand ", dvLand);
-
-						this.mxSetLandMenu(landMenu);
+					// console.log('dvland after')
+					// console.log('landMenu in mixin', landMenu)
+					// isStake
+					// 	? this.mxSetLandMenu(landMenu)
+					// 	: this.mxSetLandMenuPopUp(landMenu)
+					// // add func
+					if (typeof func == 'function') {						
+						func()
 					}
-
-					// add func
-					if(typeof func == 'function') {
-						func();
-					}
-
 					// this.mxSetMarketItems({total:total,  page:query.page, cpp: query.count,  list:rows});
-					this.mxCloseLoading();
-				}
-			});
-
+					this.mxCloseLoading()
+				},
+			})
 		},
 
+		setLandItemsPopup(params) {
+			this.mxSetLandItemsInPopupStaking(params)
+			this.mxSetLandItemsDefaultInPopupStaking(params)
+		},
 
 		// market level api ///
 		mxGetLevelCssType(level) {

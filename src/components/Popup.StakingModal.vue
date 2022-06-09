@@ -21,31 +21,36 @@
 						<input
 							type="text"
 							v-model="keyword"
-							@change="onSearch"
+							ref="inputSearch"
+							@keyup="onSearch($event.target.value)"
 							maxlength="255"
 						/>
-						<div class="erc">
-							<span class="child" @click="switchErc">
-								<span v-if="isErc1155">ERC-1155</span>
-								<span v-else>ERC-721</span>
+						<div id="erc" class="erc">
+							<span class="child" id="name-land">
+								<!-- <span v-if="isErc1155">ERC-1155</span>
+								<span v-else>ERC-721</span> -->
+								{{ landCodeName }}
 								<img
+									id="arrow"
 									class="ic-filter"
 									src="../assets/img/ic-arrow-down.svg"
 							/></span>
-						</div>
-						<div class="fill" @click="setFilter">
-							<span class="child" v-if="filterBy === 'asc'"
-								><span>Sort by Hash Rate (ascending)</span>
-								<img
-									class="ic-filter"
-									src="../assets/img/ic-filter-asc.svg"
-							/></span>
-							<span class="child" v-else
-								><span>Sort by Hash Rate (descending)</span
-								><img
-									class="ic-filter"
-									src="../assets/img/ic-filter-desc.svg"
-							/></span>
+							<Transition>
+								<div
+									v-if="showDropdown"
+									class="dropdown-list"
+									id="dropdown-list"
+								>
+									<div
+										class="dropdown-item"
+										v-for="item in listLandCode"
+										:key="item"
+										@click="handleClickItem(item)"
+									>
+										{{ item.name }}
+									</div>
+								</div>
+							</Transition>
 						</div>
 					</div>
 					<div class="desc" v-if="listShowers.length !== 0">
@@ -54,19 +59,19 @@
 					</div>
 					<div class="list-staking">
 						<LandCard
-							v-for="item in listShowers"
-							:name="item.name"
+							v-for="item in landItemsInPopup.list"
+							:name="item.n"
 							:id="item.id"
 							:key="item.id"
 							:nftId="Number(item.nft_id)"
-							:imageUrl="item.imageUrl"
-							:isActive="getActive(Number(item.nft_id))"
+							:imageUrl="item.thumburl"
+							:isActive="getActive(Number(item.tokenId))"
 							:onConfirmQuantity1155="
 								(quantity, nftId) =>
 									onConfirmQuantity1155(quantity, nftId)
 							"
 							:onCheckItem="
-								() => onCheckItem(Number(item.nft_id))
+								() => onCheckItem(Number(item.tokenId))
 							"
 							:isErc1155="isErc1155"
 							:cancelQuantityModal="
@@ -74,8 +79,13 @@
 							"
 							:maxQuantity="item.value"
 							:hashRate="item.hashRate"
+							:tokenId="item.tokenId"
+							:item="item"
 						/>
-						<div v-if="listShowers.length === 0" class="no-lands">
+						<div
+							v-if="landItemsInPopup.list.length === 0"
+							class="no-lands"
+						>
 							No LANDs found.
 						</div>
 					</div>
@@ -120,6 +130,7 @@
 import Web3 from 'web3'
 import _ from 'lodash'
 import axios from 'axios'
+import { gConfig } from '@/App.Config'
 import ABI_721 from '@/abi/ABI712.json'
 import ABI_1155 from '@/abi/ABI1155.json'
 import ABI_STAKING from '@/abi/DvisionStakingUpgradeable.json'
@@ -132,15 +143,31 @@ import {
 	formatChainId,
 	WALLETCONNECT,
 	checkErrorMessage,
-	USER_DECLINED
+	USER_DECLINED,
+	LAND_CODE,
+	METAMASK,
+	COINBASE,
 } from '@/features/Common'
 import { getContractConnect } from '@/features/Connectors.js'
 import {
 	MSG_METAMASK_1,
 	MSG_METAMASK_2,
+	MSG_METAMASK_3,
 } from '@/features/Messages'
 import LandCard from '@/components/LandCard.vue'
-import { gConfig } from '@/App.Config'
+import {
+	BITSKI,
+	checkGasWithBalance,
+	DENIED_TRANSACTION,
+	listLandCode,
+	OUT_OF_GAS,
+	renderContractAdd,
+renderNetworkName,
+TYPE_ADDRESS_CONTRACT,
+} from '../features/Common'
+import { getWeb3 } from '../features/Connectors'
+import { _api_domain } from '../App.Config'
+import { MSG_METAMASK_6 } from '../features/Messages'
 const { ethereum } = window
 export default {
 	components: {
@@ -151,7 +178,6 @@ export default {
 			loginBy: window.localStorage.getItem('loginBy'),
 			submitData: null,
 			hadUnderstand: false,
-			filterBy: 'default',
 			isErc1155: false,
 			listNfts: [],
 			listNfts721Check: [],
@@ -162,9 +188,13 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			wallet_addr: this.$store?.state?.userInfo?.wallet_addr,
-			networkRPC : window.localStorage.getItem('networkRPC'),
-			fortmaticNetwork : window.localStorage.getItem('fortmaticNetwork')
-			
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
+			landCode: LAND_CODE.SEOUL,
+			showDropdown: false,
+			listLandCode,
+			currentOrder: { name: 'land_ct_all', ct: 'all' },
+			dataPopup: { ...this.data },
 		}
 	},
 	beforeMount() {
@@ -173,27 +203,64 @@ export default {
 			let wll = JSON.parse(walletconnect)
 			const chainId = formatChainId(wll.chainId)
 			this.current_network = chainId
-		} else if(this.loginBy === FORTMATIC) {
-			const fortmaticNetwork = window.localStorage.getItem('fortmaticNetwork')
+		} else if (this.loginBy === FORTMATIC) {
+			const fortmaticNetwork =
+				window.localStorage.getItem('fortmaticNetwork')
+			this.current_network = formatChainId(fortmaticNetwork)
+		} else {
+			const fortmaticNetwork =
+				window.localStorage.getItem('currentNetwork')
 			this.current_network = formatChainId(fortmaticNetwork)
 		}
-		else {
-			const fortmaticNetwork = window.localStorage.getItem('currentNetwork')
-			this.current_network = formatChainId(fortmaticNetwork)
-		}
+		this.setSearchQuery(1)
 	},
 	mounted() {
-		if(ethereum) {
+		if (
+			(ethereum && this.loginBy === METAMASK) ||
+			this.loginBy === COINBASE
+		) {
 			ethereum.on('accountsChanged', (accounts) => {
 				this.current_addr = accounts[0]
-		})
+			})
+			this.getEtherAccounts()
 		}
-		this.onGetNftowner(this.isErc1155)
+		// this.onGetNftowner(this.isErc1155)
+		this.checkDropdown()
 		// this.popType = authInfo.type;
+		// this.setLandMapId(this.listLandCode[0].id)
+		this.callLandItemList()
+	},
+	beforeUnmount() {
+		window.removeEventListener('click', this.checkStateDropdown)
 	},
 	computed: {
 		userInfo() {
 			return this.mxGetUserInfo()
+		},
+		getDvLand() {
+			return this.mxGetLandMap(this.mapId, true)
+		},
+		landMenu() {
+			return this.mxGetLandMenuPopUp()
+		},
+		mapId() {
+			let mapId = null
+			const landQuery = this.mxGetLandQuery()
+			if (landQuery) {
+				mapId = landQuery.mapId
+			} else {
+				mapId = this.mxGetLandDefaultMapId()
+			}
+			return mapId
+		},
+		landItemsInPopup() {
+			return this.mxGetLandItemsInPopupStaking()
+		},
+		searchQuery() {
+			return this.mxGetLandQuery()
+		},
+		landCodeName() {
+			return this.listLandCode.find((ele) => ele.id === this.mapId).name
 		},
 		NFTWallet() {
 			return this.mxGetNFTWallet()
@@ -224,13 +291,159 @@ export default {
 				this.listShowers = this.listNfts
 			}
 		},
+		searchQuery(newVal, oldVal) {
+			// console.log("[Market.Land.vue] ======================= watch searchQuery ", newVal, oldVal);
+			this.setLandItems(newVal)
+		},
+		mapId(newVal, oldVal) {
+			// console.log("[Market.Land.vue] ======================= watch mapId ", newVal, oldVal);
+			var landQuery = this.mxGetLandQuery()
+			landQuery.page = 1
+			landQuery.search = ''
+			this.search = ''
+			var o = _U.Q('.search-box .text-input')
+			if (o) o.value = ''
+			this.mxSetLandQuery(landQuery)
+			this.callLandItemList()
+		},
 	},
 	methods: {
+		setSearchQuery(page) {
+			if (!page || page == 0) page = 1
+
+			let landType = this.tab_page == 'land-list' ? 'list' : 'map'
+			let mapId = this.mapId
+			const landQuery = this.mxGetLandQuery()
+			if (_U.isDefined(landQuery, 'type')) landType = landQuery.type
+			if (_U.isDefined(landQuery, 'mapId')) mapId = landQuery.mapId
+
+			const query = {
+				type: landType,
+				mapId: mapId,
+				page: page,
+				count: gConfig.marketItem_count_per_page,
+				search: this.search,
+				for_sale: this.landSwitchForsale,
+				order: this.currentOrder,
+			}
+
+			this.mxSetLandQuery(query)
+		},
+		setLandItems(query) {
+			var dvLand = this.getDvLand
+			if (!dvLand) return
+			console.log('[Market.Land.vue] setLandItems() dvLand==> ', dvLand)
+			var landQuery = this.mxGetLandQuery()
+
+			var ct = _U.getIfDefined(landQuery, ['order', 'ct'])
+			if (!ct) ct = 'all'
+
+			// console.log("[Marke.Land.vue] setLandItems() forSale:", forSale, this.landSwitchForsale);
+
+			// 2자 이상
+			var search =
+				_U.isDefined(landQuery, 'search') && landQuery.search.length > 1
+					? landQuery.search
+					: null
+
+			var blockListAll = []
+			var currentOwner = _U
+				.getIfDefined(this.$store.state, ['userInfo', 'wallet_addr'])
+				.toLowerCase()
+			for (let i = 0; i < dvLand.map.length; i++) {
+				if (_U.isDefined(dvLand.map[i], 'id')) {
+					var block = dvLand.map[i]
+					if (
+						block.owner_address &&
+						block.owner_address.toLowerCase() == currentOwner
+					) {
+						blockListAll.push(block)
+					}
+				}
+			}
+
+			console.log('[Market.Land.vue] blockListAll==> ', blockListAll)
+
+			const blockList = []
+			// console.log('landQuery', landQuery)
+			// var start = (landQuery.page - 1) * landQuery.count;
+			// var end = start + landQuery.count;
+			// for(var i=start; i <end; i++) {
+			// 	if(_U.isDefined(blockListAll[i],'id')) {
+			// 		blockList.push(blockListAll[i]);
+			// 	}
+			// }
+
+			// console.log("[Market.Land.vue] blockList==> ", blockList);
+			const total = blockListAll.length
+			this.mxSetLandItemsInPopupStaking({
+				total,
+				page: 1,
+				cpp: query.count,
+				list: blockListAll,
+			})
+		},
+		callLandItemList() {
+			const network = window.localStorage.getItem('currentNetwork')
+			this.landItemsInPopup.list = []
+			this.mxCallAndSetMyLandItemList(this.mapId, network, false)
+		},
+		handleClickItem(item) {
+			if (this.listNfts721Check.length > 0) {
+				const obj = {
+					width: '712px',
+					title: 'Switch LAND area?',
+					content:
+						'All changes made and all of your selections in the current screen will be lost if you switch to another LAND area. Proceed?',
+					buttonTxt: 'Switch',
+					isShow: true,
+					onClick: () => this.handleConfirmClick(item),
+				}
+				this.mxShowConfirmModal(obj)
+				return
+			}
+			this.handleConfirmClick(item)
+		},
+		handleConfirmClick(item) {
+			console.log('item', item)
+			this.keyword = ''
+			this.setLandMapId(item.id)
+			const cloneData = {
+				...this.data,
+				addressInfo: renderContractAdd(
+					this.listLandCode.find(
+						(ele) => ele.name === this.landCodeName
+					).type,
+					this.current_network
+				),
+			}
+			this.dataPopup = { ...cloneData }
+			this.hadUnderstand = false
+			this.listNfts721Check = []
+			this.mxCloseConfirmModal()
+		},
+		setLandMapId(mapId) {
+			const landQuery = this.mxGetLandQuery()
+			if (!landQuery) landQuery = {}
+			// console.log("[Market.Land.vue] setLandMapId  mapId",mapId, landQuery);
+			if (landQuery.mapId != mapId) {
+				// console.log("[Market.Land.vue] setLandMapId  mapId call mxSetLandQuery()",mapId, landQuery);
+				landQuery.mapId = mapId
+				this.mxSetLandQuery(landQuery)
+			}
+		},
+		checkStateDropdown(e) {
+			const className = ['dropdown-list', 'erc', 'name-land', 'arrow']
+			const index = className.findIndex((ele) => ele === e.target.id)
+			this.showDropdown = index !== -1 ? !this.showDropdown : false
+		},
+		checkDropdown() {
+			window.addEventListener('click', this.checkStateDropdown)
+		},
 		checkNetwork(chainId) {
 			const networkBSC = this.NFTWallet.getAddr('BSC').Network
 			const networkPoygon = this.NFTWallet.getAddr('POL').Network
 			const networkETH = this.NFTWallet.getAddr('ETH').Network
-			console.log('chainId',chainId)
 			if (
 				chainId === networkBSC ||
 				chainId === networkPoygon ||
@@ -243,9 +456,21 @@ export default {
 			}
 		},
 		checkAddress(current_addr) {
-			if (current_addr.toLowerCase() === this.wallet_addr.toLowerCase())
-				return true
-			else return false
+			let accountAddWalletConnect = null
+			if (this.loginBy === WALLETCONNECT) {
+				const walletConnect =
+					window.localStorage.getItem('walletconnect')
+				const wc = JSON.parse(walletConnect)
+				accountAddWalletConnect = wc.accounts[0]
+			}
+			const currentAddress =
+				this.loginBy === WALLETCONNECT
+					? accountAddWalletConnect
+					: window.localStorage.getItem('addressMetamask')
+			return currentAddress
+				? currentAddress.toLowerCase() ===
+						this.wallet_addr.toLowerCase()
+				: true
 		},
 		onEnableStakeButton() {
 			if (!this.hadUnderstand) return false
@@ -255,42 +480,24 @@ export default {
 				return false
 			return true
 		},
-		async onGetHashRate(is_ERC1155, nft_id, idx) {
-			try {
-				const nft = this.listNfts.find((x) => x.nft_id === nft_id)
-				//cal API
-				const search = is_ERC1155 ? '1155' : '721'
-				const response = await axios.get(
-					`${gConfig.public_api_sotatek_2}/search_bep_${search}?token_id=${nft_id}`
+		onSearch(text) {
+			const defaultData = { ...this.$store.state.defaultLandItemsPopup }
+			let filterItems = [...defaultData.list]
+			if (text) {
+				filterItems = [...defaultData.list].filter(
+					(ele) =>
+						ele.tokenId.includes(text) ||
+						ele.n.toLowerCase().includes(text.toLowerCase())
 				)
-				if (response.status === 200) {
-					nft.name = response.data.name
-					nft.imageUrl = response.data.image
-					nft.description = response.data.description
-				}
-				const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
-				await contractConn.methods
-					.tokenHashrate(is_ERC1155, nft_id)
-					.call()
-					.then((tx) => {
-						nft.hashRate = Number(tx) / 10
-					})
-				if (this.listNfts.length - 1 === idx) {
-					setTimeout(() => {
-						this.setFilter()
-						this.mxCloseLoading()
-					}, 2000)
-				}
-			} catch (err) {
-				this.mxCloseLoading()
-				console.log('catch', err)
 			}
-		},
-		onSearch() {
-			console.log('search')
+
+			const params = {
+				...defaultData,
+				list: filterItems,
+			}
+			this.mxSetLandItemsInPopupStaking(params)
 		},
 		confirmSwitch() {
-			this.filterBy = 'default'
 			this.keyword = ''
 			this.hadUnderstand = false
 			this.isErc1155 = !this.isErc1155
@@ -316,24 +523,6 @@ export default {
 				this.confirmSwitch()
 			}
 		},
-		setFilter() {
-			if (this.filterBy === 'default') {
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return a.hashRate - b.hashRate
-				})
-				this.filterBy = 'asc'
-			} else if (this.filterBy === 'asc') {
-				this.filterBy = 'desc'
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return b.hashRate - a.hashRate
-				})
-			} else {
-				this.listShowers = this.listShowers.sort(function (a, b) {
-					return a.hashRate - b.hashRate
-				})
-				this.filterBy = 'asc'
-			}
-		},
 		closePopup() {
 			this.mxCloseStakingModal()
 		},
@@ -344,7 +533,7 @@ export default {
 				height: '328px',
 				title: 'Success',
 				content: renderSuccessContent(),
-				buttonTxt: 'I understand',
+				buttonTxt: 'OK',
 				isShow: true,
 			}
 			this.mxShowSuccessModal(obj)
@@ -385,6 +574,7 @@ export default {
 		},
 
 		onCheckingUnder() {
+			console.log('approve', this.dataPopup)
 			if (!this.checkAddress(this.current_addr)) {
 				this.mxShowToast(MSG_METAMASK_1)
 				return
@@ -399,37 +589,34 @@ export default {
 				this.checkStatusNft()
 			}
 		},
-		async onGetNftowner(collection) {
-			this.mxShowLoading()
-			let params = {
-				owner: this.$store?.state?.userInfo?.wallet_addr,
-				collectionAddress: collection
-					? this.data.address1155
-					: this.data.address721,
-				chainId: this.data.chainId,
-			}
-			const response = await axios.get(
-				`${gConfig.public_api_sotatek}/nft-owner`,
-				{ params }
-			)
-			if (response?.status === 200) {
-				this.listNfts = response.data
-				this.listNfts721Check = []
-				response.data.map((item, idx) => {
-					this.onGetHashRate(item.is_ERC1155, item.nft_id, idx)
-				})
-				this.listShowers = this.listNfts
-			} else {
-				this.mxCloseLoading()
-				this.listNfts = []
-			}
-		},
-		async getAccounts() {
+		// async onGetNftowner(collection) {
+		// 	this.mxShowLoading()
+		// 	let params = {
+		// 		owner: this.$store?.state?.userInfo?.wallet_addr,
+		// 		collectionAddress: collection
+		// 			? this.dataPopup.address1155
+		// 			: this.dataPopup.address721,
+		// 		chainId: this.dataPopup.chainId,
+		// 	}
+		// 	const response = await axios.get(
+		// 		`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/nft-owner`,
+		// 		{ params }
+		// 	)
+		// 	if (response?.status === 200) {
+		// 		this.listNfts = response.data
+		// 		this.listNfts721Check = []
+		// 		this.listShowers = this.listNfts
+		// 	} else {
+		// 		this.mxCloseLoading()
+		// 		this.listNfts = []
+		// 	}
+		// },
+		async getEtherAccounts() {
 			try {
-				let acc = await window.ethereum.request({
+				const accounts = await ethereum.request({
 					method: 'eth_requestAccounts',
 				})
-				return acc
+				this.current_addr = accounts[0]
 			} catch (e) {
 				return []
 			}
@@ -443,22 +630,39 @@ export default {
 				this.mxShowToast(MSG_METAMASK_2)
 				return
 			}
+			const landItems = this.listLandCode.find(ele => ele.name === this.landCodeName)
+			if (landItems.network !== renderNetworkName(this.current_network)) {
+				this.mxShowToast(MSG_METAMASK_6)
+				return
+			}
 			this.mxShowLoading('inf')
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
-			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
-			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
+			const address = this.isErc1155
+				? Contract1155Address
+				: Contract721Address
+			const contractConn = getContractConnect(
+				this.loginBy,
+				abi,
+				address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			const res = await contractConn.methods
 				.isApprovedForAll(
 					this.$store?.state?.userInfo?.wallet_addr, //address owner
-					this.data.staking_address // address Staking
+					this.dataPopup.staking_address // address Staking
 				)
 				.call()
 				.catch((e) => {
-					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+					if (
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
+					) {
 						this.mxShowToast(USER_DECLINED)
-					}
-					else {
-						this.mxShowToast(checkErrorMessage(e))
+					} else {
+						this.mxShowToast(e.message)
 					}
 					this.hadUnderstand = false
 					this.mxCloseLoading()
@@ -473,31 +677,71 @@ export default {
 
 		async onApprovedForAll() {
 			const abi = this.isErc1155 ? ABI_1155 : ABI_721
-			const address = this.isErc1155 ? this.data.address1155 : this.data.address721
-			const contractConn = getContractConnect(this.loginBy, abi, address, this.networkRPC, this.fortmaticNetwork)
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
+			const address = this.isErc1155
+				? Contract1155Address
+				: Contract721Address
+			const contractConn = getContractConnect(
+				this.loginBy,
+				abi,
+				address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
 			try {
+				if (
+					this.loginBy === COINBASE ||
+					this.loginBy === BITSKI ||
+					this.loginBy === WALLETCONNECT
+				) {
+					const web3 = getWeb3(
+						this.loginBy,
+						this.networkRPC,
+						this.current_network
+					)
+					const gasNumber = await contractConn.methods
+						.setApprovalForAll(
+							this.dataPopup.staking_address, // address Staking
+							true
+						)
+						.estimateGas({
+							from: this.current_addr,
+						})
+					const condition = await checkGasWithBalance(
+						web3,
+						gasNumber,
+						this.current_addr
+					)
+					if (condition) {
+						this.mxCloseLoading()
+						this.mxShowToast(OUT_OF_GAS)
+						return
+					}
+				}
 				const res = await contractConn.methods
-				.setApprovalForAll(
-					this.data.staking_address, // address Staking
-					true
-				)
-				.send({
-					from: this.current_addr,
-				})
+					.setApprovalForAll(
+						this.dataPopup.staking_address, // address Staking
+						true
+					)
+					.send({
+						from: this.current_addr,
+					})
 				if (res) {
 					this.hadUnderstand = true
 				}
-			}
-			catch(e) {
-				if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+			} catch (e) {
+				console.log('e', e)
+				if (
+					e.message.includes('104') &&
+					e.message.includes(USER_DECLINED)
+				) {
 					this.mxShowToast(USER_DECLINED)
-				}
-				else {
-					this.mxShowToast(checkErrorMessage(e))
+				} else {
+					this.mxShowToast(e.message)
 				}
 				this.hadUnderstand = false
-			}
-			finally {
+			} finally {
 				this.mxCloseLoading()
 			}
 		},
@@ -512,38 +756,130 @@ export default {
 				return
 			}
 			this.mxShowLoading('inf')
-			const contractConn = getContractConnect(this.loginBy, ABI_STAKING, this.data.staking_address, this.networkRPC, this.fortmaticNetwork)
+			const contractConn = getContractConnect(
+				this.loginBy,
+				ABI_STAKING,
+				this.dataPopup.staking_address,
+				this.networkRPC,
+				this.fortmaticNetwork
+			)
+			// let params = {
+			// 	erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
+			// 	erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
+			// 	erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
+			// }
+			const { Contract1155Address, Contract721Address } =
+				this.dataPopup.addressInfo
 			let params = {
-				erc721TokenIds: this.isErc1155 ? [] : this.listNfts721Check,
-				erc1155TokenIds: this.isErc1155 ? this.listNfts1155Check : [],
-				erc1155Amounts: this.isErc1155 ? this.listNfts1155Quantity : [],
+				token: this.isErc1155
+					? Contract1155Address
+					: Contract721Address,
+				tokenIds: this.isErc1155
+					? this.listNfts1155Check
+					: this.listNfts721Check,
+			}
+			if (this.isErc1155) {
+				params = {
+					...params,
+					amounts: this.listNfts1155Quantity,
+				}
 			}
 			params = JSON.parse(JSON.stringify(params))
-			const res = await contractConn.methods
-				.deposit(this.data.duration.id, params)
-				.send({
+			if (
+				this.loginBy === COINBASE ||
+				this.loginBy === BITSKI ||
+				this.loginBy === WALLETCONNECT
+			) {
+				const web3 = getWeb3(
+					this.loginBy,
+					this.networkRPC,
+					this.current_network
+				)
+				const gasNumber = await (this.isErc1155
+					? contractConn.methods.depositERC1155(
+							this.dataPopup.duration.id,
+							params
+					  )
+					: contractConn.methods.depositERC721(
+							this.dataPopup.duration.id,
+							params
+					  )
+				).estimateGas({
 					from: this.current_addr,
 				})
+				const condition = await checkGasWithBalance(
+					web3,
+					gasNumber,
+					this.current_addr
+				)
+				if (condition) {
+					this.mxCloseLoading()
+					this.mxShowToast(OUT_OF_GAS)
+					return
+				}
+			}
+			;(this.isErc1155
+				? contractConn.methods.depositERC1155(
+						this.dataPopup.duration.id,
+						params
+				  )
+				: contractConn.methods.depositERC721(
+						this.dataPopup.duration.id,
+						params
+				  )
+			)
+				.send({
+					from: this.wallet_addr,
+				})
+				.then((res) => {
+					// this.mxGetLandItems()
+					this.mxCloseLoading()
+					this.showSuccess()
+					this.mxShowLoading()
+					setTimeout(() => {
+						this.onStakingSuccess()
+					}, 5000)
+				})
 				.catch((e) => {
-					if(e.message.includes('104') && e.message.includes(USER_DECLINED)) {
+					// if (e.code === 4001) {
+					// 	this.mxShowToast(e.message)
+					// } else {
+					// 	this.mxShowToast(MSG_METAMASK_3)
+					// }
+
+					if (
+						e.message.includes('104') &&
+						e.message.includes(USER_DECLINED)
+					) {
 						this.mxShowToast(USER_DECLINED)
-					}
-					else {
-						this.mxShowToast(checkErrorMessage(e))
+					} else if (
+						e.code === 4001 ||
+						e.message === DENIED_TRANSACTION
+					) {
+						this.mxShowToast(DENIED_TRANSACTION)
+					} else {
+						this.mxShowToast(MSG_METAMASK_3)
 					}
 					this.mxCloseLoading()
 				})
-			if (res) {
-				this.mxCloseLoading()
-				this.showSuccess()
-				this.onStakingSuccess()
-			}
+				.finally(() => {
+					// this.mxCloseLoading()
+				})
 		},
 	},
 }
 </script>
 
 <style lang="scss" scoped>
+.v-enter-active,
+.v-leave-active {
+	transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+	opacity: 0;
+}
 .modal-mask {
 	position: absolute;
 	z-index: $Z-INDEX-LOGIN-POPUP;
@@ -602,6 +938,8 @@ export default {
 					font-weight: 400;
 					font-size: gREm(13);
 					line-height: gREm(19);
+					flex: 1;
+					margin-right: 10px;
 				}
 				& .erc {
 					width: gREm(140);
@@ -612,21 +950,22 @@ export default {
 					padding: 0 10px;
 					line-height: gREm(44);
 					cursor: pointer;
-					& .child {
-						display: flex;
-						align-items: center;
-						justify-content: space-between;
+
+					.dropdown-list {
+						border: 1px solid #fff;
+						background-color: #fff;
+						width: 100%;
+						padding: gREm(10);
+						position: absolute;
+						left: 0;
+						border-radius: gREm(10);
+						margin-top: gREm(5);
+						z-index: 10;
+
+						.dropdown-item {
+							color: #000;
+						}
 					}
-				}
-				& .fill {
-					width: gREm(263);
-					height: 100%;
-					background: #1c1a2e;
-					border: 1px solid #d6d8dc;
-					border-radius: 10px;
-					padding: 0 10px;
-					line-height: gREm(44);
-					cursor: pointer;
 					& .child {
 						display: flex;
 						align-items: center;
@@ -668,6 +1007,8 @@ export default {
 					top: 50%;
 					left: 50%;
 					transform: translate(-50%, -50%);
+					color: #f6583e;
+					font-size: gREm(15);
 				}
 			}
 			& .line {
@@ -849,12 +1190,7 @@ export default {
 						width: 40%;
 					}
 
-					.fill {
-						width: 100%;
-					}
-
-					.erc,
-					.fill {
+					.erc {
 						@include Set-Font(
 							$AppFont,
 							gREm(14),

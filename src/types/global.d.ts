@@ -1,4 +1,3 @@
-import AppConfig from "@/App.Config"
 import Utils from "@/features/Utils"
 
 export {}

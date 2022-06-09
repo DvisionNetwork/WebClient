@@ -21,14 +21,27 @@
 						{{ tabList[selectedIndex].header }}
 					</div>
 					<div class="modal-body">
-						<MyRewardInfo :data="dataInfo"></MyRewardInfo>
+						<MyRewardInfo
+							v-if="selectedIndex === 0"
+							:data="dataOngoing"
+							:selectedIndex="selectedIndex"
+						/>
+						<MyRewardInfo
+							v-else
+							:data="dataReward"
+							:selectedIndex="selectedIndex"
+						/>
 					</div>
 					<hr />
 					<div class="btn-wrapper">
 						<button
 							v-if="selectedIndex === 1"
 							class="btn btn-primary"
-							@click="showPopupSuccess"
+							@click="claimRewards"
+							:disabled="
+								dataReward.length === 0 ||
+								data.statusCampain === 3
+							"
 						>
 							Claim rewards
 						</button>
@@ -46,11 +59,38 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { getContractConnect, getWeb3 } from '../features/Connectors'
+import ProxyBcsABI from '@/abi/ProxyBSC.json'
+import ProxyPolygonABI from '@/abi/ProxyPolygon.json'
 import MyRewardInfo from './MyReward.Info.vue'
 import { renderStakingRewardsClaimed } from '@/data/RenderContent'
+import {
+	ADDRESS_METAMASK,
+	BITSKI,
+	BSC_PROXY_ADDRESS,
+	checkGasWithBalance,
+	COINBASE,
+	METAMASK,
+	OUT_OF_GAS,
+	WALLETCONNECT,
+	fromHexToChainId,
+	DENIED_TRANSACTION,
+  	USER_DECLINED,
+    renderNetworkName,
+    USER_CANCELED,
+} from '../features/Common'
+import { gConfig } from '@/App.Config'
+import jwt from 'jsonwebtoken'
+import { MSG_METAMASK_1, MSG_METAMASK_2, MSG_METAMASK_5 } from '../features/Messages'
+import { _api_domain } from '../App.Config'
+
 export default {
 	components: {
 		MyRewardInfo,
+	},
+	mounted() {
+		this.mountedPopup()
 	},
 	computed: {},
 	data() {
@@ -66,209 +106,292 @@ export default {
 				},
 			],
 			selectedIndex: 0,
-			dataInfo: [
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-				{
-					id: 124151,
-					name: 'Random Box A',
-					quantity: 10,
-				},
-			],
+			listReward: [],
+			listOngoing: [],
+			dataOngoing: [],
+			dataReward: [],
+			loginBy: window.localStorage.getItem('loginBy'),
+			networkRPC: window.localStorage.getItem('networkRPC'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	props: {
 		data: Object,
+	},
+	created() {},
+	watch: {
+		async selectedIndex() {
+			if (
+				this.selectedIndex === 1 &&
+				(this.data.statusCampain === 1 || this.data.statusCampain === 2)
+			) {
+				await this.getListReward()
+				this.filterReward()
+			}
+			if (this.selectedIndex === 0) {
+				await this.getListOngoing()
+				this.filterOngoing()
+			}
+		},
 	},
 	methods: {
 		showPopupSuccess() {
 			const obj = {
 				isShow: true,
 				content: renderStakingRewardsClaimed(),
-				title: "Rewards have been claimed",
-				buttonTxt: "OK",
-				width: "712px"
+				title: 'Rewards have been claimed',
+				buttonTxt: 'OK',
+				width: '712px',
 			}
 			this.mxCloseMyRewardModal()
 			this.mxShowSuccessModal(obj)
+		},
+		async claimRewards() {
+			this.mxShowLoading('inf')
+
+			const oldChainId = this.data.chainId
+			const network = window.localStorage.getItem('currentNetwork')
+			const currentChainId = fromHexToChainId(network)
+
+			if (oldChainId !== currentChainId) {
+				this.mxCloseLoading()
+				this.mxShowToast(MSG_METAMASK_2)
+				return
+			}
+
+			const address = this.$store.state.userInfo.wallet_addr
+			const addressChange = window.localStorage.getItem(ADDRESS_METAMASK)
+			if (
+				addressChange &&
+				addressChange !== address &&
+				this.loginBy === METAMASK
+			) {
+				this.mxCloseLoading()
+				this.mxShowToast(MSG_METAMASK_1)
+				return
+			}
+			const payload = {
+				address,
+				campaignId: this.data.poolDuration.id,
+				chainId: this.data.chainId,
+				currentTime: Date.now(),
+			}
+			// const url = `${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/claim-reward`
+			const url = `${gConfig.public_api_sotatek}/claim-reward`
+			const data = jwt.sign(payload, gConfig.privateKeyEncode)
+
+			const res = await axios.put(url, { data })
+		console.log("res", res);
+			if (res.data.data && res.data.signature) {
+				const networkFromChainId = renderNetworkName(oldChainId)
+				const PROXY_ADDRESS = this.getAddrProxyContractByNetwork(networkFromChainId)
+				const PROXY_ABI = this.getAbiProxyContractByNetwork(networkFromChainId)
+				const contract = getContractConnect(
+					this.loginBy,
+					PROXY_ABI,
+					PROXY_ADDRESS,
+					this.networkRPC,
+					this.fortmaticNetwork
+				)
+
+				if (
+					this.loginBy === COINBASE ||
+					this.loginBy === BITSKI ||
+					this.loginBy === WALLETCONNECT
+				) {
+					const web3 = getWeb3(
+						this.loginBy,
+						this.networkRPC,
+						this.fortmaticNetwork
+					)
+					const gasNumber = await contract.methods
+						.execTransaction(res.data.data, res.data.signature)
+						.estimateGas({
+							from: address,
+						})
+
+					const condition = await checkGasWithBalance(
+						web3,
+						gasNumber,
+						address
+					)
+					if (condition) {
+						this.mxCloseLoading()
+						this.mxShowToast(OUT_OF_GAS)
+						return
+					}
+				}
+
+				contract.methods
+					.execTransaction(res.data.data, res.data.signature)
+					.send({ from: address })
+					.then((tx) => {
+						this.showPopupSuccess()
+						console.log('tx', tx)
+					})
+					.catch((e) => {
+						console.log('tu choi', e.toString())
+						if (
+							e.message.includes('104') &&
+							e.message.includes(USER_DECLINED)
+						) {
+							this.mxShowToast(USER_DECLINED)
+						} else if(e.message.includes(USER_CANCELED)){
+							this.mxShowToast(USER_CANCELED)
+						} else if (
+							e.code === 4001 ||
+							e.message === DENIED_TRANSACTION
+						) {
+							this.mxShowToast(DENIED_TRANSACTION)
+						}
+						  else {
+							this.mxShowToast(MSG_METAMASK_5)
+						}
+					})
+					.finally(() => {
+						this.mxCloseLoading()
+					})
+			} else {
+				this.mxCloseLoading()
+			}
+		},
+		async getListReward() {
+			const address = this.$store.state.userInfo.wallet_addr
+			const campainId = this.data.poolDuration.id
+			const chainId = this.data.chainId
+			// const res = await axios(
+			// 	`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			// )
+			const res = await axios(
+				`${gConfig.public_api_sotatek}/get-list-reward?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			)
+			console.log(res);
+			this.listReward = res.data.NftCampaignArr != undefined ? res.data.NftCampaignArr : res.data;
+		},
+		filterReward() {
+			if (this.listReward && this.listReward.length > 0) {
+				const data = []
+				for (let i = 1; i <= 9; i++) {
+					const nft = this.listReward.reduce(
+						(obj, item) => {
+							if(item?.rewardRandomBox && typeof item.rewardRandomBox === 'string') {
+								item.rewardRandomBox = JSON.parse(item.rewardRandomBox);
+							}
+							if(item?.rewardBuildingBoxA && typeof item.rewardBuildingBoxA === 'string') {
+								item.rewardBuildingBoxA = JSON.parse(item.rewardBuildingBoxA);
+							}
+							if(item?.rewardBuildingBoxB && typeof item.rewardBuildingBoxB === 'string') {
+								item.rewardBuildingBoxB = JSON.parse(item.rewardBuildingBoxB);
+							}
+							if (item?.rewardRandomBox?.boxType == i) {
+								obj.amount += item?.rewardRandomBox.amount
+							}
+							if (item?.rewardBuildingBoxA?.boxType == i) {
+								obj.amount += item?.rewardBuildingBoxA.amount
+							}
+							if (item?.rewardBuildingBoxB?.boxType == i) {
+								obj.amount += item?.rewardBuildingBoxB.amount
+							}
+							return {
+								amount: obj.amount,
+								boxType: i,
+							}
+						},
+						{ amount: 0, boxType: '' }
+					)
+
+					if (nft.amount > 0) {
+						data.push(nft)
+					}
+				}
+				this.dataReward = [...data]
+			}
+		},
+		async getListOngoing() {
+			const address = this.$store.state.userInfo.wallet_addr
+			const campainId = this.data.poolDuration.id
+			const chainId = this.data.chainId
+			// const res = await axios(
+			// 	`${gConfig.isProd ? _api_domain : gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			// )
+			const res = await axios(
+				`${gConfig.public_api_sotatek}/get-reward-on-going-campaign?owner=${address}&campaignId=${campainId}&chainId=${chainId}`
+			)
+			console.log(res);
+			this.listOngoing = res.data
+		},
+		filterOngoing() {
+			if (this.listOngoing && this.listOngoing.length > 0) {
+				const data = []
+				for (let i = 1; i <= 9; i++) {
+					const nft = this.listOngoing.reduce(
+						(obj, item) => {
+							if(item?.virtualRewardRandomBox && typeof item.virtualRewardRandomBox === 'string') {
+								item.virtualRewardRandomBox = JSON.parse(item.virtualRewardRandomBox);
+							}
+							if(item?.virtualRewardBuildingBoxA && typeof item.virtualRewardBuildingBoxA === 'string') {
+								item.virtualRewardBuildingBoxA = JSON.parse(item.virtualRewardBuildingBoxA);
+							}
+							if(item?.virtualRewardBuildingBoxB && typeof item.virtualRewardBuildingBoxB === 'string') {
+								item.virtualRewardBuildingBoxB = JSON.parse(item.virtualRewardBuildingBoxB);
+							}
+							if (item?.virtualRewardRandomBox?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardRandomBox.amount
+							}
+							if (item?.virtualRewardBuildingBoxA?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardBuildingBoxA.amount
+							}
+							if (item?.virtualRewardBuildingBoxB?.boxType == i) {
+								obj.amount +=
+									item?.virtualRewardBuildingBoxB.amount
+							}
+
+							return {
+								amount: obj.amount,
+								boxType: i,
+							}
+						},
+						{ amount: 0, boxType: '' }
+					)
+
+					if (nft.amount > 0) {
+						data.push(nft)
+					}
+				}
+				this.dataOngoing = [...data]
+			}
+		},
+		async mountedPopup() {
+			if (this.selectedIndex === 0) {
+				await this.getListOngoing()
+				this.filterOngoing()
+			}
+		},
+		getAddrProxyContractByNetwork(network) {
+			switch(network) {
+				case 'ETH': 
+					return 'eth'
+				case 'BSC': 
+					return gConfig.wlt.getProxyBscAddr().contractAddr
+				case 'POL': 
+					return gConfig.wlt.getProxyPolygonAddr().contractAddr
+				default:
+					return ''
+			}
+		},
+		getAbiProxyContractByNetwork(network) {
+			switch(network) {
+				case 'ETH': 
+					return 'eth'
+				case 'BSC': 
+					return ProxyBcsABI
+				case 'POL': 
+					return ProxyPolygonABI
+				default:
+					return ''
+			}
 		}
 	},
 }
@@ -302,8 +425,12 @@ export default {
 			position: absolute;
 			width: 100%;
 			max-height: 100vh;
-			overflow-y: auto;
-			max-width: gREm(1010);
+			// overflow-y: auto;
+			max-width: gREm(939);
+
+			.modal-body {
+				margin-bottom: 10px;
+			}
 
 			.modal-header {
 				display: flex;
@@ -317,8 +444,8 @@ export default {
 			}
 
 			.modal-description {
-				margin-top: gREm(19);
-				margin-bottom: gREm(29);
+				margin-top: gREm(9);
+				margin-bottom: gREm(39);
 			}
 
 			.tabs {
@@ -364,8 +491,11 @@ export default {
 			}
 
 			.btn-wrapper {
+				display: flex;
+				justify-content: end;
 				margin-top: gREm(24);
 				text-align: right;
+
 				.btn {
 					color: #f6583e;
 					border: 1px solid #f6583e;
@@ -405,6 +535,30 @@ export default {
 				line-height: gREm(19);
 				font-weight: 800;
 				margin-bottom: gREm(30);
+			}
+		}
+	}
+}
+@include media-max($media_small) {
+	.modal-mask {
+		.modal-wrapper {
+			.modal-container {
+				height: 100vh;
+				.btn-wrapper {
+					justify-content: center;
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					display: flex;
+					align-items: center;
+					background-color: #000;
+					padding: gREm(15) gREm(28);
+
+					.btn {
+						max-width: gREm(150);
+					}
+				}
 			}
 		}
 	}

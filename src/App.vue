@@ -201,6 +201,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from 'web3'
 import { BITSKI, FORTMATIC, renderNetworkName, WALLETCONNECT } from './features/Common'
 import { bitski, fortmaticProvider, walletConnectProvider } from './features/Connectors'
+import { MSG_METAMASK_1 } from '@/features/Messages'
 import CCodes from './features/CountryCodes';
 import { gConfig } from './App.Config'
 export default {
@@ -326,7 +327,9 @@ export default {
 			});
 			idx ++;
 		}
-		this.mxSetLandMenu(landMenu);
+		this.mxSetLandMenu(landMenu)
+		this.mxSetLandMenuPopUp(landMenu)
+		this.mxSetDefaultLandMenu(landMenu)
 
 		// window.DVW['app']={
 		// 	store:this.$store,
@@ -799,7 +802,20 @@ export default {
 				const chainNetwork = formatChainId(Number(chainId))
 				this.checkNetwork(chainNetwork)
 			}
-		}
+		},
+		handleAccountsChanged(accounts) {
+			const addr = this.$store.state.userInfo.wallet_addr
+			window.localStorage.setItem(ADDRESS_METAMASK, accounts)
+			const loginBy = window.localStorage.getItem('loginBy')
+			if (loginBy === METAMASK || loginBy === COINBASE) {
+				if (
+					addr &&
+					convertAddressAndCheckEqual(loginBy, addr, accounts[0])
+				) {
+					this.mxShowToast(MSG_METAMASK_1)
+				}
+			}
+		},
 	},
 }
 </script>

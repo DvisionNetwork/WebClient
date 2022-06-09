@@ -4,13 +4,15 @@ export default class NFT {
     private contract721Address: string;
     private contract1155Address: string;
     private contractMarketAddress: string;
+    private stakingAddress: string;
 
-    constructor(network: string, token: string, contract721: string, contract1155: string, contractMarket: string) {        
+    constructor(network: string, token: string, contract721: string, contract1155: string, contractMarket: string, stakingAddress: string) {
         this.network = network;
         this.tokenAddress = token;
         this.contract721Address = contract721 = contract721;
         this.contract1155Address = contract1155;
         this.contractMarketAddress = contractMarket;
+        this.stakingAddress = stakingAddress;
     }
 
     public getAddr() {
@@ -20,6 +22,7 @@ export default class NFT {
             Contract721Address: this.contract721Address,
             Contract1155Address: this.contract1155Address,
             ContractMarketAddress: this.contractMarketAddress,
+            stakingAddress: this.stakingAddress
         };
     }
 
@@ -39,6 +42,9 @@ export default class NFT {
         }
         else if (type == "market") {
             return this.contractMarketAddress;
+        }
+        else if (type == "staking") {
+            return this.stakingAddress;
         }
         return '';
     }
