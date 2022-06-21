@@ -464,6 +464,8 @@ export default {
 				marketItem.network === gConfig.wlt.getBscAddr().Network
 			) {
 				return 'BSC'
+			} else if (marketItem.network === gConfig.wlt.getPolygonAddr().Network) {
+				return 'POL'
 			}
 
 			return ''
@@ -761,6 +763,7 @@ export default {
 					// 04.25 Market
 					nftName: isLand ? this.getDvLand().nftName : this.marketItem.name,
 					market_index: this.marketItem.market_index,
+					tokenType : networkName == 'BSC' ? 1 : 0,
 					callback: isLand ? this.onSellLand : this.onSellItem,
 				}
 
@@ -1128,8 +1131,8 @@ export default {
 				network: this.networkName,
 				provider,
 				accountAddress: this.$store.state.userInfo.wallet_addr,
-				// 04.25 Market
-						market_index: this.marketItem.market_index,
+				market_index: this.marketItem.market_index,
+				tokenType : this.networkName == 'BSC' ? 1 : 0,
 				callback: this.onTradeDvi,
 			}
 
@@ -1184,7 +1187,6 @@ export default {
 				provider,
 				accountAddress: this.$store.state.userInfo.wallet_addr,
 				nftName: this.getDvLand().nftName,
-				// 04.25 Market
 				market_index: this.marketItem.market_index,
 				callback: this.onTradeDvi,
 			}

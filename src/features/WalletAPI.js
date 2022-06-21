@@ -666,7 +666,7 @@ export default function walletAPI() {
 								_tokenId : Number(J.tokenId),
 								_amount : J.category == '721' ? 1 : J.amount,
 								_price : value,
-								_currency : J.tokenType ? J.tokenType : 1
+								_currency : J.tokenType != undefined ? J.tokenType : 1
 							}
 
 							const overrides = {
@@ -674,7 +674,7 @@ export default function walletAPI() {
 							}
 
 							console.log(
-								`[WalletAPI] ContractDvi call  contract.trade721(${tradeParams});`
+								`[WalletAPI] ContractDvi call  contract.trade(`,tradeParams,`);`
 							)
 
 							if (J.category == '721') {

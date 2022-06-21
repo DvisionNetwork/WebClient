@@ -264,6 +264,7 @@ export default {
 				{name: 'Land', id:'land-map'},
 				{name: 'BNB', id:'bsc'},
 				{name: 'ETH', id:'eth'},
+				{name: 'POL', id:'pol'}, // mysterybox
 				{name: 'Enjin (soon)', id:'partner_1'},
 			],
 
@@ -349,12 +350,15 @@ export default {
 			} else if (newTab === 'bsc') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
+			} else if (newTab === 'pol') { // mysterybox
+				network = gConfig.wlt.getPolygonAddr().Network;
+				this.setSearchQuery(1, network);
 			} else if (newTab === 'staking') {
 				network = gConfig.wlt.getBscAddr().Network;
 				this.setSearchQuery(1, network);
 			}
 
-			if (idx < 3) {
+			if (idx < 4) {
 				this.$router.push({name:"Market-Page", params:{'tab_page': this.markets[idx].id}});
 			}
 

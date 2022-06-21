@@ -230,20 +230,25 @@ export default function AppConfig() {
 				stakingAddress: '0x8C9d051C4e7fd95c39c2b10dc7eDE4abcB65f801',
 			},
 
-			// 04.25 Market
 			/* -----------------  Integrated Market ----------------- */
+			//////////////// BSC
 			addrMarketBscDev: {
 				ContractMarketAddress:
 					'0x6982a7a4Bcb32ab6B39f9676FBf164617F1B2b3e',
 				addrs: [
 					{
 						// 0 : Event Ticket
-						TokenAddress:
-							'0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a',
+						TokenAddress: '0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a',
 						Contract721Address: '',
-						Contract1155Address:
-							'0x94d616751c16Aecc351bBF1903931f477bA47b6e',
+						Contract1155Address: '0x94d616751c16Aecc351bBF1903931f477bA47b6e',
 					},
+					{
+						// 0 : Mysterybox
+						TokenAddress:	'0x485e73BE860C0Fe910aEd1C0c1320a814c4fCe1a',
+						Contract721Address: '',
+						Contract1155Address: '0xc332c2518e322775e30f759147da7089ed9b072e',
+					},
+					
 				],
 			},
 			addrMarketBscProd: {
@@ -252,11 +257,38 @@ export default function AppConfig() {
 				addrs: [
 					{
 						// 0 : Event Ticket
-						TokenAddress:
-							'0x758FB037A375F17c7e195CC634D77dA4F554255B',
+						TokenAddress: '0x758FB037A375F17c7e195CC634D77dA4F554255B',
 						Contract721Address: '',
-						Contract1155Address:
-							'0x4DD95613106cB1348D3eF25A3668f05fFB0c6211',
+						Contract1155Address: '0x4DD95613106cB1348D3eF25A3668f05fFB0c6211',
+					},
+					{
+						// 0 : Mysterybox
+						TokenAddress:	'0x758FB037A375F17c7e195CC634D77dA4F554255B',
+						Contract721Address: '',
+						Contract1155Address: '0xa13EE53F43271a0BDEBa5d85F6bE46f6ecE82888',
+					},
+				],
+			},
+			//////////////// POL 
+			addrMarketPolDev: {
+				ContractMarketAddress: '0xbC01AB7FEd18A65c8DaB355387f23b00c68DA067',
+				addrs: [
+					{
+						// 0 : Mysterybox
+						TokenAddress: '0xdC49590852E37419f49C02C5898C5411c5924675',
+						Contract721Address: '',
+						Contract1155Address: '0xe13b541D825e25917f3963015f53ee68A2f6B064',
+					},
+				],
+			},
+			addrMarketPolProd: {
+				ContractMarketAddress: '0x3E1A098C4324afB796d77FF87ede89436C4c8Ba6',
+				addrs: [
+					{
+						// 0 : Mysterybox
+						TokenAddress:	'0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204',
+						Contract721Address: '',
+						Contract1155Address: '0x556AD8B084a00f1A2Da9e8D474489494508209F7',
 					},
 				],
 			},
@@ -311,28 +343,37 @@ export default function AppConfig() {
 				}
 				return gConfig.wlt.addr3rdLandPolDev
 			},
-			// 04.25 Market
+			getMarketEthAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addrMarketPolProd
+				}
+				return gConfig.wlt.addrMarketPolDev
+			},
 			getMarketBscAddr() {
 				if (gConfig.isProd) {
 					return gConfig.wlt.addrMarketBscProd
 				}
 				return gConfig.wlt.addrMarketBscDev
 			},
+			getMarketPolAddr() {
+				if (gConfig.isProd) {
+					return gConfig.wlt.addrMarketPolProd
+				}
+				return gConfig.wlt.addrMarketPolDev
+			},
 			getBidAddr() {
 				return gConfig.wlt.addrBid
 			},
-			// 04.25 Market
 			getNetworkAddr(network, market_index) {
 				if (market_index != undefined && market_index != '-1') {
-					// 통합 마켓 컨트랙트일시
 					let market
 					let getAddrs
 					if (network == 'ETH') {
-						market = gConfig.wlt.getMarketBscAddr()
+						market = gConfig.wlt.getMarketEthAddr()
 					} else if (network == 'BSC') {
 						market = gConfig.wlt.getMarketBscAddr()
 					} else if (network == 'POL') {
-						market = gConfig.wlt.getMarketBscAddr()
+						market = gConfig.wlt.getMarketPolAddr()
 					} else {
 						return ''
 					}

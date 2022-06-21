@@ -261,7 +261,7 @@ export default {
 				page: page,
 				count: gConfig.myItem_count_per_page,
 				sort: this.currentOrder.idx,
-				network: '("'+ gConfig.wlt.getBscAddr().Network + '","' +  gConfig.wlt.getAddr().Network + '")',
+				network: '("'+ gConfig.wlt.getBscAddr().Network + '","' +  gConfig.wlt.getAddr().Network + '","' +  gConfig.wlt.getPolygonAddr().Network + '")',
 				category_1: this.category_1,
 				category_2: this.category_2,
 				for_sale: false,
