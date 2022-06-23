@@ -1,10 +1,10 @@
 <template>
     <div class="reward-box">
         <div class="reward-card" v-for="item in data" :key="item">
-            <div class="image land1" v-if="item.itemCode == 'irln000'"></div>
-            <div class="image land2" v-else-if="item.itemCode == 'irln001'"></div>
-            <div class="image land3" v-else-if="item.itemCode == 'irln002'"></div>
-            <div class="image land4" v-else-if="item.itemCode == 'irln003'"></div>
+            <div class="image land1" v-if="item.itemCode == 'irln001'"></div>
+            <div class="image land2" v-else-if="item.itemCode == 'irln002'"></div>
+            <div class="image land3" v-else-if="item.itemCode == 'irln003'"></div>
+            <div class="image land4" v-else-if="item.itemCode == 'irln004'"></div>
             <div class="desc-box">
                 <span class="desc-name">{{ item.itemName }} </span>
             </div>
