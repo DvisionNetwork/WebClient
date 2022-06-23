@@ -95,7 +95,6 @@ export function fromHexToChainId(network) {
 }
 
 export function renderNetworkName(chainId) {
-	console.log('chainId', chainId)
 	let network = ''
 	if (chainId) {
 		switch (chainId.toString()) {

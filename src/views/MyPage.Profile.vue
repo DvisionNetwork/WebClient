@@ -71,11 +71,18 @@ var gConfig = AppConfig();
 
 import {
 	FORTMATIC,
+	BITSKI,
 	formatChainId,
-	WALLETCONNECT
+	WALLETCONNECT,
+	renderNetworkName
 } from '@/features/Common.js'
 
-import { getContractConnect } from '@/features/Connectors.js'
+import {
+	coinbaseProvider,
+	fortmaticProvider,
+	walletConnectProvider,
+	bitski,
+} from '../features/Connectors.js'
 
 export default {
 	name: "Profile",
@@ -133,6 +140,7 @@ export default {
 			current_addr: this.$store?.state?.wallet?.accounts[0],
 			current_network: window.localStorage.getItem('currentNetwork'),
 			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
+			networkRPC: window.localStorage.getItem('networkRPC'),
 		}
 	},
 	computed: {
@@ -212,19 +220,27 @@ export default {
 		getCapitalChar(str) {
 			return _U.getCapitalChar(str);
 		},
+		getProvider() {
+			let provider = null
+			const loginBy = window.localStorage.getItem('loginBy')
+			switch (loginBy) {
+				case FORTMATIC:
+					provider = fortmaticProvider.getProvider()
+					break
+				case WALLETCONNECT:
+					provider = walletConnectProvider
+					break
+				case BITSKI:
+					provider = bitski.getProvider()
+					break
+			}
+			return provider
+		},
 
 		// 3rdlandreward
 	  async	getLand3rdReward() {
-			const chainId = window.localStorage.getItem('currentNetwork')
-			const chainNetwork = formatChainId(Number(chainId))
-			console.log(chainId);
-			console.log(chainNetwork);
-			console.log(this.networkRPC);
-			console.log(this.current_network);
 			const network = this.current_network;
 			const address = this.$store.state.userInfo.wallet_addr;
-
-			console.log({network, address});
 
 			const url = `${gConfig.public_api_webserver}/checkLand3rdReward`;
 			const data = {
@@ -249,9 +265,13 @@ export default {
 				}
 			});
 		},
-		getBoxItem(count) {
+		async getBoxItem(count) {
+
+			this.mxShowLoading();
+
 			const network = this.current_network;
 			const boxCode = "irin000";
+			const address = this.$store.state.userInfo.wallet_addr;
 			console.log({network, boxCode, count});
 
 			const url = `${gConfig.public_api_webserver}/getBoxItemRandomReward`;
@@ -261,45 +281,68 @@ export default {
 				count
 			}
 
-			this.mxShowLoading();
-
 			_U.callPost({
 				url:url,
 				data,
-				callback: (resp) =>{					
+				callback: async (resp) =>{					
 					const json = _U.getIfDefined(resp,['data']);
 
 					let types = [];
 					let amounts = [];
 
 					this.mxCloseLoading();
-
+					console.log("Json : " + json)
 					this.mxShowAlert({
 						msg:this.$t('popup.reward'),
 						reward:json,
-						btn:this.$t('btn.ok')
+						btn:this.$t('btn.ok'),
+						callback: async () => {
+							json.forEach(v => {
+								types.push(v.boxType);
+								amounts.push(v.cnt);
+							})
+							const data = {
+								provider: this.getProvider(),
+								network: renderNetworkName(network),
+								types,
+								amounts,
+								address,
+								callback: this.mintBoxItem
+							}
+							await wAPI.ContractMysterybox(data);
+							}
 					});
-
-					json.forEach(v => {
-						console.log(v);
-						types.push(v.boxType);
-						amounts.push(v.cnt);
-					})
-
-					this.staking_address = gConfig.wlt.getMysteryboxAddr()
-
-					const contractConn = getContractConnect(
-						this.loginBy,
-						mysterybox_ABI,
-						this.staking_address,
-						this.networkRPC,
-						this.fortmaticNetwork
-							? this.fortmaticNetwork
-							: this.current_network
-					)
 				}
 			});
 		},
+
+		async mintBoxItem(res) {
+			if(res.res_code == 200) {
+				console.log('success ' + res.data)
+
+				const network = this.current_network;
+				const address = this.$store.state.userInfo.wallet_addr;
+
+				const url = `${gConfig.public_api_webserver}/receiveLand3rdReward`;
+				const data = {
+					network, 
+					address
+				}
+
+				_U.callPost({
+					url:url,
+					data,
+					callback: (resp) =>{
+						console.log("[MyPage] mintBoxItem()-> resp ", resp);
+					}
+				});
+
+			} else {
+				console.log('mintBoxItem fail ' + res.data)
+			}
+
+			this.mxCloseLoading();
+		}
 
 	}
 }
