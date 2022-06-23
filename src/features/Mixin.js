@@ -68,6 +68,7 @@ var Mixin = {
 			var param = {
 				show: true,
 				msg: J.msg,
+				reward: J.reward,
 				callback: typeof J.callback == 'function' ? J.callback : null,
 			}
 			if (J.btn) param.btn = J.btn
