@@ -547,6 +547,7 @@ export default function walletAPI() {
 						currentNetwork
 					)
 				} else {
+					console.log("ContractMarketAddress", addr.ContractMarketAddress);
 					contract = new ethers.Contract(
 						addr.ContractMarketAddress,
 						bepmarket_V3_ABI,
@@ -878,7 +879,6 @@ export default function walletAPI() {
 							} else {
 								if (J.category == '721') {
 									const marketContract = this.getMarketAddr(J.network)
-
 									if (J.tokenType == 0) {
 										console.log(
 											'[WalletAPI] ContractDvi call  contract.sellItem721 token 0("' +
@@ -1262,7 +1262,6 @@ export default function walletAPI() {
 							if (J.tokenType == 0) {
 								console.log(
 									'[WalletAPI] ContractDvi call  contract.sellItem721 token 0("' +
-										'", "' +
 										J.tokenId +
 										'", ' +
 										J.tokenType +

@@ -63,11 +63,19 @@
 
 <script>
 
-// import WalletAPI from '@/features/WalletAPI.js'
-// var wAPI = new WalletAPI();
+import WalletAPI from '@/features/WalletAPI.js'
+var wAPI = new WalletAPI();
 
 import AppConfig from '@/App.Config.js'
 var gConfig = AppConfig();
+
+import {
+	FORTMATIC,
+	formatChainId,
+	WALLETCONNECT
+} from '@/features/Common.js'
+
+import { getContractConnect } from '@/features/Connectors.js'
 
 export default {
 	name: "Profile",
@@ -77,6 +85,21 @@ export default {
 	},
 	beforeMount () {
 		console.log("[Profile.vue] beforeMout(), route : ", this.$route);
+
+		if (this.loginBy === WALLETCONNECT) {
+			const walletconnect = window.localStorage.getItem('walletconnect')
+			let wll = JSON.parse(walletconnect)
+			const chainId = formatChainId(wll.chainId)
+			this.current_network = chainId
+		} else if (this.loginBy === FORTMATIC) {
+			const fortmaticNetwork =
+				window.localStorage.getItem('fortmaticNetwork')
+			this.current_network = formatChainId(fortmaticNetwork)
+		} else {
+			const fortmaticNetwork =
+				window.localStorage.getItem('currentNetwork')
+			this.current_network = formatChainId(fortmaticNetwork)
+		}
 	},
 	mounted () {
 		console.log("[Profile.vue] mounted(), route : ", this.$route);
@@ -93,6 +116,7 @@ export default {
 		// 	signer: null,
 		// 	balance: 49720
 		// });
+		this.getLand3rdReward();
 	},
 	beforeUpdate () {
 		console.log("[Profile.vue] beforeUpdate(), route : ", this.$route);
@@ -105,6 +129,10 @@ export default {
 		if(!currLang) currLang = 'en';
 		return {
 			isEditMode: false,
+			loginBy: window.localStorage.getItem('loginBy'),
+			current_addr: this.$store?.state?.wallet?.accounts[0],
+			current_network: window.localStorage.getItem('currentNetwork'),
+			fortmaticNetwork: window.localStorage.getItem('fortmaticNetwork'),
 		}
 	},
 	computed: {
@@ -183,7 +211,89 @@ export default {
 
 		getCapitalChar(str) {
 			return _U.getCapitalChar(str);
-		}
+		},
+
+		// 3rdlandreward
+	  async	getLand3rdReward() {
+			const chainId = window.localStorage.getItem('currentNetwork')
+			const chainNetwork = formatChainId(Number(chainId))
+			console.log(chainId);
+			console.log(chainNetwork);
+			console.log(this.networkRPC);
+			console.log(this.current_network);
+			const network = this.current_network;
+			const address = this.$store.state.userInfo.wallet_addr;
+
+			console.log({network, address});
+
+			const url = `${gConfig.public_api_webserver}/checkLand3rdReward`;
+			const data = {
+				network, 
+				address
+			}
+
+			_U.callPost({
+				url:url,
+				data,
+				callback: (resp) =>{
+					console.log("[MyPage] getLand3rdReward()-> resp ", resp);
+					const count = _U.getIfDefined(resp,['data']);
+
+					if(count > 0) {
+						this.mxShowAlert({
+							msg:this.$t('mypage.profile.alert-3rdland-reward'),
+							btn:this.$t('mypage.profile.alert-claim-btn'),
+							callback: () => this.getBoxItem(count)
+						});
+					}
+				}
+			});
+		},
+		getBoxItem(count) {
+			const network = this.current_network;
+			const boxCode = "irin000";
+			console.log({network, boxCode, count});
+
+			const url = `${gConfig.public_api_webserver}/getBoxItemRandomReward`;
+			const data = {
+				network, 
+				boxCode, 
+				count
+			}
+
+			_U.callPost({
+				url:url,
+				data,
+				callback: (resp) =>{
+					console.log("[MyPage] getBoxItem()-> resp ", resp);
+					const json = _U.getIfDefined(resp,['data']);
+
+					let types = [];
+					let amounts = [];
+
+					json.forEach(v => {
+						console.log(v);
+						types.push(v.boxType);
+						amounts.push(v.cnt);
+					})
+
+					this.mxShowLoading()
+
+					this.staking_address = gConfig.wlt.getMysteryboxAddr()
+
+					const contractConn = getContractConnect(
+						this.loginBy,
+						mysterybox_ABI,
+						this.staking_address,
+						this.networkRPC,
+						this.fortmaticNetwork
+							? this.fortmaticNetwork
+							: this.current_network
+					)
+				}
+			});
+		},
+
 	}
 }
 

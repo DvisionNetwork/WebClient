@@ -222,7 +222,7 @@ export default function AppConfig() {
 				TokenAddress: '0x0767777Fdc9F15a4B8c5762F988dcE4D8199A204',
 				Contract721Address:
 					'0x252af5B14184A877adFB77D4490be6A9e1E7068D',
-				Contract1155Address: '',
+				Contract1155Address: '0x335C7D1D5c52605c8b67aD3258Dba6A3A94e941F',
 				ContractMarketAddress:
 					'0x0528943BD50427Db3953d7d715015325fBB616fE',
 				Network: '0x89',
@@ -428,6 +428,20 @@ export default function AppConfig() {
 					? wlt.addrPolygonProd.stakingAddress
 					: wlt.addrPolygonDev.stakingAddress
 			},
+			getMysteryboxAddr(network) {
+				if (gConfig.isProd) {
+					if(network == 'BSC') {
+						return gConfig.wlt.addrMarketBscProd.addrs[1].Contract1155Address;
+					} else if(network == 'POL') {
+						return gConfig.wlt.addrMarketPolProd.addrs[0].Contract1155Address;
+					}
+				}
+				if(network == 'BSC') {
+					return gConfig.wlt.addrMarketBscDev.addrs[1].Contract1155Address;
+				} else if(network == 'POL') {
+					return gConfig.wlt.addrMarketPolDev.addrs[0].Contract1155Address;
+				}
+			}
 		},
 
 		canvas: {
@@ -826,6 +840,7 @@ export default function AppConfig() {
 		test_url: 'https://www.multiverse.so/m/api/terms_list_ex',
 		public_api_sotatek: 'https://www.multiverse.so/m/stakingserver', //118.67.143.101
 		public_api_sotatek_2: 'https://www.multiverse.so/m/api',
+		public_api_webserver: 'http://localhost:8081',
 		privateKeyEncode: 'NGpICZvRVGsota',
 	}
 }

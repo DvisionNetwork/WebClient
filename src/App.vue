@@ -189,7 +189,7 @@ var wAPI = new WalletAPI()
 import CountryCodes from '@/features/CountryCodes.js'
 var CCodes = new CountryCodes()
 
-import DVILand from '@/data/Market.LandInfo.js'
+// import DVILand from '@/data/Market.LandInfo.js'
 
 import vueRecaptcha from 'vue3-recaptcha2'
 import { MSG_METAMASK_2 } from '@/features/Messages.js'

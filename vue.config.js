@@ -31,7 +31,7 @@ module.exports = {
 
 	runtimeCompiler: true,
 
-	publicPath: process.env.VUE_APP_BUILD_MODE == 'DEV' ? '/m/app_test/' : '/',
+	publicPath: process.env.VUE_APP_BUILD_MODE == 'DEV' ? '/m/app_test/' : '/m/app_test/',
 
 	pluginOptions: {
 		i18n: {

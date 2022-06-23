@@ -213,6 +213,10 @@
 			"alert-claim-btn": "Claim",
 			"alert-binance-lock": "You should claim to lock & transfer binance NFT ID : ",
 			"alert-lock-success": "Lock & transfer NFT success. Please check land list you owned"
+		},
+		"profile": {
+			"alert-3rdland-reward": "You can receive the 3rd Land Sale reward.",
+			"alert-claim-btn": "Claim"
 		}
 	},
 	"market": {
