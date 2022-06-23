@@ -22,9 +22,6 @@ export default {
 	props: {
 		data: Array
 	},
-    beforeMount() {
-        console.log(this.data);
-    },
 	methods: {
 		
 	},
@@ -84,8 +81,8 @@ export default {
 
         .image {
             // @include FLEXV(center, center);
-            width: gREm(160);
-            height: gREm(160);            
+            width: gREm(200);
+            height: gREm(200);            
             background-repeat: no-repeat;
             object-fit: cover;
             background-size: contain;
@@ -96,7 +93,7 @@ export default {
             padding-left: gREm(20);
             padding-right: gREm(20);
             height: gREm(16);
-            margin-top: gREm(54);
+            margin-top: gREm(34);
             @include FLEX(space-between,center);
             .desc-name{
                 width: gREm(185);
@@ -123,7 +120,7 @@ export default {
 }
 
 @include media-max($media_small) {
-	.product-card {
+	.reward-card {
 		height: auto;
 		margin-top: gREm(24);
 		margin-bottom: 0;
