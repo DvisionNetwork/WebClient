@@ -558,6 +558,30 @@ export default function walletAPI() {
 			return contract
 		},
 
+		getContractMysterybox(network, loginBy) {
+			const addr = gConfig.wlt.getMysteryboxAddr(network);
+
+			const networkRPC = window.localStorage.getItem('networkRPC')
+			const currentNetwork = window.localStorage.getItem('currentNetwork')
+			let contract = null
+			if (loginBy === FORTMATIC || loginBy === BITSKI) {
+				contract = getContractConnect(
+					loginBy,
+					mysterybox_ABI,
+					addr,
+					networkRPC,
+					currentNetwork
+				)
+			} else {
+				contract = new ethers.Contract(
+					addr,
+					mysterybox_ABI,
+					lv_signer
+				)
+			}
+			return contract
+		},
+
 		// J = { type:Approval/Trade, nft, price, [tokenId,] [ownerId, amount,] callback } // tokenId for trade, ownerId & amount trade-1155
 		async ContractDvi(J) {
 			console.log('[WalletAPI] =========== ContractDvi() J:', J)
@@ -1438,6 +1462,100 @@ export default function walletAPI() {
 				console.error(msg)
 			}
 
+			J.callback({
+				res_code: ret ? 200 : 401,
+				msg: msg,
+				data: {
+					trHash: ret,
+				},
+			})
+		},
+
+		async ContractMysterybox(J) {
+			console.log('[WalletAPI] =========== ContractMysterybox() J:', J.types, J.amounts)
+			const loginBy = window.localStorage.getItem('loginBy')
+
+			lv_provider = new ethers.providers.Web3Provider(
+				J.provider ? J.provider : window.ethereum
+			)
+
+			lv_signer = lv_provider.getSigner()
+
+			console.log(lv_provider, lv_signer, 'provider, signer')
+
+			let contract = this.getContractMysterybox(J.network, loginBy)
+
+			if (!contract) {
+				J.callback({
+					res_code: 401,
+					msg: 'Unsupported type of contractMysterybox',
+					data: {
+						trHash: null,
+					},
+				})
+				return
+			}
+
+			let ret = null
+			let msg = 'failed'
+
+			const rv =
+				loginBy !== METAMASK && loginBy !== COINBASE
+					? J.network
+					: await this.checkMetamask()
+			console.log({rv})
+			if (rv != 'NONE') {
+				try {
+					let sendTransactionPromise = null
+
+					sendTransactionPromise = await (loginBy ===
+						FORTMATIC || loginBy === BITSKI
+						? contract.methods
+								.batchMint(
+									J.address,
+									J.types,
+									J.amounts
+								)
+								.send({
+									from: J.address,
+								})
+						: contract.batchMint(
+							J.address,
+							J.types,
+							J.amounts
+							))
+						console.log({sendTransactionPromise})
+					
+					if (!sendTransactionPromise) {
+						J.callback({
+							res_code: 401,
+							msg:'Unsupported type of sendTransactionPromise ',
+							data: {
+								trHash: null,
+							},
+						})
+						return
+					}
+					console.log(sendTransactionPromise, 'sendTransaction')
+					const txReceipt = await (loginBy === FORTMATIC ||
+					loginBy === BITSKI
+						? sendTransactionPromise
+						: sendTransactionPromise.wait())
+						console.log({txReceipt});
+					if (typeof txReceipt !== 'undefined') {
+						if (txReceipt.status == 1) {
+							ret = txReceipt.transactionHash
+							msg = 'success'
+						} 
+					}
+				} catch (err) {
+					console.error('fail ' + err)
+					msg = 'fail ' + err;
+				}
+			} else {
+				msg = 'fail ' + 'rv is NONE';
+			}
+			console.log({ret});
 			J.callback({
 				res_code: ret ? 200 : 401,
 				msg: msg,
