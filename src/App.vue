@@ -59,6 +59,7 @@
 			<div class="message-box">
 				<div class="close-btn" @click="mxCloseAlert(false)"></div>
 				<div class="message" v-html="$store.state.showAlert.msg"></div>
+				<VRFReward v-if="$store.state.showAlert.reward != undefined" :data="$store.state.showAlert.reward"/>
 				<vue-recaptcha
 					v-show="showRecaptcha"
 					siteKey="6Lf_qD4eAAAAAAfk_LMuquaBtTSOt2Fqh-h8_vhz"
@@ -146,7 +147,7 @@
 			:theme="theme"
 			:userInfo="userInfo"
 			:wallet="wallet"
-		/>
+		/>		
 		<transition
 			appear
 			@before-enter="beforeEnter"
@@ -183,6 +184,7 @@ import PopupConfirmModal from './components/Popup.ConfirmModal.vue'
 import PopupInforModal from './components/Popup.Information.vue'
 import PopupRewardTable from './components/Popup.RewardTable.vue'
 import PopupMyReward from './components/Popup.MyReward.vue'
+import VRFReward from './components/VRFReward.vue'
 import WalletAPI from '@/features/WalletAPI.js'
 var wAPI = new WalletAPI()
 
@@ -240,6 +242,7 @@ export default {
 		vueRecaptcha,
 		PopupRewardTable,
 		PopupMyReward,
+		VRFReward
 	},
 	data() {
 		return {
@@ -1091,7 +1094,7 @@ body {
 	display: block;
 	width: 100vw;
 	height: 100vh;
-	overflow-y: auto;
+	overflow-y: auto;	
 }
 .top-btn {
 	position: fixed;

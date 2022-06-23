@@ -7,6 +7,7 @@
         "studio": "STUDIO",
         "guide": "GUIDE",
         "news": "NEWS",
+		"dao": "DAO",
 		"bridge": "BRIDGE",
         "help": "HELP",
 		"language": "Language",
@@ -37,7 +38,7 @@
 		"metamask-chain-not-matched": "Dvision supports ETH/BSC/POL now.\nCheck metamask is on ETH/BSC/POL mainnet",
 		"coinbase-chain-not-matched": "Dvision supports ETH/BSC/POL now.\nCheck coinbase is on ETH/BSC/POL mainnet",
 		"metamask-request-error": "Error on request metamask account. Error Code : ",
-		"login-required" : "You need to login to use this service.",
+		"login-required" : "You need to login to use this service.",		
 		"wallet-list-not-found": "The registered wallet list wasn’t found",
 		"wallet-not-registered": "Current wallet address is not registered",
 		"copy-clipboard-complete": "Copied to clipboard",
@@ -68,7 +69,8 @@
 			"place-holder-pwd-confirm": "Please enter the password one more time.",
 			"result-ok":"Your account has been successfully updated.",
 			"error-api-update": "Edit profile is failed"
-		}
+		},
+		"reward": "Congratulation!"
 	},
 	"signup" : {
 		"agree": {

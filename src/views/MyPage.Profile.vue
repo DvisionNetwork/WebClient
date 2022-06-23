@@ -261,23 +261,30 @@ export default {
 				count
 			}
 
+			this.mxShowLoading();
+
 			_U.callPost({
 				url:url,
 				data,
-				callback: (resp) =>{
-					console.log("[MyPage] getBoxItem()-> resp ", resp);
+				callback: (resp) =>{					
 					const json = _U.getIfDefined(resp,['data']);
 
 					let types = [];
 					let amounts = [];
+
+					this.mxCloseLoading();
+
+					this.mxShowAlert({
+						msg:this.$t('popup.reward'),
+						reward:json,
+						btn:this.$t('btn.ok')
+					});
 
 					json.forEach(v => {
 						console.log(v);
 						types.push(v.boxType);
 						amounts.push(v.cnt);
 					})
-
-					this.mxShowLoading()
 
 					this.staking_address = gConfig.wlt.getMysteryboxAddr()
 
